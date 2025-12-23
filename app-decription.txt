@@ -1,0 +1,1233 @@
+================================================================================
+                         APPLICATION SPECIFICATION
+                            "Minuta Canvas"
+                     Document Processing & Draft System
+                              Version 1.0 MVP
+================================================================================
+
+1. PROJECT OVERVIEW
+--------------------------------------------------------------------------------
+
+1.1 Purpose
+    Transform bulk document uploads into structured, auditable legal drafts
+    for notary offices. The system extracts people and properties from documents,
+    allows visual relationship mapping on an infinite canvas, generates drafts
+    with explicit pending items, and enables conversational editing.
+
+1.2 Problem Statement
+    Notary clerks spend excessive time on repetitive tasks:
+    - Reading multiple documents (ID cards, marriage certificates, property deeds)
+    - Copying data manually, checking for discrepancies
+    - Understanding relationships (spouse, proxy, owner)
+    - Writing and revising legal drafts
+
+    Current pain points:
+    - High time investment on repetitive work
+    - Risk of errors and omissions
+    - Difficulty auditing data origins ("where did this come from?")
+
+1.3 Solution
+    A system where users:
+    1. Select the type of legal act (e.g., property sale)
+    2. Upload all documents at once (bulk upload)
+    3. Receive auto-generated cards for people and properties
+    4. Connect entities visually on an infinite canvas
+    5. Generate drafts and edit them conversationally with full audit trail
+
+1.4 Target Users (MVP)
+    - Notary clerks/assistants (primary)
+    - Supervisors (audit and quality control)
+    - Back-office operations (standardization and metrics)
+
+
+================================================================================
+2. TECH STACK
+================================================================================
+
+2.1 Frontend
+--------------------------------------------------------------------------------
+    Framework:        React 18+ with TypeScript
+    Styling:          TailwindCSS
+    Animations:       Framer Motion
+    Canvas:           React Flow (Xyflow) - infinite canvas with nodes/edges
+    Rich Text Editor: Tiptap (ProseMirror-based, headless)
+    State Management: Zustand or React Context (TBD)
+    HTTP Client:      Supabase JS Client + fetch for external APIs
+
+2.2 Backend (Supabase as Foundation)
+--------------------------------------------------------------------------------
+    Database:         PostgreSQL (Supabase hosted)
+    Authentication:   Supabase Auth
+    Storage:          Supabase Storage (documents, images)
+    Realtime:         Supabase Realtime (status updates, collaboration)
+    Queues:           Supabase Queues (pgmq) - durable message queue
+    Secrets:          Supabase Vault (encrypted secrets storage)
+    Edge Functions:   Supabase Edge Functions (lightweight endpoints)
+
+2.3 Worker Service (Heavy Processing)
+--------------------------------------------------------------------------------
+    Runtime:          Node.js + TypeScript (containerized)
+    Deployment:       Cloud Run, VPS, or similar container platform
+    Responsibilities:
+        - Consume jobs from pgmq queue
+        - Download documents via signed URLs
+        - Execute OCR and AI extraction
+        - Run consensus engine
+        - Perform entity resolution (deduplication)
+        - Write results back to database
+
+2.4 AI / OCR Services (Google Cloud)
+--------------------------------------------------------------------------------
+    OCR:              Google Document AI - Enterprise Document OCR
+                      (text + layout with deskew, blocks/lines/words)
+
+    Extraction:       Google Gemini API
+        - Gemini Flash: Fast multimodal extraction to structured JSON
+        - Gemini Pro: Draft generation with global coherence
+
+    AI Features Used:
+        - Structured Outputs (JSON Schema) - predictable, parseable responses
+        - Function Calling - chat edits via operations, not free text
+        - Context Caching - reduce cost/latency for repeated context
+
+
+================================================================================
+3. ARCHITECTURE
+================================================================================
+
+3.1 High-Level Architecture Diagram (Conceptual)
+--------------------------------------------------------------------------------
+
+    [User Browser]
+         |
+         v
+    [React Frontend] <---> [Supabase Realtime]
+         |                        |
+         v                        v
+    [Supabase Edge Functions] <---> [PostgreSQL + RLS]
+         |                               |
+         v                               v
+    [Supabase Storage]            [Supabase Queues (pgmq)]
+         |                               |
+         v                               v
+    [Signed URLs] <-------------> [Worker Container]
+                                       |
+                        +--------------+---------------+
+                        |              |               |
+                        v              v               v
+                [Document AI]    [Gemini Flash]   [Gemini Pro]
+                   (OCR)         (Extraction)     (Drafting)
+
+3.2 Data Flow
+--------------------------------------------------------------------------------
+
+    UPLOAD FLOW:
+    1. User uploads documents via frontend
+    2. Files go to Supabase Storage
+    3. Document records created in PostgreSQL
+    4. Job message enqueued in pgmq
+    5. Frontend shows "Processing..." status via Realtime
+
+    PROCESSING FLOW:
+    1. Worker consumes job from pgmq
+    2. Downloads file via signed URL (short-lived)
+    3. Sends to Document AI OCR -> receives text + layout
+    4. Sends to Gemini Flash -> receives structured JSON
+    5. Consensus engine compares results
+    6. Entity resolution groups/merges people and properties
+    7. Results written to PostgreSQL
+    8. Realtime notifies frontend of completion
+
+    DRAFT GENERATION FLOW:
+    1. User confirms connections on canvas
+    2. System consolidates canonical JSON model
+    3. Applies business rules (spouse consent, valid proxy, etc.)
+    4. Calls Gemini Pro with template + canonical data
+    5. Draft rendered in Tiptap editor with pending items marked
+
+    CHAT EDITING FLOW:
+    1. User sends natural language request in chat
+    2. Gemini with function calling produces structured operation
+    3. Operation applied as patch to canonical model
+    4. Affected section regenerated
+    5. Change logged in audit trail
+
+3.3 Security Architecture
+--------------------------------------------------------------------------------
+
+    ROW LEVEL SECURITY (RLS):
+        - All tables protected by RLS policies
+        - Users can only access their organization's data
+        - Role-based access (clerk, supervisor, admin)
+
+    STORAGE SECURITY:
+        - Documents stored with access policies
+        - Worker accesses files via signed URLs (short expiry)
+        - No direct public access to sensitive documents
+
+    SECRETS MANAGEMENT:
+        - API keys stored in Supabase Vault
+        - Environment variables for non-sensitive config
+        - No secrets in code or client-side
+
+    DATA PRIVACY (LGPD):
+        - Minimum access principle
+        - Defense in depth
+        - Audit logging of all data access and changes
+
+
+================================================================================
+4. DATABASE SCHEMA
+================================================================================
+
+4.1 Core Tables
+--------------------------------------------------------------------------------
+
+    TABLE: organizations
+    ---------------------
+    id              UUID PRIMARY KEY
+    name            TEXT NOT NULL
+    created_at      TIMESTAMPTZ DEFAULT now()
+    settings        JSONB DEFAULT '{}'
+
+
+    TABLE: users
+    ---------------------
+    id              UUID PRIMARY KEY (references auth.users)
+    organization_id UUID REFERENCES organizations(id)
+    role            TEXT CHECK (role IN ('clerk', 'supervisor', 'admin'))
+    full_name       TEXT
+    created_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: cases
+    ---------------------
+    id              UUID PRIMARY KEY
+    organization_id UUID REFERENCES organizations(id)
+    act_type        TEXT NOT NULL  -- 'purchase_sale', 'donation', etc.
+    status          TEXT DEFAULT 'draft'
+                    CHECK (status IN ('draft', 'processing', 'review',
+                                      'approved', 'archived'))
+    title           TEXT
+    created_by      UUID REFERENCES users(id)
+    assigned_to     UUID REFERENCES users(id)
+    canonical_data  JSONB DEFAULT '{}'  -- consolidated case data
+    created_at      TIMESTAMPTZ DEFAULT now()
+    updated_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: documents
+    ---------------------
+    id              UUID PRIMARY KEY
+    case_id         UUID REFERENCES cases(id) ON DELETE CASCADE
+    storage_path    TEXT NOT NULL
+    original_name   TEXT
+    mime_type       TEXT
+    file_size       INTEGER
+    page_count      INTEGER
+    status          TEXT DEFAULT 'uploaded'
+                    CHECK (status IN ('uploaded', 'processing', 'processed',
+                                      'needs_review', 'approved', 'failed'))
+    doc_type        TEXT  -- 'cnh', 'rg', 'marriage_cert', 'deed', 'proxy', etc.
+    doc_type_confidence FLOAT
+    metadata        JSONB DEFAULT '{}'
+    created_at      TIMESTAMPTZ DEFAULT now()
+    updated_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: extractions
+    ---------------------
+    id              UUID PRIMARY KEY
+    document_id     UUID REFERENCES documents(id) ON DELETE CASCADE
+    ocr_result      JSONB  -- Document AI output
+    llm_result      JSONB  -- Gemini extraction output
+    consensus       JSONB  -- Final merged result with confidence scores
+    pending_fields  TEXT[] -- Fields that need human review
+    created_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: people
+    ---------------------
+    id              UUID PRIMARY KEY
+    case_id         UUID REFERENCES cases(id) ON DELETE CASCADE
+    full_name       TEXT NOT NULL
+    cpf             TEXT
+    rg              TEXT
+    rg_issuer       TEXT
+    birth_date      DATE
+    nationality     TEXT
+    marital_status  TEXT
+    profession      TEXT
+    address         JSONB  -- {street, number, complement, city, state, zip}
+    email           TEXT
+    phone           TEXT
+    father_name     TEXT
+    mother_name     TEXT
+    confidence      FLOAT DEFAULT 0.0
+    source_docs     UUID[]  -- document IDs that contributed to this entity
+    metadata        JSONB DEFAULT '{}'
+    created_at      TIMESTAMPTZ DEFAULT now()
+    updated_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: properties
+    ---------------------
+    id              UUID PRIMARY KEY
+    case_id         UUID REFERENCES cases(id) ON DELETE CASCADE
+    registry_number TEXT  -- matricula
+    registry_office TEXT  -- cartorio de registro
+    address         JSONB
+    area_sqm        NUMERIC
+    description     TEXT
+    iptu_number     TEXT
+    encumbrances    JSONB  -- onus, hipotecas, etc.
+    confidence      FLOAT DEFAULT 0.0
+    source_docs     UUID[]
+    metadata        JSONB DEFAULT '{}'
+    created_at      TIMESTAMPTZ DEFAULT now()
+    updated_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: evidence
+    ---------------------
+    id              UUID PRIMARY KEY
+    entity_type     TEXT NOT NULL  -- 'person', 'property'
+    entity_id       UUID NOT NULL
+    field_name      TEXT NOT NULL  -- which field this evidence supports
+    document_id     UUID REFERENCES documents(id)
+    page_number     INTEGER
+    bounding_box    JSONB  -- {x, y, width, height} for highlight
+    extracted_text  TEXT
+    confidence      FLOAT
+    source          TEXT  -- 'ocr', 'llm', 'consensus'
+    created_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: graph_edges
+    ---------------------
+    id              UUID PRIMARY KEY
+    case_id         UUID REFERENCES cases(id) ON DELETE CASCADE
+    source_type     TEXT NOT NULL  -- 'person', 'property'
+    source_id       UUID NOT NULL
+    target_type     TEXT NOT NULL
+    target_id       UUID NOT NULL
+    relationship    TEXT NOT NULL
+                    CHECK (relationship IN (
+                        'spouse_of',        -- pessoa <-> pessoa
+                        'represents',       -- procurador -> representado
+                        'owns',             -- pessoa -> imovel
+                        'sells',            -- vendedor -> imovel
+                        'buys',             -- comprador -> imovel
+                        'guarantor_of',     -- fiador -> negocio
+                        'witness_for'       -- testemunha -> ato
+                    ))
+    confidence      FLOAT DEFAULT 1.0
+    confirmed       BOOLEAN DEFAULT false
+    metadata        JSONB DEFAULT '{}'
+    created_at      TIMESTAMPTZ DEFAULT now()
+
+    UNIQUE(case_id, source_type, source_id, target_type, target_id, relationship)
+
+
+    TABLE: drafts
+    ---------------------
+    id              UUID PRIMARY KEY
+    case_id         UUID REFERENCES cases(id) ON DELETE CASCADE
+    version         INTEGER NOT NULL
+    content         JSONB NOT NULL  -- structured draft content by section
+    html_content    TEXT  -- rendered HTML
+    pending_items   JSONB DEFAULT '[]'
+    status          TEXT DEFAULT 'generated'
+                    CHECK (status IN ('generated', 'reviewing', 'approved'))
+    created_at      TIMESTAMPTZ DEFAULT now()
+
+    UNIQUE(case_id, version)
+
+
+    TABLE: chat_sessions
+    ---------------------
+    id              UUID PRIMARY KEY
+    case_id         UUID REFERENCES cases(id) ON DELETE CASCADE
+    draft_id        UUID REFERENCES drafts(id)
+    created_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: chat_messages
+    ---------------------
+    id              UUID PRIMARY KEY
+    session_id      UUID REFERENCES chat_sessions(id) ON DELETE CASCADE
+    role            TEXT CHECK (role IN ('user', 'assistant', 'system'))
+    content         TEXT NOT NULL
+    operation       JSONB  -- structured operation if assistant action
+    created_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: operations_log
+    ---------------------
+    id              UUID PRIMARY KEY
+    case_id         UUID REFERENCES cases(id)
+    draft_id        UUID REFERENCES drafts(id)
+    user_id         UUID REFERENCES users(id)
+    operation_type  TEXT NOT NULL
+    target_path     TEXT  -- JSON path of affected field
+    old_value       JSONB
+    new_value       JSONB
+    reason          TEXT  -- user request or system action
+    created_at      TIMESTAMPTZ DEFAULT now()
+
+
+    TABLE: processing_jobs
+    ---------------------
+    id              UUID PRIMARY KEY
+    case_id         UUID REFERENCES cases(id)
+    document_id     UUID REFERENCES documents(id)
+    job_type        TEXT NOT NULL  -- 'ocr', 'extraction', 'consensus', 'draft'
+    status          TEXT DEFAULT 'pending'
+                    CHECK (status IN ('pending', 'processing', 'completed',
+                                      'failed', 'retrying'))
+    attempts        INTEGER DEFAULT 0
+    max_attempts    INTEGER DEFAULT 3
+    error_message   TEXT
+    result          JSONB
+    created_at      TIMESTAMPTZ DEFAULT now()
+    started_at      TIMESTAMPTZ
+    completed_at    TIMESTAMPTZ
+
+
+4.2 Indexes
+--------------------------------------------------------------------------------
+
+    CREATE INDEX idx_documents_case_id ON documents(case_id);
+    CREATE INDEX idx_documents_status ON documents(status);
+    CREATE INDEX idx_people_case_id ON people(case_id);
+    CREATE INDEX idx_people_cpf ON people(cpf);
+    CREATE INDEX idx_properties_case_id ON properties(case_id);
+    CREATE INDEX idx_graph_edges_case_id ON graph_edges(case_id);
+    CREATE INDEX idx_graph_edges_source ON graph_edges(source_type, source_id);
+    CREATE INDEX idx_graph_edges_target ON graph_edges(target_type, target_id);
+    CREATE INDEX idx_evidence_entity ON evidence(entity_type, entity_id);
+    CREATE INDEX idx_processing_jobs_status ON processing_jobs(status);
+
+
+4.3 Row Level Security Policies
+--------------------------------------------------------------------------------
+
+    -- Example RLS policy for cases table
+    ALTER TABLE cases ENABLE ROW LEVEL SECURITY;
+
+    CREATE POLICY "Users can view cases in their organization"
+    ON cases FOR SELECT
+    USING (organization_id = (
+        SELECT organization_id FROM users WHERE id = auth.uid()
+    ));
+
+    CREATE POLICY "Clerks can create cases"
+    ON cases FOR INSERT
+    WITH CHECK (
+        organization_id = (
+            SELECT organization_id FROM users WHERE id = auth.uid()
+        )
+    );
+
+    -- Similar policies for all tables...
+
+
+================================================================================
+5. API ENDPOINTS
+================================================================================
+
+5.1 Edge Functions (Supabase)
+--------------------------------------------------------------------------------
+
+    POST /functions/v1/create-case
+    ------------------------------
+    Purpose: Create a new case
+    Auth: Required (Supabase JWT)
+    Body: { act_type: string, title?: string }
+    Returns: { case_id: string, status: string }
+
+
+    POST /functions/v1/upload-document
+    ----------------------------------
+    Purpose: Get signed URL for document upload
+    Auth: Required
+    Body: { case_id: string, filename: string, content_type: string }
+    Returns: { upload_url: string, document_id: string }
+
+
+    POST /functions/v1/confirm-upload
+    ---------------------------------
+    Purpose: Confirm upload completed and enqueue processing
+    Auth: Required
+    Body: { document_id: string }
+    Returns: { job_id: string }
+
+
+    POST /functions/v1/save-graph
+    -----------------------------
+    Purpose: Save canvas connections (graph edges)
+    Auth: Required
+    Body: { case_id: string, edges: GraphEdge[] }
+    Returns: { saved: number, warnings: string[] }
+
+
+    POST /functions/v1/generate-draft
+    ---------------------------------
+    Purpose: Trigger draft generation from canonical model
+    Auth: Required
+    Body: { case_id: string }
+    Returns: { draft_id: string, job_id: string }
+
+
+    POST /functions/v1/chat-message
+    -------------------------------
+    Purpose: Send message to draft editing chat
+    Auth: Required
+    Body: {
+        session_id: string,
+        message: string
+    }
+    Returns: {
+        response: string,
+        operation?: StructuredOperation,
+        updated_sections?: string[]
+    }
+
+
+    POST /functions/v1/apply-patch
+    ------------------------------
+    Purpose: Apply structured patch to canonical model
+    Auth: Required
+    Body: {
+        case_id: string,
+        patch: StructuredPatch
+    }
+    Returns: { success: boolean, affected_sections: string[] }
+
+
+    GET /functions/v1/export-draft
+    ------------------------------
+    Purpose: Export draft as HTML or PDF
+    Auth: Required
+    Query: { draft_id: string, format: 'html' | 'pdf' }
+    Returns: File download
+
+
+5.2 Realtime Channels
+--------------------------------------------------------------------------------
+
+    Channel: case:{case_id}
+    -----------------------
+    Events:
+        - document:status_changed  { document_id, status }
+        - person:created           { person_id, name }
+        - property:created         { property_id, registry }
+        - extraction:completed     { document_id }
+        - draft:generated          { draft_id, version }
+        - chat:response            { message, operation }
+
+
+    Channel: presence:{case_id}
+    ---------------------------
+    Purpose: Show who's viewing/editing the case
+    Data: { user_id, user_name, cursor_position?, editing_section? }
+
+
+================================================================================
+6. FRONTEND COMPONENTS
+================================================================================
+
+6.1 Page Structure
+--------------------------------------------------------------------------------
+
+    /
+    └── dashboard/
+        ├── index           - Case list, create new case
+        └── [caseId]/
+            ├── index       - Case overview
+            ├── upload      - Document upload dropzone
+            ├── entities    - Cards view (people + properties)
+            ├── canvas      - Infinite canvas for connections
+            ├── draft       - Draft editor with chat
+            └── history     - Audit log and versions
+
+6.2 Core Components
+--------------------------------------------------------------------------------
+
+    UPLOAD SECTION
+    --------------
+    <UploadDropzone>
+        - Multi-file drag & drop
+        - Progress indicators per file
+        - Status badges (processing, completed, needs review)
+        - Connects to Supabase Storage + Realtime
+
+    <DocumentCard>
+        - Thumbnail preview
+        - Document type badge (auto-detected)
+        - Status indicator
+        - "View original" button
+        - "View extraction" button
+
+
+    ENTITIES SECTION
+    ----------------
+    <PersonCard>
+        - Profile header (name, photo if available)
+        - Field groups: identification, address, civil status
+        - Confidence indicator per field
+        - Source document chips
+        - "Edit", "Merge", "Split" actions
+        - "View evidence" modal trigger
+
+    <PropertyCard>
+        - Property header (registry number, address)
+        - Details: area, description, encumbrances
+        - Suggested owner with confidence
+        - Source document chips
+        - Actions: Edit, View evidence
+
+    <EvidenceModal>
+        - Document viewer (PDF/image)
+        - Highlighted bounding box for field
+        - OCR vs LLM comparison
+        - Confidence breakdown
+        - "Confirm" or "Override" buttons
+
+
+    CANVAS SECTION
+    --------------
+    <InfiniteCanvas>
+        - Based on React Flow
+        - Custom node types: PersonNode, PropertyNode
+        - Custom edge types: RelationshipEdge
+        - Minimap for navigation
+        - Controls: zoom, fit view, lock/unlock
+
+    <PersonNode>
+        - Compact card view
+        - Connection handles (left/right/top/bottom)
+        - Role badge when connected
+        - Visual state: normal, selected, warning, error
+
+    <PropertyNode>
+        - Compact property representation
+        - Ownership indicator
+        - Transfer arrow capability
+
+    <RelationshipEdge>
+        - Labeled connection
+        - Relationship type dropdown
+        - Delete button on hover
+        - Animated when pending confirmation
+
+    <ConnectionSuggestions>
+        - Auto-suggestions panel
+        - "Person A might be owner of Property X"
+        - One-click accept/reject
+
+
+    DRAFT SECTION
+    -------------
+    <DraftEditor>
+        - Based on Tiptap
+        - Section-based structure
+        - Pending items highlighted (yellow background)
+        - Track changes view
+        - Toolbar: format, insert, export
+
+    <ChatPanel>
+        - Message history
+        - Input field
+        - "Thinking..." indicator
+        - Operation preview before applying
+        - Quick actions: "Regenerate section", "Undo last"
+
+    <AuditTrail>
+        - Timeline of changes
+        - Filter by section/field
+        - Diff view for each change
+        - User attribution
+
+
+6.3 Shared Components
+--------------------------------------------------------------------------------
+
+    <ConfidenceBadge level="high|medium|low" />
+    <PendingBadge message="string" />
+    <DocumentChip docId="uuid" docType="string" />
+    <StatusBadge status="string" />
+    <LoadingSpinner />
+    <ErrorBoundary />
+    <ConfirmDialog />
+
+
+================================================================================
+7. WORKER SERVICE
+================================================================================
+
+7.1 Architecture
+--------------------------------------------------------------------------------
+
+    Entry Point: worker/index.ts
+
+    Components:
+        - QueueConsumer: Polls pgmq for jobs
+        - DocumentDownloader: Fetches files via signed URLs
+        - OCRProcessor: Calls Document AI
+        - ExtractionProcessor: Calls Gemini Flash
+        - ConsensusEngine: Compares and merges results
+        - EntityResolver: Deduplication and grouping
+        - DraftGenerator: Calls Gemini Pro with templates
+        - ResultWriter: Updates PostgreSQL
+
+7.2 Job Types
+--------------------------------------------------------------------------------
+
+    JOB: ocr_extraction
+    -------------------
+    Input: { document_id, storage_path }
+    Process:
+        1. Download document via signed URL
+        2. Send to Document AI OCR
+        3. Parse response (text, blocks, layout)
+        4. Store in extractions.ocr_result
+        5. Enqueue llm_extraction job
+
+    JOB: llm_extraction
+    -------------------
+    Input: { document_id, ocr_text }
+    Process:
+        1. Prepare prompt with document image + OCR text
+        2. Call Gemini Flash with JSON Schema
+        3. Parse structured response
+        4. Store in extractions.llm_result
+        5. Enqueue consensus job
+
+    JOB: consensus
+    --------------
+    Input: { document_id }
+    Process:
+        1. Load OCR and LLM results
+        2. Compare field by field
+        3. For each field:
+           - If match: high confidence, use value
+           - If similar: medium confidence, prefer LLM
+           - If divergent: low confidence, mark pending
+        4. Store in extractions.consensus
+        5. Enqueue entity_resolution job
+
+    JOB: entity_resolution
+    ----------------------
+    Input: { case_id }
+    Process:
+        1. Load all extractions for case
+        2. Group by entity type (person/property)
+        3. Dedupe people:
+           - CPF match -> auto merge
+           - Name + birth + filiation match -> suggest merge
+           - Else -> separate entities
+        4. Dedupe properties:
+           - Registry number match -> auto merge
+        5. Create/update people and properties tables
+        6. Link evidence records
+
+    JOB: generate_draft
+    -------------------
+    Input: { case_id, template_id }
+    Process:
+        1. Load canonical data (people, properties, edges)
+        2. Apply business rules validation
+        3. Prepare prompt with template + data
+        4. Call Gemini Pro
+        5. Parse structured response (sections)
+        6. Store in drafts table
+        7. Notify via Realtime
+
+7.3 Error Handling
+--------------------------------------------------------------------------------
+
+    Retry Policy:
+        - Max 3 attempts per job
+        - Exponential backoff: 1s, 5s, 25s
+        - After max attempts: move to failed, notify user
+
+    Idempotency:
+        - Jobs identified by document_id + job_type
+        - Check if already completed before processing
+        - Use database transactions for consistency
+
+    Dead Letter Queue:
+        - Failed jobs logged with full context
+        - Admin notification for manual review
+
+
+================================================================================
+8. AI INTEGRATION DETAILS
+================================================================================
+
+8.1 Document AI OCR Configuration
+--------------------------------------------------------------------------------
+
+    Processor: Enterprise Document OCR
+
+    Features enabled:
+        - Deskew (auto-rotate crooked scans)
+        - Block/paragraph/line/word granularity
+        - Bounding box coordinates
+        - Confidence scores per element
+        - Language hints: ["pt-BR"]
+
+    Output structure:
+    {
+        "text": "full document text",
+        "pages": [{
+            "pageNumber": 1,
+            "blocks": [{
+                "text": "block text",
+                "confidence": 0.98,
+                "boundingBox": { "vertices": [...] },
+                "paragraphs": [...]
+            }]
+        }]
+    }
+
+8.2 Gemini Flash - Document Extraction
+--------------------------------------------------------------------------------
+
+    Model: gemini-1.5-flash or gemini-2.0-flash
+
+    Input: Image/PDF + OCR text as context
+
+    JSON Schema (example for ID document):
+    {
+        "type": "object",
+        "properties": {
+            "document_type": {
+                "type": "string",
+                "enum": ["cnh", "rg", "passport", "other"]
+            },
+            "person": {
+                "type": "object",
+                "properties": {
+                    "full_name": { "type": "string" },
+                    "cpf": { "type": "string", "pattern": "^[0-9]{11}$" },
+                    "rg": { "type": "string" },
+                    "birth_date": { "type": "string", "format": "date" },
+                    "father_name": { "type": "string" },
+                    "mother_name": { "type": "string" }
+                }
+            },
+            "confidence_notes": { "type": "string" }
+        },
+        "required": ["document_type", "person"]
+    }
+
+8.3 Gemini Pro - Draft Generation
+--------------------------------------------------------------------------------
+
+    Model: gemini-1.5-pro or gemini-2.0-pro
+
+    Context Caching: Enabled for case context (reduce cost on iterations)
+
+    System prompt structure:
+        1. Role: Legal document drafting assistant
+        2. Act type definition and requirements
+        3. Template structure
+        4. Canonical data (JSON)
+        5. Business rules to validate
+        6. Output format (structured sections)
+
+    Output schema:
+    {
+        "sections": [
+            {
+                "id": "header",
+                "title": "ESCRITURA PUBLICA DE COMPRA E VENDA",
+                "content": "...",
+                "pending_items": []
+            },
+            {
+                "id": "parties",
+                "title": "PARTES",
+                "content": "...",
+                "pending_items": ["CPF do vendedor nao confirmado"]
+            }
+        ],
+        "global_pending": ["Procuracao vence em 30 dias"],
+        "warnings": []
+    }
+
+8.4 Gemini - Chat Function Calling
+--------------------------------------------------------------------------------
+
+    Available functions:
+
+    update_field:
+        description: "Update a specific field in the canonical data"
+        parameters:
+            path: "deal.paymentSchedule.downPayment"
+            value: "30%"
+            reason: "User requested change"
+
+    regenerate_section:
+        description: "Regenerate a specific section of the draft"
+        parameters:
+            section_id: "price_payment"
+            additional_context?: "Emphasize payment terms"
+
+    add_clause:
+        description: "Add a new clause to the draft"
+        parameters:
+            after_section: "conditions"
+            clause_type: "penalty"
+            content: "..."
+
+    remove_clause:
+        description: "Remove a clause from the draft"
+        parameters:
+            section_id: "special_conditions"
+            clause_index: 2
+
+    mark_pending:
+        description: "Mark an item as pending review"
+        parameters:
+            section_id: "parties"
+            item: "Verificar estado civil atualizado"
+
+    resolve_pending:
+        description: "Resolve a pending item"
+        parameters:
+            pending_id: "uuid"
+            resolution: "Confirmado via certidao"
+
+
+================================================================================
+9. DOCUMENT TYPES AND EXTRACTION SCHEMAS
+================================================================================
+
+9.1 Supported Document Types (MVP)
+--------------------------------------------------------------------------------
+
+    PERSON DOCUMENTS:
+        - CNH (driver's license)
+        - RG (identity card)
+        - Certidao de casamento (marriage certificate)
+        - Certidao de nascimento (birth certificate)
+        - Procuracao (power of attorney)
+        - Comprovante de residencia (proof of address)
+
+    PROPERTY DOCUMENTS:
+        - Matricula do imovel (property deed/registry)
+        - IPTU (property tax document)
+        - Certidao de onus (encumbrance certificate)
+
+9.2 Extraction Schemas by Document Type
+--------------------------------------------------------------------------------
+
+    CNH_SCHEMA:
+    {
+        full_name, cpf, rg, birth_date,
+        father_name, mother_name,
+        address, photo_present
+    }
+
+    MARRIAGE_CERT_SCHEMA:
+    {
+        spouse1: { full_name, birth_date, nationality, profession },
+        spouse2: { full_name, birth_date, nationality, profession },
+        marriage_date, regime, registry_info
+    }
+
+    PROPERTY_DEED_SCHEMA:
+    {
+        registry_number, registry_office,
+        address, area_sqm, description,
+        current_owners: [{ name, cpf, share }],
+        encumbrances: [{ type, details }],
+        previous_registrations: []
+    }
+
+    PROXY_SCHEMA:
+    {
+        grantor: { name, cpf, ... },
+        grantee: { name, cpf, ... },
+        powers: [],
+        validity_date,
+        notary_info
+    }
+
+
+================================================================================
+10. BUSINESS RULES ENGINE
+================================================================================
+
+10.1 Validation Rules (Purchase/Sale)
+--------------------------------------------------------------------------------
+
+    RULE: seller_ownership
+    ----------------------
+    Check: Seller must be current owner per property deed
+    Severity: Error (blocks draft)
+    Resolution: Link correct owner or update property data
+
+    RULE: spouse_consent
+    --------------------
+    Check: If seller is married (not separated), spouse must sign
+    Severity: Error
+    Resolution: Add spouse as co-seller or provide separation docs
+
+    RULE: proxy_validity
+    --------------------
+    Check: Power of attorney must not be expired
+    Severity: Warning (allows draft with pending)
+    Resolution: Request updated proxy
+
+    RULE: proxy_powers
+    ------------------
+    Check: Proxy must have specific powers for the act
+    Severity: Warning
+    Resolution: Verify proxy text covers the transaction
+
+    RULE: property_encumbrances
+    ---------------------------
+    Check: Flag any active encumbrances
+    Severity: Info (highlighted in draft)
+    Resolution: Address in special conditions
+
+    RULE: cpf_validation
+    --------------------
+    Check: CPF must be valid (checksum) and present
+    Severity: Error if missing, Warning if invalid format
+    Resolution: Confirm with source document
+
+10.2 Rule Application Flow
+--------------------------------------------------------------------------------
+
+    1. Load canonical model (people, properties, edges)
+    2. For each rule:
+       a. Evaluate condition
+       b. If failed:
+          - Error: Add to blocking_issues
+          - Warning: Add to pending_items
+          - Info: Add to notes
+    3. If blocking_issues: Prevent draft generation, show errors
+    4. If warnings only: Generate draft with pending items
+
+
+================================================================================
+11. AUDIT AND COMPLIANCE
+================================================================================
+
+11.1 Audit Log Structure
+--------------------------------------------------------------------------------
+
+    Every data change is logged:
+    {
+        timestamp: ISO datetime,
+        user_id: UUID,
+        action: "create|update|delete|approve|export",
+        entity_type: "person|property|edge|draft",
+        entity_id: UUID,
+        field_path: "address.city",  // if applicable
+        old_value: any,
+        new_value: any,
+        source: "extraction|user_edit|chat_operation|merge",
+        evidence_id: UUID,  // if from extraction
+        ip_address: string,
+        user_agent: string
+    }
+
+11.2 Evidence Chain
+--------------------------------------------------------------------------------
+
+    For every field in the final draft:
+
+    Field "seller.cpf" = "123.456.789-00"
+        |
+        +-- Evidence: document_id="uuid", page=1, bbox={...}
+        |   Source: ocr (confidence: 0.99)
+        |   Text: "123.456.789-00"
+        |
+        +-- Evidence: document_id="uuid", page=1, bbox={...}
+            Source: llm (confidence: 0.95)
+            Text: "123.456.789-00"
+        |
+        +-- Consensus: MATCH, confidence: 0.97
+        |
+        +-- User confirmation: none needed (high confidence)
+
+11.3 Compliance Reports
+--------------------------------------------------------------------------------
+
+    Exportable reports:
+    - Case summary with all sources
+    - Evidence chain per field
+    - Change history timeline
+    - Pending items resolution log
+
+
+================================================================================
+12. DEPLOYMENT ARCHITECTURE
+================================================================================
+
+12.1 Infrastructure
+--------------------------------------------------------------------------------
+
+    FRONTEND:
+        - Vercel or Netlify (static hosting + edge functions)
+        - CDN for assets
+        - Environment: Production, Staging, Development
+
+    SUPABASE:
+        - Project per environment
+        - Database: Postgres with pgvector extension (if needed)
+        - Edge Functions: Deno runtime
+        - Realtime: WebSocket connections
+        - Storage: S3-compatible object storage
+
+    WORKER:
+        - Google Cloud Run (or similar)
+        - Auto-scaling based on queue depth
+        - Min instances: 1 (always warm)
+        - Max instances: 10 (configurable)
+        - Memory: 2GB (for document processing)
+        - Timeout: 300s per request
+
+    AI SERVICES:
+        - Google Cloud Project
+        - Document AI processor
+        - Gemini API (AI Studio or Vertex AI)
+
+12.2 Environment Variables
+--------------------------------------------------------------------------------
+
+    FRONTEND:
+        NEXT_PUBLIC_SUPABASE_URL
+        NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+    EDGE FUNCTIONS:
+        SUPABASE_SERVICE_ROLE_KEY
+        (secrets in Vault)
+
+    WORKER:
+        SUPABASE_URL
+        SUPABASE_SERVICE_ROLE_KEY
+        GOOGLE_APPLICATION_CREDENTIALS
+        DOCUMENT_AI_PROCESSOR_ID
+        GEMINI_API_KEY (or use ADC)
+
+
+================================================================================
+13. MILESTONES AND DELIVERABLES
+================================================================================
+
+M0 - Foundation (Infrastructure Setup)
+--------------------------------------------------------------------------------
+    [ ] Supabase project setup (DB, Auth, Storage)
+    [ ] Database schema migration
+    [ ] RLS policies implementation
+    [ ] Basic frontend scaffold (Next.js + Tailwind)
+    [ ] Authentication flow
+    [ ] Case CRUD operations
+
+M1 - Document Pipeline (OCR + Extraction)
+--------------------------------------------------------------------------------
+    [ ] Worker service scaffold
+    [ ] Supabase Queues (pgmq) integration
+    [ ] Document upload flow
+    [ ] Document AI OCR integration
+    [ ] Gemini Flash extraction integration
+    [ ] Consensus engine
+    [ ] Entity resolution (people/properties)
+    [ ] Realtime status updates
+
+M2 - Canvas (Visual Connections)
+--------------------------------------------------------------------------------
+    [ ] React Flow canvas setup
+    [ ] Person and Property node components
+    [ ] Edge types and relationship labels
+    [ ] Connection suggestions
+    [ ] Graph persistence
+    [ ] Validation rules integration
+
+M3 - Draft Generation
+--------------------------------------------------------------------------------
+    [ ] Template system
+    [ ] Canonical model builder
+    [ ] Gemini Pro draft generation
+    [ ] Tiptap editor integration
+    [ ] Pending items display
+    [ ] Section-based structure
+
+M4 - Chat Editing
+--------------------------------------------------------------------------------
+    [ ] Chat panel UI
+    [ ] Function calling integration
+    [ ] Patch application system
+    [ ] Section regeneration
+    [ ] Audit trail display
+    [ ] Export functionality (HTML/PDF)
+
+
+================================================================================
+14. SUCCESS METRICS
+================================================================================
+
+    TIME-TO-FIRST-CARDS:
+        Target: < 60 seconds for 10-document case (p95)
+        Measurement: Timestamp from upload completion to cards visible
+
+    TIME-TO-FIRST-DRAFT:
+        Target: < 3 minutes from canvas confirmation (p95)
+        Measurement: Timestamp from "Generate Draft" to draft displayed
+
+    AUTO-FILL RATE:
+        Target: > 85% of required fields auto-filled with high confidence
+        Measurement: (Auto-filled fields / Total required fields) per case
+
+    CORRECTION RATE:
+        Target: < 5 corrections per case on average
+        Measurement: Count of user edits before draft approval
+
+    DRAFT ACCEPTANCE:
+        Target: > 70% of drafts approved with minor changes
+        Measurement: Drafts approved with < 10 edits / Total drafts
+
+    SYSTEM RELIABILITY:
+        Target: 99.5% job completion rate
+        Measurement: (Completed jobs / Total jobs) excluding user errors
+
+
+================================================================================
+15. GLOSSARY
+================================================================================
+
+    Card: Visual representation of an entity (Person or Property) with
+          extracted fields, confidence indicators, and evidence links.
+
+    Canonical Model: The JSON structure representing the complete, validated
+                     state of a case (people, properties, relationships).
+
+    Consensus: The process of comparing OCR and LLM extraction results to
+               determine final values and confidence levels.
+
+    Evidence: A link from a data field to its source (document, page,
+              bounding box, extracted text).
+
+    Graph/Canvas: The visual representation of entities and their
+                  relationships using nodes and edges.
+
+    Patch: A structured operation that modifies the canonical model,
+           triggered by chat commands or user edits.
+
+    Pending Item: A data point or validation that requires human review
+                  before the draft can be finalized.
+
+    Signed URL: A temporary, authenticated URL for accessing files in
+                storage, with short expiration for security.
+
+
+================================================================================
+                              END OF SPECIFICATION
+================================================================================

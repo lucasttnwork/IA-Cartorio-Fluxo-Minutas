@@ -1,0 +1,2524 @@
+[
+  {
+    "category": "functional",
+    "description": "Complete case creation flow - user creates a new purchase/sale case with all required information",
+    "steps": [
+      "Step 1: Navigate to dashboard page",
+      "Step 2: Click 'Create New Case' button",
+      "Step 3: Verify case creation modal opens",
+      "Step 4: Select act type 'Compra e Venda' (Purchase/Sale)",
+      "Step 5: Enter case title 'Test Case - Property Purchase'",
+      "Step 6: Click 'Create' button",
+      "Step 7: Verify redirect to new case overview page",
+      "Step 8: Verify case status shows 'draft'",
+      "Step 9: Verify case title displays correctly",
+      "Step 10: Verify sidebar navigation appears with all sections",
+      "Step 11: Verify case appears in dashboard case list"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Bulk document upload via drag-and-drop - upload multiple documents at once",
+    "steps": [
+      "Step 1: Navigate to case upload page",
+      "Step 2: Verify dropzone area is visible",
+      "Step 3: Drag 6 PDF files onto dropzone",
+      "Step 4: Verify all 6 files appear in upload queue",
+      "Step 5: Verify individual progress bars for each file",
+      "Step 6: Wait for all uploads to complete",
+      "Step 7: Verify all files show 'Processing...' status",
+      "Step 8: Verify document cards appear for each uploaded file",
+      "Step 9: Verify original filenames are preserved",
+      "Step 10: Verify file sizes are displayed correctly",
+      "Step 11: Verify thumbnail previews load for each document"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Document type auto-detection - system correctly identifies CNH, RG, marriage certificate, deed",
+    "steps": [
+      "Step 1: Upload CNH document",
+      "Step 2: Wait for processing to complete",
+      "Step 3: Verify document type badge shows 'CNH'",
+      "Step 4: Upload RG document",
+      "Step 5: Wait for processing to complete",
+      "Step 6: Verify document type badge shows 'RG'",
+      "Step 7: Upload marriage certificate",
+      "Step 8: Wait for processing to complete",
+      "Step 9: Verify document type badge shows 'Marriage Certificate'",
+      "Step 10: Upload property deed/matricula",
+      "Step 11: Wait for processing to complete",
+      "Step 12: Verify document type badge shows 'Deed'"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Person entity auto-creation from documents - system extracts and creates person cards",
+    "steps": [
+      "Step 1: Upload 3 CNH documents from different people",
+      "Step 2: Wait for all processing to complete",
+      "Step 3: Navigate to entities view",
+      "Step 4: Verify 3 person cards are created",
+      "Step 5: Click on first person card",
+      "Step 6: Verify name field is populated",
+      "Step 7: Verify CPF field is populated",
+      "Step 8: Verify birth date field is populated",
+      "Step 9: Verify source document chips show the CNH",
+      "Step 10: Verify confidence indicator displays"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Property entity auto-creation from deed - system extracts property information",
+    "steps": [
+      "Step 1: Upload property deed document (matricula)",
+      "Step 2: Wait for processing to complete",
+      "Step 3: Navigate to entities view",
+      "Step 4: Verify property card is created",
+      "Step 5: Click on property card",
+      "Step 6: Verify registry number field is populated",
+      "Step 7: Verify registry office field is populated",
+      "Step 8: Verify address fields are populated",
+      "Step 9: Verify area field is populated",
+      "Step 10: Verify source document chips show the deed",
+      "Step 11: Verify suggested owner is displayed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Consensus engine marks divergent fields as pending - OCR vs LLM disagreement handling",
+    "steps": [
+      "Step 1: Upload document with unclear/ambiguous text",
+      "Step 2: Wait for processing to complete",
+      "Step 3: Navigate to entities view",
+      "Step 4: Find the created entity card",
+      "Step 5: Verify some fields show 'pending' status",
+      "Step 6: Verify pending fields have yellow highlight",
+      "Step 7: Click 'View Evidence' on pending field",
+      "Step 8: Verify evidence modal shows OCR result",
+      "Step 9: Verify evidence modal shows LLM result",
+      "Step 10: Verify both values are displayed for comparison",
+      "Step 11: Verify 'Confirm' and 'Override' buttons are present"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Infinite canvas loads with all entity nodes",
+    "steps": [
+      "Step 1: Create case with multiple people and one property",
+      "Step 2: Wait for processing to complete",
+      "Step 3: Navigate to canvas view",
+      "Step 4: Verify canvas loads without errors",
+      "Step 5: Verify all person nodes appear on canvas",
+      "Step 6: Verify property node appears on canvas",
+      "Step 7: Verify pan functionality works",
+      "Step 8: Verify zoom in functionality works",
+      "Step 9: Verify zoom out functionality works",
+      "Step 10: Verify minimap displays all nodes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Create connection between seller and property on canvas",
+    "steps": [
+      "Step 1: Navigate to canvas view with entities loaded",
+      "Step 2: Locate seller person node",
+      "Step 3: Drag from seller node handle",
+      "Step 4: Connect to property node",
+      "Step 5: Verify connection type dropdown appears",
+      "Step 6: Select 'sells' relationship type",
+      "Step 7: Verify edge is created with 'sells' label",
+      "Step 8: Verify connection persists after page reload",
+      "Step 9: Verify graph edges table updated in database"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Create spouse relationship between two persons",
+    "steps": [
+      "Step 1: Navigate to canvas view",
+      "Step 2: Locate first person node",
+      "Step 3: Locate second person node (spouse)",
+      "Step 4: Drag connection from first to second",
+      "Step 5: Select 'spouse_of' relationship type",
+      "Step 6: Verify edge displays with spouse label",
+      "Step 7: Verify connection is bidirectional visually",
+      "Step 8: Verify marriage status reflected on both nodes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Create procurator (proxy) relationship",
+    "steps": [
+      "Step 1: Upload power of attorney document",
+      "Step 2: Wait for processing - verify proxy entity created",
+      "Step 3: Navigate to canvas view",
+      "Step 4: Connect proxy person to represented person",
+      "Step 5: Select 'represents' relationship type",
+      "Step 6: Verify proxy edge displays correctly",
+      "Step 7: Verify proxy powers are indicated",
+      "Step 8: Verify represented person shows proxy indicator"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Draft generation from complete graph - creates purchase/sale document",
+    "steps": [
+      "Step 1: Complete all required canvas connections (seller, buyer, property, spouse consent)",
+      "Step 2: Verify 'Generate Draft' button is enabled",
+      "Step 3: Click 'Generate Draft' button",
+      "Step 4: Verify loading indicator appears",
+      "Step 5: Wait for draft generation to complete",
+      "Step 6: Verify redirect to draft editor view",
+      "Step 7: Verify draft content loads in editor",
+      "Step 8: Verify all sections present (header, parties, object, price, conditions)",
+      "Step 9: Verify seller information appears correctly in draft",
+      "Step 10: Verify buyer information appears correctly in draft",
+      "Step 11: Verify property information appears correctly in draft",
+      "Step 12: Verify draft version is 1"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Pending items display in draft with yellow highlight",
+    "steps": [
+      "Step 1: Generate draft with some unresolved pending items",
+      "Step 2: Navigate to draft editor",
+      "Step 3: Verify pending items are visible in draft",
+      "Step 4: Verify pending items have yellow background",
+      "Step 5: Verify pending items show warning icon",
+      "Step 6: Click on pending item",
+      "Step 7: Verify pending item details popup shows",
+      "Step 8: Verify reason for pending status is explained"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat editing - change payment terms via natural language",
+    "steps": [
+      "Step 1: Navigate to draft editor with chat panel",
+      "Step 2: Type in chat: 'Altere a forma de pagamento para: 30% na assinatura e 70% em 60 dias'",
+      "Step 3: Submit message",
+      "Step 4: Verify 'Thinking...' indicator appears",
+      "Step 5: Verify operation preview shows",
+      "Step 6: Verify preview indicates 'Will update deal.paymentSchedule'",
+      "Step 7: Click 'Apply' to confirm",
+      "Step 8: Verify payment section updates in draft",
+      "Step 9: Verify new payment terms appear correctly",
+      "Step 10: Verify change logged in audit trail",
+      "Step 11: Verify chat response confirms the change"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat editing - regenerate specific section",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Type in chat: 'Regenere a seção de Partes'",
+      "Step 3: Submit message",
+      "Step 4: Verify operation preview shows regenerate_section",
+      "Step 5: Confirm the operation",
+      "Step 6: Verify Parties section is regenerated",
+      "Step 7: Verify other sections remain unchanged",
+      "Step 8: Verify change logged in audit trail"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Audit trail captures all changes with evidence",
+    "steps": [
+      "Step 1: Make several changes to a case (edit entity, create connections, edit draft)",
+      "Step 2: Navigate to history view",
+      "Step 3: Verify timeline displays all changes",
+      "Step 4: Verify each entry shows timestamp",
+      "Step 5: Verify each entry shows user who made change",
+      "Step 6: Verify each entry shows what changed",
+      "Step 7: Verify old value is displayed",
+      "Step 8: Verify new value is displayed",
+      "Step 9: Verify source/reason is logged (extraction, user edit, chat)",
+      "Step 10: Click on entry to view details",
+      "Step 11: Verify diff view shows changes clearly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Evidence modal shows document with highlighted bounding box",
+    "steps": [
+      "Step 1: Navigate to entities view",
+      "Step 2: Click 'View Evidence' on a person's CPF field",
+      "Step 3: Verify evidence modal opens",
+      "Step 4: Verify document preview loads",
+      "Step 5: Verify bounding box highlights the CPF in document",
+      "Step 6: Verify extracted text is displayed",
+      "Step 7: Verify OCR confidence score is shown",
+      "Step 8: Verify LLM extraction result is shown",
+      "Step 9: Verify 'Confirm' and 'Override' buttons present",
+      "Step 10: Close modal and verify it closes properly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User authentication flow - login and logout",
+    "steps": [
+      "Step 1: Navigate to application root",
+      "Step 2: Verify redirect to login page",
+      "Step 3: Enter valid email",
+      "Step 4: Enter valid password",
+      "Step 5: Click login button",
+      "Step 6: Verify redirect to dashboard",
+      "Step 7: Verify user name appears in header",
+      "Step 8: Click user menu",
+      "Step 9: Click logout",
+      "Step 10: Verify redirect to login page",
+      "Step 11: Verify protected routes are inaccessible"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Real-time document processing status updates",
+    "steps": [
+      "Step 1: Upload a document",
+      "Step 2: Verify initial status shows 'Uploading...'",
+      "Step 3: Verify status changes to 'Processing...' automatically",
+      "Step 4: Verify spinner animation during processing",
+      "Step 5: Verify status changes to 'Processed' when complete",
+      "Step 6: Verify checkmark icon appears",
+      "Step 7: Verify no page refresh was needed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Entity merge - combine duplicate persons",
+    "steps": [
+      "Step 1: Create scenario with duplicate person entries",
+      "Step 2: Navigate to entities view",
+      "Step 3: Select first duplicate person card",
+      "Step 4: Click 'Merge' button",
+      "Step 5: Select second duplicate person to merge",
+      "Step 6: Verify merge modal shows field comparison",
+      "Step 7: Choose which fields to keep from each",
+      "Step 8: Confirm merge",
+      "Step 9: Verify single merged person card remains",
+      "Step 10: Verify merged entity has all source documents",
+      "Step 11: Verify canvas connections updated to merged entity"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Entity split - separate incorrectly merged persons",
+    "steps": [
+      "Step 1: Navigate to entity that should be split",
+      "Step 2: Click 'Split' button",
+      "Step 3: Verify split modal opens",
+      "Step 4: Select which source documents go to entity A",
+      "Step 5: Select which source documents go to entity B",
+      "Step 6: Confirm split",
+      "Step 7: Verify two separate person cards now exist",
+      "Step 8: Verify each has correct source documents",
+      "Step 9: Verify canvas shows two separate nodes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Export draft as HTML",
+    "steps": [
+      "Step 1: Navigate to draft editor with complete draft",
+      "Step 2: Click 'Export' button",
+      "Step 3: Select 'HTML' format",
+      "Step 4: Click download",
+      "Step 5: Verify HTML file downloads",
+      "Step 6: Open downloaded HTML",
+      "Step 7: Verify all sections present",
+      "Step 8: Verify formatting preserved"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Export draft as PDF",
+    "steps": [
+      "Step 1: Navigate to draft editor with complete draft",
+      "Step 2: Click 'Export' button",
+      "Step 3: Select 'PDF' format",
+      "Step 4: Click download",
+      "Step 5: Verify PDF file downloads",
+      "Step 6: Open downloaded PDF",
+      "Step 7: Verify all sections present",
+      "Step 8: Verify formatting is correct"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Case list displays all user cases with status",
+    "steps": [
+      "Step 1: Navigate to dashboard",
+      "Step 2: Verify case list loads",
+      "Step 3: Verify each case shows title",
+      "Step 4: Verify each case shows status badge",
+      "Step 5: Verify each case shows act type",
+      "Step 6: Verify each case shows created date",
+      "Step 7: Click on a case",
+      "Step 8: Verify navigation to case overview"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Document preview functionality",
+    "steps": [
+      "Step 1: Navigate to upload view with processed documents",
+      "Step 2: Click on document card",
+      "Step 3: Verify preview modal opens",
+      "Step 4: Verify document renders correctly (PDF or image)",
+      "Step 5: Verify page navigation works for multi-page docs",
+      "Step 6: Verify zoom controls work",
+      "Step 7: Close preview modal"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Canvas auto-suggestions based on document analysis",
+    "steps": [
+      "Step 1: Upload deed with owner information",
+      "Step 2: Upload CNH of property owner",
+      "Step 3: Navigate to canvas",
+      "Step 4: Verify suggestions panel appears",
+      "Step 5: Verify suggestion 'Person A might be owner of Property X'",
+      "Step 6: Click 'Accept' on suggestion",
+      "Step 7: Verify connection is created automatically",
+      "Step 8: Verify suggestion disappears from panel"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Canvas validation warns about missing spouse consent",
+    "steps": [
+      "Step 1: Create seller person marked as married",
+      "Step 2: Create connection seller -> sells -> property",
+      "Step 3: Do NOT add spouse consent connection",
+      "Step 4: Verify validation warning appears",
+      "Step 5: Verify warning message indicates spouse consent required",
+      "Step 6: Verify 'Generate Draft' button shows warning state",
+      "Step 7: Click warning to see details"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "CPF validation on person entity",
+    "steps": [
+      "Step 1: Navigate to person entity card",
+      "Step 2: Click edit on CPF field",
+      "Step 3: Enter invalid CPF '111.111.111-11'",
+      "Step 4: Verify validation error appears",
+      "Step 5: Enter valid CPF format",
+      "Step 6: Verify validation passes",
+      "Step 7: Save changes",
+      "Step 8: Verify change logged in audit trail"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Person card displays all required fields",
+    "steps": [
+      "Step 1: Navigate to entities view",
+      "Step 2: Expand person card",
+      "Step 3: Verify full name field present",
+      "Step 4: Verify CPF field present",
+      "Step 5: Verify RG field present",
+      "Step 6: Verify birth date field present",
+      "Step 7: Verify nationality field present",
+      "Step 8: Verify marital status field present",
+      "Step 9: Verify profession field present",
+      "Step 10: Verify address fields present",
+      "Step 11: Verify father name field present",
+      "Step 12: Verify mother name field present"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Property card displays all required fields",
+    "steps": [
+      "Step 1: Navigate to entities view",
+      "Step 2: Expand property card",
+      "Step 3: Verify registry number field present",
+      "Step 4: Verify registry office field present",
+      "Step 5: Verify address fields present",
+      "Step 6: Verify area field present",
+      "Step 7: Verify description field present",
+      "Step 8: Verify IPTU number field present",
+      "Step 9: Verify encumbrances section present",
+      "Step 10: Verify suggested owner displayed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Draft editor section navigation",
+    "steps": [
+      "Step 1: Navigate to draft editor with complete draft",
+      "Step 2: Verify table of contents sidebar shows",
+      "Step 3: Verify all sections listed in TOC",
+      "Step 4: Click on 'Parties' section in TOC",
+      "Step 5: Verify editor scrolls to Parties section",
+      "Step 6: Click on 'Price' section in TOC",
+      "Step 7: Verify editor scrolls to Price section"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Draft versioning - multiple versions tracked",
+    "steps": [
+      "Step 1: Generate initial draft (version 1)",
+      "Step 2: Make changes via chat editing",
+      "Step 3: Click 'Save New Version'",
+      "Step 4: Verify version 2 is created",
+      "Step 5: Navigate to history view",
+      "Step 6: Verify both versions listed",
+      "Step 7: Click on version 1",
+      "Step 8: Verify can view version 1 content",
+      "Step 9: Compare v1 and v2 side by side"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat message history persists across sessions",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Send chat message 'Hello'",
+      "Step 3: Verify response received",
+      "Step 4: Navigate away from page",
+      "Step 5: Navigate back to draft editor",
+      "Step 6: Verify previous messages still visible",
+      "Step 7: Verify message history loads in order"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Case status transitions correctly",
+    "steps": [
+      "Step 1: Create new case - verify status 'draft'",
+      "Step 2: Upload documents - verify status changes to 'processing'",
+      "Step 3: Wait for processing complete - verify status 'review'",
+      "Step 4: Generate draft - verify status remains 'review'",
+      "Step 5: Approve draft - verify status changes to 'approved'",
+      "Step 6: Archive case - verify status changes to 'archived'"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Document deletion removes associated data",
+    "steps": [
+      "Step 1: Upload document",
+      "Step 2: Wait for processing and entity creation",
+      "Step 3: Delete the document",
+      "Step 4: Confirm deletion",
+      "Step 5: Verify document removed from list",
+      "Step 6: Verify associated entity marked or removed",
+      "Step 7: Verify evidence links updated"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Case deletion with confirmation",
+    "steps": [
+      "Step 1: Navigate to case overview",
+      "Step 2: Click 'Delete Case' button",
+      "Step 3: Verify confirmation modal appears",
+      "Step 4: Verify modal warns about data loss",
+      "Step 5: Type case name to confirm",
+      "Step 6: Click 'Delete' button",
+      "Step 7: Verify redirect to dashboard",
+      "Step 8: Verify case no longer in list"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Edge function handles upload request correctly",
+    "steps": [
+      "Step 1: Call upload-document endpoint",
+      "Step 2: Verify signed URL returned",
+      "Step 3: Upload file to signed URL",
+      "Step 4: Call confirm-upload endpoint",
+      "Step 5: Verify document record created",
+      "Step 6: Verify processing job enqueued"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Graph persistence - connections save and load",
+    "steps": [
+      "Step 1: Create multiple connections on canvas",
+      "Step 2: Click 'Save' or auto-save triggers",
+      "Step 3: Refresh the page",
+      "Step 4: Verify all nodes in same positions",
+      "Step 5: Verify all connections preserved",
+      "Step 6: Verify connection labels correct"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Canvas context menu on right-click",
+    "steps": [
+      "Step 1: Navigate to canvas view",
+      "Step 2: Right-click on person node",
+      "Step 3: Verify context menu appears",
+      "Step 4: Verify 'Edit' option present",
+      "Step 5: Verify 'Delete' option present",
+      "Step 6: Verify 'View Evidence' option present",
+      "Step 7: Click outside to close menu"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat adds new clause to draft",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Type 'Adicione uma cláusula sobre penalidades por atraso'",
+      "Step 3: Submit message",
+      "Step 4: Verify operation preview shows add_clause",
+      "Step 5: Confirm operation",
+      "Step 6: Verify new clause appears in draft",
+      "Step 7: Verify clause content is appropriate",
+      "Step 8: Verify change logged in audit"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat removes clause from draft",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Type 'Remova a cláusula sobre multas'",
+      "Step 3: Submit message",
+      "Step 4: Verify operation preview shows remove_clause",
+      "Step 5: Confirm operation",
+      "Step 6: Verify clause is removed from draft",
+      "Step 7: Verify change logged in audit with old value"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Mark pending item via chat",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Type 'Marque o valor do imóvel como pendente de confirmação'",
+      "Step 3: Submit message",
+      "Step 4: Verify mark_pending operation triggered",
+      "Step 5: Confirm operation",
+      "Step 6: Verify field now shows yellow pending highlight",
+      "Step 7: Verify pending items list updated"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Resolve pending item via chat",
+    "steps": [
+      "Step 1: Have draft with pending item",
+      "Step 2: Type 'O valor do imóvel é R$ 500.000,00, pode confirmar'",
+      "Step 3: Submit message",
+      "Step 4: Verify resolve_pending operation triggered",
+      "Step 5: Confirm operation",
+      "Step 6: Verify field no longer shows pending highlight",
+      "Step 7: Verify value updated in draft"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Undo last chat operation",
+    "steps": [
+      "Step 1: Make a change via chat",
+      "Step 2: Click 'Undo' button in chat panel",
+      "Step 3: Verify previous value restored",
+      "Step 4: Verify undo logged in audit trail"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Filter audit log by section",
+    "steps": [
+      "Step 1: Navigate to history view with many changes",
+      "Step 2: Select filter by section 'Parties'",
+      "Step 3: Verify only party-related changes shown",
+      "Step 4: Clear filter",
+      "Step 5: Verify all changes shown again"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Filter audit log by user",
+    "steps": [
+      "Step 1: Navigate to history view",
+      "Step 2: Select filter by specific user",
+      "Step 3: Verify only that user's changes shown",
+      "Step 4: Clear filter"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Filter audit log by date range",
+    "steps": [
+      "Step 1: Navigate to history view",
+      "Step 2: Set start date filter",
+      "Step 3: Set end date filter",
+      "Step 4: Verify only changes in range shown",
+      "Step 5: Clear filters"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Export audit report",
+    "steps": [
+      "Step 1: Navigate to history view",
+      "Step 2: Click 'Export Audit Report' button",
+      "Step 3: Select format (PDF or CSV)",
+      "Step 4: Click download",
+      "Step 5: Verify report downloads",
+      "Step 6: Verify report contains complete audit trail"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Signed URL expiration handling",
+    "steps": [
+      "Step 1: Request document preview",
+      "Step 2: Note the signed URL",
+      "Step 3: Wait for URL expiration time",
+      "Step 4: Try to access URL",
+      "Step 5: Verify URL returns unauthorized",
+      "Step 6: Request new preview",
+      "Step 7: Verify new URL works"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "RLS prevents unauthorized case access",
+    "steps": [
+      "Step 1: Login as user A",
+      "Step 2: Create case",
+      "Step 3: Logout",
+      "Step 4: Login as user B (different organization)",
+      "Step 5: Try to access user A's case directly via URL",
+      "Step 6: Verify access denied or 404",
+      "Step 7: Verify case not in user B's list"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Processing job retry on failure",
+    "steps": [
+      "Step 1: Upload document that will cause processing error",
+      "Step 2: Verify job status shows 'processing'",
+      "Step 3: Observe first attempt fails",
+      "Step 4: Verify job retries automatically",
+      "Step 5: Verify retry count increments",
+      "Step 6: After max retries, verify status 'failed'",
+      "Step 7: Verify error message is captured"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Canvas fit view functionality",
+    "steps": [
+      "Step 1: Navigate to canvas with scattered nodes",
+      "Step 2: Pan to corner where no nodes visible",
+      "Step 3: Click 'Fit View' button",
+      "Step 4: Verify all nodes now visible",
+      "Step 5: Verify zoom level adjusted appropriately"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Canvas minimap navigation",
+    "steps": [
+      "Step 1: Navigate to canvas",
+      "Step 2: Verify minimap visible in corner",
+      "Step 3: Click on different area in minimap",
+      "Step 4: Verify main canvas pans to that area",
+      "Step 5: Drag viewport rectangle in minimap",
+      "Step 6: Verify canvas follows"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Node selection and multi-select",
+    "steps": [
+      "Step 1: Navigate to canvas",
+      "Step 2: Click on single node",
+      "Step 3: Verify node shows selected state",
+      "Step 4: Shift-click another node",
+      "Step 5: Verify both nodes selected",
+      "Step 6: Click empty area",
+      "Step 7: Verify all nodes deselected"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Delete connection from canvas",
+    "steps": [
+      "Step 1: Create connection between nodes",
+      "Step 2: Click on the connection edge",
+      "Step 3: Verify edge shows selected state",
+      "Step 4: Press Delete key or click delete button",
+      "Step 5: Verify connection removed",
+      "Step 6: Verify database updated"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Edit entity directly from canvas",
+    "steps": [
+      "Step 1: Double-click on person node in canvas",
+      "Step 2: Verify edit panel opens",
+      "Step 3: Modify a field value",
+      "Step 4: Save changes",
+      "Step 5: Verify node updates on canvas",
+      "Step 6: Verify entity updated in database"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Tiptap editor toolbar formatting",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Select text",
+      "Step 3: Click bold button",
+      "Step 4: Verify text becomes bold",
+      "Step 5: Click italic button",
+      "Step 6: Verify text becomes italic",
+      "Step 7: Test heading formatting",
+      "Step 8: Test list formatting"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Track changes toggle in editor",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Click 'Track Changes' toggle",
+      "Step 3: Make an edit to draft text",
+      "Step 4: Verify change shows with markup (strikethrough/highlight)",
+      "Step 5: Toggle track changes off",
+      "Step 6: Verify clean view displays"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Organization settings management",
+    "steps": [
+      "Step 1: Login as admin user",
+      "Step 2: Navigate to organization settings",
+      "Step 3: Modify organization name",
+      "Step 4: Save settings",
+      "Step 5: Verify changes persist",
+      "Step 6: Verify name updated in header"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User role permissions - clerk cannot approve",
+    "steps": [
+      "Step 1: Login as clerk role user",
+      "Step 2: Navigate to draft editor",
+      "Step 3: Verify 'Approve' button not visible or disabled",
+      "Step 4: Try to access approve endpoint directly",
+      "Step 5: Verify permission denied"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User role permissions - supervisor can approve",
+    "steps": [
+      "Step 1: Login as supervisor role user",
+      "Step 2: Navigate to draft editor",
+      "Step 3: Verify 'Approve' button is enabled",
+      "Step 4: Click approve button",
+      "Step 5: Verify draft status changes to approved"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Realtime presence on canvas shows other users",
+    "steps": [
+      "Step 1: Open canvas in browser A as user A",
+      "Step 2: Open same case canvas in browser B as user B",
+      "Step 3: Verify user B avatar appears in browser A",
+      "Step 4: Verify user A avatar appears in browser B",
+      "Step 5: User B disconnects",
+      "Step 6: Verify user B avatar disappears in browser A"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Confidence filter in entities view",
+    "steps": [
+      "Step 1: Navigate to entities view with mixed confidence entities",
+      "Step 2: Click confidence filter dropdown",
+      "Step 3: Select 'Low confidence only'",
+      "Step 4: Verify only low confidence entities shown",
+      "Step 5: Select 'High confidence only'",
+      "Step 6: Verify only high confidence entities shown",
+      "Step 7: Clear filter"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Document type filter in upload view",
+    "steps": [
+      "Step 1: Upload various document types",
+      "Step 2: Select filter 'CNH'",
+      "Step 3: Verify only CNH documents shown",
+      "Step 4: Select filter 'All'",
+      "Step 5: Verify all documents shown"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "OCR quality indicator shown",
+    "steps": [
+      "Step 1: Upload clear document",
+      "Step 2: Verify OCR confidence shows 'High'",
+      "Step 3: Upload blurry document",
+      "Step 4: Verify OCR confidence shows 'Low'",
+      "Step 5: Verify warning about resubmitting better scan"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Handle corrupt/invalid file upload",
+    "steps": [
+      "Step 1: Try to upload corrupt PDF file",
+      "Step 2: Verify error message appears",
+      "Step 3: Verify file not added to documents list",
+      "Step 4: Try to upload non-PDF/non-image file",
+      "Step 5: Verify file type rejection message"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Large file upload handling",
+    "steps": [
+      "Step 1: Upload large PDF (10+ MB)",
+      "Step 2: Verify upload progress shows",
+      "Step 3: Verify upload completes successfully",
+      "Step 4: Verify processing begins",
+      "Step 5: Verify document accessible after processing"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Multi-page PDF processing",
+    "steps": [
+      "Step 1: Upload multi-page PDF document",
+      "Step 2: Wait for processing",
+      "Step 3: Verify page count shows correctly",
+      "Step 4: Click to preview document",
+      "Step 5: Verify page navigation works",
+      "Step 6: Verify all pages processed for extraction"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Image document (photo) upload and processing",
+    "steps": [
+      "Step 1: Upload JPG photo of document",
+      "Step 2: Verify image accepted",
+      "Step 3: Wait for processing",
+      "Step 4: Verify OCR extracted text from image",
+      "Step 5: Verify entity created from image document"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Address geocoding/validation in property",
+    "steps": [
+      "Step 1: View property with extracted address",
+      "Step 2: Verify address fields populated",
+      "Step 3: Verify city, state, zip extracted",
+      "Step 4: Edit address if needed",
+      "Step 5: Verify address format validated"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Encumbrances display on property card",
+    "steps": [
+      "Step 1: Upload deed with encumbrances",
+      "Step 2: Navigate to property card",
+      "Step 3: Verify encumbrances section shows",
+      "Step 4: Verify encumbrance details extracted",
+      "Step 5: Verify encumbrance flagged in canvas validation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Proxy validity check",
+    "steps": [
+      "Step 1: Upload power of attorney document",
+      "Step 2: Verify proxy entity created",
+      "Step 3: Verify expiration date extracted",
+      "Step 4: Create proxy relationship on canvas",
+      "Step 5: If proxy expired, verify warning shown",
+      "Step 6: Verify warning appears in validation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Graph validation for complete purchase/sale",
+    "steps": [
+      "Step 1: Create incomplete graph (missing buyer)",
+      "Step 2: Click 'Validate Graph'",
+      "Step 3: Verify validation errors listed",
+      "Step 4: Add buyer connection",
+      "Step 5: Click 'Validate Graph' again",
+      "Step 6: Verify validation passes or shows remaining issues"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Case assignment to user",
+    "steps": [
+      "Step 1: Navigate to case overview",
+      "Step 2: Click 'Assign' button",
+      "Step 3: Select user from dropdown",
+      "Step 4: Save assignment",
+      "Step 5: Verify assigned user shown on case",
+      "Step 6: Verify assigned user can see case"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Case search functionality",
+    "steps": [
+      "Step 1: Navigate to dashboard",
+      "Step 2: Type search term in search box",
+      "Step 3: Verify case list filters to match",
+      "Step 4: Clear search",
+      "Step 5: Verify all cases shown again"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Pagination on case list",
+    "steps": [
+      "Step 1: Create many cases (20+)",
+      "Step 2: Navigate to dashboard",
+      "Step 3: Verify pagination controls appear",
+      "Step 4: Click next page",
+      "Step 5: Verify different cases shown",
+      "Step 6: Click previous page",
+      "Step 7: Verify returns to first page"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Sort case list by different fields",
+    "steps": [
+      "Step 1: Navigate to dashboard",
+      "Step 2: Click 'Sort by Date' header",
+      "Step 3: Verify cases sorted by date descending",
+      "Step 4: Click again",
+      "Step 5: Verify cases sorted by date ascending",
+      "Step 6: Click 'Sort by Status' header",
+      "Step 7: Verify cases sorted by status"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Evidence chain visualization",
+    "steps": [
+      "Step 1: Navigate to entity view",
+      "Step 2: Click 'View Evidence Chain' on field",
+      "Step 3: Verify chain visualization shows",
+      "Step 4: Verify document source shown",
+      "Step 5: Verify extraction method shown (OCR/LLM)",
+      "Step 6: Verify consensus result shown",
+      "Step 7: Verify any edits in chain shown"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Batch operations on documents",
+    "steps": [
+      "Step 1: Navigate to upload view",
+      "Step 2: Select multiple documents via checkbox",
+      "Step 3: Click 'Batch Actions'",
+      "Step 4: Select 'Delete Selected'",
+      "Step 5: Confirm batch deletion",
+      "Step 6: Verify all selected documents removed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Keyboard shortcuts in canvas",
+    "steps": [
+      "Step 1: Navigate to canvas",
+      "Step 2: Press 'Delete' with node selected",
+      "Step 3: Verify delete confirmation appears",
+      "Step 4: Press 'Escape' to cancel",
+      "Step 5: Press 'Ctrl+A' to select all",
+      "Step 6: Verify all nodes selected"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Error recovery on failed draft generation",
+    "steps": [
+      "Step 1: Trigger draft generation with invalid state",
+      "Step 2: Verify error message displays",
+      "Step 3: Verify system remains usable",
+      "Step 4: Fix the issue",
+      "Step 5: Retry draft generation",
+      "Step 6: Verify success on retry"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Network offline handling",
+    "steps": [
+      "Step 1: Load application fully",
+      "Step 2: Disconnect network",
+      "Step 3: Try to perform action",
+      "Step 4: Verify offline indicator shows",
+      "Step 5: Reconnect network",
+      "Step 6: Verify reconnection detected",
+      "Step 7: Verify pending actions sync"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Session timeout handling",
+    "steps": [
+      "Step 1: Login and perform actions",
+      "Step 2: Wait for session to near timeout",
+      "Step 3: Verify session refresh or warning",
+      "Step 4: Let session expire",
+      "Step 5: Try to perform action",
+      "Step 6: Verify redirect to login"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Dashboard page layout matches design system",
+    "steps": [
+      "Step 1: Navigate to dashboard",
+      "Step 2: Take screenshot",
+      "Step 3: Verify header with logo present",
+      "Step 4: Verify case list grid layout",
+      "Step 5: Verify primary color (#3B82F6) used for actions",
+      "Step 6: Verify cards have rounded-lg corners",
+      "Step 7: Verify typography uses Inter font"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Upload dropzone visual design",
+    "steps": [
+      "Step 1: Navigate to upload page",
+      "Step 2: Verify dropzone has dashed border",
+      "Step 3: Verify dropzone shows upload icon",
+      "Step 4: Verify helpful text displayed",
+      "Step 5: Hover over dropzone",
+      "Step 6: Verify hover state changes border color"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Drag-over state on dropzone",
+    "steps": [
+      "Step 1: Navigate to upload page",
+      "Step 2: Drag files over dropzone",
+      "Step 3: Verify dropzone background changes",
+      "Step 4: Verify border becomes solid",
+      "Step 5: Verify visual feedback is clear"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Document card visual styling",
+    "steps": [
+      "Step 1: Navigate to upload view with documents",
+      "Step 2: Verify cards have white background",
+      "Step 3: Verify cards have subtle shadow",
+      "Step 4: Verify rounded-lg corners",
+      "Step 5: Verify padding is p-4",
+      "Step 6: Hover over card",
+      "Step 7: Verify shadow increases on hover"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Status badge colors match design system",
+    "steps": [
+      "Step 1: View document with 'processing' status",
+      "Step 2: Verify badge has blue color",
+      "Step 3: View document with 'processed' status",
+      "Step 4: Verify badge has green color (#10B981)",
+      "Step 5: View document with 'failed' status",
+      "Step 6: Verify badge has red color (#EF4444)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Pending item highlight is amber/yellow",
+    "steps": [
+      "Step 1: Navigate to entity with pending fields",
+      "Step 2: Verify pending fields have yellow background",
+      "Step 3: Verify color matches #F59E0B",
+      "Step 4: Verify warning icon visible"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Person card styling on canvas",
+    "steps": [
+      "Step 1: Navigate to canvas with person nodes",
+      "Step 2: Verify person nodes are rounded rectangles",
+      "Step 3: Verify blue accent color on border",
+      "Step 4: Verify connection handles visible",
+      "Step 5: Select node",
+      "Step 6: Verify thick border on selection"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Property card styling on canvas",
+    "steps": [
+      "Step 1: Navigate to canvas with property nodes",
+      "Step 2: Verify property nodes are rounded rectangles",
+      "Step 3: Verify green accent color on border",
+      "Step 4: Verify different styling from person nodes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Edge/connection styling on canvas",
+    "steps": [
+      "Step 1: Create connection on canvas",
+      "Step 2: Verify edge line is smooth bezier curve",
+      "Step 3: Verify label appears on edge",
+      "Step 4: Verify edge has appropriate color",
+      "Step 5: Select edge",
+      "Step 6: Verify selected state styling"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Button styling - primary buttons",
+    "steps": [
+      "Step 1: Find primary action button",
+      "Step 2: Verify blue background (#3B82F6)",
+      "Step 3: Verify white text",
+      "Step 4: Verify rounded-md corners",
+      "Step 5: Hover over button",
+      "Step 6: Verify hover state changes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Button styling - secondary buttons",
+    "steps": [
+      "Step 1: Find secondary action button",
+      "Step 2: Verify border style (not filled)",
+      "Step 3: Verify text color matches border",
+      "Step 4: Hover over button",
+      "Step 5: Verify hover fills background"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Button styling - danger buttons",
+    "steps": [
+      "Step 1: Find delete/danger button",
+      "Step 2: Verify red color (#EF4444)",
+      "Step 3: Verify appropriate warning appearance"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Loading button state shows spinner",
+    "steps": [
+      "Step 1: Trigger action that shows loading",
+      "Step 2: Verify button shows spinner icon",
+      "Step 3: Verify button text changes or spinner appears",
+      "Step 4: Verify button is disabled during loading"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Input field styling",
+    "steps": [
+      "Step 1: Find text input field",
+      "Step 2: Verify rounded-md borders",
+      "Step 3: Focus on input",
+      "Step 4: Verify focus ring appears in primary color",
+      "Step 5: Enter invalid data",
+      "Step 6: Verify error state shows red border"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Confidence badge styling",
+    "steps": [
+      "Step 1: View entity with high confidence",
+      "Step 2: Verify confidence badge is green",
+      "Step 3: View entity with medium confidence",
+      "Step 4: Verify confidence badge is yellow",
+      "Step 5: View entity with low confidence",
+      "Step 6: Verify confidence badge is red"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Document type badge styling",
+    "steps": [
+      "Step 1: View document cards",
+      "Step 2: Verify type badges have outlined style",
+      "Step 3: Verify text is readable",
+      "Step 4: Verify badges are appropriately sized"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Modal styling",
+    "steps": [
+      "Step 1: Open any modal dialog",
+      "Step 2: Verify backdrop overlay appears",
+      "Step 3: Verify modal centered on screen",
+      "Step 4: Verify rounded corners on modal",
+      "Step 5: Verify close button present",
+      "Step 6: Verify modal has appropriate padding"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Modal animation on open/close",
+    "steps": [
+      "Step 1: Open modal",
+      "Step 2: Verify fade in animation",
+      "Step 3: Verify scale animation from center",
+      "Step 4: Close modal",
+      "Step 5: Verify fade out animation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Header layout and styling",
+    "steps": [
+      "Step 1: View application header",
+      "Step 2: Verify logo positioned left",
+      "Step 3: Verify case title in center or left of center",
+      "Step 4: Verify status badge visible",
+      "Step 5: Verify user menu on right",
+      "Step 6: Verify consistent height"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Sidebar navigation styling",
+    "steps": [
+      "Step 1: View sidebar in case view",
+      "Step 2: Verify navigation items listed vertically",
+      "Step 3: Click on item",
+      "Step 4: Verify active state styling",
+      "Step 5: Verify hover states on inactive items"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Draft editor styling matches design",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Verify two-panel layout",
+      "Step 3: Verify editor panel has appropriate width",
+      "Step 4: Verify chat panel on right",
+      "Step 5: Verify toolbar styling",
+      "Step 6: Verify section headings styled correctly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Chat panel styling",
+    "steps": [
+      "Step 1: View chat panel",
+      "Step 2: Verify message bubbles styled",
+      "Step 3: Verify user messages on right",
+      "Step 4: Verify assistant messages on left",
+      "Step 5: Verify input field at bottom",
+      "Step 6: Verify send button styled"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Timeline/history view styling",
+    "steps": [
+      "Step 1: Navigate to history view",
+      "Step 2: Verify timeline visualization",
+      "Step 3: Verify entries connected visually",
+      "Step 4: Verify timestamp styling",
+      "Step 5: Verify user avatars shown"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Card expand/collapse animation",
+    "steps": [
+      "Step 1: View collapsed entity card",
+      "Step 2: Click to expand",
+      "Step 3: Verify smooth expand animation",
+      "Step 4: Click to collapse",
+      "Step 5: Verify smooth collapse animation",
+      "Step 6: Verify animation duration ~200ms"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Page transition animations",
+    "steps": [
+      "Step 1: Navigate from dashboard to case",
+      "Step 2: Verify fade in transition",
+      "Step 3: Navigate to different tab",
+      "Step 4: Verify smooth transition"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Processing pulse animation",
+    "steps": [
+      "Step 1: Upload document to trigger processing",
+      "Step 2: Verify status indicator pulses",
+      "Step 3: Verify animation is subtle not distracting",
+      "Step 4: Processing completes",
+      "Step 5: Verify pulse stops"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Canvas pan/zoom smoothness",
+    "steps": [
+      "Step 1: Navigate to canvas",
+      "Step 2: Pan canvas by dragging",
+      "Step 3: Verify smooth 60fps movement",
+      "Step 4: Zoom with scroll wheel",
+      "Step 5: Verify smooth zoom animation",
+      "Step 6: Verify no jank or stuttering"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Card hover scale animation",
+    "steps": [
+      "Step 1: View entity or document card",
+      "Step 2: Hover over card",
+      "Step 3: Verify slight scale increase (1.02)",
+      "Step 4: Verify smooth transition",
+      "Step 5: Move mouse away",
+      "Step 6: Verify returns to normal scale"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Source document chips styling",
+    "steps": [
+      "Step 1: View entity card with source documents",
+      "Step 2: Verify chips appear below fields",
+      "Step 3: Verify chip styling (rounded, subtle bg)",
+      "Step 4: Verify document icon present",
+      "Step 5: Verify truncation for long names"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Evidence modal document viewer styling",
+    "steps": [
+      "Step 1: Open evidence modal",
+      "Step 2: Verify document preview area",
+      "Step 3: Verify bounding box highlight visible",
+      "Step 4: Verify comparison panel styled",
+      "Step 5: Verify action buttons positioned correctly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Error message styling",
+    "steps": [
+      "Step 1: Trigger an error",
+      "Step 2: Verify error message appears",
+      "Step 3: Verify red color scheme",
+      "Step 4: Verify error icon present",
+      "Step 5: Verify dismiss button if applicable"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Success notification styling",
+    "steps": [
+      "Step 1: Complete successful action",
+      "Step 2: Verify success notification appears",
+      "Step 3: Verify green color scheme",
+      "Step 4: Verify checkmark icon",
+      "Step 5: Verify auto-dismiss or manual close"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Warning notification styling",
+    "steps": [
+      "Step 1: Trigger warning scenario",
+      "Step 2: Verify warning notification appears",
+      "Step 3: Verify amber/yellow color scheme",
+      "Step 4: Verify warning icon"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Empty state illustrations",
+    "steps": [
+      "Step 1: Navigate to empty case list",
+      "Step 2: Verify empty state illustration/icon",
+      "Step 3: Verify helpful message displayed",
+      "Step 4: Verify CTA button to create first item"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Dark mode support",
+    "steps": [
+      "Step 1: Toggle dark mode",
+      "Step 2: Verify background changes to #111827",
+      "Step 3: Verify text changes to #F9FAFB",
+      "Step 4: Verify all components adapt",
+      "Step 5: Verify readability maintained"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Typography hierarchy",
+    "steps": [
+      "Step 1: View page with multiple heading levels",
+      "Step 2: Verify H1 is largest",
+      "Step 3: Verify H2 is second largest",
+      "Step 4: Verify body text at base size (16px)",
+      "Step 5: Verify small text at 14px",
+      "Step 6: Verify font-semibold on headings"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Table styling consistency",
+    "steps": [
+      "Step 1: View any data table",
+      "Step 2: Verify header row styling",
+      "Step 3: Verify alternating row colors or borders",
+      "Step 4: Verify hover state on rows",
+      "Step 5: Verify consistent cell padding"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Dropdown menu styling",
+    "steps": [
+      "Step 1: Open a dropdown menu",
+      "Step 2: Verify shadow/elevation",
+      "Step 3: Verify rounded corners",
+      "Step 4: Verify item hover states",
+      "Step 5: Verify appropriate padding"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Tooltip styling",
+    "steps": [
+      "Step 1: Hover over element with tooltip",
+      "Step 2: Verify tooltip appears",
+      "Step 3: Verify dark background with white text",
+      "Step 4: Verify small arrow pointing to element",
+      "Step 5: Verify appropriate delay before showing"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Progress bar styling",
+    "steps": [
+      "Step 1: View upload progress bar",
+      "Step 2: Verify rounded ends",
+      "Step 3: Verify primary color for progress",
+      "Step 4: Verify background track color",
+      "Step 5: Verify smooth fill animation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Skeleton loading states",
+    "steps": [
+      "Step 1: Navigate to page with loading data",
+      "Step 2: Verify skeleton placeholders appear",
+      "Step 3: Verify skeleton matches content layout",
+      "Step 4: Verify shimmer animation",
+      "Step 5: Verify transition to actual content"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Form validation error styling",
+    "steps": [
+      "Step 1: Submit form with errors",
+      "Step 2: Verify error messages appear below fields",
+      "Step 3: Verify red border on invalid fields",
+      "Step 4: Verify error text is red",
+      "Step 5: Verify error icon if applicable"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Disabled state styling",
+    "steps": [
+      "Step 1: View disabled button",
+      "Step 2: Verify reduced opacity",
+      "Step 3: Verify cursor shows not-allowed",
+      "Step 4: View disabled input",
+      "Step 5: Verify grayed out appearance"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Responsive sidebar collapse on mobile",
+    "steps": [
+      "Step 1: View application on mobile viewport",
+      "Step 2: Verify sidebar collapses to hamburger menu",
+      "Step 3: Click hamburger menu",
+      "Step 4: Verify sidebar slides in",
+      "Step 5: Verify backdrop appears"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Responsive card grid on tablet",
+    "steps": [
+      "Step 1: View entity cards on tablet viewport",
+      "Step 2: Verify two-column grid layout",
+      "Step 3: Verify cards maintain proper spacing",
+      "Step 4: Verify content doesn't overflow"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Responsive layout on desktop",
+    "steps": [
+      "Step 1: View application on large desktop",
+      "Step 2: Verify max-width constraint",
+      "Step 3: Verify centered content",
+      "Step 4: Verify appropriate use of whitespace"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Focus visible styling for accessibility",
+    "steps": [
+      "Step 1: Use Tab key to navigate",
+      "Step 2: Verify focus ring visible on interactive elements",
+      "Step 3: Verify ring color is visible",
+      "Step 4: Verify all interactive elements focusable"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Icon consistency and sizing",
+    "steps": [
+      "Step 1: Review icons throughout application",
+      "Step 2: Verify consistent icon library used",
+      "Step 3: Verify appropriate sizes (16px, 20px, 24px)",
+      "Step 4: Verify icons aligned with text"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Avatar/user profile styling",
+    "steps": [
+      "Step 1: View user avatar in header",
+      "Step 2: Verify circular shape",
+      "Step 3: Verify initials fallback if no image",
+      "Step 4: Verify appropriate size"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Breadcrumb navigation styling",
+    "steps": [
+      "Step 1: Navigate deep into case",
+      "Step 2: Verify breadcrumb trail shows",
+      "Step 3: Verify separator styling",
+      "Step 4: Verify links are clickable",
+      "Step 5: Verify current page not linked"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Tab component styling",
+    "steps": [
+      "Step 1: View tabbed interface",
+      "Step 2: Verify active tab indicator",
+      "Step 3: Verify hover states on inactive tabs",
+      "Step 4: Verify smooth transition between tabs"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Checkbox and radio styling",
+    "steps": [
+      "Step 1: View checkbox inputs",
+      "Step 2: Verify custom styled checkboxes",
+      "Step 3: Verify checked state styling",
+      "Step 4: View radio inputs",
+      "Step 5: Verify custom styled radios"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Toggle switch styling",
+    "steps": [
+      "Step 1: View toggle switch component",
+      "Step 2: Verify pill shape",
+      "Step 3: Verify handle position indicates state",
+      "Step 4: Verify color change on toggle",
+      "Step 5: Verify smooth animation"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Complete end-to-end purchase/sale flow",
+    "steps": [
+      "Step 1: Login to application",
+      "Step 2: Create new purchase/sale case",
+      "Step 3: Upload seller CNH document",
+      "Step 4: Upload spouse CNH document",
+      "Step 5: Upload buyer CNH document",
+      "Step 6: Upload property deed document",
+      "Step 7: Upload IPTU document",
+      "Step 8: Wait for all processing to complete",
+      "Step 9: Verify all entities created (3 people, 1 property)",
+      "Step 10: Navigate to canvas",
+      "Step 11: Connect seller to property as 'sells'",
+      "Step 12: Connect spouse to seller as 'spouse_of'",
+      "Step 13: Connect buyer to property as 'buys'",
+      "Step 14: Verify validation passes",
+      "Step 15: Generate draft",
+      "Step 16: Review draft in editor",
+      "Step 17: Use chat to adjust payment terms",
+      "Step 18: Export draft as PDF",
+      "Step 19: View audit trail",
+      "Step 20: Verify complete evidence chain"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Proxy representation flow",
+    "steps": [
+      "Step 1: Create case",
+      "Step 2: Upload seller CNH",
+      "Step 3: Upload power of attorney document",
+      "Step 4: Upload proxy person CNH",
+      "Step 5: Wait for processing",
+      "Step 6: Navigate to canvas",
+      "Step 7: Create 'represents' connection from proxy to seller",
+      "Step 8: Verify proxy powers displayed",
+      "Step 9: Connect proxy/seller to property as seller",
+      "Step 10: Generate draft",
+      "Step 11: Verify proxy representation clause in draft",
+      "Step 12: Verify power of attorney referenced"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Pending item resolution flow",
+    "steps": [
+      "Step 1: Upload document with ambiguous data",
+      "Step 2: Wait for processing",
+      "Step 3: Navigate to entities",
+      "Step 4: Find entity with pending fields",
+      "Step 5: Click 'View Evidence' on pending field",
+      "Step 6: Review OCR vs LLM comparison",
+      "Step 7: Click 'Confirm' to accept LLM value",
+      "Step 8: Verify field no longer pending",
+      "Step 9: Verify change logged in audit trail"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Entity merge conflict resolution",
+    "steps": [
+      "Step 1: Upload two documents with similar but different data",
+      "Step 2: Wait for processing",
+      "Step 3: Verify two separate entities created",
+      "Step 4: Navigate to entities",
+      "Step 5: Identify duplicate entities",
+      "Step 6: Click 'Merge' on first entity",
+      "Step 7: Select second entity to merge",
+      "Step 8: Review field conflicts",
+      "Step 9: Choose preferred values for each conflict",
+      "Step 10: Confirm merge",
+      "Step 11: Verify single merged entity",
+      "Step 12: Verify all source documents linked"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Draft regeneration after entity edit",
+    "steps": [
+      "Step 1: Generate draft from complete graph",
+      "Step 2: Navigate to entities",
+      "Step 3: Edit person's address",
+      "Step 4: Save changes",
+      "Step 5: Navigate to draft editor",
+      "Step 6: Verify indication that draft needs regeneration",
+      "Step 7: Click 'Regenerate Draft'",
+      "Step 8: Verify updated address in new draft",
+      "Step 9: Verify version incremented"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat editing complex clause modification",
+    "steps": [
+      "Step 1: Generate purchase/sale draft",
+      "Step 2: Open chat panel",
+      "Step 3: Type 'Adicione garantia de evicção ampliada'",
+      "Step 4: Submit message",
+      "Step 5: Verify operation preview",
+      "Step 6: Confirm operation",
+      "Step 7: Verify new clause added",
+      "Step 8: Type 'Altere valor para R$ 750.000 com entrada de R$ 150.000'",
+      "Step 9: Submit message",
+      "Step 10: Confirm operation",
+      "Step 11: Verify price section updated",
+      "Step 12: View audit trail",
+      "Step 13: Verify both changes logged"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Multiple document type processing",
+    "steps": [
+      "Step 1: Create new case",
+      "Step 2: Upload CNH document",
+      "Step 3: Upload RG document",
+      "Step 4: Upload marriage certificate",
+      "Step 5: Upload property deed",
+      "Step 6: Upload IPTU document",
+      "Step 7: Upload power of attorney",
+      "Step 8: Wait for all processing",
+      "Step 9: Verify each document type correctly identified",
+      "Step 10: Verify appropriate entities created from each",
+      "Step 11: Verify cross-document entity matching (same person from CNH and marriage cert)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Canvas collaborative editing",
+    "steps": [
+      "Step 1: User A opens canvas",
+      "Step 2: User B opens same canvas",
+      "Step 3: Verify both users see each other's presence",
+      "Step 4: User A moves a node",
+      "Step 5: Verify User B sees node movement",
+      "Step 6: User B creates connection",
+      "Step 7: Verify User A sees new connection",
+      "Step 8: User A deletes connection",
+      "Step 9: Verify User B sees deletion",
+      "Step 10: Both users' changes persisted"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Error recovery full flow",
+    "steps": [
+      "Step 1: Upload document that causes processing error",
+      "Step 2: Verify error status shown",
+      "Step 3: Verify error message displayed",
+      "Step 4: Click 'Retry' button",
+      "Step 5: Verify processing restarts",
+      "Step 6: If still fails, verify manual options",
+      "Step 7: Delete problematic document",
+      "Step 8: Upload replacement document",
+      "Step 9: Verify normal processing continues"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Export compliance report",
+    "steps": [
+      "Step 1: Complete full case with draft",
+      "Step 2: Navigate to history view",
+      "Step 3: Click 'Export Report'",
+      "Step 4: Select compliance report type",
+      "Step 5: Choose date range",
+      "Step 6: Click download",
+      "Step 7: Verify report includes all evidence",
+      "Step 8: Verify report includes all audit entries",
+      "Step 9: Verify report includes change timeline"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Case archival and retrieval",
+    "steps": [
+      "Step 1: Complete and approve case",
+      "Step 2: Click 'Archive' button",
+      "Step 3: Confirm archival",
+      "Step 4: Verify case status 'archived'",
+      "Step 5: Navigate to dashboard",
+      "Step 6: Filter by 'archived' status",
+      "Step 7: Verify archived case appears",
+      "Step 8: Open archived case",
+      "Step 9: Verify case is read-only",
+      "Step 10: Verify all data still accessible"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Bulk document processing performance",
+    "steps": [
+      "Step 1: Prepare 10 documents for upload",
+      "Step 2: Upload all 10 documents at once",
+      "Step 3: Start timer",
+      "Step 4: Wait for all processing to complete",
+      "Step 5: Record total time",
+      "Step 6: Verify all entities created",
+      "Step 7: Verify time under 60 seconds (p95 requirement)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Draft generation time performance",
+    "steps": [
+      "Step 1: Setup complete canvas with all connections",
+      "Step 2: Click 'Generate Draft'",
+      "Step 3: Start timer",
+      "Step 4: Wait for draft generation",
+      "Step 5: Record time",
+      "Step 6: Verify draft quality",
+      "Step 7: Verify time under 3 minutes (p95 requirement)"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Simultaneous operations handling",
+    "steps": [
+      "Step 1: Have multiple documents processing",
+      "Step 2: While processing, navigate to entities",
+      "Step 3: Verify partial results displayed",
+      "Step 4: Make an edit to existing entity",
+      "Step 5: Verify edit doesn't conflict with processing",
+      "Step 6: When processing completes, verify new entities added",
+      "Step 7: Verify edited entity unchanged"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Realtime notification flow",
+    "steps": [
+      "Step 1: Open case in two browser tabs",
+      "Step 2: In tab A, upload document",
+      "Step 3: In tab B, verify notification appears",
+      "Step 4: Wait for processing",
+      "Step 5: In tab B, verify 'New entity created' notification",
+      "Step 6: Click notification",
+      "Step 7: Verify navigates to new entity"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Consistent spacing system",
+    "steps": [
+      "Step 1: Review multiple pages",
+      "Step 2: Verify consistent spacing between sections",
+      "Step 3: Verify padding follows 4px grid (p-2, p-4, p-6)",
+      "Step 4: Verify margins consistent",
+      "Step 5: Verify gap spacing in flexbox/grid consistent"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Color contrast accessibility",
+    "steps": [
+      "Step 1: Test text on backgrounds",
+      "Step 2: Verify WCAG AA compliance (4.5:1 minimum)",
+      "Step 3: Test button text contrast",
+      "Step 4: Test badge text contrast",
+      "Step 5: Test in both light and dark modes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Loading state consistency",
+    "steps": [
+      "Step 1: Trigger various loading states",
+      "Step 2: Verify same spinner used throughout",
+      "Step 3: Verify spinner positioned consistently",
+      "Step 4: Verify skeleton loaders match content"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Z-index layering correct",
+    "steps": [
+      "Step 1: Open dropdown menu",
+      "Step 2: Verify appears above content",
+      "Step 3: Open modal",
+      "Step 4: Verify modal above dropdown",
+      "Step 5: Open tooltip over modal",
+      "Step 6: Verify proper stacking"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Scrollbar styling",
+    "steps": [
+      "Step 1: View scrollable content area",
+      "Step 2: Verify custom scrollbar styling (if applied)",
+      "Step 3: Verify scrollbar doesn't affect layout",
+      "Step 4: Verify smooth scrolling behavior"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Auto-save draft content",
+    "steps": [
+      "Step 1: Open draft editor",
+      "Step 2: Make manual text edit",
+      "Step 3: Wait for auto-save indicator",
+      "Step 4: Close browser without manual save",
+      "Step 5: Reopen draft",
+      "Step 6: Verify edit was auto-saved"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Browser back/forward navigation",
+    "steps": [
+      "Step 1: Navigate through multiple pages",
+      "Step 2: Click browser back",
+      "Step 3: Verify previous page loads",
+      "Step 4: Verify state is correct",
+      "Step 5: Click browser forward",
+      "Step 6: Verify forward navigation works"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Deep link to specific case section",
+    "steps": [
+      "Step 1: Get URL for case canvas page",
+      "Step 2: Open URL in new browser",
+      "Step 3: After login, verify lands on canvas",
+      "Step 4: Verify all data loaded correctly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Copy field value functionality",
+    "steps": [
+      "Step 1: Navigate to entity card",
+      "Step 2: Click copy icon next to CPF field",
+      "Step 3: Verify 'Copied' feedback",
+      "Step 4: Paste elsewhere",
+      "Step 5: Verify correct value pasted"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Document reprocessing",
+    "steps": [
+      "Step 1: View processed document",
+      "Step 2: Click 'Reprocess' button",
+      "Step 3: Confirm reprocessing",
+      "Step 4: Verify status changes to processing",
+      "Step 5: Wait for completion",
+      "Step 6: Verify new extraction results",
+      "Step 7: Verify previous results logged/archived"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Print draft functionality",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Click print button",
+      "Step 3: Verify print preview opens",
+      "Step 4: Verify formatting correct for print",
+      "Step 5: Close print preview"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Case duplication",
+    "steps": [
+      "Step 1: Open existing case",
+      "Step 2: Click 'Duplicate Case'",
+      "Step 3: Verify new case created",
+      "Step 4: Verify documents not copied (optional setting)",
+      "Step 5: Verify entities not copied",
+      "Step 6: Verify settings copied"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Entity manual creation",
+    "steps": [
+      "Step 1: Navigate to entities view",
+      "Step 2: Click 'Add Person' button",
+      "Step 3: Fill in required fields manually",
+      "Step 4: Save entity",
+      "Step 5: Verify entity appears in list",
+      "Step 6: Verify entity shows 'manually created' indicator"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Property manual creation",
+    "steps": [
+      "Step 1: Navigate to entities view",
+      "Step 2: Click 'Add Property' button",
+      "Step 3: Fill in registry number and details",
+      "Step 4: Save property",
+      "Step 5: Verify property appears",
+      "Step 6: Verify shows as manually created"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "User profile update",
+    "steps": [
+      "Step 1: Click user menu",
+      "Step 2: Navigate to profile settings",
+      "Step 3: Update display name",
+      "Step 4: Save changes",
+      "Step 5: Verify name updated in header"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Password change functionality",
+    "steps": [
+      "Step 1: Navigate to security settings",
+      "Step 2: Enter current password",
+      "Step 3: Enter new password",
+      "Step 4: Confirm new password",
+      "Step 5: Save changes",
+      "Step 6: Logout",
+      "Step 7: Login with new password"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Forgot password flow",
+    "steps": [
+      "Step 1: Go to login page",
+      "Step 2: Click 'Forgot Password'",
+      "Step 3: Enter email",
+      "Step 4: Submit request",
+      "Step 5: Verify email sent message",
+      "Step 6: Follow reset link (simulated)",
+      "Step 7: Set new password"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Canvas zoom controls",
+    "steps": [
+      "Step 1: Navigate to canvas",
+      "Step 2: Click zoom in button",
+      "Step 3: Verify zoom level increases",
+      "Step 4: Click zoom out button",
+      "Step 5: Verify zoom level decreases",
+      "Step 6: Click 'Reset zoom' (100%)",
+      "Step 7: Verify zoom returns to default"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Canvas node alignment helpers",
+    "steps": [
+      "Step 1: Select multiple nodes on canvas",
+      "Step 2: Click 'Align horizontal center'",
+      "Step 3: Verify nodes align horizontally",
+      "Step 4: Click 'Distribute evenly'",
+      "Step 5: Verify even spacing between nodes"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Draft template selection",
+    "steps": [
+      "Step 1: Navigate to draft generation",
+      "Step 2: Verify template options available",
+      "Step 3: Select different template style",
+      "Step 4: Generate draft",
+      "Step 5: Verify draft follows selected template"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Inline field editing in draft",
+    "steps": [
+      "Step 1: Navigate to draft editor",
+      "Step 2: Double-click on data field in draft",
+      "Step 3: Verify inline edit mode activates",
+      "Step 4: Modify the value",
+      "Step 5: Press Enter or click away",
+      "Step 6: Verify change applied",
+      "Step 7: Verify change logged"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Compare two draft versions",
+    "steps": [
+      "Step 1: Generate multiple draft versions",
+      "Step 2: Navigate to history",
+      "Step 3: Select version 1",
+      "Step 4: Click 'Compare with...'",
+      "Step 5: Select version 2",
+      "Step 6: Verify diff view shows changes",
+      "Step 7: Verify additions highlighted green",
+      "Step 8: Verify deletions highlighted red"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Context caching for chat efficiency",
+    "steps": [
+      "Step 1: Send first chat message",
+      "Step 2: Note response time",
+      "Step 3: Send follow-up message in same context",
+      "Step 4: Note response time",
+      "Step 5: Verify second response faster",
+      "Step 6: Verify context preserved correctly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Chat streaming response display",
+    "steps": [
+      "Step 1: Send chat message",
+      "Step 2: Observe response appearing",
+      "Step 3: Verify text streams in progressively",
+      "Step 4: Verify no jarring updates",
+      "Step 5: Verify final response complete"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Evidence override with new value",
+    "steps": [
+      "Step 1: Open evidence modal for field",
+      "Step 2: View OCR and LLM values",
+      "Step 3: Click 'Override'",
+      "Step 4: Enter custom value",
+      "Step 5: Save override",
+      "Step 6: Verify field updated",
+      "Step 7: Verify evidence shows 'manually overridden'"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Batch entity confirmation",
+    "steps": [
+      "Step 1: Navigate to entities with multiple pending items",
+      "Step 2: Select multiple entities",
+      "Step 3: Click 'Batch Confirm'",
+      "Step 4: Review confirmation summary",
+      "Step 5: Confirm batch operation",
+      "Step 6: Verify all selected items confirmed"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Print stylesheet",
+    "steps": [
+      "Step 1: Open print preview for draft",
+      "Step 2: Verify no dark backgrounds",
+      "Step 3: Verify readable text size",
+      "Step 4: Verify margins appropriate",
+      "Step 5: Verify header/footer if applicable"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Notification toast positioning",
+    "steps": [
+      "Step 1: Trigger notification",
+      "Step 2: Verify appears in corner (bottom-right or top-right)",
+      "Step 3: Verify doesn't block content",
+      "Step 4: Trigger multiple notifications",
+      "Step 5: Verify stack correctly"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Date picker styling",
+    "steps": [
+      "Step 1: Click on date field",
+      "Step 2: Verify date picker appears",
+      "Step 3: Verify calendar styled consistently",
+      "Step 4: Verify selected date highlighted",
+      "Step 5: Verify today marked"
+    ],
+    "passes": false
+  },
+  {
+    "category": "style",
+    "description": "Select/combobox styling",
+    "steps": [
+      "Step 1: Click on select dropdown",
+      "Step 2: Verify options list styled",
+      "Step 3: Verify selected option indicated",
+      "Step 4: Verify hover state on options"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Keyboard accessibility - full form navigation",
+    "steps": [
+      "Step 1: Focus on first form element",
+      "Step 2: Tab through all fields",
+      "Step 3: Verify logical tab order",
+      "Step 4: Verify all fields accessible",
+      "Step 5: Use Enter to submit",
+      "Step 6: Verify form submits"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Screen reader compatibility",
+    "steps": [
+      "Step 1: Enable screen reader",
+      "Step 2: Navigate to main content",
+      "Step 3: Verify headings announced",
+      "Step 4: Verify buttons have labels",
+      "Step 5: Verify form fields have labels"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Reduced motion preference",
+    "steps": [
+      "Step 1: Enable 'prefers-reduced-motion' in OS",
+      "Step 2: Reload application",
+      "Step 3: Verify animations reduced or disabled",
+      "Step 4: Verify functionality unaffected"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "High contrast mode",
+    "steps": [
+      "Step 1: Enable high contrast mode",
+      "Step 2: Review application appearance",
+      "Step 3: Verify all text readable",
+      "Step 4: Verify boundaries clear"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Localization date format (pt-BR)",
+    "steps": [
+      "Step 1: View dates throughout application",
+      "Step 2: Verify dates in DD/MM/YYYY format",
+      "Step 3: Verify date input accepts pt-BR format",
+      "Step 4: Verify date picker starts week on correct day"
+    ],
+    "passes": false
+  },
+  {
+    "category": "functional",
+    "description": "Currency formatting (BRL)",
+    "steps": [
+      "Step 1: View price/value fields",
+      "Step 2: Verify R$ prefix used",
+      "Step 3: Verify thousand separators (dots)",
+      "Step 4: Verify decimal separator (comma)",
+      "Step 5: Enter currency value",
+      "Step 6: Verify formatting applied"
+    ],
+    "passes": false
+  }
+]
