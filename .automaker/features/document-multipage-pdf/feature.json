@@ -1,0 +1,14 @@
+{
+  "id": "document-multipage-pdf",
+  "category": "Document Processing",
+  "title": "Multi-page PDF Processing",
+  "description": "Multi-page PDF processing",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "document-upload"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

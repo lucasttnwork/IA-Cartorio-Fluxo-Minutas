@@ -1,0 +1,14 @@
+{
+  "id": "chat-operation-preview",
+  "category": "AI Assistant",
+  "title": "Operation Preview and Confirmation",
+  "description": "Operation preview before applying changes",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [
+    "chat-operations"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

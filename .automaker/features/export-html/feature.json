@@ -1,0 +1,14 @@
+{
+  "id": "export-html",
+  "category": "Export",
+  "title": "Export Draft as HTML",
+  "description": "Export draft as HTML",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "draft-editor"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

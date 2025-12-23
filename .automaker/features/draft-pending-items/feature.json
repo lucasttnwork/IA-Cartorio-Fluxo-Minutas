@@ -1,0 +1,15 @@
+{
+  "id": "draft-pending-items",
+  "category": "Draft Editor",
+  "title": "Pending Items Display in Draft",
+  "description": "Pending items display in draft with yellow highlight",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [
+    "draft-editor",
+    "consensus-engine"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

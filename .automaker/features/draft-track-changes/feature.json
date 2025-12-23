@@ -1,0 +1,14 @@
+{
+  "id": "draft-track-changes",
+  "category": "Draft Editor",
+  "title": "Track Changes Toggle",
+  "description": "Track changes toggle in editor",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "draft-editor"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

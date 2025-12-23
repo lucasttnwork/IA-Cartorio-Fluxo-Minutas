@@ -1,0 +1,14 @@
+{
+  "id": "evidence-override",
+  "category": "Evidence",
+  "title": "Evidence Override",
+  "description": "Evidence override with new value",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "evidence-modal"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

@@ -1,0 +1,16 @@
+{
+  "id": "audit-trail",
+  "category": "Audit",
+  "title": "Audit Trail with Timeline",
+  "description": "Audit trail captures all changes with evidence",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [
+    "draft-editor",
+    "entity-merge",
+    "chat-operations"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

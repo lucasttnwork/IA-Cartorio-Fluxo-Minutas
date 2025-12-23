@@ -1,0 +1,14 @@
+{
+  "id": "user-role-supervisor",
+  "category": "Authentication",
+  "title": "Supervisor Can Approve",
+  "description": "User role permissions - supervisor can approve",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "user-roles"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

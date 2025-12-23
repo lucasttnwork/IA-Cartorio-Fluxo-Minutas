@@ -1,0 +1,14 @@
+{
+  "id": "chat-operations",
+  "category": "AI Assistant",
+  "title": "Chat Operations (NL Editing)",
+  "description": "Chat editing - change payment terms via natural language",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "complex",
+  "dependencies": [
+    "chat-interface"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

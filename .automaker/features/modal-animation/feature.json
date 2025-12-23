@@ -1,0 +1,14 @@
+{
+  "id": "modal-animation",
+  "category": "UI Design",
+  "title": "Modal Animation on Open/Close",
+  "description": "Modal animation on open/close",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "modal-styling"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

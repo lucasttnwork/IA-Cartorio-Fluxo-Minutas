@@ -1,0 +1,14 @@
+{
+  "id": "audit-filter-date",
+  "category": "Audit",
+  "title": "Filter Audit Log by Date",
+  "description": "Filter audit log by date range",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "audit-trail"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

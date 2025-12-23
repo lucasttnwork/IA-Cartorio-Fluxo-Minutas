@@ -1,0 +1,14 @@
+{
+  "id": "canvas-pan-zoom-smoothness",
+  "category": "UI Design",
+  "title": "Canvas Pan/Zoom Smoothness",
+  "description": "Canvas pan/zoom smoothness",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "canvas-visualization"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

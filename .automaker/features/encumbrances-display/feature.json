@@ -1,0 +1,14 @@
+{
+  "id": "encumbrances-display",
+  "category": "Legal Features",
+  "title": "Encumbrances Display on Property",
+  "description": "Encumbrances display on property card",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "property-entity-card"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

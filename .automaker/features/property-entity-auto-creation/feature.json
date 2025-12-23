@@ -1,0 +1,15 @@
+{
+  "id": "property-entity-auto-creation",
+  "category": "Entity Management",
+  "title": "Property Entity Auto-Creation",
+  "description": "Property entity auto-creation from deed - system extracts property information",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "complex",
+  "dependencies": [
+    "entity-extraction",
+    "consensus-engine"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

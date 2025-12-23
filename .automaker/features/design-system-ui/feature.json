@@ -1,0 +1,14 @@
+{
+  "id": "design-system-ui",
+  "category": "UI Design",
+  "title": "Design System UI Components",
+  "description": "Dashboard page layout matches design system",
+  "status": "in_progress",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:20:56.120Z",
+  "branchName": "main",
+  "startedAt": "2025-12-23T18:20:55.244Z"
+}

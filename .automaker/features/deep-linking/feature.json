@@ -1,0 +1,14 @@
+{
+  "id": "deep-linking",
+  "category": "UX",
+  "title": "Deep Links to Case Sections",
+  "description": "Deep link to specific case section",
+  "status": "backlog",
+  "priority": 3,
+  "complexity": "simple",
+  "dependencies": [
+    "case-creation"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

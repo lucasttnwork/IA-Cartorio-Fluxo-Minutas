@@ -1,0 +1,14 @@
+{
+  "id": "proxy-validity",
+  "category": "Legal Features",
+  "title": "Proxy Validity Check",
+  "description": "Proxy validity check",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "proxy-representation"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

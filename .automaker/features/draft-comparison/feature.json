@@ -1,0 +1,14 @@
+{
+  "id": "draft-comparison",
+  "category": "Draft Editor",
+  "title": "Compare Draft Versions",
+  "description": "Compare two draft versions",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "draft-versioning"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

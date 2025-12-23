@@ -1,0 +1,16 @@
+{
+  "id": "draft-generation",
+  "category": "Draft Editor",
+  "title": "Draft Generation from Complete Graph",
+  "description": "Draft generation from complete graph - creates purchase/sale document",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "complex",
+  "dependencies": [
+    "canvas-validation",
+    "entity-extraction",
+    "consensus-engine"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

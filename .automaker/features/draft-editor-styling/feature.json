@@ -1,0 +1,15 @@
+{
+  "id": "draft-editor-styling",
+  "category": "UI Design",
+  "title": "Draft Editor Styling",
+  "description": "Draft editor styling matches design",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "design-system-ui",
+    "draft-editor"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

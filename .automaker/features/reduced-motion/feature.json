@@ -1,0 +1,12 @@
+{
+  "id": "reduced-motion",
+  "category": "Accessibility",
+  "title": "Reduced Motion Preference",
+  "description": "Reduced motion preference",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

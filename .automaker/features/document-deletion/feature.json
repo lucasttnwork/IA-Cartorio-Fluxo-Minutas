@@ -1,0 +1,15 @@
+{
+  "id": "document-deletion",
+  "category": "Document Processing",
+  "title": "Document Deletion",
+  "description": "Document deletion removes associated data",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "document-upload",
+    "entity-extraction"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

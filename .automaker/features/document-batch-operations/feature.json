@@ -1,0 +1,14 @@
+{
+  "id": "document-batch-operations",
+  "category": "Document Processing",
+  "title": "Batch Operations on Documents",
+  "description": "Batch operations on documents",
+  "status": "backlog",
+  "priority": 3,
+  "complexity": "simple",
+  "dependencies": [
+    "document-upload"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

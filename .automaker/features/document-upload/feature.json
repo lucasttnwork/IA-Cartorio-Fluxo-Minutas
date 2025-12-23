@@ -1,0 +1,14 @@
+{
+  "id": "document-upload",
+  "category": "Document Processing",
+  "title": "Bulk Document Upload",
+  "description": "Bulk document upload via drag-and-drop - upload multiple documents at once",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [
+    "case-creation"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

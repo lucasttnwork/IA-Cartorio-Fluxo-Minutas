@@ -1,0 +1,15 @@
+{
+  "id": "dashboard-case-list",
+  "category": "Case Management",
+  "title": "Dashboard with Case List",
+  "description": "Case list displays all user cases with status",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [
+    "user-authentication",
+    "design-system-ui"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

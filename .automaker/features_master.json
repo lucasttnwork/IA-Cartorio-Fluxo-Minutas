@@ -1,0 +1,1501 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2025-12-23T18:30:00.000Z",
+  "totalFeatures": 186,
+  "features": [
+    {
+      "id": "user-authentication",
+      "category": "Authentication",
+      "title": "User Authentication (Login/Logout)",
+      "description": "User authentication flow - login and logout",
+      "priority": 1,
+      "complexity": "simple",
+      "dependencies": []
+    },
+    {
+      "id": "design-system-ui",
+      "category": "UI Design",
+      "title": "Design System UI Components",
+      "description": "Dashboard page layout matches design system",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": []
+    },
+    {
+      "id": "localization-pt-br",
+      "category": "Localization",
+      "title": "Portuguese (Brazil) Localization",
+      "description": "Localization date format (pt-BR)",
+      "priority": 1,
+      "complexity": "simple",
+      "dependencies": []
+    },
+    {
+      "id": "dashboard-case-list",
+      "category": "Case Management",
+      "title": "Dashboard with Case List",
+      "description": "Case list displays all user cases with status",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["user-authentication", "design-system-ui"]
+    },
+    {
+      "id": "case-creation",
+      "category": "Core",
+      "title": "Case Creation Flow",
+      "description": "Complete case creation flow - user creates a new purchase/sale case with all required information",
+      "priority": 1,
+      "complexity": "simple",
+      "dependencies": ["user-authentication", "dashboard-case-list"]
+    },
+    {
+      "id": "case-search",
+      "category": "Case Management",
+      "title": "Case Search Functionality",
+      "description": "Case search functionality",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["dashboard-case-list"]
+    },
+    {
+      "id": "case-pagination",
+      "category": "Case Management",
+      "title": "Case List Pagination",
+      "description": "Pagination on case list",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["dashboard-case-list"]
+    },
+    {
+      "id": "case-sort-filter",
+      "category": "Case Management",
+      "title": "Sort and Filter Cases",
+      "description": "Sort case list by different fields",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["dashboard-case-list"]
+    },
+    {
+      "id": "document-upload",
+      "category": "Document Processing",
+      "title": "Bulk Document Upload",
+      "description": "Bulk document upload via drag-and-drop - upload multiple documents at once",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["case-creation"]
+    },
+    {
+      "id": "document-upload-ui",
+      "category": "UI Design",
+      "title": "Upload Dropzone Visual Design",
+      "description": "Upload dropzone visual design",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload", "design-system-ui"]
+    },
+    {
+      "id": "document-upload-drag-state",
+      "category": "UI Design",
+      "title": "Drag-over State on Dropzone",
+      "description": "Drag-over state on dropzone",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "document-preview",
+      "category": "Document Processing",
+      "title": "Document Preview Functionality",
+      "description": "Document preview functionality",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "document-status-updates",
+      "category": "Document Processing",
+      "title": "Real-time Document Processing Status",
+      "description": "Real-time document processing status updates",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "document-error-handling",
+      "category": "Document Processing",
+      "title": "Handle Corrupt/Invalid Files",
+      "description": "Handle corrupt/invalid file upload",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "document-large-files",
+      "category": "Document Processing",
+      "title": "Large File Upload Handling",
+      "description": "Large file upload handling",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "document-multipage-pdf",
+      "category": "Document Processing",
+      "title": "Multi-page PDF Processing",
+      "description": "Multi-page PDF processing",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "document-image-upload",
+      "category": "Document Processing",
+      "title": "Image Document Upload",
+      "description": "Image document (photo) upload and processing",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "ocr-processing",
+      "category": "Document Processing",
+      "title": "OCR Document Processing",
+      "description": "OCR processing with Google Document AI",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "document-type-detection",
+      "category": "Document Processing",
+      "title": "Document Type Auto-Detection",
+      "description": "Document type auto-detection - system correctly identifies CNH, RG, marriage certificate, deed",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["ocr-processing"]
+    },
+    {
+      "id": "entity-extraction",
+      "category": "Entity Management",
+      "title": "Entity Extraction from Documents",
+      "description": "Entity extraction from documents using Gemini LLM",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["ocr-processing", "document-type-detection"]
+    },
+    {
+      "id": "consensus-engine",
+      "category": "Data Processing",
+      "title": "Consensus Engine (OCR vs LLM)",
+      "description": "Consensus engine marks divergent fields as pending - OCR vs LLM disagreement handling",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["ocr-processing", "entity-extraction"]
+    },
+    {
+      "id": "person-entity-auto-creation",
+      "category": "Entity Management",
+      "title": "Person Entity Auto-Creation",
+      "description": "Person entity auto-creation from documents - system extracts and creates person cards",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["entity-extraction", "consensus-engine"]
+    },
+    {
+      "id": "property-entity-auto-creation",
+      "category": "Entity Management",
+      "title": "Property Entity Auto-Creation",
+      "description": "Property entity auto-creation from deed - system extracts property information",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["entity-extraction", "consensus-engine"]
+    },
+    {
+      "id": "person-entity-card",
+      "category": "Entity Management",
+      "title": "Person Entity Card Display",
+      "description": "Person card displays all required fields",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["person-entity-auto-creation"]
+    },
+    {
+      "id": "property-entity-card",
+      "category": "Entity Management",
+      "title": "Property Entity Card Display",
+      "description": "Property card displays all required fields",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["property-entity-auto-creation"]
+    },
+    {
+      "id": "cpf-validation",
+      "category": "Entity Management",
+      "title": "CPF Validation",
+      "description": "CPF validation on person entity",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["person-entity-card"]
+    },
+    {
+      "id": "address-validation",
+      "category": "Entity Management",
+      "title": "Address Geocoding/Validation",
+      "description": "Address geocoding/validation in property",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["property-entity-card"]
+    },
+    {
+      "id": "entity-manual-creation",
+      "category": "Entity Management",
+      "title": "Manual Entity Creation",
+      "description": "Entity manual creation (person or property)",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["person-entity-card", "property-entity-card"]
+    },
+    {
+      "id": "entity-merge",
+      "category": "Entity Management",
+      "title": "Entity Merge",
+      "description": "Entity merge - combine duplicate persons",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["person-entity-card", "property-entity-card"]
+    },
+    {
+      "id": "entity-split",
+      "category": "Entity Management",
+      "title": "Entity Split",
+      "description": "Entity split - separate incorrectly merged persons",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["entity-merge"]
+    },
+    {
+      "id": "evidence-modal",
+      "category": "Evidence",
+      "title": "Evidence Modal with Document Highlighting",
+      "description": "Evidence modal shows document with highlighted bounding box",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["ocr-processing", "entity-extraction"]
+    },
+    {
+      "id": "evidence-override",
+      "category": "Evidence",
+      "title": "Evidence Override",
+      "description": "Evidence override with new value",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["evidence-modal"]
+    },
+    {
+      "id": "evidence-chain",
+      "category": "Evidence",
+      "title": "Evidence Chain Visualization",
+      "description": "Evidence chain visualization",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["evidence-modal"]
+    },
+    {
+      "id": "canvas-visualization",
+      "category": "Graph Visualization",
+      "title": "Infinite Canvas with Entity Nodes",
+      "description": "Infinite canvas loads with all entity nodes",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["person-entity-card", "property-entity-card"]
+    },
+    {
+      "id": "canvas-connections",
+      "category": "Graph Visualization",
+      "title": "Create Connections Between Entities",
+      "description": "Create connection between seller and property on canvas",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "canvas-relationship-spouse",
+      "category": "Graph Visualization",
+      "title": "Create Spouse Relationship",
+      "description": "Create spouse relationship between two persons",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["canvas-connections"]
+    },
+    {
+      "id": "canvas-relationship-proxy",
+      "category": "Graph Visualization",
+      "title": "Create Proxy Relationship",
+      "description": "Create procurator (proxy) relationship",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["canvas-connections"]
+    },
+    {
+      "id": "canvas-validation",
+      "category": "Graph Visualization",
+      "title": "Canvas Validation Rules",
+      "description": "Canvas validation warns about missing spouse consent",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["canvas-connections", "canvas-relationship-spouse"]
+    },
+    {
+      "id": "canvas-suggestions",
+      "category": "Graph Visualization",
+      "title": "Canvas Auto-Suggestions",
+      "description": "Canvas auto-suggestions based on document analysis",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["canvas-visualization", "entity-extraction"]
+    },
+    {
+      "id": "canvas-context-menu",
+      "category": "Graph Visualization",
+      "title": "Canvas Context Menu",
+      "description": "Canvas context menu on right-click",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "canvas-zoom-controls",
+      "category": "Graph Visualization",
+      "title": "Canvas Zoom Controls",
+      "description": "Canvas zoom controls",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "canvas-fit-view",
+      "category": "Graph Visualization",
+      "title": "Canvas Fit View",
+      "description": "Canvas fit view functionality",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "canvas-minimap",
+      "category": "Graph Visualization",
+      "title": "Canvas Minimap Navigation",
+      "description": "Canvas minimap navigation",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "canvas-node-selection",
+      "category": "Graph Visualization",
+      "title": "Node Selection and Multi-Select",
+      "description": "Node selection and multi-select",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "canvas-delete-connection",
+      "category": "Graph Visualization",
+      "title": "Delete Connection from Canvas",
+      "description": "Delete connection from canvas",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["canvas-connections"]
+    },
+    {
+      "id": "canvas-edit-entity",
+      "category": "Graph Visualization",
+      "title": "Edit Entity from Canvas",
+      "description": "Edit entity directly from canvas",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["canvas-visualization", "person-entity-card"]
+    },
+    {
+      "id": "canvas-node-alignment",
+      "category": "Graph Visualization",
+      "title": "Canvas Node Alignment Helpers",
+      "description": "Canvas node alignment helpers",
+      "priority": 3,
+      "complexity": "simple",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "draft-generation",
+      "category": "Draft Editor",
+      "title": "Draft Generation from Complete Graph",
+      "description": "Draft generation from complete graph - creates purchase/sale document",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["canvas-validation", "entity-extraction", "consensus-engine"]
+    },
+    {
+      "id": "draft-editor",
+      "category": "Draft Editor",
+      "title": "Draft Editor with Tiptap",
+      "description": "Tiptap editor toolbar formatting",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["draft-generation"]
+    },
+    {
+      "id": "draft-pending-items",
+      "category": "Draft Editor",
+      "title": "Pending Items Display in Draft",
+      "description": "Pending items display in draft with yellow highlight",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["draft-editor", "consensus-engine"]
+    },
+    {
+      "id": "draft-section-navigation",
+      "category": "Draft Editor",
+      "title": "Draft Section Navigation",
+      "description": "Draft editor section navigation",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "draft-versioning",
+      "category": "Draft Editor",
+      "title": "Draft Versioning",
+      "description": "Draft versioning - multiple versions tracked",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "draft-track-changes",
+      "category": "Draft Editor",
+      "title": "Track Changes Toggle",
+      "description": "Track changes toggle in editor",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "draft-auto-save",
+      "category": "Draft Editor",
+      "title": "Auto-Save Draft Content",
+      "description": "Auto-save draft content",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "draft-inline-editing",
+      "category": "Draft Editor",
+      "title": "Inline Field Editing",
+      "description": "Inline field editing in draft",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "draft-comparison",
+      "category": "Draft Editor",
+      "title": "Compare Draft Versions",
+      "description": "Compare two draft versions",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["draft-versioning"]
+    },
+    {
+      "id": "chat-interface",
+      "category": "AI Assistant",
+      "title": "Chat Interface for Draft Editing",
+      "description": "Chat interface for draft editing",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "chat-operations",
+      "category": "AI Assistant",
+      "title": "Chat Operations (NL Editing)",
+      "description": "Chat editing - change payment terms via natural language",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["chat-interface"]
+    },
+    {
+      "id": "chat-operation-preview",
+      "category": "AI Assistant",
+      "title": "Operation Preview and Confirmation",
+      "description": "Operation preview before applying changes",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["chat-operations"]
+    },
+    {
+      "id": "chat-regenerate-section",
+      "category": "AI Assistant",
+      "title": "Chat: Regenerate Section",
+      "description": "Chat editing - regenerate specific section",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["chat-operations"]
+    },
+    {
+      "id": "chat-add-clause",
+      "category": "AI Assistant",
+      "title": "Chat: Add Clause",
+      "description": "Chat adds new clause to draft",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["chat-operations"]
+    },
+    {
+      "id": "chat-remove-clause",
+      "category": "AI Assistant",
+      "title": "Chat: Remove Clause",
+      "description": "Chat removes clause from draft",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["chat-operations"]
+    },
+    {
+      "id": "chat-mark-pending",
+      "category": "AI Assistant",
+      "title": "Chat: Mark Pending",
+      "description": "Mark pending item via chat",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["chat-operations", "consensus-engine"]
+    },
+    {
+      "id": "chat-resolve-pending",
+      "category": "AI Assistant",
+      "title": "Chat: Resolve Pending",
+      "description": "Resolve pending item via chat",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["chat-operations", "consensus-engine"]
+    },
+    {
+      "id": "chat-undo",
+      "category": "AI Assistant",
+      "title": "Chat: Undo Operation",
+      "description": "Undo last chat operation",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["chat-operations"]
+    },
+    {
+      "id": "chat-history",
+      "category": "AI Assistant",
+      "title": "Chat Message History",
+      "description": "Chat message history persists across sessions",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["chat-interface"]
+    },
+    {
+      "id": "chat-streaming",
+      "category": "AI Assistant",
+      "title": "Chat Streaming Response",
+      "description": "Chat streaming response display",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["chat-interface"]
+    },
+    {
+      "id": "chat-context-caching",
+      "category": "AI Assistant",
+      "title": "Context Caching for Chat",
+      "description": "Context caching for chat efficiency",
+      "priority": 3,
+      "complexity": "moderate",
+      "dependencies": ["chat-interface"]
+    },
+    {
+      "id": "audit-trail",
+      "category": "Audit",
+      "title": "Audit Trail with Timeline",
+      "description": "Audit trail captures all changes with evidence",
+      "priority": 1,
+      "complexity": "moderate",
+      "dependencies": ["draft-editor", "entity-merge", "chat-operations"]
+    },
+    {
+      "id": "audit-filter-section",
+      "category": "Audit",
+      "title": "Filter Audit Log by Section",
+      "description": "Filter audit log by section",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["audit-trail"]
+    },
+    {
+      "id": "audit-filter-user",
+      "category": "Audit",
+      "title": "Filter Audit Log by User",
+      "description": "Filter audit log by user",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["audit-trail"]
+    },
+    {
+      "id": "audit-filter-date",
+      "category": "Audit",
+      "title": "Filter Audit Log by Date",
+      "description": "Filter audit log by date range",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["audit-trail"]
+    },
+    {
+      "id": "audit-export",
+      "category": "Audit",
+      "title": "Export Audit Report",
+      "description": "Export audit report",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["audit-trail"]
+    },
+    {
+      "id": "export-html",
+      "category": "Export",
+      "title": "Export Draft as HTML",
+      "description": "Export draft as HTML",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "export-pdf",
+      "category": "Export",
+      "title": "Export Draft as PDF",
+      "description": "Export draft as PDF",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "print-stylesheet",
+      "category": "Export",
+      "title": "Print Stylesheet",
+      "description": "Print stylesheet for drafts",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["draft-editor"]
+    },
+    {
+      "id": "print-draft",
+      "category": "Export",
+      "title": "Print Draft Functionality",
+      "description": "Print draft functionality",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["draft-editor", "print-stylesheet"]
+    },
+    {
+      "id": "case-status-transitions",
+      "category": "Case Management",
+      "title": "Case Status Transitions",
+      "description": "Case status transitions correctly",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["case-creation"]
+    },
+    {
+      "id": "case-deletion",
+      "category": "Case Management",
+      "title": "Case Deletion with Confirmation",
+      "description": "Case deletion with confirmation",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["case-creation"]
+    },
+    {
+      "id": "case-archival",
+      "category": "Case Management",
+      "title": "Case Archival and Retrieval",
+      "description": "Case archival and retrieval",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["case-status-transitions"]
+    },
+    {
+      "id": "case-duplication",
+      "category": "Case Management",
+      "title": "Case Duplication",
+      "description": "Case duplication",
+      "priority": 3,
+      "complexity": "simple",
+      "dependencies": ["case-creation"]
+    },
+    {
+      "id": "user-roles",
+      "category": "Authentication",
+      "title": "User Roles and Permissions",
+      "description": "User role permissions - clerk cannot approve",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["user-authentication"]
+    },
+    {
+      "id": "user-role-supervisor",
+      "category": "Authentication",
+      "title": "Supervisor Can Approve",
+      "description": "User role permissions - supervisor can approve",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["user-roles"]
+    },
+    {
+      "id": "case-assignment",
+      "category": "Case Management",
+      "title": "Case Assignment to Users",
+      "description": "Case assignment to user",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["user-roles", "case-creation"]
+    },
+    {
+      "id": "organization-settings",
+      "category": "Authentication",
+      "title": "Organization Settings Management",
+      "description": "Organization settings management",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["user-authentication"]
+    },
+    {
+      "id": "user-profile",
+      "category": "Authentication",
+      "title": "User Profile Update",
+      "description": "User profile update",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["user-authentication"]
+    },
+    {
+      "id": "password-change",
+      "category": "Authentication",
+      "title": "Password Change Functionality",
+      "description": "Password change functionality",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["user-authentication"]
+    },
+    {
+      "id": "forgot-password",
+      "category": "Authentication",
+      "title": "Forgot Password Flow",
+      "description": "Forgot password flow",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["user-authentication"]
+    },
+    {
+      "id": "session-timeout",
+      "category": "UX",
+      "title": "Session Timeout and Refresh",
+      "description": "Session timeout handling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["user-authentication"]
+    },
+    {
+      "id": "realtime-presence",
+      "category": "Collaboration",
+      "title": "Realtime Presence on Canvas",
+      "description": "Realtime presence on canvas shows other users",
+      "priority": 2,
+      "complexity": "complex",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "realtime-notifications",
+      "category": "Collaboration",
+      "title": "Realtime Notifications",
+      "description": "Realtime notification flow",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["realtime-presence"]
+    },
+    {
+      "id": "proxy-representation",
+      "category": "Legal Features",
+      "title": "Proxy Representation Flow",
+      "description": "Proxy representation flow",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["canvas-relationship-proxy", "entity-extraction"]
+    },
+    {
+      "id": "proxy-validity",
+      "category": "Legal Features",
+      "title": "Proxy Validity Check",
+      "description": "Proxy validity check",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["proxy-representation"]
+    },
+    {
+      "id": "encumbrances-display",
+      "category": "Legal Features",
+      "title": "Encumbrances Display on Property",
+      "description": "Encumbrances display on property card",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["property-entity-card"]
+    },
+    {
+      "id": "document-deletion",
+      "category": "Document Processing",
+      "title": "Document Deletion",
+      "description": "Document deletion removes associated data",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload", "entity-extraction"]
+    },
+    {
+      "id": "document-reprocessing",
+      "category": "Document Processing",
+      "title": "Document Reprocessing",
+      "description": "Document reprocessing",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload", "ocr-processing"]
+    },
+    {
+      "id": "document-batch-operations",
+      "category": "Document Processing",
+      "title": "Batch Operations on Documents",
+      "description": "Batch operations on documents",
+      "priority": 3,
+      "complexity": "simple",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "processing-retry",
+      "category": "Data Processing",
+      "title": "Processing Job Retry on Failure",
+      "description": "Processing job retry on failure",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["document-upload"]
+    },
+    {
+      "id": "error-recovery",
+      "category": "UX",
+      "title": "Error Recovery and Feedback",
+      "description": "Error recovery on failed draft generation",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["draft-generation"]
+    },
+    {
+      "id": "offline-handling",
+      "category": "UX",
+      "title": "Network Offline Handling",
+      "description": "Network offline handling",
+      "priority": 3,
+      "complexity": "moderate",
+      "dependencies": ["user-authentication"]
+    },
+    {
+      "id": "performance-bulk-processing",
+      "category": "Performance",
+      "title": "Bulk Document Processing Performance",
+      "description": "Bulk document processing performance",
+      "priority": 3,
+      "complexity": "complex",
+      "dependencies": ["document-upload", "ocr-processing", "entity-extraction"]
+    },
+    {
+      "id": "draft-template-selection",
+      "category": "Draft Editor",
+      "title": "Draft Template Selection",
+      "description": "Draft template selection",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["draft-generation"]
+    },
+    {
+      "id": "document-type-filter",
+      "category": "Document Processing",
+      "title": "Document Type Filter",
+      "description": "Document type filter in upload view",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["document-type-detection"]
+    },
+    {
+      "id": "confidence-filters",
+      "category": "Entity Management",
+      "title": "Confidence Filter in Entities View",
+      "description": "Confidence filter in entities view",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["entity-extraction"]
+    },
+    {
+      "id": "batch-entity-confirmation",
+      "category": "Entity Management",
+      "title": "Batch Entity Confirmation",
+      "description": "Batch entity confirmation",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["entity-extraction", "consensus-engine"]
+    },
+    {
+      "id": "copy-field-value",
+      "category": "UX",
+      "title": "Copy Field Value to Clipboard",
+      "description": "Copy field value functionality",
+      "priority": 3,
+      "complexity": "simple",
+      "dependencies": ["person-entity-card"]
+    },
+    {
+      "id": "deep-linking",
+      "category": "UX",
+      "title": "Deep Links to Case Sections",
+      "description": "Deep link to specific case section",
+      "priority": 3,
+      "complexity": "simple",
+      "dependencies": ["case-creation"]
+    },
+    {
+      "id": "browser-navigation",
+      "category": "UX",
+      "title": "Browser Back/Forward Navigation",
+      "description": "Browser back/forward navigation",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["case-creation"]
+    },
+    {
+      "id": "keyboard-accessibility",
+      "category": "Accessibility",
+      "title": "Keyboard Navigation and Shortcuts",
+      "description": "Keyboard accessibility - full form navigation",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": []
+    },
+    {
+      "id": "screen-reader-support",
+      "category": "Accessibility",
+      "title": "Screen Reader Compatibility",
+      "description": "Screen reader compatibility",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": []
+    },
+    {
+      "id": "reduced-motion",
+      "category": "Accessibility",
+      "title": "Reduced Motion Preference",
+      "description": "Reduced motion preference",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": []
+    },
+    {
+      "id": "high-contrast-mode",
+      "category": "Accessibility",
+      "title": "High Contrast Mode",
+      "description": "High contrast mode",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": []
+    },
+    {
+      "id": "currency-formatting",
+      "category": "Localization",
+      "title": "Currency Formatting (BRL)",
+      "description": "Currency formatting (BRL)",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["localization-pt-br"]
+    },
+    {
+      "id": "dark-mode-support",
+      "category": "UI Theme",
+      "title": "Dark Mode Support",
+      "description": "Dark mode support",
+      "priority": 3,
+      "complexity": "moderate",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "responsive-design",
+      "category": "UI Design",
+      "title": "Responsive Layout for Mobile/Tablet",
+      "description": "Responsive design - sidebar collapse on mobile",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "color-contrast",
+      "category": "Accessibility",
+      "title": "WCAG AA Color Contrast",
+      "description": "Color contrast accessibility",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "document-card-styling",
+      "category": "UI Design",
+      "title": "Document Card Visual Styling",
+      "description": "Document card visual styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "status-badge-colors",
+      "category": "UI Design",
+      "title": "Status Badge Colors",
+      "description": "Status badge colors match design system",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "pending-item-highlight",
+      "category": "UI Design",
+      "title": "Pending Item Highlight (Yellow)",
+      "description": "Pending item highlight is amber/yellow",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "person-card-styling",
+      "category": "UI Design",
+      "title": "Person Card Styling on Canvas",
+      "description": "Person card styling on canvas",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui", "canvas-visualization"]
+    },
+    {
+      "id": "property-card-styling",
+      "category": "UI Design",
+      "title": "Property Card Styling on Canvas",
+      "description": "Property card styling on canvas",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui", "canvas-visualization"]
+    },
+    {
+      "id": "edge-styling",
+      "category": "UI Design",
+      "title": "Edge/Connection Styling on Canvas",
+      "description": "Edge/connection styling on canvas",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui", "canvas-connections"]
+    },
+    {
+      "id": "button-primary-styling",
+      "category": "UI Design",
+      "title": "Primary Button Styling",
+      "description": "Button styling - primary buttons",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "button-secondary-styling",
+      "category": "UI Design",
+      "title": "Secondary Button Styling",
+      "description": "Button styling - secondary buttons",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "button-danger-styling",
+      "category": "UI Design",
+      "title": "Danger Button Styling",
+      "description": "Button styling - danger buttons",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "loading-button-state",
+      "category": "UI Design",
+      "title": "Loading Button State",
+      "description": "Loading button state shows spinner",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "input-field-styling",
+      "category": "UI Design",
+      "title": "Input Field Styling",
+      "description": "Input field styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "confidence-badge-styling",
+      "category": "UI Design",
+      "title": "Confidence Badge Styling",
+      "description": "Confidence badge styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "document-type-badge-styling",
+      "category": "UI Design",
+      "title": "Document Type Badge Styling",
+      "description": "Document type badge styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "modal-styling",
+      "category": "UI Design",
+      "title": "Modal Styling",
+      "description": "Modal styling",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "modal-animation",
+      "category": "UI Design",
+      "title": "Modal Animation on Open/Close",
+      "description": "Modal animation on open/close",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["modal-styling"]
+    },
+    {
+      "id": "header-layout",
+      "category": "UI Design",
+      "title": "Header Layout and Styling",
+      "description": "Header layout and styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "sidebar-navigation-styling",
+      "category": "UI Design",
+      "title": "Sidebar Navigation Styling",
+      "description": "Sidebar navigation styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "draft-editor-styling",
+      "category": "UI Design",
+      "title": "Draft Editor Styling",
+      "description": "Draft editor styling matches design",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["design-system-ui", "draft-editor"]
+    },
+    {
+      "id": "chat-panel-styling",
+      "category": "UI Design",
+      "title": "Chat Panel Styling",
+      "description": "Chat panel styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui", "chat-interface"]
+    },
+    {
+      "id": "timeline-history-styling",
+      "category": "UI Design",
+      "title": "Timeline/History View Styling",
+      "description": "Timeline/history view styling",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["design-system-ui", "audit-trail"]
+    },
+    {
+      "id": "card-expand-animation",
+      "category": "UI Design",
+      "title": "Card Expand/Collapse Animation",
+      "description": "Card expand/collapse animation",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "page-transition-animations",
+      "category": "UI Design",
+      "title": "Page Transition Animations",
+      "description": "Page transition animations",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "processing-pulse-animation",
+      "category": "UI Design",
+      "title": "Processing Pulse Animation",
+      "description": "Processing pulse animation",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "canvas-pan-zoom-smoothness",
+      "category": "UI Design",
+      "title": "Canvas Pan/Zoom Smoothness",
+      "description": "Canvas pan/zoom smoothness",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["canvas-visualization"]
+    },
+    {
+      "id": "card-hover-scale",
+      "category": "UI Design",
+      "title": "Card Hover Scale Animation",
+      "description": "Card hover scale animation",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "source-document-chips-styling",
+      "category": "UI Design",
+      "title": "Source Document Chips Styling",
+      "description": "Source document chips styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "evidence-modal-styling",
+      "category": "UI Design",
+      "title": "Evidence Modal Document Viewer Styling",
+      "description": "Evidence modal document viewer styling",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["design-system-ui", "evidence-modal"]
+    },
+    {
+      "id": "error-message-styling",
+      "category": "UI Design",
+      "title": "Error Message Styling",
+      "description": "Error message styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "success-notification-styling",
+      "category": "UI Design",
+      "title": "Success Notification Styling",
+      "description": "Success notification styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "warning-notification-styling",
+      "category": "UI Design",
+      "title": "Warning Notification Styling",
+      "description": "Warning notification styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "empty-state-illustrations",
+      "category": "UI Design",
+      "title": "Empty State Illustrations",
+      "description": "Empty state illustrations",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "typography-hierarchy",
+      "category": "UI Design",
+      "title": "Typography Hierarchy",
+      "description": "Typography hierarchy",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "table-styling",
+      "category": "UI Design",
+      "title": "Table Styling Consistency",
+      "description": "Table styling consistency",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "dropdown-menu-styling",
+      "category": "UI Design",
+      "title": "Dropdown Menu Styling",
+      "description": "Dropdown menu styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "tooltip-styling",
+      "category": "UI Design",
+      "title": "Tooltip Styling",
+      "description": "Tooltip styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "progress-bar-styling",
+      "category": "UI Design",
+      "title": "Progress Bar Styling",
+      "description": "Progress bar styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "skeleton-loading-states",
+      "category": "UI Design",
+      "title": "Skeleton Loading States",
+      "description": "Skeleton loading states",
+      "priority": 2,
+      "complexity": "moderate",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "form-validation-error-styling",
+      "category": "UI Design",
+      "title": "Form Validation Error Styling",
+      "description": "Form validation error styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "disabled-state-styling",
+      "category": "UI Design",
+      "title": "Disabled State Styling",
+      "description": "Disabled state styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "notification-toast-positioning",
+      "category": "UI Design",
+      "title": "Notification Toast Positioning",
+      "description": "Notification toast positioning",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "date-picker-styling",
+      "category": "UI Design",
+      "title": "Date Picker Styling",
+      "description": "Date picker styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "select-combobox-styling",
+      "category": "UI Design",
+      "title": "Select/Combobox Styling",
+      "description": "Select/combobox styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "focus-visible-styling",
+      "category": "UI Design",
+      "title": "Focus Visible Styling",
+      "description": "Focus visible styling for accessibility",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "icon-consistency",
+      "category": "UI Design",
+      "title": "Icon Consistency and Sizing",
+      "description": "Icon consistency and sizing",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "avatar-profile-styling",
+      "category": "UI Design",
+      "title": "Avatar/User Profile Styling",
+      "description": "Avatar/user profile styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "breadcrumb-navigation-styling",
+      "category": "UI Design",
+      "title": "Breadcrumb Navigation Styling",
+      "description": "Breadcrumb navigation styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "tab-component-styling",
+      "category": "UI Design",
+      "title": "Tab Component Styling",
+      "description": "Tab component styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "checkbox-radio-styling",
+      "category": "UI Design",
+      "title": "Checkbox and Radio Styling",
+      "description": "Checkbox and radio styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "toggle-switch-styling",
+      "category": "UI Design",
+      "title": "Toggle Switch Styling",
+      "description": "Toggle switch styling",
+      "priority": 2,
+      "complexity": "simple",
+      "dependencies": ["design-system-ui"]
+    },
+    {
+      "id": "end-to-end-flow",
+      "category": "Integration",
+      "title": "Complete End-to-End Purchase/Sale Flow",
+      "description": "Complete end-to-end purchase/sale flow",
+      "priority": 1,
+      "complexity": "complex",
+      "dependencies": ["case-creation", "document-upload", "entity-extraction", "canvas-validation", "draft-generation", "chat-operations", "audit-trail", "export-html"]
+    }
+  ]
+}

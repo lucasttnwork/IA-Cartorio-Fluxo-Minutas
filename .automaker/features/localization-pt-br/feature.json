@@ -1,0 +1,12 @@
+{
+  "id": "localization-pt-br",
+  "category": "Localization",
+  "title": "Portuguese (Brazil) Localization",
+  "description": "Localization date format (pt-BR)",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "simple",
+  "dependencies": [],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

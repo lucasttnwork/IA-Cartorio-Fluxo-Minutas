@@ -1,0 +1,14 @@
+{
+  "id": "page-transition-animations",
+  "category": "UI Design",
+  "title": "Page Transition Animations",
+  "description": "Page transition animations",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "design-system-ui"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

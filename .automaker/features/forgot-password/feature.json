@@ -1,0 +1,14 @@
+{
+  "id": "forgot-password",
+  "category": "Authentication",
+  "title": "Forgot Password Flow",
+  "description": "Forgot password flow",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "user-authentication"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "person-entity-auto-creation",
+  "category": "Entity Management",
+  "title": "Person Entity Auto-Creation",
+  "description": "Person entity auto-creation from documents - system extracts and creates person cards",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "complex",
+  "dependencies": [
+    "entity-extraction",
+    "consensus-engine"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

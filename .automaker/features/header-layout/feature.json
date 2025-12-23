@@ -1,0 +1,14 @@
+{
+  "id": "header-layout",
+  "category": "UI Design",
+  "title": "Header Layout and Styling",
+  "description": "Header layout and styling",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "design-system-ui"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

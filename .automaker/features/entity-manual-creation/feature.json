@@ -1,0 +1,15 @@
+{
+  "id": "entity-manual-creation",
+  "category": "Entity Management",
+  "title": "Manual Entity Creation",
+  "description": "Entity manual creation (person or property)",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "person-entity-card",
+    "property-entity-card"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "export-pdf",
+  "category": "Export",
+  "title": "Export Draft as PDF",
+  "description": "Export draft as PDF",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "draft-editor"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

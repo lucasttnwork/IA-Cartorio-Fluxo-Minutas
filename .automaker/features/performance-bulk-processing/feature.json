@@ -1,0 +1,16 @@
+{
+  "id": "performance-bulk-processing",
+  "category": "Performance",
+  "title": "Bulk Document Processing Performance",
+  "description": "Bulk document processing performance",
+  "status": "backlog",
+  "priority": 3,
+  "complexity": "complex",
+  "dependencies": [
+    "document-upload",
+    "ocr-processing",
+    "entity-extraction"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

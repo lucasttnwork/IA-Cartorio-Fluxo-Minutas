@@ -1,0 +1,14 @@
+{
+  "id": "document-upload-drag-state",
+  "category": "UI Design",
+  "title": "Drag-over State on Dropzone",
+  "description": "Drag-over state on dropzone",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "document-upload"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

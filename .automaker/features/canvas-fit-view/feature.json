@@ -1,0 +1,14 @@
+{
+  "id": "canvas-fit-view",
+  "category": "Graph Visualization",
+  "title": "Canvas Fit View",
+  "description": "Canvas fit view functionality",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "canvas-visualization"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

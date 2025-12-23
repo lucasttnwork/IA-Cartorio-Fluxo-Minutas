@@ -1,0 +1,14 @@
+{
+  "id": "offline-handling",
+  "category": "UX",
+  "title": "Network Offline Handling",
+  "description": "Network offline handling",
+  "status": "backlog",
+  "priority": 3,
+  "complexity": "moderate",
+  "dependencies": [
+    "user-authentication"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

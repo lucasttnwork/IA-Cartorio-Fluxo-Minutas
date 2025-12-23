@@ -1,0 +1,14 @@
+{
+  "id": "copy-field-value",
+  "category": "UX",
+  "title": "Copy Field Value to Clipboard",
+  "description": "Copy field value functionality",
+  "status": "backlog",
+  "priority": 3,
+  "complexity": "simple",
+  "dependencies": [
+    "person-entity-card"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

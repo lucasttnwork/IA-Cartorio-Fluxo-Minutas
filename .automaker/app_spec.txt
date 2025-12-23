@@ -1,0 +1,885 @@
+<project_specification>
+  <project_name>Minuta Canvas - Document Processing & Draft Generation System</project_name>
+
+  <overview>
+    Build a complete document processing system for notary offices that transforms bulk document uploads
+    into structured, auditable legal drafts. The application extracts people and properties from documents
+    using dual extraction (OCR + AI), allows visual relationship mapping on an infinite canvas, generates
+    drafts with explicit pending items, and enables conversational editing with full audit trail.
+    The system follows the principle "no evidence = no auto-fill" ensuring reliability and traceability.
+  </overview>
+
+  <technology_stack>
+    <frontend>
+      <framework>React 18+ with TypeScript and Vite</framework>
+      <styling>TailwindCSS</styling>
+      <animations>Framer Motion</animations>
+      <canvas>React Flow (Xyflow) - infinite canvas with nodes, edges, pan/zoom</canvas>
+      <rich_text_editor>Tiptap (ProseMirror-based, headless)</rich_text_editor>
+      <state_management>Zustand or React Context</state_management>
+      <realtime>Supabase Realtime client</realtime>
+    </frontend>
+    <backend>
+      <platform>Supabase (managed PostgreSQL)</platform>
+      <database>PostgreSQL with RLS (Row Level Security)</database>
+      <authentication>Supabase Auth</authentication>
+      <storage>Supabase Storage with signed URLs</storage>
+      <realtime>Supabase Realtime (broadcast, presence, postgres changes)</realtime>
+      <queues>Supabase Queues (pgmq) - durable message queue</queues>
+      <secrets>Supabase Vault (encrypted secrets storage)</secrets>
+      <edge_functions>Supabase Edge Functions (Deno runtime) - lightweight endpoints only</edge_functions>
+    </backend>
+    <worker_service>
+      <runtime>Node.js with TypeScript (containerized)</runtime>
+      <deployment>Cloud Run, VPS, or similar container platform</deployment>
+      <responsibilities>
+        - Consume jobs from pgmq queue
+        - Download documents via signed URLs
+        - Execute OCR (Document AI) and AI extraction (Gemini)
+        - Run consensus engine comparing OCR vs LLM results
+        - Perform entity resolution (deduplication)
+        - Generate drafts via Gemini Pro
+        - Write results back to database
+      </responsibilities>
+    </worker_service>
+    <ai_services>
+      <ocr>Google Document AI - Enterprise Document OCR (text + layout, deskew, blocks/lines/words)</ocr>
+      <extraction>Google Gemini Flash - multimodal extraction to structured JSON</extraction>
+      <draft_generation>Google Gemini Pro - draft generation with global coherence</draft_generation>
+      <ai_features>
+        - Structured Outputs (JSON Schema) for predictable, parseable responses
+        - Function Calling for chat edits via operations (not free text)
+        - Context Caching to reduce cost/latency for repeated context
+      </ai_features>
+    </ai_services>
+    <communication>
+      <api>RESTful endpoints via Edge Functions</api>
+      <realtime>WebSocket via Supabase Realtime</realtime>
+      <file_access>Signed URLs with short expiration</file_access>
+    </communication>
+  </technology_stack>
+
+  <prerequisites>
+    <environment_setup>
+      - Supabase project created with database, auth, storage enabled
+      - Google Cloud project with Document AI processor configured
+      - Gemini API key (AI Studio or Vertex AI)
+      - Worker service deployed to container platform
+      - Environment variables configured for all services
+    </environment_setup>
+    <api_keys>
+      - SUPABASE_URL and SUPABASE_ANON_KEY for frontend
+      - SUPABASE_SERVICE_ROLE_KEY for edge functions and worker
+      - GOOGLE_APPLICATION_CREDENTIALS for Document AI
+      - GEMINI_API_KEY for Gemini API calls
+    </api_keys>
+  </prerequisites>
+
+  <core_features>
+    <case_management>
+      - Create new case with act type selection (purchase/sale as MVP)
+      - Case status tracking (draft, processing, review, approved, archived)
+      - Assign responsible users
+      - Case history and versioning
+      - Canonical data model (JSON) as single source of truth
+    </case_management>
+
+    <document_upload>
+      - Bulk upload via drag-and-drop dropzone
+      - Support for PDF and images (photos of documents)
+      - Upload progress indicators per file
+      - Automatic status tracking (uploaded, processing, processed, needs_review, approved, failed)
+      - Document type auto-detection (CNH, RG, marriage certificate, deed, proxy, etc.)
+      - Original file preview capability
+    </document_upload>
+
+    <ocr_extraction>
+      - Primary OCR via Google Document AI Enterprise OCR
+      - Text extraction with layout preservation (blocks, paragraphs, lines, words)
+      - Bounding box coordinates for evidence linking
+      - Deskew capability for crooked scans
+      - Confidence scores per element
+      - Language hints for Portuguese (pt-BR)
+    </ocr_extraction>
+
+    <ai_extraction>
+      - Parallel extraction via Gemini Flash (multimodal)
+      - Structured JSON output via JSON Schema (strict validation)
+      - Document-type-specific extraction schemas
+      - Confidence notes and uncertainty flagging
+      - Works even when OCR quality is poor (image understanding)
+    </ai_extraction>
+
+    <consensus_engine>
+      - Compare OCR results vs LLM results field by field
+      - If match: high confidence, use value
+      - If similar: medium confidence, prefer LLM
+      - If divergent: low confidence, mark as pending for human review
+      - Never "invent" data - no evidence means pending item
+    </consensus_engine>
+
+    <entity_resolution>
+      - Create Person entities from document extractions
+      - Create Property entities from deed/IPTU extractions
+      - Automatic deduplication rules:
+        - CPF match = auto merge
+        - Name + birth date + filiation match = suggest merge
+        - Registry number match (property) = auto merge
+      - Manual merge/split capabilities
+      - Source document tracking per entity
+    </entity_resolution>
+
+    <entity_cards>
+      - Person Card:
+        - Profile header with name and photo (if available)
+        - Field groups: identification, address, civil status, filiation
+        - Confidence indicator per field (high, medium, low)
+        - Source document chips showing which docs contributed
+        - Actions: Edit, Merge, Split, View Evidence
+      - Property Card:
+        - Registry number, office, address
+        - Area, description, encumbrances
+        - Suggested owner with confidence level
+        - Source document chips
+        - Actions: Edit, View Evidence
+      - Evidence Modal:
+        - Document viewer (PDF/image)
+        - Highlighted bounding box for the specific field
+        - OCR vs LLM comparison view
+        - Confidence breakdown
+        - Confirm or Override buttons
+    </entity_cards>
+
+    <infinite_canvas>
+      - React Flow based infinite canvas with pan/zoom
+      - Custom node types: PersonNode, PropertyNode
+      - Custom edge types: RelationshipEdge with labels
+      - Connection handles on nodes for easy linking
+      - Drag-and-drop positioning
+      - Minimap for navigation
+      - Connection types:
+        - Person to Person: spouse_of
+        - Person to Person: represents (proxy)
+        - Person to Property: owns, sells
+        - Property to Person: buys (transfer to)
+      - Auto-suggestions based on document analysis
+      - Validation rules per act type
+      - Warning indicators for uncertain connections
+    </infinite_canvas>
+
+    <draft_generation>
+      - Template system per act type
+      - Canonical model consolidation from graph
+      - Business rules validation before generation
+      - Gemini Pro for coherent text generation
+      - Section-based structure (header, parties, object, price, conditions, etc.)
+      - Pending items displayed as warnings (not invented)
+      - Draft versioning
+    </draft_generation>
+
+    <draft_editor>
+      - Tiptap-based rich text editor
+      - Section-based navigation
+      - Pending items highlighted (yellow background)
+      - Track changes view capability
+      - Toolbar for formatting
+      - Export options (HTML, PDF)
+    </draft_editor>
+
+    <chat_editing>
+      - Chat panel alongside draft editor
+      - Natural language requests for changes
+      - Function calling for structured operations:
+        - update_field: Change specific data in canonical model
+        - regenerate_section: Re-render affected section
+        - add_clause: Insert new clause
+        - remove_clause: Delete clause
+        - mark_pending: Flag item for review
+        - resolve_pending: Mark pending as resolved
+      - Patch-based updates (not full rewrite)
+      - Real-time section regeneration
+      - Context caching for efficiency
+    </chat_editing>
+
+    <audit_trail>
+      - Every field has evidence link (document, page, bounding box)
+      - Every change logged: who, when, what changed, old value, new value
+      - Chat operations logged with reason
+      - Immutable audit log
+      - Exportable compliance reports
+      - Evidence chain visualization
+    </audit_trail>
+
+    <realtime_updates>
+      - Document processing status via Realtime
+      - New entity creation notifications
+      - Draft generation completion
+      - Collaborative presence on canvas
+      - Chat response streaming
+    </realtime_updates>
+
+    <export>
+      - Draft export as HTML
+      - Draft export as PDF
+      - Case summary with all sources
+      - Evidence chain report
+      - Change history timeline
+    </export>
+  </core_features>
+
+  <database_schema>
+    <tables>
+      <organizations>
+        - id (UUID, PK)
+        - name (TEXT)
+        - settings (JSONB)
+        - created_at (TIMESTAMPTZ)
+      </organizations>
+
+      <users>
+        - id (UUID, PK, references auth.users)
+        - organization_id (UUID, FK)
+        - role (TEXT: clerk, supervisor, admin)
+        - full_name (TEXT)
+        - created_at (TIMESTAMPTZ)
+      </users>
+
+      <cases>
+        - id (UUID, PK)
+        - organization_id (UUID, FK)
+        - act_type (TEXT: purchase_sale, donation, etc.)
+        - status (TEXT: draft, processing, review, approved, archived)
+        - title (TEXT)
+        - created_by (UUID, FK users)
+        - assigned_to (UUID, FK users)
+        - canonical_data (JSONB) - consolidated case data, source of truth
+        - created_at, updated_at (TIMESTAMPTZ)
+      </cases>
+
+      <documents>
+        - id (UUID, PK)
+        - case_id (UUID, FK)
+        - storage_path (TEXT)
+        - original_name (TEXT)
+        - mime_type (TEXT)
+        - file_size (INTEGER)
+        - page_count (INTEGER)
+        - status (TEXT: uploaded, processing, processed, needs_review, approved, failed)
+        - doc_type (TEXT: cnh, rg, marriage_cert, deed, proxy, etc.)
+        - doc_type_confidence (FLOAT)
+        - metadata (JSONB)
+        - created_at, updated_at (TIMESTAMPTZ)
+      </documents>
+
+      <extractions>
+        - id (UUID, PK)
+        - document_id (UUID, FK)
+        - ocr_result (JSONB) - Document AI output
+        - llm_result (JSONB) - Gemini extraction output
+        - consensus (JSONB) - merged result with confidence scores
+        - pending_fields (TEXT[]) - fields needing human review
+        - created_at (TIMESTAMPTZ)
+      </extractions>
+
+      <people>
+        - id (UUID, PK)
+        - case_id (UUID, FK)
+        - full_name (TEXT)
+        - cpf, rg, rg_issuer (TEXT)
+        - birth_date (DATE)
+        - nationality, marital_status, profession (TEXT)
+        - address (JSONB: street, number, complement, city, state, zip)
+        - email, phone (TEXT)
+        - father_name, mother_name (TEXT)
+        - confidence (FLOAT)
+        - source_docs (UUID[]) - document IDs that contributed
+        - metadata (JSONB)
+        - created_at, updated_at (TIMESTAMPTZ)
+      </people>
+
+      <properties>
+        - id (UUID, PK)
+        - case_id (UUID, FK)
+        - registry_number (TEXT) - matricula
+        - registry_office (TEXT) - cartorio
+        - address (JSONB)
+        - area_sqm (NUMERIC)
+        - description (TEXT)
+        - iptu_number (TEXT)
+        - encumbrances (JSONB) - onus, hipotecas
+        - confidence (FLOAT)
+        - source_docs (UUID[])
+        - metadata (JSONB)
+        - created_at, updated_at (TIMESTAMPTZ)
+      </properties>
+
+      <evidence>
+        - id (UUID, PK)
+        - entity_type (TEXT: person, property)
+        - entity_id (UUID)
+        - field_name (TEXT)
+        - document_id (UUID, FK)
+        - page_number (INTEGER)
+        - bounding_box (JSONB: x, y, width, height)
+        - extracted_text (TEXT)
+        - confidence (FLOAT)
+        - source (TEXT: ocr, llm, consensus)
+        - created_at (TIMESTAMPTZ)
+      </evidence>
+
+      <graph_edges>
+        - id (UUID, PK)
+        - case_id (UUID, FK)
+        - source_type (TEXT: person, property)
+        - source_id (UUID)
+        - target_type (TEXT)
+        - target_id (UUID)
+        - relationship (TEXT: spouse_of, represents, owns, sells, buys, guarantor_of, witness_for)
+        - confidence (FLOAT)
+        - confirmed (BOOLEAN)
+        - metadata (JSONB)
+        - created_at (TIMESTAMPTZ)
+        - UNIQUE(case_id, source_type, source_id, target_type, target_id, relationship)
+      </graph_edges>
+
+      <drafts>
+        - id (UUID, PK)
+        - case_id (UUID, FK)
+        - version (INTEGER)
+        - content (JSONB) - structured draft content by section
+        - html_content (TEXT) - rendered HTML
+        - pending_items (JSONB)
+        - status (TEXT: generated, reviewing, approved)
+        - created_at (TIMESTAMPTZ)
+        - UNIQUE(case_id, version)
+      </drafts>
+
+      <chat_sessions>
+        - id (UUID, PK)
+        - case_id (UUID, FK)
+        - draft_id (UUID, FK)
+        - created_at (TIMESTAMPTZ)
+      </chat_sessions>
+
+      <chat_messages>
+        - id (UUID, PK)
+        - session_id (UUID, FK)
+        - role (TEXT: user, assistant, system)
+        - content (TEXT)
+        - operation (JSONB) - structured operation if assistant action
+        - created_at (TIMESTAMPTZ)
+      </chat_messages>
+
+      <operations_log>
+        - id (UUID, PK)
+        - case_id (UUID, FK)
+        - draft_id (UUID, FK)
+        - user_id (UUID, FK)
+        - operation_type (TEXT)
+        - target_path (TEXT) - JSON path of affected field
+        - old_value (JSONB)
+        - new_value (JSONB)
+        - reason (TEXT)
+        - created_at (TIMESTAMPTZ)
+      </operations_log>
+
+      <processing_jobs>
+        - id (UUID, PK)
+        - case_id (UUID, FK)
+        - document_id (UUID, FK)
+        - job_type (TEXT: ocr, extraction, consensus, entity_resolution, draft)
+        - status (TEXT: pending, processing, completed, failed, retrying)
+        - attempts (INTEGER)
+        - max_attempts (INTEGER, default 3)
+        - error_message (TEXT)
+        - result (JSONB)
+        - created_at, started_at, completed_at (TIMESTAMPTZ)
+      </processing_jobs>
+    </tables>
+
+    <row_level_security>
+      - All tables protected by RLS policies
+      - Users can only access data from their organization
+      - Role-based access: clerks create/edit, supervisors approve, admins manage
+      - Service role bypasses RLS for worker operations
+    </row_level_security>
+
+    <indexes>
+      - documents(case_id), documents(status)
+      - people(case_id), people(cpf)
+      - properties(case_id), properties(registry_number)
+      - graph_edges(case_id), graph_edges(source_type, source_id), graph_edges(target_type, target_id)
+      - evidence(entity_type, entity_id)
+      - processing_jobs(status)
+    </indexes>
+  </database_schema>
+
+  <api_endpoints_summary>
+    <cases>
+      - POST /functions/v1/create-case (create new case with act type)
+      - GET /functions/v1/get-case/:id (get case details)
+      - PUT /functions/v1/update-case/:id (update case metadata)
+      - DELETE /functions/v1/delete-case/:id (soft delete)
+      - GET /functions/v1/list-cases (list cases for organization)
+    </cases>
+
+    <documents>
+      - POST /functions/v1/upload-document (get signed URL for upload)
+      - POST /functions/v1/confirm-upload (confirm upload and enqueue processing)
+      - GET /functions/v1/document/:id (get document details)
+      - GET /functions/v1/document/:id/preview (get signed URL for preview)
+      - DELETE /functions/v1/document/:id (delete document)
+    </documents>
+
+    <entities>
+      - GET /functions/v1/case/:id/people (list people for case)
+      - GET /functions/v1/case/:id/properties (list properties for case)
+      - PUT /functions/v1/person/:id (update person)
+      - PUT /functions/v1/property/:id (update property)
+      - POST /functions/v1/merge-people (merge two person entities)
+      - POST /functions/v1/split-person (split person into two)
+    </entities>
+
+    <graph>
+      - GET /functions/v1/case/:id/graph (get all nodes and edges)
+      - POST /functions/v1/save-graph (save canvas connections)
+      - POST /functions/v1/create-edge (create single connection)
+      - DELETE /functions/v1/edge/:id (delete connection)
+      - POST /functions/v1/validate-graph (validate graph for act type)
+    </graph>
+
+    <draft>
+      - POST /functions/v1/generate-draft (trigger draft generation)
+      - GET /functions/v1/draft/:id (get draft content)
+      - GET /functions/v1/case/:id/drafts (list draft versions)
+      - PUT /functions/v1/draft/:id/approve (approve draft)
+      - GET /functions/v1/export-draft (export as HTML/PDF)
+    </draft>
+
+    <chat>
+      - POST /functions/v1/chat-session (create chat session)
+      - POST /functions/v1/chat-message (send message and get response)
+      - GET /functions/v1/chat-session/:id/messages (get message history)
+      - POST /functions/v1/apply-patch (apply structured patch)
+    </chat>
+
+    <evidence>
+      - GET /functions/v1/evidence/:entityType/:entityId (get evidence for entity)
+      - GET /functions/v1/evidence/:id/document (get document with highlight)
+    </evidence>
+
+    <audit>
+      - GET /functions/v1/case/:id/audit-log (get audit trail)
+      - GET /functions/v1/case/:id/report (generate compliance report)
+    </audit>
+
+    <realtime_channels>
+      - case:{caseId} - document status, entity creation, draft generation events
+      - presence:{caseId} - user presence on canvas
+    </realtime_channels>
+  </api_endpoints_summary>
+
+  <ui_layout>
+    <page_structure>
+      /
+      └── dashboard/
+          ├── index           - Case list, create new case
+          └── [caseId]/
+              ├── index       - Case overview with status
+              ├── upload      - Document upload dropzone
+              ├── entities    - Cards view (people + properties)
+              ├── canvas      - Infinite canvas for connections
+              ├── draft       - Draft editor with chat panel
+              └── history     - Audit log and versions
+    </page_structure>
+
+    <main_layout>
+      - Header: Logo, case title, status badge, user menu
+      - Sidebar: Case navigation (upload, entities, canvas, draft, history)
+      - Main area: Content based on current view
+      - Responsive: Collapsible sidebar on mobile
+    </main_layout>
+
+    <upload_view>
+      - Large dropzone area with drag-and-drop
+      - File list with upload progress
+      - Document cards showing:
+        - Thumbnail preview
+        - File name and type
+        - Processing status (spinner, checkmark, warning)
+        - Detected document type badge
+        - Actions: View, Delete
+      - "Process All" button when uploads complete
+    </upload_view>
+
+    <entities_view>
+      - Two-column grid: People cards | Property cards
+      - Each card shows:
+        - Entity summary (name/address)
+        - Confidence indicator
+        - Source document chips
+        - Expand/collapse for details
+        - Edit, Merge, Split buttons
+      - Pending items highlighted in yellow
+      - Filter by confidence level
+      - "Go to Canvas" CTA when entities ready
+    </entities_view>
+
+    <canvas_view>
+      - Full-screen React Flow canvas
+      - Floating toolbar: Zoom controls, fit view, minimap toggle
+      - Node palette: Drag new nodes from sidebar
+      - Context menu on right-click
+      - Connection line while dragging
+      - Suggestions panel (collapsible):
+        - "Person A might be owner of Property X"
+        - Accept/Reject buttons
+      - Validation warnings displayed inline
+      - "Generate Draft" button when graph valid
+    </canvas_view>
+
+    <draft_view>
+      - Two-panel layout:
+        - Left: Tiptap editor with draft content
+        - Right: Chat panel for conversational editing
+      - Editor features:
+        - Section navigation (table of contents)
+        - Pending items in yellow highlight
+        - Track changes toggle
+        - Export button (HTML, PDF)
+      - Chat features:
+        - Message history
+        - Input field at bottom
+        - "Thinking..." indicator
+        - Operation preview before applying
+        - Quick actions: Regenerate section, Undo
+    </draft_view>
+
+    <history_view>
+      - Timeline of all changes
+      - Filter by: section, field, user, date
+      - Each entry shows:
+        - Timestamp
+        - User who made change
+        - What changed (field path)
+        - Old value vs new value
+        - Reason/source (extraction, user edit, chat)
+      - Diff view for comparing versions
+      - Export audit report button
+    </history_view>
+
+    <modals>
+      - Evidence Modal: Document viewer with highlighted field
+      - Merge Modal: Select which fields to keep from each entity
+      - Export Modal: Format selection and options
+      - Settings Modal: User preferences
+    </modals>
+  </ui_layout>
+
+  <design_system>
+    <color_palette>
+      - Primary: Blue (#3B82F6) for actions and links
+      - Success: Green (#10B981) for confirmed/approved
+      - Warning: Amber (#F59E0B) for pending items
+      - Error: Red (#EF4444) for errors and failures
+      - Background: White (#FFFFFF light), Dark gray (#111827 dark)
+      - Surface: Light gray (#F9FAFB light), Gray (#1F2937 dark)
+      - Text: Near black (#111827 light), White (#F9FAFB dark)
+      - Border: Gray (#E5E7EB light), Dark gray (#374151 dark)
+    </color_palette>
+
+    <typography>
+      - Font family: Inter (sans-serif system stack)
+      - Headings: font-semibold, tracking-tight
+      - Body: font-normal, leading-relaxed
+      - Code: JetBrains Mono or Fira Code
+      - Sizes: text-sm (14px), text-base (16px), text-lg (18px)
+    </typography>
+
+    <components>
+      <cards>
+        - Rounded corners (rounded-lg, 8px)
+        - Subtle border or shadow
+        - Padding: p-4 to p-6
+        - Hover state: shadow increase
+        - Confidence badge in corner
+      </cards>
+
+      <buttons>
+        - Primary: Blue background, white text, rounded-md
+        - Secondary: Border style, hover fill
+        - Danger: Red for destructive actions
+        - Icon buttons: Square with rounded, hover background
+        - Loading state: Spinner icon
+      </buttons>
+
+      <inputs>
+        - Rounded borders (rounded-md)
+        - Focus ring in primary color
+        - Error state: Red border, error message below
+        - Disabled: Reduced opacity
+      </inputs>
+
+      <badges>
+        - Status badges: Colored backgrounds (green=approved, yellow=pending, red=failed)
+        - Document type badges: Outlined style
+        - Confidence badges: High (green), Medium (yellow), Low (red)
+      </badges>
+
+      <canvas_nodes>
+        - Person node: Rounded rectangle, blue accent
+        - Property node: Rounded rectangle, green accent
+        - Connection handles: Circles on edges
+        - Selected state: Thick border
+        - Warning state: Orange border
+      </canvas_nodes>
+    </components>
+
+    <animations>
+      - Transitions: 150-200ms ease-out
+      - Page transitions: Fade in
+      - Card hover: Scale 1.02
+      - Modal: Fade + scale from center
+      - Canvas: Smooth pan/zoom
+      - Processing: Pulse animation on status
+    </animations>
+  </design_system>
+
+  <key_interactions>
+    <document_upload_flow>
+      1. User drags files onto dropzone or clicks to select
+      2. Files upload to Supabase Storage with progress bar
+      3. Document records created in database
+      4. Jobs enqueued for processing
+      5. Status updates via Realtime (processing -> processed)
+      6. Document type detected and badge shown
+      7. User can preview documents or view extraction results
+      8. When all processed, "View Entities" button appears
+    </document_upload_flow>
+
+    <entity_discovery_flow>
+      1. OCR runs on document -> text + layout extracted
+      2. Gemini Flash extracts structured data -> JSON
+      3. Consensus engine compares results
+      4. Entity resolution groups/merges similar entities
+      5. Cards appear in entities view
+      6. User reviews cards, confirms or edits fields
+      7. User can merge duplicate entities or split incorrect merges
+      8. When satisfied, user proceeds to canvas
+    </entity_discovery_flow>
+
+    <canvas_connection_flow>
+      1. User enters canvas with entities as nodes
+      2. Suggestions panel shows auto-detected relationships
+      3. User drags from handle to handle to create connections
+      4. Connection type dropdown appears for selection
+      5. Validation runs: warnings for missing info
+      6. User accepts suggestions or creates manual connections
+      7. When graph is valid, "Generate Draft" button enables
+    </canvas_connection_flow>
+
+    <draft_generation_flow>
+      1. User clicks "Generate Draft"
+      2. System consolidates canonical model from graph
+      3. Business rules validate (spouse consent, valid proxy, etc.)
+      4. Gemini Pro generates draft with template
+      5. Draft appears in editor with sections
+      6. Pending items highlighted in yellow
+      7. User reviews and can use chat for edits
+    </draft_generation_flow>
+
+    <chat_editing_flow>
+      1. User types request in chat (e.g., "Change payment to 30% down")
+      2. Gemini with function calling interprets request
+      3. System shows operation preview: "Will update deal.paymentSchedule"
+      4. User confirms or cancels
+      5. Patch applied to canonical model
+      6. Affected section regenerated
+      7. Change logged in audit trail
+      8. Draft updated in real-time
+    </chat_editing_flow>
+  </key_interactions>
+
+  <implementation_steps>
+    <step number="M0">
+      <title>Foundation - Infrastructure Setup</title>
+      <tasks>
+        - Create Supabase project with database, auth, storage
+        - Define and apply database schema migrations
+        - Implement RLS policies for all tables
+        - Set up basic React frontend with Tailwind
+        - Create authentication flow (login, logout)
+        - Build case CRUD operations
+        - Create document upload to Storage
+        - Set up Realtime subscriptions
+      </tasks>
+    </step>
+
+    <step number="M1">
+      <title>Document Pipeline - OCR + Extraction</title>
+      <tasks>
+        - Set up worker service scaffold (Node.js container)
+        - Integrate Supabase Queues (pgmq) consumer
+        - Implement signed URL generation for file access
+        - Integrate Google Document AI OCR
+        - Integrate Gemini Flash with JSON Schema
+        - Build consensus engine (compare OCR vs LLM)
+        - Implement entity resolution (people/properties)
+        - Connect Realtime for status updates
+        - Build document cards with status indicators
+      </tasks>
+    </step>
+
+    <step number="M2">
+      <title>Canvas - Visual Connections</title>
+      <tasks>
+        - Set up React Flow canvas component
+        - Create custom PersonNode component
+        - Create custom PropertyNode component
+        - Implement RelationshipEdge with labels
+        - Build connection handle interactions
+        - Create suggestions panel with auto-detection
+        - Implement graph persistence (save/load edges)
+        - Add validation rules for act types
+        - Display warning indicators on nodes/edges
+      </tasks>
+    </step>
+
+    <step number="M3">
+      <title>Draft Generation</title>
+      <tasks>
+        - Design template system for purchase/sale
+        - Build canonical model consolidation from graph
+        - Implement business rules engine
+        - Integrate Gemini Pro for draft generation
+        - Create section-based draft structure
+        - Set up Tiptap editor component
+        - Display pending items with highlighting
+        - Implement draft versioning
+      </tasks>
+    </step>
+
+    <step number="M4">
+      <title>Chat Editing</title>
+      <tasks>
+        - Build chat panel UI component
+        - Integrate Gemini with function calling
+        - Define operation schemas (update_field, regenerate_section, etc.)
+        - Implement patch application system
+        - Create section regeneration flow
+        - Build audit trail logging
+        - Add operation preview before applying
+        - Implement context caching for efficiency
+        - Build export functionality (HTML, PDF)
+      </tasks>
+    </step>
+  </implementation_steps>
+
+  <business_rules>
+    <purchase_sale_validation>
+      <rule name="seller_ownership">
+        - Check: Seller must be current owner per property deed
+        - Severity: Error (blocks draft)
+        - Resolution: Link correct owner or update property data
+      </rule>
+      <rule name="spouse_consent">
+        - Check: If seller is married (not separated), spouse must sign
+        - Severity: Error
+        - Resolution: Add spouse as co-seller or provide separation docs
+      </rule>
+      <rule name="proxy_validity">
+        - Check: Power of attorney must not be expired
+        - Severity: Warning (allows draft with pending)
+        - Resolution: Request updated proxy
+      </rule>
+      <rule name="proxy_powers">
+        - Check: Proxy must have specific powers for the act
+        - Severity: Warning
+        - Resolution: Verify proxy text covers the transaction
+      </rule>
+      <rule name="property_encumbrances">
+        - Check: Flag any active encumbrances
+        - Severity: Info (highlighted in draft)
+        - Resolution: Address in special conditions
+      </rule>
+      <rule name="cpf_validation">
+        - Check: CPF must be valid (checksum) and present
+        - Severity: Error if missing, Warning if invalid format
+        - Resolution: Confirm with source document
+      </rule>
+    </purchase_sale_validation>
+  </business_rules>
+
+  <success_criteria>
+    <performance>
+      - Time-to-First-Cards: Less than 60 seconds for 10 documents (p95)
+      - Time-to-First-Draft: Less than 3 minutes from canvas confirmation (p95)
+      - Auto-fill rate: Greater than 85% of required fields with high confidence
+      - System reliability: 99.5% job completion rate
+    </performance>
+
+    <user_experience>
+      - Intuitive drag-and-drop upload
+      - Clear status indicators at every step
+      - Smooth canvas interactions (60fps pan/zoom)
+      - Responsive on tablet and desktop
+      - Clear feedback for all actions
+      - Pending items always visible and actionable
+    </user_experience>
+
+    <data_quality>
+      - Every field has evidence link
+      - No data without source document
+      - Divergences always flagged as pending
+      - Audit trail complete and immutable
+      - Export includes evidence chain
+    </data_quality>
+
+    <technical_quality>
+      - Clean, maintainable TypeScript code
+      - Proper error handling with user feedback
+      - Secure: RLS, signed URLs, Vault for secrets
+      - Resilient: Retry logic, idempotent jobs
+      - Observable: Logs and monitoring for worker
+    </technical_quality>
+  </success_criteria>
+
+  <risks_and_mitigations>
+    <risk name="poor_ocr_quality">
+      - Issue: Bad scans, photos with blur/glare
+      - Mitigation: Quality indicator, request resubmit, fallback to Gemini multimodal
+    </risk>
+    <risk name="silent_divergences">
+      - Issue: OCR and LLM disagree without user knowing
+      - Mitigation: Mandatory consensus engine, always show pending for divergences
+    </risk>
+    <risk name="ai_hallucination">
+      - Issue: LLM invents data not in documents
+      - Mitigation: Structured outputs, grounding in document, "no evidence = pending" rule
+    </risk>
+    <risk name="cost_and_latency">
+      - Issue: API calls to Google services expensive and slow
+      - Mitigation: Context caching, reprocess only changed sections, batch where possible
+    </risk>
+    <risk name="edge_function_limits">
+      - Issue: Supabase Edge Functions have memory/time limits
+      - Mitigation: Heavy processing in worker container, not Edge Functions
+    </risk>
+    <risk name="queue_reliability">
+      - Issue: Supabase Queues in alpha stage
+      - Mitigation: Monitoring, simple DLQ, fallback plan to alternative broker
+    </risk>
+  </risks_and_mitigations>
+
+  <glossary>
+    <term name="Card">Visual representation of an entity (Person or Property) with extracted fields, confidence indicators, and evidence links.</term>
+    <term name="Canonical Model">The JSON structure representing the complete, validated state of a case (people, properties, relationships). Source of truth.</term>
+    <term name="Consensus">The process of comparing OCR and LLM extraction results to determine final values and confidence levels.</term>
+    <term name="Evidence">A link from a data field to its source (document, page, bounding box, extracted text).</term>
+    <term name="Graph">The visual representation of entities and their relationships using nodes and edges on the canvas.</term>
+    <term name="Patch">A structured operation that modifies the canonical model, triggered by chat commands or user edits.</term>
+    <term name="Pending Item">A data point or validation that requires human review before the draft can be finalized.</term>
+    <term name="Signed URL">A temporary, authenticated URL for accessing files in storage, with short expiration for security.</term>
+    <term name="RLS">Row Level Security - PostgreSQL feature that restricts data access at the row level based on policies.</term>
+  </glossary>
+</project_specification>

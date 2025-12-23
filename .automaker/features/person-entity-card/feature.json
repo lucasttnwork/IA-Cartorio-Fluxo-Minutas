@@ -1,0 +1,14 @@
+{
+  "id": "person-entity-card",
+  "category": "Entity Management",
+  "title": "Person Entity Card Display",
+  "description": "Person card displays all required fields",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [
+    "person-entity-auto-creation"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

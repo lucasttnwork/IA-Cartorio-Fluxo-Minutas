@@ -1,0 +1,15 @@
+{
+  "id": "chat-mark-pending",
+  "category": "AI Assistant",
+  "title": "Chat: Mark Pending",
+  "description": "Mark pending item via chat",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "chat-operations",
+    "consensus-engine"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

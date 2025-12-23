@@ -1,0 +1,14 @@
+{
+  "id": "chat-undo",
+  "category": "AI Assistant",
+  "title": "Chat: Undo Operation",
+  "description": "Undo last chat operation",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "chat-operations"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

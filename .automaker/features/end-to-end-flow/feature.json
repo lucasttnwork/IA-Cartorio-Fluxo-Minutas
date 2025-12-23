@@ -1,0 +1,21 @@
+{
+  "id": "end-to-end-flow",
+  "category": "Integration",
+  "title": "Complete End-to-End Purchase/Sale Flow",
+  "description": "Complete end-to-end purchase/sale flow",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "complex",
+  "dependencies": [
+    "case-creation",
+    "document-upload",
+    "entity-extraction",
+    "canvas-validation",
+    "draft-generation",
+    "chat-operations",
+    "audit-trail",
+    "export-html"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

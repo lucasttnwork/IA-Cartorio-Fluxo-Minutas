@@ -1,0 +1,15 @@
+{
+  "id": "canvas-validation",
+  "category": "Graph Visualization",
+  "title": "Canvas Validation Rules",
+  "description": "Canvas validation warns about missing spouse consent",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [
+    "canvas-connections",
+    "canvas-relationship-spouse"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

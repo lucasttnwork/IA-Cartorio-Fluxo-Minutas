@@ -1,0 +1,14 @@
+{
+  "id": "draft-auto-save",
+  "category": "Draft Editor",
+  "title": "Auto-Save Draft Content",
+  "description": "Auto-save draft content",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "draft-editor"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

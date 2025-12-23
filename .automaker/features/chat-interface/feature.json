@@ -1,0 +1,14 @@
+{
+  "id": "chat-interface",
+  "category": "AI Assistant",
+  "title": "Chat Interface for Draft Editing",
+  "description": "Chat interface for draft editing",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "complex",
+  "dependencies": [
+    "draft-editor"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

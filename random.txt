@@ -1,0 +1,4 @@
+> Ao inves de usar um script para criar novamente ou coisa do tipo, crie um único arquivo consiso escrito por voce mesmo com todas as features no formato    
+  correto e na ordem correta de prioridade de criação, contendo as dependencias corretas.\
+  Assim, só depois voce deverá, aproveitando esse arquivo gerado que contem todas as features já formatadas corretamente e na ordem, criar as pastas e os    
+  arquivos únicos de cada feature na pasta de features corretamente

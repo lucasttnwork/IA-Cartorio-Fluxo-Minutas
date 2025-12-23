@@ -1,0 +1,14 @@
+{
+  "id": "case-duplication",
+  "category": "Case Management",
+  "title": "Case Duplication",
+  "description": "Case duplication",
+  "status": "backlog",
+  "priority": 3,
+  "complexity": "simple",
+  "dependencies": [
+    "case-creation"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

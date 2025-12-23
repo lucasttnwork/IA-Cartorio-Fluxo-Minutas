@@ -1,0 +1,14 @@
+{
+  "id": "case-sort-filter",
+  "category": "Case Management",
+  "title": "Sort and Filter Cases",
+  "description": "Sort case list by different fields",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "dashboard-case-list"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

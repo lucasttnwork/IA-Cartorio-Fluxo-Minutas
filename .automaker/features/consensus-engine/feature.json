@@ -1,0 +1,15 @@
+{
+  "id": "consensus-engine",
+  "category": "Data Processing",
+  "title": "Consensus Engine (OCR vs LLM)",
+  "description": "Consensus engine marks divergent fields as pending - OCR vs LLM disagreement handling",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "complex",
+  "dependencies": [
+    "ocr-processing",
+    "entity-extraction"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

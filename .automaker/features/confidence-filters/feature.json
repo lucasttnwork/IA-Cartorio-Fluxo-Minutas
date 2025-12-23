@@ -1,0 +1,14 @@
+{
+  "id": "confidence-filters",
+  "category": "Entity Management",
+  "title": "Confidence Filter in Entities View",
+  "description": "Confidence filter in entities view",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "entity-extraction"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "canvas-minimap",
+  "category": "Graph Visualization",
+  "title": "Canvas Minimap Navigation",
+  "description": "Canvas minimap navigation",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "canvas-visualization"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

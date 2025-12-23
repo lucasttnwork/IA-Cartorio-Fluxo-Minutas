@@ -1,0 +1,15 @@
+{
+  "id": "canvas-suggestions",
+  "category": "Graph Visualization",
+  "title": "Canvas Auto-Suggestions",
+  "description": "Canvas auto-suggestions based on document analysis",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "canvas-visualization",
+    "entity-extraction"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

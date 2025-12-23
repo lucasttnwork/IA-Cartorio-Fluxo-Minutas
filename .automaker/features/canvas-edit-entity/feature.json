@@ -1,0 +1,15 @@
+{
+  "id": "canvas-edit-entity",
+  "category": "Graph Visualization",
+  "title": "Edit Entity from Canvas",
+  "description": "Edit entity directly from canvas",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "canvas-visualization",
+    "person-entity-card"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

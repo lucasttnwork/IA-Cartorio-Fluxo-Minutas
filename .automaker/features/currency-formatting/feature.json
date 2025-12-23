@@ -1,0 +1,14 @@
+{
+  "id": "currency-formatting",
+  "category": "Localization",
+  "title": "Currency Formatting (BRL)",
+  "description": "Currency formatting (BRL)",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "localization-pt-br"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

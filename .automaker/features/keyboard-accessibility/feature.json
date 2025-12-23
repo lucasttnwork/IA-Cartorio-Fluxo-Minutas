@@ -1,0 +1,12 @@
+{
+  "id": "keyboard-accessibility",
+  "category": "Accessibility",
+  "title": "Keyboard Navigation and Shortcuts",
+  "description": "Keyboard accessibility - full form navigation",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

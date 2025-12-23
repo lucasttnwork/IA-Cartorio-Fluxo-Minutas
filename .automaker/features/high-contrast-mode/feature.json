@@ -1,0 +1,12 @@
+{
+  "id": "high-contrast-mode",
+  "category": "Accessibility",
+  "title": "High Contrast Mode",
+  "description": "High contrast mode",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

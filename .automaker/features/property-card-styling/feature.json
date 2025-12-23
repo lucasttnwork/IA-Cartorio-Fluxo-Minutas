@@ -1,0 +1,15 @@
+{
+  "id": "property-card-styling",
+  "category": "UI Design",
+  "title": "Property Card Styling on Canvas",
+  "description": "Property card styling on canvas",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "design-system-ui",
+    "canvas-visualization"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

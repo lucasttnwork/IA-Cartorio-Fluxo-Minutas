@@ -1,0 +1,14 @@
+{
+  "id": "case-pagination",
+  "category": "Case Management",
+  "title": "Case List Pagination",
+  "description": "Pagination on case list",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "dashboard-case-list"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

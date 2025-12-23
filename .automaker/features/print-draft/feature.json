@@ -1,0 +1,15 @@
+{
+  "id": "print-draft",
+  "category": "Export",
+  "title": "Print Draft Functionality",
+  "description": "Print draft functionality",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "draft-editor",
+    "print-stylesheet"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

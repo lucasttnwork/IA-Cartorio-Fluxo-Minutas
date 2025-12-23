@@ -1,0 +1,15 @@
+{
+  "id": "evidence-modal-styling",
+  "category": "UI Design",
+  "title": "Evidence Modal Document Viewer Styling",
+  "description": "Evidence modal document viewer styling",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "design-system-ui",
+    "evidence-modal"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

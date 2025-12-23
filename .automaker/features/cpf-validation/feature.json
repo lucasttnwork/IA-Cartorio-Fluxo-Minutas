@@ -1,0 +1,14 @@
+{
+  "id": "cpf-validation",
+  "category": "Entity Management",
+  "title": "CPF Validation",
+  "description": "CPF validation on person entity",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "simple",
+  "dependencies": [
+    "person-entity-card"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

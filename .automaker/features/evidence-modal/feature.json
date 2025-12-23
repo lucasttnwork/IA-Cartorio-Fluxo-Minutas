@@ -1,0 +1,15 @@
+{
+  "id": "evidence-modal",
+  "category": "Evidence",
+  "title": "Evidence Modal with Document Highlighting",
+  "description": "Evidence modal shows document with highlighted bounding box",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "moderate",
+  "dependencies": [
+    "ocr-processing",
+    "entity-extraction"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

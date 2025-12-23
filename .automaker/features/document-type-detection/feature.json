@@ -1,0 +1,14 @@
+{
+  "id": "document-type-detection",
+  "category": "Document Processing",
+  "title": "Document Type Auto-Detection",
+  "description": "Document type auto-detection - system correctly identifies CNH, RG, marriage certificate, deed",
+  "status": "backlog",
+  "priority": 1,
+  "complexity": "complex",
+  "dependencies": [
+    "ocr-processing"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

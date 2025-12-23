@@ -1,0 +1,15 @@
+{
+  "id": "proxy-representation",
+  "category": "Legal Features",
+  "title": "Proxy Representation Flow",
+  "description": "Proxy representation flow",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [
+    "canvas-relationship-proxy",
+    "entity-extraction"
+  ],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}

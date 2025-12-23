@@ -1,0 +1,12 @@
+{
+  "id": "screen-reader-support",
+  "category": "Accessibility",
+  "title": "Screen Reader Compatibility",
+  "description": "Screen reader compatibility",
+  "status": "backlog",
+  "priority": 2,
+  "complexity": "moderate",
+  "dependencies": [],
+  "createdAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-23T18:16:20.997Z"
+}
