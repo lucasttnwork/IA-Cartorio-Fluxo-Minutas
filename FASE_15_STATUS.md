@@ -1,8 +1,8 @@
 # FASE 15: Status de Testes QA - Semana 1
 
 **Data:** 2025-12-24
-**Status:** ✅ Semana 1 COMPLETA (100%) - 67 Testes Funcionais
-**Último Commit:** `a000acd5` - Add canvas, draft editing, and navigation functional regression tests (T027-T059)
+**Status:** 🟡 Semana 2 EM PROGRESSO - 67 Testes Funcionais + 24 Performance/A11y (91 Total)
+**Último Commit:** `e511175c` - Add performance and accessibility testing suite (P001-P008, A001-A016)
 
 ---
 
@@ -13,9 +13,9 @@
 | **Infraestrutura** | ✅ 100% | Setup completo, Playwright configurado |
 | **Dark Mode** | ✅ 100% | Hook + Component + 9 Testes (D001-D009) |
 | **Testes Funcionais** | ✅ 100% | 67 testes criados (D001-D009, T001-T059) |
-| **Acessibilidade** | 🟡 0% | Planejado: Semana 2-3 |
-| **Performance** | 🟡 0% | Planejado: Semana 2 |
-| **Responsividade** | 🟡 0% | Planejado: Semana 2-3 |
+| **Acessibilidade** | 🟡 50% | 16 testes criados (A001-A016) |
+| **Performance** | ✅ 100% | 8 testes criados (P001-P008) |
+| **Responsividade** | 🟡 0% | Planejado: Semana 3 |
 
 ---
 
@@ -252,34 +252,57 @@ Dias 4-5: ✅ COMPLETO
 
 ### Git Commits (Dias 4-5)
 1. `a000acd5` - Add canvas, draft editing, and navigation functional regression tests (T027-T059)
+2. `4547fbda` - Update FASE 15 status: Semana 1 complete with 67 functional tests
 
 ---
 
-## 🎯 PRÓXIMAS PRIORIDADES (SEMANA 2)
+## 🟡 SEMANA 2 - PERFORMANCE & ACESSIBILIDADE: EM PROGRESSO
 
-### Semana 2 - Performance & Acessibilidade Automática (Próximo)
+### Testes de Performance Criados
 
-#### Lighthouse & Performance Audit (P001-P005)
-**Objetivo:** Garantir performance baseline e otimizações
-- **Métricas a Validar:**
-  - Performance Score: ≥ 85
-  - Accessibility Score: ≥ 90 (após FASE 15)
-  - Best Practices: ≥ 90
-  - SEO: ≥ 85
-- **Páginas:** /login, /dashboard, /case/:caseId/upload, /canvas, /draft
-- **Testes Web Vitals:** LCP <2.5s, FID <100ms, CLS <0.1
+#### Performance Tests (P001-P008)
+- Arquivo: `e2e/performance.spec.ts`
+- P001: Dashboard page Lighthouse performance baseline
+- P002: Case overview page meets performance targets
+- P003: Canvas page renders within performance budget
+- P004: Web Vitals - LCP (Largest Contentful Paint) < 2.5s
+- P005: Web Vitals - CLS (Cumulative Layout Shift) < 0.1
+- P006: Bundle size analysis - main bundle < 300KB gzipped
+- P007: FID (First Input Delay) check - < 100ms
+- P008: No slow network resources (all < 3s)
+- **Status:** ✅ 8/8 testes implementados
 
-#### Axe-Core Accessibility Automation (A001-A003)
-**Objetivo:** Detectar violações de acessibilidade automaticamente
-- A001: Axe scan em todas páginas principais
-- A002: 0 erros críticos/sérios
-- A003: Avisos documentados e justificados
+### Testes de Acessibilidade Criados
 
-#### Bundle Size & Code Splitting Analysis
-**Objetivo:** Validar bundling efficiency
-- Verificar main bundle < 300KB (gzipped)
-- Validar code splitting por routes
-- Identificar dependências não-utilizadas
+#### Axe-Core Automated Accessibility Tests (A001-A006)
+- Arquivo: `e2e/accessibility-axe.spec.ts`
+- A001: Dashboard page - 0 critical/serious violations
+- A002: Case overview page meets WCAG AA standards
+- A003: Canvas page accessible to keyboard and screen readers
+- A004: Draft page fully accessible
+- A005: Upload page - proper form labels and error messages
+- A006: Entities page table is navigable and accessible
+- **Status:** ✅ 6/6 testes implementados
+
+#### Keyboard Navigation & Semantic Accessibility Tests (A007-A016)
+- Arquivo: `e2e/accessibility-keyboard.spec.ts`
+- A007: Tab key navigates through all interactive elements
+- A008: Focus is visible on interactive elements
+- A009: Escape key closes modals and dropdowns
+- A010: Enter key activates buttons and submits forms
+- A011: Space key activates buttons and checkboxes
+- A012: Arrow keys navigate within select menus
+- A013: Form validation errors linked to inputs
+- A014: Skip navigation links (optional)
+- A015: Heading hierarchy is logical
+- A016: Lists use proper semantic markup
+- **Status:** ✅ 10/10 testes implementados
+
+### Git Commits (Semana 2)
+1. `e511175c` - Add performance and accessibility testing suite (P001-P008, A001-A016)
+
+---
+
 
 ---
 
@@ -303,14 +326,16 @@ Dias 4-5: ✅ COMPLETO
 
 **Total Semana 1:** 67 testes E2E implementados (D001-D009, T001-T059)
 
-### 🟡 SEMANA 2 - PENDENTE
-- [ ] Lighthouse Audit (P001-P005)
-- [ ] Web Vitals Tests
-- [ ] Axe A11y Automation (A001-A003)
-- [ ] Bundle Size Analysis
+### 🟡 SEMANA 2 - EM PROGRESSO (50%)
+- [x] Performance Tests (8 testes: P001-P008)
+- [x] Axe-Core A11y Automation (6 testes: A001-A006)
+- [x] Keyboard Navigation Tests (10 testes: A007-A016)
+- [ ] Dark Mode Visual Tests (D010-D017) - Planejado Semana 3
+- [ ] Manual Screen Reader Testing (A017-A023) - Planejado Semana 3
+
+**Total Semana 2 (Completado):** 24 testes de Performance/A11y
 
 ### 🟡 SEMANA 3 - PENDENTE
-- [ ] Keyboard Navigation Tests (A004-A010)
 - [ ] Dark Mode Adicional Visual Tests (D010-D017)
 - [ ] Responsividade Tests (R001-R013)
 - [ ] Manual Screen Reader Testing (A017-A023)
@@ -373,7 +398,7 @@ Dias 4-5: ✅ COMPLETO
 - `playwright.config.ts` - Test configuration
 - `e2e/fixtures.ts` - Reusable test helpers
 
-**Test Files (Semana 1):**
+**Test Files (Semana 1 - Functional Regression):**
 - `e2e/dark-mode-toggle.spec.ts` - Dark mode tests (D001-D009)
 - `e2e/case-management.spec.ts` - Case management tests (T001-T008)
 - `e2e/document-upload.spec.ts` - Document upload tests (T009-T016)
@@ -382,30 +407,52 @@ Dias 4-5: ✅ COMPLETO
 - `e2e/draft-editing.spec.ts` - Draft editing & chat tests (T035-T045)
 - `e2e/audit-trail-navigation.spec.ts` - History & navigation tests (T046-T059)
 
+**Test Files (Semana 2 - Performance & Accessibility):**
+- `e2e/performance.spec.ts` - Performance tests (P001-P008)
+- `e2e/accessibility-axe.spec.ts` - Axe-Core automation tests (A001-A006)
+- `e2e/accessibility-keyboard.spec.ts` - Keyboard navigation tests (A007-A016)
+
 - `package.json` - Test scripts
 
 ---
 
 ## 🚀 PRÓXIMO PASSO
 
-**Semana 2:**
-Implementar testes de Performance (Lighthouse, Web Vitals) e Acessibilidade Automática (Axe-Core)
+**Semana 3:**
+Implementar testes de Responsividade, Dark Mode Visual e Screen Reader Testing
 
 **Arquivos a criar:**
-- `e2e/performance.spec.ts` - Lighthouse & Web Vitals tests
-- `e2e/accessibility-axe.spec.ts` - Axe-Core automated accessibility scans
-- `scripts/lighthouse-audit.js` - Lighthouse CI integration (optional)
+- `e2e/responsive-design.spec.ts` - Responsive layout tests (R001-R013)
+- `e2e/dark-mode-visual.spec.ts` - Dark mode visual regression tests (D010-D017)
+- `docs/SCREENREADER_TEST_REPORT.md` - Manual screen reader testing results
 
-**Métricas esperadas:**
-- Lighthouse Performance: ≥ 85
-- Lighthouse Accessibility: ≥ 90
-- LCP: < 2.5s
-- FID: < 100ms
-- CLS: < 0.1
-- Axe errors: 0 critical/serious
+**Testes Planejados:**
+- Responsividade: 6 breakpoints, touch interactions, viewport validation
+- Dark Mode Visual: Glassmorphism appearance, contrast validation in dark mode
+- Screen Reader: Manual testing com NVDA/VoiceOver (documentado)
 
 ---
 
-**Atualizado:** 2025-12-24 18:30
-**Status:** ✅ SEMANA 1 COMPLETA - 67 testes funcionais implementados
-**Próxima revisão:** Após conclusão Semana 2 (Performance & A11y)
+## 📊 RESUMO TOTAL - FASE 15
+
+### Por Semana:
+- **Semana 1:** ✅ 67 testes funcionais (D001-D009, T001-T059)
+- **Semana 2:** ✅ 24 testes performance/a11y (P001-P008, A001-A016)
+- **Semana 3:** 🟡 Planejado ~30+ testes responsividade/visual/manual
+
+### Total Até Agora:
+- ✅ **91 testes automáticos** implementados
+- ✅ **10 arquivos de teste** criados
+- ✅ **3 arquivos de implementação** (Dark Mode hook/component)
+- ✅ **Infraestrutura** 100% configurada (Playwright multi-browser)
+
+### Próximos Passos:
+1. ✅ Semana 1: Testes Funcionais
+2. ✅ Semana 2: Performance & Acessibilidade Automática
+3. 🟡 Semana 3: Responsividade, Dark Mode Visual, Screen Reader Manual
+
+---
+
+**Atualizado:** 2025-12-24 19:15
+**Status:** 🟡 SEMANA 2 EM PROGRESSO - 91 testes totais
+**Próxima revisão:** Após conclusão Semana 3 (Responsividade & Visual)
