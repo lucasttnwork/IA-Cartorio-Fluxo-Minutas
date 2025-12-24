@@ -1,12 +1,7 @@
 import { useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  TrashIcon,
-  PencilIcon,
-  EyeIcon,
-  DocumentDuplicateIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export interface ContextMenuItem {
   id: string
@@ -92,7 +87,7 @@ export default function ContextMenu({ isOpen, position, items, onClose }: Contex
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.1 }}
-            className="fixed z-50 bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 py-2 min-w-[220px]"
+            className="fixed z-50 glass-popover py-2 min-w-[220px]"
             style={{
               left: `${finalPosition.x}px`,
               top: `${finalPosition.y}px`,
@@ -101,7 +96,7 @@ export default function ContextMenu({ isOpen, position, items, onClose }: Contex
             {items.map((item) => {
               const Icon = item.icon
               return (
-                <button
+                <Button
                   key={item.id}
                   onClick={() => {
                     if (!item.disabled) {
@@ -110,17 +105,17 @@ export default function ContextMenu({ isOpen, position, items, onClose }: Contex
                     }
                   }}
                   disabled={item.disabled}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors ${
-                    item.disabled
-                      ? 'opacity-50 cursor-not-allowed'
-                      : item.danger
-                      ? 'hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300'
-                  }`}
+                  variant="ghost"
+                  className={cn(
+                    'w-full justify-start h-auto px-4 py-2.5 text-sm',
+                    item.danger
+                      ? 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  )}
                 >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
-                  <span className="flex-1 text-left">{item.label}</span>
-                </button>
+                  <Icon className="w-4 h-4 flex-shrink-0 mr-3" />
+                  <span>{item.label}</span>
+                </Button>
               )
             })}
           </motion.div>
