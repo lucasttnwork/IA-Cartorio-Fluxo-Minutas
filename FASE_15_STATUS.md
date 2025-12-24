@@ -1,8 +1,8 @@
 # FASE 15: Status de Testes QA - Semana 1
 
 **Data:** 2025-12-24
-**Status:** 🟡 Em Progresso - Semana 1 Dias 1-3 (50% Completo)
-**Último Commit:** `19142b0d` - Add entity extraction functional regression tests
+**Status:** ✅ Semana 1 COMPLETA (100%) - 67 Testes Funcionais
+**Último Commit:** `a000acd5` - Add canvas, draft editing, and navigation functional regression tests (T027-T059)
 
 ---
 
@@ -12,10 +12,10 @@
 |---------|--------|----------|
 | **Infraestrutura** | ✅ 100% | Setup completo, Playwright configurado |
 | **Dark Mode** | ✅ 100% | Hook + Component + 9 Testes (D001-D009) |
-| **Testes Funcionais** | ✅ 60% | 34 testes criados (T001-T026) |
-| **Acessibilidade** | 🟡 0% | Planejado: Semana 3 |
+| **Testes Funcionais** | ✅ 100% | 67 testes criados (D001-D009, T001-T059) |
+| **Acessibilidade** | 🟡 0% | Planejado: Semana 2-3 |
 | **Performance** | 🟡 0% | Planejado: Semana 2 |
-| **Responsividade** | 🟡 0% | Planejado: Semana 3 |
+| **Responsividade** | 🟡 0% | Planejado: Semana 2-3 |
 
 ---
 
@@ -137,17 +137,17 @@ Dia 1 (24/12): ✅ COMPLETO
   ├─ Dark Mode Integration: DashboardLayout + index.html
   └─ Dark Mode Tests: 9 testes E2E (D001-D009)
 
-Dias 2-3: 🟡 PRÓXIMO
+Dias 2-3: ✅ COMPLETO
   └─ Testes Funcionais Críticos:
-     ├─ Case Management (T001-T008)
-     ├─ Document Upload (T009-T016) (opcional, se tempo)
-     └─ Entity Extraction (T017-T024) (opcional)
+     ├─ Case Management (T001-T008) - 8 testes
+     ├─ Document Upload (T009-T016) - 8 testes
+     └─ Entity Extraction (T017-T026) - 10 testes
 
-Dias 4-5: 🟡 PRÓXIMO
-  └─ Testes Funcionais Restantes:
-     ├─ Canvas Visualization (T025-T034)
-     ├─ Draft Editing (T035-T045)
-     ├─ Navigation (T046-T059)
+Dias 4-5: ✅ COMPLETO
+  └─ Testes Funcionais Completos:
+     ├─ Canvas Visualization (T027-T034) - 8 testes
+     ├─ Draft Editing & Chat (T035-T045) - 11 testes
+     └─ Audit Trail & Navigation (T046-T059) - 14 testes
 ```
 
 ---
@@ -201,13 +201,12 @@ Dias 4-5: 🟡 PRÓXIMO
 
 ---
 
-## 🎯 PRÓXIMAS PRIORIDADES
+## ✅ SEMANA 1 - DIAS 4-5: CONCLUÍDO
 
-### Semana 1 Dias 4-5 (Próximo)
+### Testes Finais Criados
 
 #### Canvas Visualization Tests (T027-T034)
-**Arquivo:** `e2e/canvas-visualization.spec.ts`
-**Testes:**
+- Arquivo: `e2e/canvas-visualization.spec.ts`
 - T027: Canvas renders all nodes (pessoas e propriedades)
 - T028: Drag de nós funciona
 - T029: Pan & zoom funcionam (mouse wheel, trackpad)
@@ -216,47 +215,78 @@ Dias 4-5: 🟡 PRÓXIMO
 - T032: Context menu options: Edit, Delete, View Evidence
 - T033: Relacionamentos (edges) renderizam
 - T034: Edge labels mostram tipo de relacionamento
+- **Status:** ✅ 8/8 testes implementados
 
 #### Draft Editing & Chat Tests (T035-T045)
-**Arquivo:** `e2e/draft-editing.spec.ts`
-**Testes:**
+- Arquivo: `e2e/draft-editing.spec.ts`
 - T035: Editor renderiza com conteúdo inicial
 - T036: Typing atualiza conteúdo
 - T037: Formatação funciona (bold, italic, underline, lists, headings)
 - T038: Undo/Redo funcionam
 - T039: Auto-save ativa após edição (5s debounce)
-- T040: Enviar mensagem no chat
+- T040: Enviar mensagem no chat aparece na history
 - T041: Real-time subscription atualiza mensagens
-- T042: Operações de chat (add/remove clause, regenerate)
-- T043: Approve/Reject operation
+- T042: Operações de chat (add clause, remove clause, regenerate)
+- T043: Approve/Reject operation funciona
 - T044: Undo operation reverte draft
 - T045: Pending items marcados corretamente
+- **Status:** ✅ 11/11 testes implementados
 
-#### History & Navigation Tests (T046-T059)
-**Arquivo:** `e2e/audit-trail.spec.ts` + `e2e/navigation.spec.ts`
-**Testes (History):**
+#### Audit Trail & Navigation Tests (T046-T059)
+- Arquivo: `e2e/audit-trail-navigation.spec.ts`
 - T046: Operation log exibe todas operações
-- T047: Filtro por action type
-- T048: Filtro por usuário
-- T049: Busca por target
-- T050: Sort por timestamp
-- T051: Export CSV/JSON
-- T052: Timestamps precisos
-- T053: User attribution correta
-
-**Testes (Navigation):**
+- T047: Filtro por action type funciona
+- T048: Filtro por usuário funciona
+- T049: Busca por target funciona
+- T050: Sort por timestamp funciona
+- T051: Export CSV/JSON funciona
+- T052: Timestamps estão precisos
+- T053: User attribution está correta
 - T054: Breadcrumb navigation funciona
-- T055: Back/Forward buttons navegam
+- T055: Back/Forward buttons navegam corretamente
 - T056: URL parameters atualizam com conteúdo
 - T057: Deep linking funciona
 - T058: Protected routes redirecionam não-autenticados
 - T059: Página 404 para rotas inválidas
+- **Status:** ✅ 14/14 testes implementados
+
+### Git Commits (Dias 4-5)
+1. `a000acd5` - Add canvas, draft editing, and navigation functional regression tests (T027-T059)
+
+---
+
+## 🎯 PRÓXIMAS PRIORIDADES (SEMANA 2)
+
+### Semana 2 - Performance & Acessibilidade Automática (Próximo)
+
+#### Lighthouse & Performance Audit (P001-P005)
+**Objetivo:** Garantir performance baseline e otimizações
+- **Métricas a Validar:**
+  - Performance Score: ≥ 85
+  - Accessibility Score: ≥ 90 (após FASE 15)
+  - Best Practices: ≥ 90
+  - SEO: ≥ 85
+- **Páginas:** /login, /dashboard, /case/:caseId/upload, /canvas, /draft
+- **Testes Web Vitals:** LCP <2.5s, FID <100ms, CLS <0.1
+
+#### Axe-Core Accessibility Automation (A001-A003)
+**Objetivo:** Detectar violações de acessibilidade automaticamente
+- A001: Axe scan em todas páginas principais
+- A002: 0 erros críticos/sérios
+- A003: Avisos documentados e justificados
+
+#### Bundle Size & Code Splitting Analysis
+**Objetivo:** Validar bundling efficiency
+- Verificar main bundle < 300KB (gzipped)
+- Validar code splitting por routes
+- Identificar dependências não-utilizadas
 
 ---
 
 ## 📋 CHECKLIST - FASE 15
 
-### ✅ SEMANA 1 - DIAS 1-3 (COMPLETO - 50%)
+### ✅ SEMANA 1 - COMPLETA (100%)
+**Dias 1-3 (50%):**
 - [x] Setup Infraestrutura (Playwright, deps, fixtures)
 - [x] Dark Mode Hook (useDarkMode.ts)
 - [x] Dark Mode Component (ThemeToggle.tsx)
@@ -266,19 +296,22 @@ Dias 4-5: 🟡 PRÓXIMO
 - [x] Document Upload Tests (8 testes: T009-T016)
 - [x] Entity Extraction Tests (10 testes: T017-T026)
 
-### 🟡 SEMANA 1 - PENDENTE (Dias 4-5)
-- [ ] Canvas Visualization Tests (8 testes: T027-T034)
-- [ ] Draft Editing Tests (11 testes: T035-T045)
-- [ ] Audit Trail + Navigation Tests (14 testes: T046-T059)
+**Dias 4-5 (50%):**
+- [x] Canvas Visualization Tests (8 testes: T027-T034)
+- [x] Draft Editing & Chat Tests (11 testes: T035-T045)
+- [x] Audit Trail & Navigation Tests (14 testes: T046-T059)
+
+**Total Semana 1:** 67 testes E2E implementados (D001-D009, T001-T059)
 
 ### 🟡 SEMANA 2 - PENDENTE
-- [ ] Lighthouse Audit (P001-P003)
-- [ ] Web Vitals Tests (P004-P005)
+- [ ] Lighthouse Audit (P001-P005)
+- [ ] Web Vitals Tests
 - [ ] Axe A11y Automation (A001-A003)
+- [ ] Bundle Size Analysis
 
 ### 🟡 SEMANA 3 - PENDENTE
 - [ ] Keyboard Navigation Tests (A004-A010)
-- [ ] Dark Mode Adicional (D006-D017)
+- [ ] Dark Mode Adicional Visual Tests (D010-D017)
 - [ ] Responsividade Tests (R001-R013)
 - [ ] Manual Screen Reader Testing (A017-A023)
 
@@ -339,19 +372,40 @@ Dias 4-5: 🟡 PRÓXIMO
 - `index.html` - FOUC prevention script
 - `playwright.config.ts` - Test configuration
 - `e2e/fixtures.ts` - Reusable test helpers
-- `e2e/dark-mode-toggle.spec.ts` - Dark mode tests
+
+**Test Files (Semana 1):**
+- `e2e/dark-mode-toggle.spec.ts` - Dark mode tests (D001-D009)
+- `e2e/case-management.spec.ts` - Case management tests (T001-T008)
+- `e2e/document-upload.spec.ts` - Document upload tests (T009-T016)
+- `e2e/entity-extraction.spec.ts` - Entity extraction tests (T017-T026)
+- `e2e/canvas-visualization.spec.ts` - Canvas visualization tests (T027-T034)
+- `e2e/draft-editing.spec.ts` - Draft editing & chat tests (T035-T045)
+- `e2e/audit-trail-navigation.spec.ts` - History & navigation tests (T046-T059)
+
 - `package.json` - Test scripts
 
 ---
 
 ## 🚀 PRÓXIMO PASSO
 
-**Dias 2-3 da Semana 1:**
-Criar testes funcionais críticos para Case Management (T001-T008)
+**Semana 2:**
+Implementar testes de Performance (Lighthouse, Web Vitals) e Acessibilidade Automática (Axe-Core)
 
-Arquivo a criar: `e2e/case-management.spec.ts`
+**Arquivos a criar:**
+- `e2e/performance.spec.ts` - Lighthouse & Web Vitals tests
+- `e2e/accessibility-axe.spec.ts` - Axe-Core automated accessibility scans
+- `scripts/lighthouse-audit.js` - Lighthouse CI integration (optional)
+
+**Métricas esperadas:**
+- Lighthouse Performance: ≥ 85
+- Lighthouse Accessibility: ≥ 90
+- LCP: < 2.5s
+- FID: < 100ms
+- CLS: < 0.1
+- Axe errors: 0 critical/serious
 
 ---
 
-**Atualizado:** 2025-12-24
-**Próxima revisão:** Após conclusão Dias 2-3 (Testes Funcionais)
+**Atualizado:** 2025-12-24 18:30
+**Status:** ✅ SEMANA 1 COMPLETA - 67 testes funcionais implementados
+**Próxima revisão:** Após conclusão Semana 2 (Performance & A11y)
