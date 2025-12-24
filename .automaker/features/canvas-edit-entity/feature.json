@@ -3,7 +3,7 @@
   "category": "Graph Visualization",
   "title": "Edit Entity from Canvas",
   "description": "Edit entity directly from canvas",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
@@ -11,5 +11,10 @@
     "person-entity-card"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T04:57:14.814Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T04:47:13.596Z"
 }

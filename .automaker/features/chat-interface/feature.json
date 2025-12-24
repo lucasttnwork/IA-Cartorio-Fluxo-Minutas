@@ -3,12 +3,17 @@
   "category": "AI Assistant",
   "title": "Chat Interface for Draft Editing",
   "description": "Chat interface for draft editing",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "complex",
   "dependencies": [
     "draft-editor"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T04:05:16.096Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T03:58:34.441Z"
 }

@@ -3,6 +3,7 @@ import { runOcrJob } from './ocr'
 import { runExtractionJob } from './extraction'
 import { runConsensusJob } from './consensus'
 import { runEntityResolutionJob } from './entityResolution'
+import { runEntityExtractionJob } from './entityExtraction'
 import { runDraftJob } from './draft'
 import type { ProcessingJob, JobType } from '../types'
 
@@ -18,6 +19,7 @@ export async function processJob(
     extraction: runExtractionJob,
     consensus: runConsensusJob,
     entity_resolution: runEntityResolutionJob,
+    entity_extraction: runEntityExtractionJob,
     draft: runDraftJob,
   }
 

@@ -3,12 +3,14 @@
   "category": "UX",
   "title": "Browser Back/Forward Navigation",
   "description": "Browser back/forward navigation",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "case-creation"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-23T23:21:01.271Z",
+  "branchName": "main",
+  "startedAt": "2025-12-23T23:16:17.722Z"
 }

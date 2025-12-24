@@ -3,12 +3,17 @@
   "category": "AI Assistant",
   "title": "Chat: Remove Clause",
   "description": "Chat removes clause from draft",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
     "chat-operations"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T10:47:17.892Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T10:38:51.728Z"
 }

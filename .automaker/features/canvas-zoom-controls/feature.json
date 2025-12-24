@@ -3,12 +3,17 @@
   "category": "Graph Visualization",
   "title": "Canvas Zoom Controls",
   "description": "Canvas zoom controls",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "canvas-visualization"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T08:52:53.034Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T08:47:15.479Z"
 }

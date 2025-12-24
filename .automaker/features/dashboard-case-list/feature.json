@@ -3,7 +3,7 @@
   "category": "Case Management",
   "title": "Dashboard with Case List",
   "description": "Case list displays all user cases with status",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "moderate",
   "dependencies": [
@@ -11,5 +11,7 @@
     "design-system-ui"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-23T19:30:23.711Z",
+  "branchName": "main",
+  "startedAt": "2025-12-23T19:17:33.888Z"
 }

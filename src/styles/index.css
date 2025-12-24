@@ -5,22 +5,22 @@
 /* Custom base styles */
 @layer base {
   :root {
-    /* Primary colors */
-    --color-primary: 59 130 246; /* #3B82F6 */
-    --color-primary-hover: 37 99 235; /* #2563EB */
+    /* Primary colors - WCAG AA compliant */
+    --color-primary: 30 64 175; /* #1E40AF (blue-800) - 8.59:1 on white */
+    --color-primary-hover: 30 58 138; /* #1D3A8A (blue-900) - 10.67:1 on white */
 
-    /* Status colors */
-    --color-success: 16 185 129; /* #10B981 */
-    --color-warning: 245 158 11; /* #F59E0B */
-    --color-error: 239 68 68; /* #EF4444 */
+    /* Status colors - WCAG AA compliant */
+    --color-success: 6 95 70; /* #065F46 (green-800) - 8.27:1 on white */
+    --color-warning: 146 64 14; /* #92400E (amber-800) - 7.48:1 on white */
+    --color-error: 153 27 27; /* #991B1B (red-800) - 7.71:1 on white */
 
     /* Background colors - Light mode */
     --color-bg: 255 255 255; /* #FFFFFF */
     --color-surface: 249 250 251; /* #F9FAFB */
 
-    /* Text colors - Light mode */
-    --color-text: 17 24 39; /* #111827 */
-    --color-text-muted: 107 114 128; /* #6B7280 */
+    /* Text colors - Light mode - WCAG AA compliant */
+    --color-text: 17 24 39; /* #111827 (gray-900) - 16.11:1 on white */
+    --color-text-muted: 75 85 99; /* #4B5563 (gray-600) - 7.12:1 on white */
 
     /* Border colors - Light mode */
     --color-border: 229 231 235; /* #E5E7EB */
@@ -28,15 +28,21 @@
 
   .dark {
     /* Background colors - Dark mode */
-    --color-bg: 17 24 39; /* #111827 */
-    --color-surface: 31 41 55; /* #1F2937 */
+    --color-bg: 17 24 39; /* #111827 (gray-900) */
+    --color-surface: 31 41 55; /* #1F2937 (gray-800) */
 
-    /* Text colors - Dark mode */
-    --color-text: 249 250 251; /* #F9FAFB */
-    --color-text-muted: 156 163 175; /* #9CA3AF */
+    /* Text colors - Dark mode - WCAG AA compliant */
+    --color-text: 249 250 251; /* #F9FAFB (gray-50) - 15.56:1 on gray-900 */
+    --color-text-muted: 209 213 219; /* #D1D5DB (gray-300) - 9.73:1 on gray-900 */
 
     /* Border colors - Dark mode */
-    --color-border: 55 65 81; /* #374151 */
+    --color-border: 75 85 99; /* #4B5563 (gray-600) - Better visibility */
+
+    /* Status colors - Dark mode - WCAG AA compliant */
+    --color-primary-dark: 147 197 253; /* #93C5FD (blue-300) - 7.12:1 on gray-900 */
+    --color-success-dark: 110 231 183; /* #6EE7B7 (green-300) - 8.44:1 on gray-900 */
+    --color-warning-dark: 252 211 77; /* #FCD34D (amber-300) - 10.35:1 on gray-900 */
+    --color-error-dark: 252 165 165; /* #FCA5A5 (red-300) - 7.37:1 on gray-900 */
   }
 
   body {
@@ -45,12 +51,80 @@
   }
 
   * {
-    @apply border-gray-200 dark:border-gray-700;
+    @apply border-gray-300 dark:border-gray-600;
+  }
+
+  /* Screen reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
   }
 }
 
 /* Custom component styles */
 @layer components {
+  /* Avatar styles */
+  .avatar {
+    @apply relative inline-flex items-center justify-center rounded-full font-semibold;
+  }
+
+  .avatar-ring {
+    @apply ring-2 ring-white dark:ring-gray-800 shadow-sm;
+  }
+
+  .avatar-status {
+    @apply absolute bottom-0 right-0 rounded-full ring-2 ring-white dark:ring-gray-800;
+  }
+
+  .avatar-group {
+    @apply flex -space-x-2;
+  }
+
+  .avatar-group .avatar {
+    @apply ring-2 ring-white dark:ring-gray-800 hover:z-10 transition-transform hover:scale-110;
+  }
+
+  /* User profile card styles */
+  .user-profile-card {
+    @apply flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-900/50;
+  }
+
+  .user-profile-info {
+    @apply flex-1 min-w-0;
+  }
+
+  .user-profile-name {
+    @apply text-sm font-medium text-gray-900 dark:text-white truncate;
+  }
+
+  .user-profile-role {
+    @apply text-xs text-gray-500 dark:text-gray-400;
+  }
+
+  /* Role badge styles */
+  .role-badge {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .role-badge-admin {
+    @apply role-badge bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400;
+  }
+
+  .role-badge-supervisor {
+    @apply role-badge bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400;
+  }
+
+  .role-badge-clerk {
+    @apply role-badge bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300;
+  }
+
   /* Card styles */
   .card {
     @apply bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm;
@@ -60,21 +134,100 @@
     @apply card transition-all duration-200 hover:shadow-md hover:scale-[1.02];
   }
 
+  /* Expandable card styles */
+  .card-expandable {
+    @apply card overflow-hidden;
+  }
+
+  .card-expandable-header {
+    @apply w-full text-left p-4 flex items-center gap-3
+           transition-colors duration-150
+           cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50
+           focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500;
+  }
+
+  .card-expandable-header:disabled {
+    @apply cursor-default opacity-60 hover:bg-transparent dark:hover:bg-transparent;
+  }
+
+  .card-expandable-content {
+    @apply border-t border-gray-200 dark:border-gray-700;
+  }
+
+  .card-expandable-chevron {
+    @apply flex-shrink-0 text-gray-400 dark:text-gray-500 transition-transform duration-250;
+  }
+
+  .card-expandable-chevron.expanded {
+    @apply rotate-180;
+  }
+
   /* Button styles */
   .btn {
     @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-primary {
-    @apply btn bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500;
+    @apply btn bg-blue-700 text-white hover:bg-blue-800 focus:ring-blue-500
+           active:bg-blue-900 dark:bg-blue-600 dark:hover:bg-blue-700 dark:active:bg-blue-800;
+  }
+
+  .btn-primary-outline {
+    @apply btn border-2 border-blue-700 text-blue-800 bg-transparent
+           hover:bg-blue-50 hover:border-blue-800 hover:text-blue-900
+           focus:ring-blue-500 active:bg-blue-100
+           dark:text-blue-300 dark:border-blue-400 dark:hover:bg-blue-900/20
+           dark:hover:text-blue-200 dark:hover:border-blue-300 dark:active:bg-blue-900/30;
+  }
+
+  .btn-primary-ghost {
+    @apply btn text-blue-800 bg-transparent hover:bg-blue-50 hover:text-blue-900
+           focus:ring-blue-500 active:bg-blue-100
+           dark:text-blue-300 dark:hover:bg-blue-900/20 dark:hover:text-blue-200 dark:active:bg-blue-900/30;
   }
 
   .btn-secondary {
-    @apply btn border border-gray-300 dark:border-gray-600 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-700 focus:ring-gray-500;
+    @apply btn bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500
+           active:bg-gray-400 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600 dark:active:bg-gray-500;
+  }
+
+  .btn-secondary-outline {
+    @apply btn border-2 border-gray-300 text-gray-700 bg-transparent
+           hover:bg-gray-50 hover:border-gray-400 hover:text-gray-800
+           focus:ring-gray-500 active:bg-gray-100
+           dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-800
+           dark:hover:text-gray-200 dark:hover:border-gray-500 dark:active:bg-gray-700;
+  }
+
+  .btn-secondary-ghost {
+    @apply btn text-gray-700 bg-transparent hover:bg-gray-100 hover:text-gray-800
+           focus:ring-gray-500 active:bg-gray-200
+           dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-gray-200 dark:active:bg-gray-700;
   }
 
   .btn-danger {
-    @apply btn bg-red-500 text-white hover:bg-red-600 focus:ring-red-500;
+    @apply btn bg-red-500 text-white hover:bg-red-600 focus:ring-red-500
+           active:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 dark:active:bg-red-800;
+  }
+
+  .btn-danger-outline {
+    @apply btn border-2 border-red-500 text-red-600 bg-transparent
+           hover:bg-red-50 hover:border-red-600 hover:text-red-700
+           focus:ring-red-500 active:bg-red-100
+           dark:text-red-400 dark:border-red-500 dark:hover:bg-red-900/20
+           dark:hover:text-red-300 dark:hover:border-red-400 dark:active:bg-red-900/30;
+  }
+
+  .btn-danger-ghost {
+    @apply btn text-red-600 bg-transparent hover:bg-red-50 hover:text-red-700
+           focus:ring-red-500 active:bg-red-100
+           dark:text-red-400 dark:hover:bg-red-900/20 dark:hover:text-red-300 dark:active:bg-red-900/30;
+  }
+
+  .btn-ghost {
+    @apply btn text-gray-600 bg-transparent hover:bg-gray-100 hover:text-gray-700
+           focus:ring-gray-500 active:bg-gray-200
+           dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200 dark:active:bg-gray-600;
   }
 
   /* Input styles */
@@ -84,6 +237,137 @@
 
   .input-error {
     @apply input border-red-500 focus:ring-red-500;
+  }
+
+  /* Checkbox styles */
+  .checkbox {
+    @apply h-4 w-4 rounded border-gray-300 dark:border-gray-600
+           bg-white dark:bg-gray-800
+           text-blue-600
+           focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+           focus:ring-offset-white dark:focus:ring-offset-gray-800
+           transition-colors duration-150
+           cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .checkbox-primary {
+    @apply checkbox text-blue-600 dark:text-blue-500;
+  }
+
+  .checkbox-success {
+    @apply checkbox text-green-600 dark:text-green-500;
+  }
+
+  .checkbox-warning {
+    @apply checkbox text-amber-600 dark:text-amber-500;
+  }
+
+  .checkbox-danger {
+    @apply checkbox text-red-600 dark:text-red-500;
+  }
+
+  /* Radio button styles */
+  .radio {
+    @apply h-4 w-4 rounded-full border-gray-300 dark:border-gray-600
+           bg-white dark:bg-gray-800
+           text-blue-600
+           focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+           focus:ring-offset-white dark:focus:ring-offset-gray-800
+           transition-colors duration-150
+           cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .radio-primary {
+    @apply radio text-blue-600 dark:text-blue-500;
+  }
+
+  .radio-success {
+    @apply radio text-green-600 dark:text-green-500;
+  }
+
+  .radio-warning {
+    @apply radio text-amber-600 dark:text-amber-500;
+  }
+
+  .radio-danger {
+    @apply radio text-red-600 dark:text-red-500;
+  }
+
+  /* Checkbox/Radio label styles */
+  .checkbox-label,
+  .radio-label {
+    @apply flex items-center gap-2 cursor-pointer;
+  }
+
+  .checkbox-label input:disabled,
+  .radio-label input:disabled {
+    @apply cursor-not-allowed;
+  }
+
+  .checkbox-label input:disabled ~ span,
+  .radio-label input:disabled ~ span {
+    @apply opacity-50 cursor-not-allowed;
+  }
+
+  /* Larger checkbox/radio variants */
+  .checkbox-lg {
+    @apply h-5 w-5;
+  }
+
+  .radio-lg {
+    @apply h-5 w-5;
+  }
+
+  /* Custom styled checkbox (more modern look) */
+  .checkbox-custom {
+    @apply appearance-none h-4 w-4 rounded border-2 border-gray-300 dark:border-gray-600
+           bg-white dark:bg-gray-800
+           checked:bg-blue-600 checked:border-blue-600
+           dark:checked:bg-blue-500 dark:checked:border-blue-500
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+           focus:ring-offset-white dark:focus:ring-offset-gray-800
+           transition-all duration-150
+           cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed
+           relative;
+  }
+
+  .checkbox-custom:checked::after {
+    content: '';
+    @apply absolute inset-0 flex items-center justify-center;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  /* Custom styled radio (more modern look) */
+  .radio-custom {
+    @apply appearance-none h-4 w-4 rounded-full border-2 border-gray-300 dark:border-gray-600
+           bg-white dark:bg-gray-800
+           checked:bg-white checked:border-blue-600
+           dark:checked:bg-gray-800 dark:checked:border-blue-500
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+           focus:ring-offset-white dark:focus:ring-offset-gray-800
+           transition-all duration-150
+           cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed
+           relative;
+  }
+
+  .radio-custom:checked::after {
+    content: '';
+    @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgb(37, 99, 235); /* blue-600 */
+  }
+
+  .dark .radio-custom:checked::after {
+    background-color: rgb(59, 130, 246); /* blue-500 */
   }
 
   /* Badge styles */
@@ -107,22 +391,134 @@
     @apply badge bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400;
   }
 
-  /* Confidence indicators */
+  /* Confidence indicators - WCAG AA compliant */
   .confidence-high {
-    @apply text-green-600 dark:text-green-400;
+    @apply text-green-800 dark:text-green-300;
   }
 
   .confidence-medium {
-    @apply text-amber-600 dark:text-amber-400;
+    @apply text-amber-800 dark:text-amber-300;
   }
 
   .confidence-low {
-    @apply text-red-600 dark:text-red-400;
+    @apply text-red-800 dark:text-red-300;
+  }
+
+  /* Enhanced Confidence Badge Styles */
+  .confidence-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold
+           transition-all duration-200 shadow-sm;
+  }
+
+  .confidence-badge-high {
+    @apply confidence-badge
+           bg-gradient-to-br from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-900/20
+           text-green-800 dark:text-green-300
+           border border-green-200 dark:border-green-800/50
+           shadow-green-100 dark:shadow-green-900/20;
+  }
+
+  .confidence-badge-medium {
+    @apply confidence-badge
+           bg-gradient-to-br from-amber-100 to-amber-50 dark:from-amber-900/40 dark:to-amber-900/20
+           text-amber-900 dark:text-amber-300
+           border border-amber-200 dark:border-amber-800/50
+           shadow-amber-100 dark:shadow-amber-900/20;
+  }
+
+  .confidence-badge-low {
+    @apply confidence-badge
+           bg-gradient-to-br from-red-100 to-red-50 dark:from-red-900/40 dark:to-red-900/20
+           text-red-800 dark:text-red-300
+           border border-red-200 dark:border-red-800/50
+           shadow-red-100 dark:shadow-red-900/20;
+  }
+
+  /* Confidence badge with hover effect */
+  .confidence-badge-interactive {
+    @apply cursor-pointer hover:scale-105 hover:shadow-md;
+  }
+
+  /* Confidence badge icon sizing */
+  .confidence-badge-icon {
+    @apply w-3.5 h-3.5 flex-shrink-0;
   }
 
   /* Pending highlight */
   .pending-highlight {
     @apply bg-amber-100 dark:bg-amber-900/30 border-l-4 border-amber-500;
+  }
+
+  /* Browser navigation styles */
+  .browser-navigation {
+    @apply flex items-center gap-1;
+  }
+
+  .browser-nav-button {
+    @apply p-1.5 rounded-md text-gray-500 dark:text-gray-400
+           hover:bg-gray-100 dark:hover:bg-gray-700
+           hover:text-gray-700 dark:hover:text-gray-200
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1
+           disabled:opacity-40 disabled:cursor-not-allowed
+           disabled:hover:bg-transparent disabled:hover:text-gray-500
+           transition-colors duration-150;
+  }
+
+  .browser-nav-button:not(:disabled):active {
+    @apply bg-gray-200 dark:bg-gray-600;
+  }
+
+  /* Breadcrumb navigation styles */
+  .breadcrumb {
+    @apply flex items-center;
+  }
+
+  .breadcrumb-list {
+    @apply flex items-center space-x-1 text-sm;
+  }
+
+  .breadcrumb-item {
+    @apply flex items-center;
+  }
+
+  .breadcrumb-separator {
+    @apply w-4 h-4 mx-1 text-gray-400 dark:text-gray-500 flex-shrink-0;
+  }
+
+  .breadcrumb-link {
+    @apply flex items-center px-2 py-1 text-gray-600 dark:text-gray-400
+           hover:text-blue-600 dark:hover:text-blue-400
+           hover:bg-gray-100 dark:hover:bg-gray-700/50
+           rounded-md transition-colors duration-150;
+  }
+
+  .breadcrumb-current {
+    @apply flex items-center px-2 py-1 text-gray-900 dark:text-white font-medium;
+  }
+
+  .breadcrumb-icon {
+    @apply w-4 h-4 mr-1.5 flex-shrink-0;
+  }
+
+  .breadcrumb-text {
+    @apply truncate max-w-[150px] sm:max-w-[200px];
+  }
+
+  /* Breadcrumb with divider style variation */
+  .breadcrumb-divider {
+    @apply flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg px-2 py-1;
+  }
+
+  .breadcrumb-divider .breadcrumb-list {
+    @apply space-x-0;
+  }
+
+  .breadcrumb-divider .breadcrumb-separator {
+    @apply mx-2 text-gray-300 dark:text-gray-600;
+  }
+
+  .breadcrumb-divider .breadcrumb-link {
+    @apply hover:bg-gray-200 dark:hover:bg-gray-700;
   }
 }
 
@@ -139,6 +535,21 @@
     }
     50% {
       opacity: 0.7;
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 
@@ -188,6 +599,93 @@
   stroke-width: 3;
 }
 
+/* React Flow pan/zoom smoothness improvements */
+.react-flow__pane {
+  cursor: grab;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.react-flow__pane:active {
+  cursor: grabbing;
+}
+
+.react-flow__renderer {
+  /* Enable GPU acceleration for smooth rendering */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.react-flow__viewport {
+  /* Smooth transitions for zoom and pan */
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.react-flow__node {
+  /* Smooth node transitions */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.react-flow__edge {
+  /* Smooth edge transitions */
+  transition: stroke 0.2s ease-in-out, stroke-width 0.2s ease-in-out;
+}
+
+/* Disable transitions during active pan/zoom for performance */
+.react-flow.is-panning .react-flow__viewport,
+.react-flow.is-zooming .react-flow__viewport {
+  transition: none;
+}
+
+/* Smooth minimap interactions */
+.react-flow__minimap {
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Improve controls appearance and transitions */
+.react-flow__controls {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.react-flow__controls-button {
+  transition: background-color 0.15s ease-in-out, transform 0.15s ease-in-out;
+}
+
+.react-flow__controls-button:hover {
+  transform: scale(1.05);
+}
+
+.react-flow__controls-button:active {
+  transform: scale(0.95);
+}
+
+/* Smooth background transitions */
+.react-flow__background {
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Improve selection box appearance */
+.react-flow__selection {
+  @apply border-2 border-blue-500 bg-blue-100 bg-opacity-20;
+  transition: all 0.15s ease-in-out;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .react-flow__pane,
+  .react-flow__viewport,
+  .react-flow__node,
+  .react-flow__edge,
+  .react-flow__minimap,
+  .react-flow__controls,
+  .react-flow__controls-button,
+  .react-flow__background,
+  .react-flow__selection {
+    transition: none !important;
+  }
+}
+
 /* Tiptap editor styles */
 .tiptap-editor {
   @apply prose dark:prose-invert max-w-none;
@@ -203,4 +701,394 @@
   float: left;
   height: 0;
   pointer-events: none;
+}
+
+/* Pending item highlight in draft editor */
+.pending-item-highlight {
+  @apply bg-amber-200 dark:bg-amber-900/40
+         text-gray-900 dark:text-amber-100
+         px-1 py-0.5 rounded
+         cursor-help
+         relative
+         transition-colors duration-200;
+  text-decoration: underline;
+  text-decoration-color: theme('colors.amber.500');
+  text-decoration-style: wavy;
+  text-underline-offset: 2px;
+}
+
+.pending-item-highlight:hover {
+  @apply bg-amber-300 dark:bg-amber-800/50;
+}
+
+/* Severity-based pending item styles */
+.pending-item-highlight[data-pending-severity="error"] {
+  @apply bg-red-200 dark:bg-red-900/40;
+  text-decoration-color: theme('colors.red.500');
+}
+
+.pending-item-highlight[data-pending-severity="error"]:hover {
+  @apply bg-red-300 dark:bg-red-800/50;
+}
+
+.pending-item-highlight[data-pending-severity="info"] {
+  @apply bg-blue-200 dark:bg-blue-900/40;
+  text-decoration-color: theme('colors.blue.500');
+}
+
+.pending-item-highlight[data-pending-severity="info"]:hover {
+  @apply bg-blue-300 dark:bg-blue-800/50;
+}
+
+/* ============================================================================
+   Evidence Modal Styles
+   ============================================================================ */
+
+/* -----------------------------------------------------------------------------
+   Evidence Modal Container
+   ----------------------------------------------------------------------------- */
+
+/* Modal container backdrop and overlay */
+.evidence-modal-container {
+  /* Ensure proper stacking context */
+  isolation: isolate;
+}
+
+/* Modal backdrop with blur effect */
+.evidence-modal-backdrop {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Main modal panel */
+.evidence-modal {
+  /* Ensure modal is above backdrop */
+  z-index: 10;
+
+  /* Prevent content overflow during animations */
+  will-change: transform, opacity;
+}
+
+/* Modal header styling */
+.evidence-modal-header {
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+/* Modal content area */
+.evidence-modal-content {
+  /* Ensure proper stacking for overlays */
+  isolation: isolate;
+}
+
+/* Box navigation control bar */
+.evidence-modal-box-nav {
+  /* Floating control bar positioning */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* -----------------------------------------------------------------------------
+   Document Viewer Styles
+   ----------------------------------------------------------------------------- */
+
+/* Main document viewer container */
+.document-viewer {
+  /* Ensure smooth rendering during transforms */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Document viewer content wrapper */
+.document-viewer-content {
+  /* Enable GPU acceleration for smooth pan/zoom */
+  will-change: transform;
+}
+
+/* Document viewer overlay container for bounding boxes */
+.document-viewer-overlay {
+  /* Ensure overlay is above document but below controls */
+  z-index: 5;
+  pointer-events: none;
+}
+
+/* Zoom control bar */
+.document-viewer-controls {
+  /* Floating control bar with blur */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Grabbing cursor state */
+.document-viewer.cursor-grabbing {
+  cursor: grabbing !important;
+}
+
+.document-viewer.cursor-grab:not(.cursor-grabbing) {
+  cursor: grab;
+}
+
+/* Prevent user selection during pan operations */
+.document-viewer.cursor-grabbing * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+}
+
+/* -----------------------------------------------------------------------------
+   Bounding Box Overlay Styles
+   ----------------------------------------------------------------------------- */
+
+/* SVG overlay container */
+.bounding-box-overlay {
+  /* Ensure SVG renders crisply */
+  shape-rendering: geometricPrecision;
+}
+
+/* Bounding boxes group */
+.bounding-boxes {
+  /* Allow pointer events on boxes */
+  pointer-events: auto;
+}
+
+/* -----------------------------------------------------------------------------
+   Highlight Box Styles
+   ----------------------------------------------------------------------------- */
+
+/* Highlight Box base styles */
+.highlight-box {
+  cursor: pointer;
+  outline: none;
+  /* Smooth transitions for hover/selection states */
+  transition: fill-opacity 150ms ease-in-out,
+              stroke-width 150ms ease-in-out;
+}
+
+.highlight-box:focus-visible {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
+}
+
+/* Highlight box group container */
+.highlight-box-group {
+  transition: all 150ms ease-in-out;
+}
+
+/* Selected state with glow effect */
+.highlight-box-selected {
+  filter: drop-shadow(0 0 4px rgba(59, 130, 246, 0.5));
+}
+
+/* Hovered state with subtle glow */
+.highlight-box-hovered {
+  filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
+}
+
+/* Selection ring animation around selected boxes */
+.highlight-box-selection-ring {
+  animation: selection-pulse 2s ease-in-out infinite;
+}
+
+@keyframes selection-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    opacity: 0.3;
+    stroke-dashoffset: 6;
+  }
+}
+
+/* High confidence box styling (green) */
+.highlight-box-confidence-high {
+  --box-color: theme('colors.green.500');
+}
+
+/* Medium confidence box styling (amber) */
+.highlight-box-confidence-medium {
+  --box-color: theme('colors.amber.500');
+}
+
+/* Low confidence box styling (red) */
+.highlight-box-confidence-low {
+  --box-color: theme('colors.red.500');
+}
+
+/* -----------------------------------------------------------------------------
+   Evidence Tooltip Styles
+   ----------------------------------------------------------------------------- */
+
+/* Tooltip base with fade-in animation */
+.evidence-tooltip {
+  animation: tooltip-fade-in 150ms ease-out;
+  /* Ensure tooltip is above other elements */
+  z-index: 100;
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Tooltip arrow indicator (optional, for future use) */
+.evidence-tooltip-arrow {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  transform: rotate(45deg);
+}
+
+.evidence-tooltip-arrow-top {
+  bottom: -4px;
+  left: 50%;
+  margin-left: -4px;
+  border-right: 1px solid theme('colors.gray.200');
+  border-bottom: 1px solid theme('colors.gray.200');
+}
+
+.dark .evidence-tooltip-arrow-top {
+  border-right: 1px solid theme('colors.gray.700');
+  border-bottom: 1px solid theme('colors.gray.700');
+}
+
+/* -----------------------------------------------------------------------------
+   Evidence Modal Responsive Adjustments
+   ----------------------------------------------------------------------------- */
+
+/* Mobile-first adjustments */
+@media (max-width: 640px) {
+  .evidence-modal {
+    /* Full screen on mobile with minimal margin */
+    inset: 8px !important;
+  }
+
+  .evidence-modal-header {
+    /* Slightly smaller padding on mobile */
+    padding: 0.75rem 1rem;
+  }
+
+  .document-viewer-controls {
+    /* Ensure controls are reachable on small screens */
+    bottom: 0.5rem;
+    padding: 0.25rem;
+  }
+
+  .evidence-modal-box-nav {
+    /* Adjust position for smaller screens */
+    bottom: 4rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .evidence-modal {
+    inset: 1.5rem !important;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Accessibility Enhancements
+   ----------------------------------------------------------------------------- */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .highlight-box {
+    stroke-width: 3px !important;
+  }
+
+  .highlight-box-selected {
+    filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.8));
+  }
+
+  .evidence-modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .highlight-box,
+  .highlight-box-group,
+  .evidence-tooltip,
+  .evidence-modal,
+  .evidence-modal-backdrop {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .highlight-box-selection-ring {
+    animation: none !important;
+    opacity: 0.6;
+  }
+
+  .document-viewer-content {
+    transition: none !important;
+  }
+}
+
+/* Focus visible improvements for keyboard navigation */
+.evidence-modal :focus-visible {
+  outline: 2px solid theme('colors.blue.500');
+  outline-offset: 2px;
+}
+
+/* Skip link for modal accessibility */
+.evidence-modal-skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  z-index: 100;
+  padding: 8px;
+  background: theme('colors.white');
+  color: theme('colors.gray.900');
+}
+
+.evidence-modal-skip-link:focus {
+  top: 0;
+}
+
+.dark .evidence-modal-skip-link {
+  background: theme('colors.gray.800');
+  color: theme('colors.gray.100');
+}
+
+/* -----------------------------------------------------------------------------
+   Print Styles
+   ----------------------------------------------------------------------------- */
+
+@media print {
+  .evidence-modal-container {
+    position: static;
+    background: none;
+  }
+
+  .evidence-modal-backdrop {
+    display: none;
+  }
+
+  .evidence-modal {
+    position: static;
+    box-shadow: none;
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+
+  .document-viewer-controls,
+  .evidence-modal-box-nav {
+    display: none;
+  }
+
+  .highlight-box {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
 }

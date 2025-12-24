@@ -3,12 +3,17 @@
   "category": "Graph Visualization",
   "title": "Canvas Minimap Navigation",
   "description": "Canvas minimap navigation",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
     "canvas-visualization"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T08:24:27.870Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T08:18:02.972Z"
 }

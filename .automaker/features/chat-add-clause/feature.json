@@ -3,12 +3,17 @@
   "category": "AI Assistant",
   "title": "Chat: Add Clause",
   "description": "Chat adds new clause to draft",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
     "chat-operations"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T09:52:17.503Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T09:42:24.555Z"
 }

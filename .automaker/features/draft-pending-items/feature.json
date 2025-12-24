@@ -3,7 +3,7 @@
   "category": "Draft Editor",
   "title": "Pending Items Display in Draft",
   "description": "Pending items display in draft with yellow highlight",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "moderate",
   "dependencies": [
@@ -11,5 +11,10 @@
     "consensus-engine"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T04:10:41.688Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T04:05:17.005Z"
 }

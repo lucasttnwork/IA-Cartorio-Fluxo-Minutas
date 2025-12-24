@@ -3,12 +3,22 @@
   "category": "Graph Visualization",
   "title": "Node Selection and Multi-Select",
   "description": "Node selection and multi-select",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "canvas-visualization"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T08:32:17.185Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T08:24:30.734Z",
+  "skipTests": false,
+  "imagePaths": [],
+  "textFilePaths": [],
+  "planningMode": "lite",
+  "requirePlanApproval": false
 }

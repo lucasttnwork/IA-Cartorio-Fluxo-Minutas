@@ -2,8 +2,8 @@
   "id": "evidence-modal",
   "category": "Evidence",
   "title": "Evidence Modal with Document Highlighting",
-  "description": "Evidence modal shows document with highlighted bounding box",
-  "status": "backlog",
+  "description": "Evidence Modal with Document Highlighting\n\nCreate a modal component that displays document images with visual bounding boxes highlighting relevant evidence regions.\n\nTechnical Implementation:\n- Frontend Framework: React modal component with portal rendering for z-index isolation\n- Document Rendering: Canvas-based or SVG overlay for precise bounding box positioning\n- Image Handling: Lazy-load high-resolution document images with progressive loading fallback\n- Bounding Box Data: Accept coordinates as `{ x, y, width, height }` or `{ x1, y1, x2, y2 }` normalized to document dimensions\n- Responsive Scaling: Calculate scaling factor to maintain aspect ratio and coordinate accuracy across viewport sizes\n\nComponents:\n- EvidenceModal (modal container with backdrop)\n- DocumentViewer (image display with pan/zoom controls)\n- BoundingBoxOverlay (SVG layer for highlighting regions)\n- HighlightBox (individual box with customizable color/opacity)\n\nData Structure:\n```\n{\n  documentUrl: string,\n  boundingBoxes: Array<{\n    coordinates: { x, y, width, height },\n    label?: string,\n    confidence?: number,\n    color?: string\n  }>,\n  metadata: { pageNumber, documentId }\n}\n```\n\nFeatures:\n- Multi-box support with distinct colors for different evidence types\n- Click-to-focus: Center and zoom to specific bounding box\n- Keyboard navigation (ESC to close, arrows to navigate boxes)\n- Optional annotations/labels on hover\n\nPerformance:\n- Virtualize multi-page documents (render visible page only)\n- Use CSS transforms for smooth pan/zoom\n- Debounce resize calculations (150ms)\n\nAccessibility:\n- Focus trap within modal\n- ARIA labels for screen readers\n- Keyboard-accessible controls",
+  "status": "verified",
   "priority": 1,
   "complexity": "moderate",
   "dependencies": [
@@ -11,5 +11,87 @@
     "entity-extraction"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T00:35:54.764Z",
+  "skipTests": false,
+  "model": "opus",
+  "thinkingLevel": "medium",
+  "imagePaths": [],
+  "textFilePaths": [],
+  "branchName": "main",
+  "planningMode": "spec",
+  "requirePlanApproval": false,
+  "startedAt": "2025-12-24T00:12:30.128Z",
+  "planSpec": {
+    "status": "approved",
+    "version": 1,
+    "reviewedByUser": false,
+    "content": "🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.{tsx,ts,jsx,js}\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/package.json\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.css\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\package.json\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\main.tsx\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/components/**/*.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\components\\\\case\\\\CreateCaseModal.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\styles\\\\index.css\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/**/*.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\index.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/App.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\App.tsx\"\n}\n\n# Specification: Evidence Modal with Document Highlighting\n\n## 1. Problem\n\nUsers need to view document evidence with visual highlighting of relevant regions to verify extracted data. Currently, there's no way to display document images with bounding boxes highlighting where specific information was extracted, making it difficult to validate OCR/LLM extraction results.\n\n## 2. Solution\n\nCreate a reusable modal component system with SVG-based bounding box overlays that displays document images with highlighted evidence regions, supporting pan/zoom, multi-box navigation, and keyboard accessibility.\n\n## 3. Acceptance Criteria\n\n- **GIVEN** a document with extracted evidence data, **WHEN** the EvidenceModal is opened, **THEN** the document image displays with SVG bounding boxes highlighting relevant regions\n- **GIVEN** multiple bounding boxes on a document, **WHEN** the user clicks on a box or uses arrow keys, **THEN** the view centers and zooms to the selected box with smooth animation\n- **GIVEN** the modal is open, **WHEN** the user presses ESC or clicks the backdrop, **THEN** the modal closes with proper focus restoration\n- **GIVEN** a responsive viewport, **WHEN** the window is resized, **THEN** bounding box coordinates scale correctly to maintain accuracy (debounced at 150ms)\n- **GIVEN** a bounding box with a label, **WHEN** the user hovers over the box, **THEN** a tooltip displays the label and confidence score\n\n## 4. Files to Modify\n\n| File | Purpose | Action |\n|------|---------|--------|\n| src/components/evidence/EvidenceModal.tsx | Main modal container with portal, backdrop, focus trap | create |\n| src/components/evidence/DocumentViewer.tsx | Image display with pan/zoom controls using CSS transforms | create |\n| src/components/evidence/BoundingBoxOverlay.tsx | SVG layer for rendering multiple highlight boxes | create |\n| src/components/evidence/HighlightBox.tsx | Individual box component with hover tooltip | create |\n| src/components/evidence/index.ts | Barrel export for evidence components | create |\n| src/types/evidence.ts | TypeScript interfaces for evidence modal data structures | create |\n| src/hooks/useEvidenceModal.ts | Custom hook for modal state management | create |\n| src/styles/index.css | Add evidence modal specific styles | modify |\n| src/App.tsx | Add test route for evidence modal | modify |\n| src/pages/TestEvidenceModalPage.tsx | Test page for visual verification | create |\n\n## 5. Implementation Tasks\n\n```tasks\n- [ ] T001: Create evidence types and interfaces | File: src/types/evidence.ts\n- [ ] T002: Create useEvidenceModal hook for state management | File: src/hooks/useEvidenceModal.ts\n- [ ] T003: Create HighlightBox component with hover tooltip | File: src/components/evidence/HighlightBox.tsx\n- [ ] T004: Create BoundingBoxOverlay SVG container component | File: src/components/evidence/BoundingBoxOverlay.tsx\n- [ ] T005: Create DocumentViewer with pan/zoom controls | File: src/components/evidence/DocumentViewer.tsx\n- [ ] T006: Create EvidenceModal container with portal and focus trap | File: src/components/evidence/EvidenceModal.tsx\n- [ ] T007: Create barrel export for evidence components | File: src/components/evidence/index.ts\n- [ ] T008: Add evidence modal CSS styles | File: src/styles/index.css\n- [ ] T009: Create TestEvidenceModalPage for verification | File: src/pages/TestEvidenceModalPage.tsx\n- [ ] T010: Add test route to App.tsx | File: src/App.tsx\n```\n\n## 6. Verification\n\n1. Navigate to `/test-evidence-modal` in development mode\n2. Open the modal with sample document and bounding boxes\n3. Verify bounding boxes render with correct colors and positions\n4. Test pan/zoom functionality with mouse wheel and controls\n5. Test keyboard navigation (ESC to close, arrows to navigate boxes)\n6. Test click-to-focus on bounding boxes\n7. Verify hover tooltips display labels and confidence\n8. Resize browser window to verify responsive scaling\n9. Test focus trap remains within modal\n10. Verify accessibility with screen reader\n\n---",
+    "generatedAt": "2025-12-24T00:14:20.884Z",
+    "tasks": [
+      {
+        "id": "T001",
+        "description": "Create evidence types and interfaces",
+        "filePath": "src/types/evidence.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T002",
+        "description": "Create useEvidenceModal hook for state management",
+        "filePath": "src/hooks/useEvidenceModal.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T003",
+        "description": "Create HighlightBox component with hover tooltip",
+        "filePath": "src/components/evidence/HighlightBox.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T004",
+        "description": "Create BoundingBoxOverlay SVG container component",
+        "filePath": "src/components/evidence/BoundingBoxOverlay.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T005",
+        "description": "Create DocumentViewer with pan/zoom controls",
+        "filePath": "src/components/evidence/DocumentViewer.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T006",
+        "description": "Create EvidenceModal container with portal and focus trap",
+        "filePath": "src/components/evidence/EvidenceModal.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T007",
+        "description": "Create barrel export for evidence components",
+        "filePath": "src/components/evidence/index.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T008",
+        "description": "Add evidence modal CSS styles",
+        "filePath": "src/styles/index.css",
+        "status": "pending"
+      },
+      {
+        "id": "T009",
+        "description": "Create TestEvidenceModalPage for verification",
+        "filePath": "src/pages/TestEvidenceModalPage.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T010",
+        "description": "Add test route to App.tsx",
+        "filePath": "src/App.tsx",
+        "status": "pending"
+      }
+    ],
+    "tasksTotal": 10,
+    "tasksCompleted": 10,
+    "approvedAt": "2025-12-24T00:14:20.886Z",
+    "currentTaskId": "T010"
+  }
 }

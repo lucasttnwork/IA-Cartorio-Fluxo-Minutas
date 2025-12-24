@@ -3,12 +3,17 @@
   "category": "Graph Visualization",
   "title": "Canvas Context Menu",
   "description": "Canvas context menu on right-click",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "canvas-visualization"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T04:37:55.506Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T04:29:46.374Z"
 }

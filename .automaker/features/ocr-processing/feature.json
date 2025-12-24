@@ -3,12 +3,14 @@
   "category": "Document Processing",
   "title": "OCR Document Processing",
   "description": "OCR processing with Google Document AI",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "complex",
   "dependencies": [
     "document-upload"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-23T20:14:50.011Z",
+  "branchName": "main",
+  "startedAt": "2025-12-23T19:57:10.258Z"
 }

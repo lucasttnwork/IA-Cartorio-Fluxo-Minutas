@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "theme": "sunset",
+  "currentWorktree": {
+    "path": null,
+    "branch": "main"
+  },
+  "worktrees": [
+    {
+      "path": "C:/Users/Lucas/OneDrive/Documentos/PROJETOS - CODE/Claude-Code-Projects/IA-Cartório-Fluxo-Minutas",
+      "branch": "main",
+      "isMain": true,
+      "isCurrent": true,
+      "hasWorktree": true,
+      "hasChanges": true,
+      "changedFilesCount": 11
+    }
+  ]
+}

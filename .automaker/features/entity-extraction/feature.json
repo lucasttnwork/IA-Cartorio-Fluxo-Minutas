@@ -2,8 +2,8 @@
   "id": "entity-extraction",
   "category": "Entity Management",
   "title": "Entity Extraction from Documents",
-  "description": "Entity extraction from documents using Gemini LLM",
-  "status": "backlog",
+  "description": "Entity Extraction from Documents Using Gemini LLM\n\nImplement automated entity extraction from document uploads using Google's Gemini language model.\n\nTechnical Implementation:\n- LLM Integration: Google Gemini API (gemini-pro or gemini-1.5-flash model)\n- Document Processing: Support PDF, DOCX, TXT formats using libraries (PyPDF2/pdfplumber, python-docx)\n- API Endpoints: \n  - POST /api/documents/upload (multipart/form-data)\n  - POST /api/documents/:id/extract (trigger extraction)\n  - GET /api/documents/:id/entities (retrieve results)\n- Data Models:\n  - Document (id, filename, upload_date, status, file_path)\n  - Entity (id, document_id, type, value, confidence, position)\n  - EntityType enum (PERSON, ORGANIZATION, LOCATION, DATE, MONEY, etc.)\n\nProcessing Pipeline:\n1. File upload → storage (S3/local filesystem)\n2. Text extraction from document\n3. Chunking for large documents (handle Gemini token limits ~30k)\n4. Prompt engineering: structured output format (JSON schema)\n5. Entity extraction via Gemini API with retry logic\n6. Post-processing: deduplication, confidence filtering\n7. Store entities in database with references to source document\n\nComponents:\n- DocumentUploader (drag-drop with file type validation)\n- ExtractionStatus (progress indicator, job queue status)\n- EntityTable (filterable by type, sortable by confidence)\n- EntityHighlighter (visualize entities in original document)\n\nInfrastructure:\n- Background job queue (Celery/Bull) for async processing\n- Rate limiting for Gemini API calls (respect quota)\n- Webhook/WebSocket for real-time status updates\n\nError Handling:\n- Unsupported file formats\n- Gemini API failures (retry with exponential backoff)\n- Token limit exceeded (automatic chunking strategy)\n- Low confidence results (configurable threshold)\n\nSecurity:\n- File upload size limits (10MB default)\n- Virus scanning on uploaded documents\n- Access control: users can only access their own documents\n- Sanitize extracted entities before storage (prevent injection)\n\nPerformance Considerations:\n- Cache extraction results\n- Batch processing for multiple documents\n- Stream large document processing\n- Index entities for fast searching",
+  "status": "verified",
   "priority": 1,
   "complexity": "complex",
   "dependencies": [
@@ -11,5 +11,14 @@
     "document-type-detection"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-23T23:52:07.736Z",
+  "branchName": "main",
+  "startedAt": "2025-12-23T23:39:43.401Z",
+  "skipTests": false,
+  "model": "opus",
+  "thinkingLevel": "medium",
+  "imagePaths": [],
+  "textFilePaths": [],
+  "planningMode": "spec",
+  "requirePlanApproval": false
 }

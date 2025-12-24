@@ -3,12 +3,14 @@
   "category": "UI Design",
   "title": "Breadcrumb Navigation Styling",
   "description": "Breadcrumb navigation styling",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "design-system-ui"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-23T23:13:47.038Z",
+  "branchName": "main",
+  "startedAt": "2025-12-23T23:08:17.308Z"
 }

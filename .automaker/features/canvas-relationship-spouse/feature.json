@@ -3,12 +3,17 @@
   "category": "Graph Visualization",
   "title": "Create Spouse Relationship",
   "description": "Create spouse relationship between two persons",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "moderate",
   "dependencies": [
     "canvas-connections"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T03:17:16.223Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T03:10:31.437Z"
 }

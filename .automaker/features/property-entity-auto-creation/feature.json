@@ -3,7 +3,7 @@
   "category": "Entity Management",
   "title": "Property Entity Auto-Creation",
   "description": "Property entity auto-creation from deed - system extracts property information",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "complex",
   "dependencies": [
@@ -11,5 +11,63 @@
     "consensus-engine"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T02:13:24.820Z",
+  "skipTests": false,
+  "model": "sonnet",
+  "thinkingLevel": "medium",
+  "imagePaths": [],
+  "textFilePaths": [],
+  "branchName": "main",
+  "planningMode": "spec",
+  "requirePlanApproval": false,
+  "startedAt": "2025-12-24T02:10:28.281Z",
+  "planSpec": {
+    "status": "approved",
+    "version": 1,
+    "reviewedByUser": false,
+    "content": "🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.{ts,tsx,js,jsx}\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/deed*\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/property*\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/**/*.{ts,tsx}\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\stores\\\\caseStore.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/types/**/*\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\database.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\entityResolution.ts\"\n}\n\n🔧 Tool: Grep\nInput: {\n  \"pattern\": \"deed|escritura\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\"\n}\n\n🔧 Tool: Grep\nInput: {\n  \"pattern\": \"PROPERTY_REGISTRY|property|Property\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\entityExtraction.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\types.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/src/jobs/*.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\processor.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\extraction.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\EntitiesPage.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\components\\\\entities\\\\EntityTable.tsx\"\n}\n\nNow I have a comprehensive understanding of the codebase. Let me generate the specification.\n\n---\n\n## Specification: Property Entity Auto-Creation from Deed\n\n### 1. **Problem**\nWhen users upload deed documents (escrituras), the system extracts raw entities (PROPERTY_REGISTRY, ADDRESS, etc.) but doesn't automatically create structured Property records in the database. Users have to manually create properties, which is time-consuming and error-prone.\n\n### 2. **Solution**\nExtend the entity resolution job to automatically detect when a document is a deed, extract property-related entities (registry number, address, area, description), and create/update Property records with proper evidence linking and deduplication based on registry number.\n\n### 3. **Acceptance Criteria**\n- **GIVEN** a deed document with extracted entities, **WHEN** the entity_resolution job runs, **THEN** a Property record is created with registry_number, address, and other extracted fields\n- **GIVEN** a deed document with PROPERTY_REGISTRY entity, **WHEN** creating a property, **THEN** evidence records link the property fields to their source entities\n- **GIVEN** two deed documents with the same registry number, **WHEN** entity resolution runs, **THEN** properties are merged (auto-merge) rather than duplicated\n- **GIVEN** a property created from deed extraction, **WHEN** viewing the Entities page, **THEN** users can see property entities have been resolved into canonical Property records\n- **GIVEN** a deed document without clear registry number, **WHEN** entity resolution runs, **THEN** the property is created with lower confidence and flagged for review\n\n### 4. **Files to Modify**\n\n| File | Purpose | Action |\n|------|---------|--------|\n| `worker/src/types.ts` | Add PropertyCandidate interface and property extraction types | modify |\n| `worker/src/jobs/entityResolution.ts` | Implement property extraction and resolution logic | modify |\n| `worker/src/services/propertyExtractor.ts` | Service to extract property data from entities | create |\n| `worker/src/services/propertyMatcher.ts` | Service to match/merge properties by registry | create |\n| `src/types/index.ts` | Ensure Property type has all needed fields | modify |\n\n### 5. **Implementation Tasks**\n\n```tasks\n- [ ] T001: Add PropertyCandidate interface to worker types | File: worker/src/types.ts\n- [ ] T002: Create propertyExtractor service to build PropertyCandidate from entities | File: worker/src/services/propertyExtractor.ts\n- [ ] T003: Create propertyMatcher service for property deduplication by registry | File: worker/src/services/propertyMatcher.ts\n- [ ] T004: Update entityResolution job to extract properties from deed documents | File: worker/src/jobs/entityResolution.ts\n- [ ] T005: Add property evidence creation in entity resolution job | File: worker/src/jobs/entityResolution.ts\n- [ ] T006: Add graph edge creation for property-document relationships | File: worker/src/jobs/entityResolution.ts\n```\n\n### 6. **Verification**\n1. Upload a deed document (escritura) with registry number and address\n2. Wait for OCR, extraction, and entity extraction jobs to complete\n3. Trigger entity_resolution job\n4. Verify Property record is created in the database with correct fields\n5. Check evidence records link property fields to source entities\n6. Upload a second deed with the same registry number and verify deduplication\n\n---",
+    "generatedAt": "2025-12-24T00:37:41.006Z",
+    "tasks": [
+      {
+        "id": "T001",
+        "description": "Add PropertyCandidate interface to worker types",
+        "filePath": "worker/src/types.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T002",
+        "description": "Create propertyExtractor service to build PropertyCandidate from entities",
+        "filePath": "worker/src/services/propertyExtractor.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T003",
+        "description": "Create propertyMatcher service for property deduplication by registry",
+        "filePath": "worker/src/services/propertyMatcher.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T004",
+        "description": "Update entityResolution job to extract properties from deed documents",
+        "filePath": "worker/src/jobs/entityResolution.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T005",
+        "description": "Add property evidence creation in entity resolution job",
+        "filePath": "worker/src/jobs/entityResolution.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T006",
+        "description": "Add graph edge creation for property-document relationships",
+        "filePath": "worker/src/jobs/entityResolution.ts",
+        "status": "pending"
+      }
+    ],
+    "tasksTotal": 6,
+    "tasksCompleted": 5,
+    "approvedAt": "2025-12-24T00:37:41.008Z",
+    "currentTaskId": "T006"
+  }
 }

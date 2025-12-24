@@ -2374,7 +2374,7 @@
       "Step 4: Verify no jarring updates",
       "Step 5: Verify final response complete"
     ],
-    "passes": false
+    "passes": true
   },
   {
     "category": "functional",

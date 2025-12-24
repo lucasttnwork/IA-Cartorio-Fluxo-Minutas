@@ -3,7 +3,7 @@
   "category": "AI Assistant",
   "title": "Chat: Resolve Pending",
   "description": "Resolve pending item via chat",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
@@ -11,5 +11,10 @@
     "consensus-engine"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T10:52:42.025Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T10:44:12.593Z"
 }

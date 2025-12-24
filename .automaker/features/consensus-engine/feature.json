@@ -2,8 +2,8 @@
   "id": "consensus-engine",
   "category": "Data Processing",
   "title": "Consensus Engine (OCR vs LLM)",
-  "description": "Consensus engine marks divergent fields as pending - OCR vs LLM disagreement handling",
-  "status": "backlog",
+  "description": "Consensus Engine Marks Divergent Fields as Pending - OCR vs LLM Disagreement Handling\n\nImplement a consensus mechanism that detects and flags fields where OCR and LLM extraction results disagree.\n\nTechnical Implementation:\n- Consensus Service: Core engine comparing OCR and LLM outputs field-by-field\n- Comparison Algorithm: \n  - String similarity (Levenshtein distance, threshold: 85% for fuzzy match)\n  - Normalized value comparison for numbers/dates (parse and compare semantically)\n  - Confidence score weighting from both sources\n- Data Model: Extend Field/Extraction schema with:\n  - `status`: enum ('confirmed', 'pending', 'resolved')\n  - `ocrValue`, `llmValue`: store both extraction results\n  - `similarityScore`: float (0-1)\n  - `conflictReason`: string (e.g., \"value_mismatch\", \"confidence_low\")\n  - `reviewedBy`, `reviewedAt`: audit trail\n\nAPI Endpoints:\n- POST /api/extractions/:id/consensus - trigger consensus check\n- GET /api/extractions/:id/conflicts - fetch pending fields\n- PUT /api/extractions/:id/fields/:fieldId/resolve - manual resolution\n\nProcessing Flow:\n1. Receive OCR and LLM results for same document\n2. Field-level comparison with configurable similarity thresholds\n3. Auto-resolve if match found (status: 'confirmed')\n4. Mark as 'pending' if divergent (similarity < threshold)\n5. Store both values for human review\n6. Emit event for review queue\n\nComponents/Classes:\n- ConsensusEngine: orchestrates comparison logic\n- FieldComparator: implements comparison strategies per field type\n- ConflictResolver: handles manual resolution workflow\n- ReviewQueue: manages pending items\n\nConfiguration:\n- Field-specific similarity thresholds (e.g., stricter for amounts)\n- Confidence score minimums per extraction method\n- Auto-resolution rules (e.g., \"if LLM confidence > 95%, prefer LLM\")\n\nEdge Cases:\n- One extraction missing a field (partial extraction)\n- Null/empty values from either source\n- Type mismatches (number vs string representation)\n- Multiple possible interpretations (ambiguous data)\n\nPerformance:\n- Batch comparison for multi-field documents\n- Cache comparison results to avoid recomputation\n- Index pending fields for fast review queue queries",
+  "status": "verified",
   "priority": 1,
   "complexity": "complex",
   "dependencies": [
@@ -11,5 +11,99 @@
     "entity-extraction"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T00:25:37.323Z",
+  "skipTests": false,
+  "model": "opus",
+  "thinkingLevel": "medium",
+  "imagePaths": [],
+  "textFilePaths": [],
+  "branchName": "main",
+  "planningMode": "spec",
+  "requirePlanApproval": false,
+  "startedAt": "2025-12-23T23:54:34.257Z",
+  "planSpec": {
+    "status": "approved",
+    "version": 1,
+    "reviewedByUser": false,
+    "content": "🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.{ts,tsx,js,jsx}\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/package.json\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.prisma\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\package.json\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/**/*.{ts,tsx}\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\consensus.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\database.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\lib\\\\supabase.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/**/*.ts\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\index.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/src/jobs/*.ts\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\processor.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\ocr.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\extraction.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/src/types*.ts\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\App.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\types.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\package.json\"\n}\n\nNow I have a comprehensive understanding of the codebase. Let me generate the specification.\n\n---\n\n# Specification: Consensus Engine Marks Divergent Fields as Pending\n\n## 1. Problem\nWhen documents are processed, both OCR and LLM extract field values independently. Currently, there's no mechanism to detect disagreements between these two extraction methods, potentially leading to incorrect data being used in legal documents. Users need a way to identify fields where OCR and LLM results diverge, review both values, and manually resolve conflicts.\n\n## 2. Solution\nImplement a consensus engine that compares OCR and LLM extraction results field-by-field using string similarity (Levenshtein distance) and semantic value comparison. Fields with low similarity scores are marked as \"pending\" for human review, while matching fields are auto-confirmed. The system provides API endpoints to trigger consensus checks, view conflicts, and resolve them manually.\n\n## 3. Acceptance Criteria\n\n- **GIVEN** a document with both OCR and LLM extraction results, **WHEN** consensus job is triggered, **THEN** fields are compared and marked as 'confirmed' (match) or 'pending' (divergent) based on similarity thresholds.\n\n- **GIVEN** a field with similarity score below 85%, **WHEN** consensus processing runs, **THEN** both OCR and LLM values are stored with status 'pending' and a conflict reason.\n\n- **GIVEN** a pending field conflict, **WHEN** user calls the resolve endpoint with chosen value, **THEN** field status changes to 'resolved' with audit trail (reviewedBy, reviewedAt).\n\n- **GIVEN** an extraction, **WHEN** calling GET /api/extractions/:id/conflicts, **THEN** all pending fields are returned with OCR value, LLM value, similarity score, and conflict reason.\n\n- **GIVEN** numeric or date fields, **WHEN** comparing values, **THEN** values are normalized before comparison (e.g., \"R$ 1.000,00\" vs \"1000\" should match).\n\n## 4. Files to Modify\n\n| File | Purpose | Action |\n|------|---------|--------|\n| worker/src/types.ts | Add consensus field types with status, similarity, conflict reason | modify |\n| worker/src/services/ConsensusEngine.ts | Core consensus comparison logic | create |\n| worker/src/services/FieldComparator.ts | Field-specific comparison strategies | create |\n| worker/src/services/ConflictResolver.ts | Manual resolution workflow | create |\n| worker/src/jobs/consensus.ts | Integrate consensus engine into job processor | modify |\n| worker/src/config/consensusConfig.ts | Similarity thresholds and auto-resolution rules | create |\n| src/types/index.ts | Add frontend types for consensus fields | modify |\n| src/lib/supabase.ts | Add consensus API helper functions | modify |\n| src/pages/ConflictReviewPage.tsx | UI for reviewing and resolving conflicts | create |\n| src/components/consensus/ConflictCard.tsx | Display individual field conflicts | create |\n| src/components/consensus/index.ts | Export consensus components | create |\n| src/App.tsx | Add route for conflict review page | modify |\n\n## 5. Implementation Tasks\n\n```tasks\n- [ ] T001: Extend worker/src/types.ts with ConflictField interface (status, ocrValue, llmValue, similarityScore, conflictReason, reviewedBy, reviewedAt) | File: worker/src/types.ts\n- [ ] T002: Create consensus configuration with field-specific thresholds and auto-resolution rules | File: worker/src/config/consensusConfig.ts\n- [ ] T003: Implement FieldComparator service with Levenshtein distance and normalized value comparison | File: worker/src/services/FieldComparator.ts\n- [ ] T004: Implement ConsensusEngine service orchestrating field-by-field comparison | File: worker/src/services/ConsensusEngine.ts\n- [ ] T005: Implement ConflictResolver service for manual resolution workflow | File: worker/src/services/ConflictResolver.ts\n- [ ] T006: Update consensus job to use ConsensusEngine and store results with pending fields | File: worker/src/jobs/consensus.ts\n- [ ] T007: Add consensus field types to frontend types | File: src/types/index.ts\n- [ ] T008: Add API helper functions for consensus operations in supabase.ts | File: src/lib/supabase.ts\n- [ ] T009: Create ConflictCard component for displaying field conflicts | File: src/components/consensus/ConflictCard.tsx\n- [ ] T010: Create consensus components index export | File: src/components/consensus/index.ts\n- [ ] T011: Create ConflictReviewPage for reviewing and resolving conflicts | File: src/pages/ConflictReviewPage.tsx\n- [ ] T012: Add conflict review route to App.tsx | File: src/App.tsx\n```\n\n## 6. Verification\n\n1. Upload a test document and trigger OCR + extraction jobs\n2. Trigger consensus job via worker or API\n3. Navigate to conflict review page at `/case/:caseId/conflicts`\n4. Verify pending fields are displayed with both OCR and LLM values\n5. Resolve a conflict by selecting preferred value\n6. Confirm field status changes to 'resolved' with audit trail\n7. Verify high-similarity fields are auto-confirmed",
+    "generatedAt": "2025-12-23T23:56:16.024Z",
+    "tasks": [
+      {
+        "id": "T001",
+        "description": "Extend worker/src/types.ts with ConflictField interface (status, ocrValue, llmValue, similarityScore, conflictReason, reviewedBy, reviewedAt)",
+        "filePath": "worker/src/types.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T002",
+        "description": "Create consensus configuration with field-specific thresholds and auto-resolution rules",
+        "filePath": "worker/src/config/consensusConfig.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T003",
+        "description": "Implement FieldComparator service with Levenshtein distance and normalized value comparison",
+        "filePath": "worker/src/services/FieldComparator.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T004",
+        "description": "Implement ConsensusEngine service orchestrating field-by-field comparison",
+        "filePath": "worker/src/services/ConsensusEngine.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T005",
+        "description": "Implement ConflictResolver service for manual resolution workflow",
+        "filePath": "worker/src/services/ConflictResolver.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T006",
+        "description": "Update consensus job to use ConsensusEngine and store results with pending fields",
+        "filePath": "worker/src/jobs/consensus.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T007",
+        "description": "Add consensus field types to frontend types",
+        "filePath": "src/types/index.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T008",
+        "description": "Add API helper functions for consensus operations in supabase.ts",
+        "filePath": "src/lib/supabase.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T009",
+        "description": "Create ConflictCard component for displaying field conflicts",
+        "filePath": "src/components/consensus/ConflictCard.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T010",
+        "description": "Create consensus components index export",
+        "filePath": "src/components/consensus/index.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T011",
+        "description": "Create ConflictReviewPage for reviewing and resolving conflicts",
+        "filePath": "src/pages/ConflictReviewPage.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T012",
+        "description": "Add conflict review route to App.tsx",
+        "filePath": "src/App.tsx",
+        "status": "pending"
+      }
+    ],
+    "tasksTotal": 12,
+    "tasksCompleted": 12,
+    "approvedAt": "2025-12-23T23:56:16.025Z",
+    "currentTaskId": "T012"
+  }
 }

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination Demo - Case List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h1 class="text-2xl font-semibold text-gray-900">Cases</h1>
+                <p class="mt-1 text-sm text-gray-500">Manage your document cases and drafts</p>
+            </div>
+            <button class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                New Case
+            </button>
+        </div>
+
+        <!-- Cases Grid -->
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
+            <!-- Case Card 1 -->
+            <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow p-4 cursor-pointer">
+                <div class="flex items-start justify-between gap-2">
+                    <h3 class="font-medium text-gray-900 truncate flex-1">Test Case 1 - Property purchase sale</h3>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">Draft</span>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Purchase & Sale</p>
+                <p class="mt-3 text-xs text-gray-400">Created Dec 24, 2025</p>
+            </div>
+
+            <!-- Case Card 2 -->
+            <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow p-4 cursor-pointer">
+                <div class="flex items-start justify-between gap-2">
+                    <h3 class="font-medium text-gray-900 truncate flex-1">Test Case 2 - Property donation</h3>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Processing</span>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Donation</p>
+                <p class="mt-3 text-xs text-gray-400">Created Dec 24, 2025</p>
+            </div>
+
+            <!-- Case Card 3 -->
+            <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow p-4 cursor-pointer">
+                <div class="flex items-start justify-between gap-2">
+                    <h3 class="font-medium text-gray-900 truncate flex-1">Test Case 3 - Property exchange</h3>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Review</span>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Exchange</p>
+                <p class="mt-3 text-xs text-gray-400">Created Dec 23, 2025</p>
+            </div>
+
+            <!-- Case Card 4 -->
+            <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow p-4 cursor-pointer">
+                <div class="flex items-start justify-between gap-2">
+                    <h3 class="font-medium text-gray-900 truncate flex-1">Test Case 4 - Property lease</h3>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Approved</span>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Lease</p>
+                <p class="mt-3 text-xs text-gray-400">Created Dec 23, 2025</p>
+            </div>
+
+            <!-- Case Card 5 -->
+            <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow p-4 cursor-pointer">
+                <div class="flex items-start justify-between gap-2">
+                    <h3 class="font-medium text-gray-900 truncate flex-1">Test Case 5 - Property purchase sale</h3>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">Draft</span>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Purchase & Sale</p>
+                <p class="mt-3 text-xs text-gray-400">Created Dec 22, 2025</p>
+            </div>
+
+            <!-- Case Card 6 -->
+            <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow p-4 cursor-pointer">
+                <div class="flex items-start justify-between gap-2">
+                    <h3 class="font-medium text-gray-900 truncate flex-1">Test Case 6 - Property donation</h3>
+                    <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-100 text-yellow-800">Processing</span>
+                </div>
+                <p class="mt-2 text-sm text-gray-500">Donation</p>
+                <p class="mt-3 text-xs text-gray-400">Created Dec 22, 2025</p>
+            </div>
+        </div>
+
+        <!-- Pagination Component -->
+        <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 rounded-lg shadow">
+            <!-- Mobile View -->
+            <div class="flex flex-1 justify-between sm:hidden">
+                <button disabled class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+                    Anterior
+                </button>
+                <button class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Próximo
+                </button>
+            </div>
+
+            <!-- Desktop View -->
+            <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                <div class="flex items-center gap-4">
+                    <p class="text-sm text-gray-700">
+                        Mostrando <span class="font-medium">1</span> a <span class="font-medium">6</span> de <span class="font-medium">15</span> resultados
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <label for="pageSize" class="text-sm text-gray-700">Por página:</label>
+                        <select id="pageSize" class="rounded-md border border-gray-300 px-3 py-1 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                            <option selected>6</option>
+                            <option>12</option>
+                            <option>24</option>
+                            <option>48</option>
+                        </select>
+                    </div>
+                </div>
+
+                <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm">
+                    <!-- Previous Button -->
+                    <button disabled class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50">
+                        <span class="sr-only">Anterior</span>
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                        </svg>
+                    </button>
+
+                    <!-- Page Numbers -->
+                    <button class="relative z-10 inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-indigo-600 ring-1 ring-inset ring-gray-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">1</button>
+                    <button class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">2</button>
+                    <button class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">3</button>
+
+                    <!-- Next Button -->
+                    <button class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+                        <span class="sr-only">Próximo</span>
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -3,7 +3,7 @@
   "category": "Core",
   "title": "Case Creation Flow",
   "description": "Complete case creation flow - user creates a new purchase/sale case with all required information",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "simple",
   "dependencies": [
@@ -11,5 +11,7 @@
     "dashboard-case-list"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-23T19:40:04.432Z",
+  "branchName": "main",
+  "startedAt": "2025-12-23T19:30:26.674Z"
 }

@@ -1,0 +1,20 @@
+{
+  "category": "Uncategorized",
+  "description": "teste a visualização da interface para ver se os componentes foram criados corretamente usando o mcp playwright",
+  "title": "Add interface component visualization test",
+  "images": [],
+  "imagePaths": [],
+  "textFilePaths": [],
+  "skipTests": false,
+  "model": "sonnet",
+  "thinkingLevel": "medium",
+  "branchName": "main",
+  "priority": 2,
+  "planningMode": "lite",
+  "requirePlanApproval": false,
+  "titleGenerating": false,
+  "status": "verified",
+  "id": "feature-1766516055817-453j4hyxt",
+  "startedAt": "2025-12-23T19:04:44.654Z",
+  "updatedAt": "2025-12-23T19:07:52.755Z"
+}

@@ -1,0 +1,365 @@
+### Page state
+- Page URL: http://localhost:5173/test-color-contrast
+- Page Title: Minuta Canvas
+- Page Snapshot:
+```yaml
+- generic [ref=e5]:
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - heading "Color Contrast Accessibility" [level=1] [ref=e8]
+      - paragraph [ref=e9]: WCAG 2.1 AA Compliance Testing (4.5:1 minimum for normal text)
+    - button "Switch to light mode" [active] [ref=e371] [cursor=pointer]: ☀️ Light Mode
+  - generic [ref=e11]:
+    - heading "WCAG 2.1 Standards" [level=2] [ref=e12]
+    - generic [ref=e13]:
+      - generic [ref=e14]:
+        - heading "Level AA (Required)" [level=3] [ref=e15]
+        - list [ref=e16]:
+          - listitem [ref=e17]:
+            - text: "• Normal text:"
+            - strong [ref=e18]: 4.5:1
+            - text: minimum
+          - listitem [ref=e19]:
+            - text: "• Large text (18pt+):"
+            - strong [ref=e20]: 3:1
+            - text: minimum
+          - listitem [ref=e21]:
+            - text: "• UI components:"
+            - strong [ref=e22]: 3:1
+            - text: minimum
+      - generic [ref=e23]:
+        - heading "Level AAA (Enhanced)" [level=3] [ref=e24]
+        - list [ref=e25]:
+          - listitem [ref=e26]:
+            - text: "• Normal text:"
+            - strong [ref=e27]: 7:1
+            - text: minimum
+          - listitem [ref=e28]:
+            - text: "• Large text (18pt+):"
+            - strong [ref=e29]: 4.5:1
+            - text: minimum
+  - generic [ref=e30]:
+    - heading "Color Pair Analysis" [level=2] [ref=e31]
+    - table [ref=e33]:
+      - rowgroup [ref=e34]:
+        - row "Color Pair Foreground Background Contrast Ratio WCAG Level Preview" [ref=e35]:
+          - columnheader "Color Pair" [ref=e36]
+          - columnheader "Foreground" [ref=e37]
+          - columnheader "Background" [ref=e38]
+          - columnheader "Contrast Ratio" [ref=e39]
+          - columnheader "WCAG Level" [ref=e40]
+          - columnheader "Preview" [ref=e41]
+      - rowgroup [ref=e42]:
+        - 'row "Primary Button Color #FFFFFF #FFFFFF Color #1E40AF #1E40AF 8.72:1 AAA Sample Text" [ref=e43]':
+          - cell "Primary Button" [ref=e44]
+          - 'cell "Color #FFFFFF #FFFFFF" [ref=e45]':
+            - generic [ref=e46]:
+              - 'generic "Color #FFFFFF" [ref=e47]'
+              - generic [ref=e48]: "#FFFFFF"
+          - 'cell "Color #1E40AF #1E40AF" [ref=e49]':
+            - generic [ref=e50]:
+              - 'generic "Color #1E40AF" [ref=e51]'
+              - generic [ref=e52]: "#1E40AF"
+          - cell "8.72:1" [ref=e53]
+          - cell "AAA" [ref=e54]:
+            - generic [ref=e55]: AAA
+          - cell "Sample Text" [ref=e56]:
+            - generic [ref=e57]: Sample Text
+        - 'row "Success Text Color #065F46 #065F46 Color #FFFFFF #FFFFFF 7.68:1 AAA Sample Text" [ref=e58]':
+          - cell "Success Text" [ref=e59]
+          - 'cell "Color #065F46 #065F46" [ref=e60]':
+            - generic [ref=e61]:
+              - 'generic "Color #065F46" [ref=e62]'
+              - generic [ref=e63]: "#065F46"
+          - 'cell "Color #FFFFFF #FFFFFF" [ref=e64]':
+            - generic [ref=e65]:
+              - 'generic "Color #FFFFFF" [ref=e66]'
+              - generic [ref=e67]: "#FFFFFF"
+          - cell "7.68:1" [ref=e68]
+          - cell "AAA" [ref=e69]:
+            - generic [ref=e70]: AAA
+          - cell "Sample Text" [ref=e71]:
+            - generic [ref=e72]: Sample Text
+        - 'row "Warning Text Color #92400E #92400E Color #FFFFFF #FFFFFF 7.09:1 AAA Sample Text" [ref=e73]':
+          - cell "Warning Text" [ref=e74]
+          - 'cell "Color #92400E #92400E" [ref=e75]':
+            - generic [ref=e76]:
+              - 'generic "Color #92400E" [ref=e77]'
+              - generic [ref=e78]: "#92400E"
+          - 'cell "Color #FFFFFF #FFFFFF" [ref=e79]':
+            - generic [ref=e80]:
+              - 'generic "Color #FFFFFF" [ref=e81]'
+              - generic [ref=e82]: "#FFFFFF"
+          - cell "7.09:1" [ref=e83]
+          - cell "AAA" [ref=e84]:
+            - generic [ref=e85]: AAA
+          - cell "Sample Text" [ref=e86]:
+            - generic [ref=e87]: Sample Text
+        - 'row "Error Text Color #991B1B #991B1B Color #FFFFFF #FFFFFF 8.31:1 AAA Sample Text" [ref=e88]':
+          - cell "Error Text" [ref=e89]
+          - 'cell "Color #991B1B #991B1B" [ref=e90]':
+            - generic [ref=e91]:
+              - 'generic "Color #991B1B" [ref=e92]'
+              - generic [ref=e93]: "#991B1B"
+          - 'cell "Color #FFFFFF #FFFFFF" [ref=e94]':
+            - generic [ref=e95]:
+              - 'generic "Color #FFFFFF" [ref=e96]'
+              - generic [ref=e97]: "#FFFFFF"
+          - cell "8.31:1" [ref=e98]
+          - cell "AAA" [ref=e99]:
+            - generic [ref=e100]: AAA
+          - cell "Sample Text" [ref=e101]:
+            - generic [ref=e102]: Sample Text
+        - 'row "Body Text Color #111827 #111827 Color #FFFFFF #FFFFFF 17.74:1 AAA Sample Text" [ref=e103]':
+          - cell "Body Text" [ref=e104]
+          - 'cell "Color #111827 #111827" [ref=e105]':
+            - generic [ref=e106]:
+              - 'generic "Color #111827" [ref=e107]'
+              - generic [ref=e108]: "#111827"
+          - 'cell "Color #FFFFFF #FFFFFF" [ref=e109]':
+            - generic [ref=e110]:
+              - 'generic "Color #FFFFFF" [ref=e111]'
+              - generic [ref=e112]: "#FFFFFF"
+          - cell "17.74:1" [ref=e113]
+          - cell "AAA" [ref=e114]:
+            - generic [ref=e115]: AAA
+          - cell "Sample Text" [ref=e116]:
+            - generic [ref=e117]: Sample Text
+        - 'row "Muted Text Color #4B5563 #4B5563 Color #FFFFFF #FFFFFF 7.56:1 AAA Sample Text" [ref=e118]':
+          - cell "Muted Text" [ref=e119]
+          - 'cell "Color #4B5563 #4B5563" [ref=e120]':
+            - generic [ref=e121]:
+              - 'generic "Color #4B5563" [ref=e122]'
+              - generic [ref=e123]: "#4B5563"
+          - 'cell "Color #FFFFFF #FFFFFF" [ref=e124]':
+            - generic [ref=e125]:
+              - 'generic "Color #FFFFFF" [ref=e126]'
+              - generic [ref=e127]: "#FFFFFF"
+          - cell "7.56:1" [ref=e128]
+          - cell "AAA" [ref=e129]:
+            - generic [ref=e130]: AAA
+          - cell "Sample Text" [ref=e131]:
+            - generic [ref=e132]: Sample Text
+        - 'row "Dark Mode Text Color #F9FAFB #F9FAFB Color #111827 #111827 16.98:1 AAA Sample Text" [ref=e133]':
+          - cell "Dark Mode Text" [ref=e134]
+          - 'cell "Color #F9FAFB #F9FAFB" [ref=e135]':
+            - generic [ref=e136]:
+              - 'generic "Color #F9FAFB" [ref=e137]'
+              - generic [ref=e138]: "#F9FAFB"
+          - 'cell "Color #111827 #111827" [ref=e139]':
+            - generic [ref=e140]:
+              - 'generic "Color #111827" [ref=e141]'
+              - generic [ref=e142]: "#111827"
+          - cell "16.98:1" [ref=e143]
+          - cell "AAA" [ref=e144]:
+            - generic [ref=e145]: AAA
+          - cell "Sample Text" [ref=e146]:
+            - generic [ref=e147]: Sample Text
+        - 'row "Dark Mode Muted Color #D1D5DB #D1D5DB Color #111827 #111827 12.04:1 AAA Sample Text" [ref=e148]':
+          - cell "Dark Mode Muted" [ref=e149]
+          - 'cell "Color #D1D5DB #D1D5DB" [ref=e150]':
+            - generic [ref=e151]:
+              - 'generic "Color #D1D5DB" [ref=e152]'
+              - generic [ref=e153]: "#D1D5DB"
+          - 'cell "Color #111827 #111827" [ref=e154]':
+            - generic [ref=e155]:
+              - 'generic "Color #111827" [ref=e156]'
+              - generic [ref=e157]: "#111827"
+          - cell "12.04:1" [ref=e158]
+          - cell "AAA" [ref=e159]:
+            - generic [ref=e160]: AAA
+          - cell "Sample Text" [ref=e161]:
+            - generic [ref=e162]: Sample Text
+        - 'row "Primary Dark Color #93C5FD #93C5FD Color #111827 #111827 9.84:1 AAA Sample Text" [ref=e163]':
+          - cell "Primary Dark" [ref=e164]
+          - 'cell "Color #93C5FD #93C5FD" [ref=e165]':
+            - generic [ref=e166]:
+              - 'generic "Color #93C5FD" [ref=e167]'
+              - generic [ref=e168]: "#93C5FD"
+          - 'cell "Color #111827 #111827" [ref=e169]':
+            - generic [ref=e170]:
+              - 'generic "Color #111827" [ref=e171]'
+              - generic [ref=e172]: "#111827"
+          - cell "9.84:1" [ref=e173]
+          - cell "AAA" [ref=e174]:
+            - generic [ref=e175]: AAA
+          - cell "Sample Text" [ref=e176]:
+            - generic [ref=e177]: Sample Text
+        - 'row "Success Dark Color #6EE7B7 #6EE7B7 Color #111827 #111827 11.64:1 AAA Sample Text" [ref=e178]':
+          - cell "Success Dark" [ref=e179]
+          - 'cell "Color #6EE7B7 #6EE7B7" [ref=e180]':
+            - generic [ref=e181]:
+              - 'generic "Color #6EE7B7" [ref=e182]'
+              - generic [ref=e183]: "#6EE7B7"
+          - 'cell "Color #111827 #111827" [ref=e184]':
+            - generic [ref=e185]:
+              - 'generic "Color #111827" [ref=e186]'
+              - generic [ref=e187]: "#111827"
+          - cell "11.64:1" [ref=e188]
+          - cell "AAA" [ref=e189]:
+            - generic [ref=e190]: AAA
+          - cell "Sample Text" [ref=e191]:
+            - generic [ref=e192]: Sample Text
+        - 'row "Warning Dark Color #FCD34D #FCD34D Color #111827 #111827 12.30:1 AAA Sample Text" [ref=e193]':
+          - cell "Warning Dark" [ref=e194]
+          - 'cell "Color #FCD34D #FCD34D" [ref=e195]':
+            - generic [ref=e196]:
+              - 'generic "Color #FCD34D" [ref=e197]'
+              - generic [ref=e198]: "#FCD34D"
+          - 'cell "Color #111827 #111827" [ref=e199]':
+            - generic [ref=e200]:
+              - 'generic "Color #111827" [ref=e201]'
+              - generic [ref=e202]: "#111827"
+          - cell "12.30:1" [ref=e203]
+          - cell "AAA" [ref=e204]:
+            - generic [ref=e205]: AAA
+          - cell "Sample Text" [ref=e206]:
+            - generic [ref=e207]: Sample Text
+        - 'row "Error Dark Color #FCA5A5 #FCA5A5 Color #111827 #111827 9.35:1 AAA Sample Text" [ref=e208]':
+          - cell "Error Dark" [ref=e209]
+          - 'cell "Color #FCA5A5 #FCA5A5" [ref=e210]':
+            - generic [ref=e211]:
+              - 'generic "Color #FCA5A5" [ref=e212]'
+              - generic [ref=e213]: "#FCA5A5"
+          - 'cell "Color #111827 #111827" [ref=e214]':
+            - generic [ref=e215]:
+              - 'generic "Color #111827" [ref=e216]'
+              - generic [ref=e217]: "#111827"
+          - cell "9.35:1" [ref=e218]
+          - cell "AAA" [ref=e219]:
+            - generic [ref=e220]: AAA
+          - cell "Sample Text" [ref=e221]:
+            - generic [ref=e222]: Sample Text
+  - generic [ref=e223]:
+    - heading "Status Badge Components" [level=2] [ref=e224]
+    - generic [ref=e225]:
+      - generic [ref=e226]:
+        - 'status "Document status: Uploaded" [ref=e227]':
+          - img [ref=e228]
+          - generic [ref=e230]: Uploaded
+        - 'status "Document status: Processing" [ref=e231]':
+          - img [ref=e232]
+          - generic [ref=e234]: Processing
+        - 'status "Document status: Processed" [ref=e235]':
+          - img [ref=e236]
+          - generic [ref=e238]: Processed
+        - 'status "Document status: Needs Review" [ref=e239]':
+          - img [ref=e240]
+          - generic [ref=e243]: Needs Review
+        - 'status "Document status: Approved" [ref=e244]':
+          - img [ref=e245]
+          - generic [ref=e247]: Approved
+        - 'status "Document status: Failed" [ref=e248]':
+          - img [ref=e249]
+          - generic [ref=e251]: Failed
+      - generic [ref=e252]:
+        - 'status "Document status: Uploaded" [ref=e253]':
+          - img [ref=e254]
+          - generic [ref=e256]: Uploaded
+        - 'status "Document status: Processing" [ref=e257]':
+          - img [ref=e258]
+          - generic [ref=e260]: Processing
+        - 'status "Document status: Processed" [ref=e261]':
+          - img [ref=e262]
+          - generic [ref=e264]: Processed
+        - 'status "Document status: Needs Review" [ref=e265]':
+          - img [ref=e266]
+          - generic [ref=e269]: Needs Review
+        - 'status "Document status: Approved" [ref=e270]':
+          - img [ref=e271]
+          - generic [ref=e273]: Approved
+        - 'status "Document status: Failed" [ref=e274]':
+          - img [ref=e275]
+          - generic [ref=e277]: Failed
+      - generic [ref=e278]:
+        - 'status "Document status: Uploaded" [ref=e279]':
+          - img [ref=e280]
+          - generic [ref=e282]: Uploaded
+        - 'status "Document status: Processing" [ref=e283]':
+          - img [ref=e284]
+          - generic [ref=e286]: Processing
+        - 'status "Document status: Processed" [ref=e287]':
+          - img [ref=e288]
+          - generic [ref=e290]: Processed
+        - 'status "Document status: Needs Review" [ref=e291]':
+          - img [ref=e292]
+          - generic [ref=e295]: Needs Review
+        - 'status "Document status: Approved" [ref=e296]':
+          - img [ref=e297]
+          - generic [ref=e299]: Approved
+        - 'status "Document status: Failed" [ref=e300]':
+          - img [ref=e301]
+          - generic [ref=e303]: Failed
+  - generic [ref=e304]:
+    - heading "Button Components" [level=2] [ref=e305]
+    - generic [ref=e306]:
+      - generic [ref=e307]:
+        - button "Primary Button" [ref=e308] [cursor=pointer]
+        - button "Primary Outline" [ref=e309] [cursor=pointer]
+        - button "Primary Ghost" [ref=e310] [cursor=pointer]
+      - generic [ref=e311]:
+        - button "Secondary Button" [ref=e312] [cursor=pointer]
+        - button "Secondary Outline" [ref=e313] [cursor=pointer]
+        - button "Secondary Ghost" [ref=e314] [cursor=pointer]
+      - generic [ref=e315]:
+        - button "Danger Button" [ref=e316] [cursor=pointer]
+        - button "Danger Outline" [ref=e317] [cursor=pointer]
+        - button "Danger Ghost" [ref=e318] [cursor=pointer]
+  - generic [ref=e319]:
+    - heading "Text Variations" [level=2] [ref=e320]
+    - generic [ref=e321]:
+      - paragraph [ref=e322]:
+        - strong [ref=e323]: "Primary Text:"
+        - text: This is the main body text with maximum contrast for readability.
+      - paragraph [ref=e324]:
+        - strong [ref=e325]: "Secondary Text:"
+        - text: This is muted text that still meets WCAG AA standards.
+      - paragraph [ref=e326]:
+        - strong [ref=e327]: "Success/High Confidence:"
+        - text: Positive status indicator with green color.
+      - paragraph [ref=e328]:
+        - strong [ref=e329]: "Warning/Medium Confidence:"
+        - text: Caution indicator with amber color.
+      - paragraph [ref=e330]:
+        - strong [ref=e331]: "Error/Low Confidence:"
+        - text: Alert indicator with red color.
+  - generic [ref=e332]:
+    - heading "Predefined WCAG-Compliant Colors" [level=2] [ref=e333]
+    - generic [ref=e334]:
+      - generic [ref=e335]:
+        - heading "primary" [level=3] [ref=e336]
+        - generic [ref=e337]:
+          - generic [ref=e338]: Light Mode Sample
+          - generic [ref=e339]: Dark Mode Sample
+      - generic [ref=e340]:
+        - heading "success" [level=3] [ref=e341]
+        - generic [ref=e342]:
+          - generic [ref=e343]: Light Mode Sample
+          - generic [ref=e344]: Dark Mode Sample
+      - generic [ref=e345]:
+        - heading "warning" [level=3] [ref=e346]
+        - generic [ref=e347]:
+          - generic [ref=e348]: Light Mode Sample
+          - generic [ref=e349]: Dark Mode Sample
+      - generic [ref=e350]:
+        - heading "error" [level=3] [ref=e351]
+        - generic [ref=e352]:
+          - generic [ref=e353]: Light Mode Sample
+          - generic [ref=e354]: Dark Mode Sample
+      - generic [ref=e355]:
+        - heading "info" [level=3] [ref=e356]
+        - generic [ref=e357]:
+          - generic [ref=e358]: Light Mode Sample
+          - generic [ref=e359]: Dark Mode Sample
+  - generic [ref=e360]:
+    - heading "✅ Accessibility Features Implemented" [level=2] [ref=e361]
+    - list [ref=e362]:
+      - listitem [ref=e363]: • All text meets WCAG 2.1 AA contrast ratio (4.5:1 minimum)
+      - listitem [ref=e364]: • UI components meet 3:1 contrast requirement
+      - listitem [ref=e365]: • Dark mode with accessible color palette
+      - listitem [ref=e366]: • ARIA labels for interactive elements
+      - listitem [ref=e367]: • Screen reader support with sr-only utility class
+      - listitem [ref=e368]: • Semantic HTML with proper roles
+      - listitem [ref=e369]: • Focus indicators for keyboard navigation
+      - listitem [ref=e370]: • Reduced motion support via CSS media queries
+```

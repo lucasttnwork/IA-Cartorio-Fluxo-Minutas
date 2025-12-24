@@ -3,12 +3,21 @@
   "category": "Entity Management",
   "title": "Person Entity Card Display",
   "description": "Person card displays all required fields",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "moderate",
   "dependencies": [
     "person-entity-auto-creation"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T01:08:14.340Z",
+  "branchName": "main",
+  "startedAt": "2025-12-24T01:03:03.751Z",
+  "skipTests": false,
+  "model": "opus",
+  "thinkingLevel": "none",
+  "imagePaths": [],
+  "textFilePaths": [],
+  "planningMode": "lite",
+  "requirePlanApproval": false
 }

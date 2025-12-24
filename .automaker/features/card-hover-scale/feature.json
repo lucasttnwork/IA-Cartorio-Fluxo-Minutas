@@ -3,12 +3,22 @@
   "category": "UI Design",
   "title": "Card Hover Scale Animation",
   "description": "Card hover scale animation",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "design-system-ui"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T08:56:29.038Z",
+  "branchName": "main",
+  "startedAt": "2025-12-24T08:52:54.322Z",
+  "skipTests": false,
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "imagePaths": [],
+  "textFilePaths": [],
+  "planningMode": "skip",
+  "requirePlanApproval": false,
+  "hasCustomAIProfile": true
 }

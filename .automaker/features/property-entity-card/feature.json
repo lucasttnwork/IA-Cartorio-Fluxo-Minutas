@@ -3,12 +3,14 @@
   "category": "Entity Management",
   "title": "Property Entity Card Display",
   "description": "Property card displays all required fields",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "moderate",
   "dependencies": [
     "property-entity-auto-creation"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T02:22:24.481Z",
+  "branchName": "main",
+  "startedAt": "2025-12-24T02:13:26.060Z"
 }

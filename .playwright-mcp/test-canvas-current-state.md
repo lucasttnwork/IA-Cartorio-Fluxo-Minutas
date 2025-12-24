@@ -1,0 +1,149 @@
+### Page state
+- Page URL: http://localhost:5183/test-canvas-connections
+- Page Title: Minuta Canvas
+- Page Snapshot:
+```yaml
+- generic [ref=e3]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - heading "Test Canvas Connections" [level=1] [ref=e7]:
+        - img [ref=e8]
+        - text: Test Canvas Connections
+      - paragraph [ref=e10]: Demo da funcionalidade de conexões manuais entre entidades
+    - generic [ref=e11]:
+      - button "Ocultar Minimapa" [ref=e12] [cursor=pointer]:
+        - img [ref=e13]
+        - text: Ocultar Minimapa
+      - button "Ativar Seleção em Caixa" [ref=e15] [cursor=pointer]:
+        - img [ref=e16]
+        - text: Ativar Seleção em Caixa
+      - button "Ativar Modo Conexão" [ref=e18] [cursor=pointer]:
+        - img [ref=e19]
+        - text: Ativar Modo Conexão
+      - button "Testar Conexão" [ref=e21] [cursor=pointer]:
+        - img [ref=e22]
+        - text: Testar Conexão
+  - generic [ref=e26]:
+    - img [ref=e27]
+    - generic [ref=e29]:
+      - heading "Consentimento do cônjuge necessário" [level=4] [ref=e30]
+      - paragraph [ref=e31]: João Silva está casado(a) com Maria Silva e vendendo propriedade(s), mas o cônjuge não está registrado como vendedor nas mesmas propriedades. O cônjuge deve assinar como co-vendedor ou fornecer documentos de separação de bens.
+      - generic [ref=e32]:
+        - generic [ref=e33]: João Silva
+        - generic [ref=e34]: Maria Silva
+  - application [ref=e36]:
+    - generic [ref=e38]:
+      - generic:
+        - generic:
+          - img
+          - img:
+            - group "Edge from person-22222222-2222-2222-2222-222222222221 to person-22222222-2222-2222-2222-222222222222" [ref=e39] [cursor=pointer]:
+              - generic [ref=e40]:
+                - generic: spouse of
+          - img:
+            - group "Edge from person-22222222-2222-2222-2222-222222222221 to property-33333333-3333-3333-3333-333333333331" [ref=e42] [cursor=pointer]:
+              - generic [ref=e45]:
+                - generic: sells
+        - generic:
+          - group [ref=e47]:
+            - generic [ref=e91]:
+              - generic [ref=e94]:
+                - img [ref=e96]
+                - generic [ref=e98]:
+                  - paragraph [ref=e99]: João Silva
+                  - paragraph [ref=e100]: Pessoa
+              - generic [ref=e101]:
+                - generic [ref=e102]:
+                  - img [ref=e103]
+                  - generic [ref=e105]: "CPF:"
+                  - generic [ref=e106]: 123.456.789-01
+                - generic [ref=e107]: "Estado Civil: Casado(a)"
+                - generic [ref=e109]: NaN% confiança
+          - group [ref=e48]:
+            - generic [ref=e111]:
+              - generic [ref=e114]:
+                - img [ref=e116]
+                - generic [ref=e118]:
+                  - paragraph [ref=e119]: Maria Silva
+                  - paragraph [ref=e120]: Pessoa
+              - generic [ref=e121]:
+                - generic [ref=e122]:
+                  - img [ref=e123]
+                  - generic [ref=e125]: "CPF:"
+                  - generic [ref=e126]: 987.654.321-02
+                - generic [ref=e127]: "Estado Civil: Casado(a)"
+                - generic [ref=e129]: NaN% confiança
+          - group [ref=e49]:
+            - generic [ref=e131]:
+              - generic [ref=e134]:
+                - img [ref=e136]
+                - generic [ref=e138]:
+                  - paragraph [ref=e139]: Pedro Santos
+                  - paragraph [ref=e140]: Pessoa
+              - generic [ref=e141]:
+                - generic [ref=e142]:
+                  - img [ref=e143]
+                  - generic [ref=e145]: "CPF:"
+                  - generic [ref=e146]: 456.789.123-03
+                - generic [ref=e147]: "Estado Civil: Solteiro(a)"
+                - generic [ref=e149]: NaN% confiança
+          - group [ref=e50]:
+            - generic [ref=e151]:
+              - generic [ref=e154]:
+                - img [ref=e156]
+                - generic [ref=e158]:
+                  - paragraph [ref=e159]: REG-001
+                  - paragraph [ref=e160]: Propriedade
+              - generic [ref=e161]:
+                - generic [ref=e162]:
+                  - img [ref=e163]
+                  - generic [ref=e165]: "Matrícula:"
+                  - generic [ref=e166]: REG-001
+                - generic [ref=e167]:
+                  - img [ref=e168]
+                  - generic [ref=e171]: Rua das Flores, 123 - undefined, São Paulo/undefined
+                - generic [ref=e172]:
+                  - text: "Área:"
+                  - generic [ref=e173]: 150 m²
+                - generic [ref=e175]: NaN% confiança
+          - group [ref=e51]:
+            - generic [ref=e177]:
+              - generic [ref=e180]:
+                - img [ref=e182]
+                - generic [ref=e184]:
+                  - paragraph [ref=e185]: REG-002
+                  - paragraph [ref=e186]: Propriedade
+              - generic [ref=e187]:
+                - generic [ref=e188]:
+                  - img [ref=e189]
+                  - generic [ref=e191]: "Matrícula:"
+                  - generic [ref=e192]: REG-002
+                - generic [ref=e193]:
+                  - img [ref=e194]
+                  - generic [ref=e197]: Av. Paulista, 456 - undefined, São Paulo/undefined
+                - generic [ref=e198]:
+                  - text: "Área:"
+                  - generic [ref=e199]: 200 m²
+                - generic [ref=e201]: NaN% confiança
+    - img
+    - generic "Control Panel" [ref=e52]:
+      - button "Zoom In" [ref=e53] [cursor=pointer]:
+        - img [ref=e54]
+      - button "Zoom Out" [ref=e56] [cursor=pointer]:
+        - img [ref=e57]
+      - button "Fit View" [ref=e59] [cursor=pointer]:
+        - img [ref=e60]
+      - button "Toggle Interactivity" [ref=e62] [cursor=pointer]:
+        - img [ref=e63]
+    - img "Mini Map" [ref=e66]
+    - generic [ref=e73]:
+      - heading "Legenda" [level=3] [ref=e74]
+      - generic [ref=e75]:
+        - generic [ref=e78]: Pessoa
+        - generic [ref=e81]: Propriedade
+        - generic [ref=e84]: Confirmado
+        - generic [ref=e87]: Não confirmado
+    - link "React Flow attribution" [ref=e89] [cursor=pointer]:
+      - /url: https://reactflow.dev
+      - text: React Flow
+```

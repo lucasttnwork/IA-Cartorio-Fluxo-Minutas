@@ -2,6 +2,10 @@ import { Outlet, NavLink, useParams } from 'react-router-dom'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../hooks/useAuth'
+import Breadcrumb from '../common/Breadcrumb'
+import BrowserNavigation from '../common/BrowserNavigation'
+import Avatar from '../common/Avatar'
+import UserProfileDropdown from '../common/UserProfileDropdown'
 import {
   HomeIcon,
   DocumentArrowUpIcon,
@@ -11,7 +15,6 @@ import {
   ClockIcon,
   Bars3Icon,
   XMarkIcon,
-  ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline'
 
 const navigation = [
@@ -62,7 +65,7 @@ export default function DashboardLayout() {
             animate={{ x: 0 }}
             exit={{ x: -280 }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-xl lg:hidden"
+            className="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 shadow-xl lg:hidden flex flex-col"
           >
             <div className="flex items-center justify-between h-16 px-4 border-b dark:border-gray-700">
               <span className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -75,7 +78,7 @@ export default function DashboardLayout() {
                 <XMarkIcon className="w-5 h-5" />
               </button>
             </div>
-            <nav className="px-2 py-4 space-y-1">
+            <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
               {navItems.map((item) => (
                 <NavLink
                   key={item.name}
@@ -95,6 +98,10 @@ export default function DashboardLayout() {
                 </NavLink>
               ))}
             </nav>
+            {/* Mobile user profile */}
+            <div className="p-3 border-t dark:border-gray-700">
+              <UserProfileDropdown user={appUser} onSignOut={signOut} />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -126,29 +133,8 @@ export default function DashboardLayout() {
               </NavLink>
             ))}
           </nav>
-          <div className="p-4 border-t dark:border-gray-700">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
-                  {appUser?.full_name?.charAt(0) || 'U'}
-                </div>
-              </div>
-              <div className="ml-3 flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-200 truncate">
-                  {appUser?.full_name || 'User'}
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                  {appUser?.role || 'clerk'}
-                </p>
-              </div>
-              <button
-                onClick={signOut}
-                className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
-                title="Sign out"
-              >
-                <ArrowRightOnRectangleIcon className="w-5 h-5 text-gray-500" />
-              </button>
-            </div>
+          <div className="p-3 border-t dark:border-gray-700">
+            <UserProfileDropdown user={appUser} onSignOut={signOut} />
           </div>
         </div>
       </div>
@@ -156,15 +142,29 @@ export default function DashboardLayout() {
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top header */}
-        <header className="sticky top-0 z-30 flex items-center h-16 px-4 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 -ml-2 rounded-md lg:hidden hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Bars3Icon className="w-6 h-6" />
-          </button>
-          <div className="flex-1 ml-4 lg:ml-0">
-            {/* Case title will be added here dynamically */}
+        <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 bg-white dark:bg-gray-800 border-b dark:border-gray-700 shadow-sm">
+          <div className="flex items-center flex-1">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 -ml-2 rounded-md lg:hidden hover:bg-gray-100 dark:hover:bg-gray-700"
+            >
+              <Bars3Icon className="w-6 h-6" />
+            </button>
+            {/* Browser back/forward navigation */}
+            <div className="hidden sm:flex ml-2 lg:ml-0">
+              <BrowserNavigation />
+            </div>
+            <div className="flex-1 ml-2 sm:ml-4">
+              <Breadcrumb />
+            </div>
+          </div>
+          {/* Header avatar - visible on mobile */}
+          <div className="lg:hidden">
+            <Avatar
+              name={appUser?.full_name || 'User'}
+              size="sm"
+              status="online"
+            />
           </div>
         </header>
 

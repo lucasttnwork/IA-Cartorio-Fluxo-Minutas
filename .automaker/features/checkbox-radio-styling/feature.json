@@ -3,12 +3,17 @@
   "category": "UI Design",
   "title": "Checkbox and Radio Styling",
   "description": "Checkbox and radio styling",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "design-system-ui"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T11:18:55.695Z",
+  "model": "sonnet",
+  "thinkingLevel": "low",
+  "hasCustomAIProfile": true,
+  "branchName": "main",
+  "startedAt": "2025-12-24T11:12:55.174Z"
 }

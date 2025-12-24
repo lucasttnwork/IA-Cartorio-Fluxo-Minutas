@@ -3,12 +3,13 @@
   "category": "Localization",
   "title": "Currency Formatting (BRL)",
   "description": "Currency formatting (BRL)",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "localization-pt-br"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T02:25:31.776Z",
+  "startedAt": "2025-12-24T02:16:11.013Z"
 }

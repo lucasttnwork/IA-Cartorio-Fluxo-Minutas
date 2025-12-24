@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Hover Scale Animation Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Card base styles matching the project */
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+
+        /* Card hover effect - THE FEATURE BEING TESTED */
+        .card-hover {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .card-hover:hover {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transform: scale(1.02);
+        }
+
+        body {
+            background: #f9fafb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="p-8">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold mb-2">Card Hover Scale Animation Test</h1>
+        <p class="text-gray-600 mb-8">Hover over the cards below to see the scale animation effect</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Card 1 - With hover effect -->
+            <a href="#" class="card-hover block p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold">Process #001</h3>
+                    <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">Active</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Real estate transaction - Property deed</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span>Client: João Silva</span>
+                    <span>Updated: 2h ago</span>
+                </div>
+            </a>
+
+            <!-- Card 2 - With hover effect -->
+            <a href="#" class="card-hover block p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold">Process #002</h3>
+                    <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded">Pending</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Contract signature - Partnership agreement</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span>Client: Maria Santos</span>
+                    <span>Updated: 5h ago</span>
+                </div>
+            </a>
+
+            <!-- Card 3 - With hover effect -->
+            <a href="#" class="card-hover block p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold">Process #003</h3>
+                    <span class="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">Review</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Vehicle transfer - Ownership change</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span>Client: Pedro Costa</span>
+                    <span>Updated: 1d ago</span>
+                </div>
+            </a>
+
+            <!-- Card 4 - With hover effect -->
+            <a href="#" class="card-hover block p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold">Process #004</h3>
+                    <span class="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded">Draft</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Power of attorney - Legal representation</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span>Client: Ana Lima</span>
+                    <span>Updated: 3d ago</span>
+                </div>
+            </a>
+
+            <!-- Card 5 - With hover effect -->
+            <a href="#" class="card-hover block p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold">Process #005</h3>
+                    <span class="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">Archived</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Will documentation - Estate planning</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span>Client: Carlos Dias</span>
+                    <span>Updated: 1w ago</span>
+                </div>
+            </a>
+
+            <!-- Card 6 - With hover effect -->
+            <a href="#" class="card-hover block p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold">Process #006</h3>
+                    <span class="px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded">Urgent</span>
+                </div>
+                <p class="text-gray-600 text-sm mb-4">Marriage certificate - Documentation update</p>
+                <div class="flex items-center justify-between text-xs text-gray-500">
+                    <span>Client: Lucia Pereira</span>
+                    <span>Updated: 30m ago</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="mt-12 p-6 bg-white rounded-lg shadow">
+            <h2 class="text-xl font-bold mb-4">Implementation Details</h2>
+            <div class="space-y-2 text-sm">
+                <p><strong>CSS Class:</strong> <code class="bg-gray-100 px-2 py-1 rounded">.card-hover</code></p>
+                <p><strong>Transition:</strong> all 0.2s ease-in-out</p>
+                <p><strong>Hover Scale:</strong> 1.02 (2% increase)</p>
+                <p><strong>Hover Shadow:</strong> Enhanced from sm to md</p>
+                <p><strong>File Location:</strong> src/styles/index.css (lines 114-116)</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

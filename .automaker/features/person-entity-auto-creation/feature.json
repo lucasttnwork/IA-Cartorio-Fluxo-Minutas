@@ -2,8 +2,8 @@
   "id": "person-entity-auto-creation",
   "category": "Entity Management",
   "title": "Person Entity Auto-Creation",
-  "description": "Person entity auto-creation from documents - system extracts and creates person cards",
-  "status": "backlog",
+  "description": "Implement Intelligent Person Entity Extraction and Auto-Creation System\n",
+  "status": "verified",
   "priority": 1,
   "complexity": "complex",
   "dependencies": [
@@ -11,5 +11,69 @@
     "consensus-engine"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z"
+  "updatedAt": "2025-12-24T00:49:03.905Z",
+  "skipTests": false,
+  "model": "opus",
+  "thinkingLevel": "medium",
+  "imagePaths": [],
+  "textFilePaths": [],
+  "branchName": "main",
+  "planningMode": "spec",
+  "requirePlanApproval": false,
+  "startedAt": "2025-12-24T00:28:46.744Z",
+  "planSpec": {
+    "status": "approved",
+    "version": 1,
+    "reviewedByUser": false,
+    "content": "🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.{ts,tsx,js,jsx}\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/package.json\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.md\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\package.json\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\CLAUDE.md\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\PRD-produto.md\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\stores\\\\caseStore.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\entityResolution.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/**/*.{ts,tsx}\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\database.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/src/**/*.ts\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\entityExtraction.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\extraction.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\processor.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\EntitiesPage.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\components\\\\entities\\\\EntityTable.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\types.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\App.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\CanvasPage.tsx\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"supabase/migrations/**/*.sql\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\supabase\\\\migrations\\\\00001_initial_schema.sql\"\n}\n\nNow I have a comprehensive understanding of the codebase. Let me generate the specification.\n\n---\n\n# Specification: Intelligent Person Entity Extraction and Auto-Creation System\n\n## 1. **Problem**\n\nUsers currently have to manually create Person and Property entities after documents are processed. The existing `entity_extraction` job extracts raw entities (PERSON, CPF, RG, DATE, etc.) from documents, but these are not automatically consolidated into structured `Person` records in the `people` table. This creates a gap where users see extracted entities in the EntitiesPage but must manually create Person/Property cards for the Canvas workflow.\n\n## 2. **Solution**\n\nImplement an intelligent entity resolution pipeline that takes extracted entities (from the `entity_extraction` job) and automatically creates/merges Person records in the `people` table. The system will group entities by document, associate related data (names with CPFs, addresses, etc.), apply deduplication logic (CPF match = auto-merge), and create evidence links for traceability.\n\n## 3. **Acceptance Criteria**\n\n- GIVEN documents have been processed with entity extraction, WHEN the entity_resolution job runs, THEN Person records are automatically created in the `people` table with data consolidated from extracted entities.\n\n- GIVEN multiple documents contain the same person (matched by CPF), WHEN entity resolution runs, THEN the person records are merged into a single entry with source_docs containing all relevant document IDs.\n\n- GIVEN extracted entities include PERSON, CPF, RG, DATE, ADDRESS types, WHEN entity resolution runs, THEN these are correctly mapped to Person fields (full_name, cpf, rg, birth_date, address).\n\n- GIVEN a person is created from extracted entities, WHEN viewing the EntitiesPage or CanvasPage, THEN evidence links are available showing which document/page each field came from.\n\n- GIVEN two persons without CPF but similar names, WHEN entity resolution runs, THEN a merge suggestion is created rather than auto-merging.\n\n## 4. **Files to Modify**\n\n| File | Purpose | Action |\n|------|---------|--------|\n| worker/src/jobs/entityResolution.ts | Implement full entity resolution logic | modify |\n| worker/src/types.ts | Add PersonCandidate interface | modify |\n| src/types/index.ts | Add merge suggestion types | modify |\n| supabase/migrations/00003_add_merge_suggestions.sql | Add merge_suggestions table | create |\n| worker/src/services/EntityMatcher.ts | Service for entity grouping and matching | create |\n| worker/src/services/PersonBuilder.ts | Service for building Person records from entities | create |\n\n## 5. **Implementation Tasks**\n\n```tasks\n- [ ] T001: Add PersonCandidate and MergeSuggestion interfaces to types | File: worker/src/types.ts\n- [ ] T002: Add MergeSuggestion type to frontend types | File: src/types/index.ts\n- [ ] T003: Create migration for merge_suggestions table | File: supabase/migrations/00003_add_merge_suggestions.sql\n- [ ] T004: Create EntityMatcher service for grouping entities by document and type | File: worker/src/services/EntityMatcher.ts\n- [ ] T005: Create PersonBuilder service for constructing Person records from entities | File: worker/src/services/PersonBuilder.ts\n- [ ] T006: Implement full entity resolution job logic | File: worker/src/jobs/entityResolution.ts\n- [ ] T007: Add evidence creation for extracted person fields | File: worker/src/jobs/entityResolution.ts\n```\n\n## 6. **Verification**\n\n1. Upload documents with Brazilian ID data (CNH, RG, etc.)\n2. Wait for OCR → extraction → entity_extraction jobs to complete\n3. Trigger entity_resolution job\n4. Verify Person records appear in `people` table with correct data\n5. Verify evidence records link Person fields to source documents\n6. Test deduplication by uploading multiple documents with same CPF\n\n---\n\n\"",
+    "generatedAt": "2025-12-24T00:30:39.662Z",
+    "tasks": [
+      {
+        "id": "T001",
+        "description": "Add PersonCandidate and MergeSuggestion interfaces to types",
+        "filePath": "worker/src/types.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T002",
+        "description": "Add MergeSuggestion type to frontend types",
+        "filePath": "src/types/index.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T003",
+        "description": "Create migration for merge_suggestions table",
+        "filePath": "supabase/migrations/00003_add_merge_suggestions.sql",
+        "status": "pending"
+      },
+      {
+        "id": "T004",
+        "description": "Create EntityMatcher service for grouping entities by document and type",
+        "filePath": "worker/src/services/EntityMatcher.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T005",
+        "description": "Create PersonBuilder service for constructing Person records from entities",
+        "filePath": "worker/src/services/PersonBuilder.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T006",
+        "description": "Implement full entity resolution job logic",
+        "filePath": "worker/src/jobs/entityResolution.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T007",
+        "description": "Add evidence creation for extracted person fields",
+        "filePath": "worker/src/jobs/entityResolution.ts",
+        "status": "pending"
+      }
+    ],
+    "tasksTotal": 7,
+    "tasksCompleted": 7,
+    "approvedAt": "2025-12-24T00:30:39.663Z",
+    "currentTaskId": "T007"
+  }
 }
