@@ -12,6 +12,9 @@ import {
   CheckCircleIcon,
   PlusCircleIcon,
 } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import type {
   CanvasSuggestions,
   EntitySuggestion,
@@ -58,42 +61,38 @@ export default function SuggestionsPanel({
 
   if (!isOpen) {
     return (
-      <motion.button
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
+      <Button
         onClick={() => setIsOpen(true)}
-        className="fixed right-4 top-24 bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-full shadow-lg z-50 transition-colors"
+        size="icon"
+        className="fixed right-4 top-24 bg-purple-500 hover:bg-purple-600 text-white rounded-full shadow-lg z-50 h-12 w-12"
         title="Mostrar Sugestões"
       >
         <SparklesIcon className="w-6 h-6" />
         {hasAnySuggestions && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs">
             {suggestions.summary.totalSuggestions}
-          </span>
+          </Badge>
         )}
-      </motion.button>
+      </Button>
     )
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 400 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 400 }}
-      className="fixed right-4 top-24 bottom-4 w-96 bg-white dark:bg-gray-800 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 z-50 flex flex-col overflow-hidden"
-    >
+    <Card className="fixed right-4 top-24 bottom-4 w-96 glass-elevated rounded-lg shadow-2xl z-50 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-500 to-indigo-600 p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <SparklesIcon className="w-6 h-6 text-white" />
           <h3 className="text-lg font-semibold text-white">Sugestões IA</h3>
         </div>
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => setIsOpen(false)}
-          className="text-white hover:bg-white/20 rounded-lg p-1 transition-colors"
+          className="text-white hover:bg-white/20 h-8 w-8"
         >
           <XMarkIcon className="w-5 h-5" />
-        </button>
+        </Button>
       </div>
 
       {/* Summary */}
@@ -113,13 +112,15 @@ export default function SuggestionsPanel({
           </div>
         </div>
 
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onRefresh}
           disabled={isLoading}
-          className="mt-3 w-full btn-secondary text-sm py-2"
+          className="mt-3 w-full"
         >
           {isLoading ? 'Analisando...' : 'Atualizar Sugestões'}
-        </button>
+        </Button>
       </div>
 
       {/* Content */}
@@ -268,7 +269,7 @@ export default function SuggestionsPanel({
           </div>
         )}
       </div>
-    </motion.div>
+    </Card>
   )
 }
 
@@ -316,19 +317,21 @@ function EntitySuggestionCard({
           </div>
 
           <div className="flex gap-2">
-            <button
+            <Button
+              size="sm"
               onClick={onApply}
-              className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded text-xs font-medium transition-colors"
+              className="flex-1 gap-1 bg-purple-500 hover:bg-purple-600"
             >
               <PlusCircleIcon className="w-4 h-4" />
               Adicionar
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={onDismiss}
-              className="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded text-xs font-medium transition-colors"
             >
               Ignorar
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -375,19 +378,21 @@ function RelationshipSuggestionCard({
           </div>
 
           <div className="flex gap-2">
-            <button
+            <Button
+              size="sm"
               onClick={onApply}
-              className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 bg-purple-500 hover:bg-purple-600 text-white rounded text-xs font-medium transition-colors"
+              className="flex-1 gap-1 bg-purple-500 hover:bg-purple-600"
             >
               <PlusCircleIcon className="w-4 h-4" />
               Adicionar
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={onDismiss}
-              className="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded text-xs font-medium transition-colors"
             >
               Ignorar
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -436,12 +441,13 @@ function DataQualitySuggestionCard({
           )}
 
           <div className="flex gap-2">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={onDismiss}
-              className="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded text-xs font-medium transition-colors"
             >
               Entendi
-            </button>
+            </Button>
           </div>
         </div>
       </div>

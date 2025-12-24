@@ -9,6 +9,11 @@ import {
   CheckCircleIcon,
   ClockIcon,
 } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { cn } from '@/lib/utils'
 import { EntityTable } from '../components/entities'
 import { supabase } from '../lib/supabase'
 import type { ExtractedEntity, Document, EntityExtractionResult } from '../types'
@@ -227,20 +232,21 @@ export default function EntitiesPage() {
         </div>
 
         <div className="flex gap-3">
-          <button
+          <Button
+            variant="outline"
             onClick={() => loadData()}
             disabled={isLoading}
-            className="btn-secondary flex items-center gap-2"
+            className="gap-2"
           >
-            <ArrowPathIcon className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+            <ArrowPathIcon className={cn("w-5 h-5", isLoading && "animate-spin")} />
             Atualizar
-          </button>
+          </Button>
 
           {documents.filter((d) => d.status === 'processed').length > 0 && (
-            <button
+            <Button
               onClick={triggerAllExtractions}
               disabled={isExtracting}
-              className="btn-primary flex items-center gap-2"
+              className="gap-2"
             >
               {isExtracting ? (
                 <>
@@ -253,7 +259,7 @@ export default function EntitiesPage() {
                   Extrair Entidades
                 </>
               )}
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -263,70 +269,67 @@ export default function EntitiesPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4"
         >
-          <div className="flex items-center gap-3">
-            <ExclamationTriangleIcon className="w-5 h-5 text-red-500" />
-            <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
-            <button
-              onClick={() => setError(null)}
-              className="ml-auto text-red-500 hover:text-red-700"
-            >
-              Fechar
-            </button>
-          </div>
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertDescription className="flex items-center justify-between">
+              {error}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setError(null)}
+                className="ml-2 h-6 px-2"
+              >
+                Fechar
+              </Button>
+            </AlertDescription>
+          </Alert>
         </motion.div>
       )}
 
       {/* Document Filter Section */}
       {documents.length > 0 && (
-        <div className="card p-4">
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-            Filtrar por Documento
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setSelectedDocumentId(null)}
-              className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                selectedDocumentId === null
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
-            >
-              Todos ({entities.length})
-            </button>
+        <Card className="glass-card">
+          <CardContent className="p-4">
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+              Filtrar por Documento
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                variant={selectedDocumentId === null ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedDocumentId(null)}
+                className="rounded-full"
+              >
+                Todos ({entities.length})
+              </Button>
 
-            {documents.map((doc) => {
-              const statusInfo = getDocumentStatusInfo(doc)
-              const StatusIcon = statusInfo.icon
-              const docEntities = entities.filter((e) => e.document_id === doc.id)
+              {documents.map((doc) => {
+                const statusInfo = getDocumentStatusInfo(doc)
+                const StatusIcon = statusInfo.icon
+                const docEntities = entities.filter((e) => e.document_id === doc.id)
 
-              return (
-                <button
-                  key={doc.id}
-                  onClick={() => setSelectedDocumentId(doc.id)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                    selectedDocumentId === doc.id
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                  }`}
-                >
-                  <StatusIcon className={`w-4 h-4 ${selectedDocumentId === doc.id ? 'text-white' : statusInfo.color}`} />
-                  <span className="truncate max-w-[150px]">{doc.original_name}</span>
-                  {docEntities.length > 0 && (
-                    <span className={`px-1.5 py-0.5 rounded text-xs ${
-                      selectedDocumentId === doc.id
-                        ? 'bg-white/20'
-                        : 'bg-gray-200 dark:bg-gray-600'
-                    }`}>
-                      {docEntities.length}
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+                return (
+                  <Button
+                    key={doc.id}
+                    variant={selectedDocumentId === doc.id ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => setSelectedDocumentId(doc.id)}
+                    className="gap-2 rounded-full max-w-[220px]"
+                  >
+                    <StatusIcon className="w-4 h-4" />
+                    <span className="truncate">{doc.original_name}</span>
+                    {docEntities.length > 0 && (
+                      <Badge variant="secondary" className="ml-1 px-1.5 py-0">
+                        {docEntities.length}
+                      </Badge>
+                    )}
+                  </Button>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Main Content */}
@@ -338,7 +341,7 @@ export default function EntitiesPage() {
           </div>
         </div>
       ) : documents.length === 0 ? (
-        <div className="card p-8 text-center">
+        <Card className="glass-card p-8 text-center">
           <DocumentTextIcon className="w-12 h-12 text-gray-400 mx-auto" />
           <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
             Nenhum documento encontrado
@@ -346,92 +349,94 @@ export default function EntitiesPage() {
           <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
             Faca upload de documentos primeiro para extrair entidades.
           </p>
-          <Link
-            to={`/case/${caseId}/upload`}
-            className="btn-primary mt-4 inline-flex items-center gap-2"
-          >
-            Ir para Upload
-          </Link>
-        </div>
+          <Button asChild className="mt-4">
+            <Link to={`/case/${caseId}/upload`} className="inline-flex items-center gap-2">
+              Ir para Upload
+            </Link>
+          </Button>
+        </Card>
       ) : (
-        <div className="card p-6">
-          <EntityTable
-            entities={entities}
-            isLoading={isLoading}
-            onEntityClick={(entity) => {
-              console.log('Entity clicked:', entity)
-              // Future: Show entity detail modal or highlight in document viewer
-            }}
-          />
-        </div>
+        <Card className="glass-card">
+          <CardContent className="p-6">
+            <EntityTable
+              entities={entities}
+              isLoading={isLoading}
+              onEntityClick={(entity) => {
+                console.log('Entity clicked:', entity)
+                // Future: Show entity detail modal or highlight in document viewer
+              }}
+            />
+          </CardContent>
+        </Card>
       )}
 
       {/* Individual Document Extraction Section */}
       {documents.length > 0 && (
-        <div className="card">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-              Documentos Disponiveis
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Documentos Disponiveis</CardTitle>
+            <CardDescription>
               Clique em um documento para extrair entidades individualmente.
-            </p>
-          </div>
-          <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-            {documents.map((doc) => {
-              const statusInfo = getDocumentStatusInfo(doc)
-              const StatusIcon = statusInfo.icon
-              const docEntities = entities.filter((e) => e.document_id === doc.id)
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-0">
+            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+              {documents.map((doc) => {
+                const statusInfo = getDocumentStatusInfo(doc)
+                const StatusIcon = statusInfo.icon
+                const docEntities = entities.filter((e) => e.document_id === doc.id)
 
-              return (
-                <li
-                  key={doc.id}
-                  className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <DocumentTextIcon className="w-8 h-8 text-gray-400" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900 dark:text-white">
-                          {doc.original_name}
-                        </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <StatusIcon className={`w-4 h-4 ${statusInfo.color}`} />
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {statusInfo.label}
-                          </span>
-                          {doc.doc_type && (
-                            <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-xs rounded">
-                              {doc.doc_type}
+                return (
+                  <li
+                    key={doc.id}
+                    className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <DocumentTextIcon className="w-8 h-8 text-gray-400" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">
+                            {doc.original_name}
+                          </p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <StatusIcon className={cn("w-4 h-4", statusInfo.color)} />
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
+                              {statusInfo.label}
                             </span>
-                          )}
+                            {doc.doc_type && (
+                              <Badge variant="secondary" className="text-xs">
+                                {doc.doc_type}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center gap-2">
-                      {docEntities.length > 0 && (
-                        <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs rounded-full">
-                          {docEntities.length} entidades
-                        </span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {docEntities.length > 0 && (
+                          <Badge variant="outline" className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                            {docEntities.length} entidades
+                          </Badge>
+                        )}
 
-                      {doc.status === 'processed' && (
-                        <button
-                          onClick={() => triggerExtraction(doc.id)}
-                          disabled={isExtracting}
-                          className="btn-secondary text-sm py-1.5"
-                        >
-                          {docEntities.length > 0 ? 'Re-extrair' : 'Extrair'}
-                        </button>
-                      )}
+                        {doc.status === 'processed' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => triggerExtraction(doc.id)}
+                            disabled={isExtracting}
+                          >
+                            {docEntities.length > 0 ? 'Re-extrair' : 'Extrair'}
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </CardContent>
+        </Card>
       )}
     </div>
   )

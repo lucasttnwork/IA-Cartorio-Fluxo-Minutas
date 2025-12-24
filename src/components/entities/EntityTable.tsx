@@ -19,6 +19,7 @@ import {
   DocumentDuplicateIcon,
   QuestionMarkCircleIcon,
   CheckCircleIcon,
+  AdjustmentsHorizontalIcon,
 } from '@heroicons/react/24/outline'
 import type { ExtractedEntity, EntityType } from '../../types'
 import { Input } from '../ui/input'
@@ -70,6 +71,54 @@ interface EntityTableProps {
 type SortField = 'type' | 'value' | 'confidence'
 type SortDirection = 'asc' | 'desc'
 
+// Confidence level configuration
+type ConfidenceLevel = 'high' | 'medium' | 'low'
+
+const confidenceLevelConfig: Record<ConfidenceLevel, {
+  label: string
+  labelPt: string
+  color: string
+  bgColor: string
+  borderColor: string
+  min: number
+  max: number
+}> = {
+  high: {
+    label: 'High',
+    labelPt: 'Alta',
+    color: 'text-green-600 dark:text-green-400',
+    bgColor: 'bg-green-100 dark:bg-green-900/30',
+    borderColor: 'border-green-200 dark:border-green-800',
+    min: 0.8,
+    max: 1,
+  },
+  medium: {
+    label: 'Medium',
+    labelPt: 'Media',
+    color: 'text-yellow-600 dark:text-yellow-400',
+    bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',
+    borderColor: 'border-yellow-200 dark:border-yellow-800',
+    min: 0.6,
+    max: 0.8,
+  },
+  low: {
+    label: 'Low',
+    labelPt: 'Baixa',
+    color: 'text-red-600 dark:text-red-400',
+    bgColor: 'bg-red-100 dark:bg-red-900/30',
+    borderColor: 'border-red-200 dark:border-red-800',
+    min: 0,
+    max: 0.6,
+  },
+}
+
+// Helper function to get confidence level from score
+const getConfidenceLevel = (confidence: number): ConfidenceLevel => {
+  if (confidence >= 0.8) return 'high'
+  if (confidence >= 0.6) return 'medium'
+  return 'low'
+}
+
 export default function EntityTable({
   entities,
   onEntityClick,
@@ -77,6 +126,7 @@ export default function EntityTable({
 }: EntityTableProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTypes, setSelectedTypes] = useState<EntityType[]>([])
+  const [selectedConfidenceLevels, setSelectedConfidenceLevels] = useState<ConfidenceLevel[]>([])
   const [sortField, setSortField] = useState<SortField>('confidence')
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
   const [showFilters, setShowFilters] = useState(false)

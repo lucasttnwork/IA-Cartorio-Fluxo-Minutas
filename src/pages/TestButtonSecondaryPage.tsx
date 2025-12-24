@@ -1,4 +1,9 @@
 import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog'
 import {
   ArrowDownTrayIcon,
   DocumentDuplicateIcon,
@@ -24,207 +29,202 @@ export default function TestButtonSecondaryPage() {
         </div>
 
         {/* Secondary Button Variants */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Secondary Button Variants
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Three variants available: solid, outline, and ghost for different levels of visual emphasis.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-secondary">
-              <Cog6ToothIcon className="w-5 h-5 mr-2" />
-              Settings (Solid)
-            </button>
-            <button className="btn-secondary-outline">
-              <Cog6ToothIcon className="w-5 h-5 mr-2" />
-              Settings (Outline)
-            </button>
-            <button className="btn-secondary-ghost">
-              <Cog6ToothIcon className="w-5 h-5 mr-2" />
-              Settings (Ghost)
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Secondary Button Variants</CardTitle>
+            <CardDescription>
+              Three variants available: solid, outline, and ghost for different levels of visual emphasis.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button variant="secondary">
+                <Cog6ToothIcon className="w-5 h-5 mr-2" />
+                Settings (Solid)
+              </Button>
+              <Button variant="outline">
+                <Cog6ToothIcon className="w-5 h-5 mr-2" />
+                Settings (Outline)
+              </Button>
+              <Button variant="ghost">
+                <Cog6ToothIcon className="w-5 h-5 mr-2" />
+                Settings (Ghost)
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Comparison with Other Button Types */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Button Type Comparison
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Side-by-side comparison with other button styles.
-          </p>
-          <div className="space-y-4">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Button Type Comparison</CardTitle>
+            <CardDescription>
+              Side-by-side comparison with other button styles.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Primary:</span>
-              <button className="btn-primary">Primary Action</button>
+              <Button>Primary Action</Button>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Secondary:</span>
-              <button className="btn-secondary">Secondary Action</button>
+              <Button variant="secondary">Secondary Action</Button>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Sec. Outline:</span>
-              <button className="btn-secondary-outline">Secondary Outline</button>
+              <Button variant="outline">Secondary Outline</Button>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Sec. Ghost:</span>
-              <button className="btn-secondary-ghost">Secondary Ghost</button>
+              <Button variant="ghost">Secondary Ghost</Button>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Danger:</span>
-              <button className="btn-danger">Danger Action</button>
+              <Button variant="destructive">Danger Action</Button>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Ghost:</span>
-              <button className="btn-ghost">Ghost Action</button>
+              <Button variant="ghost">Ghost Action</Button>
             </div>
-          </div>
-        </section>
+          </CardContent>
+        </Card>
 
         {/* Secondary Buttons with Icons */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Secondary Buttons with Icons
-          </h2>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-secondary">
-              <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
-              Download
-            </button>
-            <button className="btn-secondary">
-              <DocumentDuplicateIcon className="w-5 h-5 mr-2" />
-              Duplicate
-            </button>
-            <button className="btn-secondary">
-              <ArrowPathIcon className="w-5 h-5 mr-2" />
-              Refresh
-            </button>
-            <button className="btn-secondary">
-              <FunnelIcon className="w-5 h-5 mr-2" />
-              Filter
-            </button>
-            <button className="btn-secondary">
-              <EllipsisHorizontalIcon className="w-5 h-5 mr-2" />
-              More Options
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Secondary Buttons with Icons</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button variant="secondary">
+                <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
+                Download
+              </Button>
+              <Button variant="secondary">
+                <DocumentDuplicateIcon className="w-5 h-5 mr-2" />
+                Duplicate
+              </Button>
+              <Button variant="secondary">
+                <ArrowPathIcon className="w-5 h-5 mr-2" />
+                Refresh
+              </Button>
+              <Button variant="secondary">
+                <FunnelIcon className="w-5 h-5 mr-2" />
+                Filter
+              </Button>
+              <Button variant="secondary">
+                <EllipsisHorizontalIcon className="w-5 h-5 mr-2" />
+                More Options
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Disabled States */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Disabled States
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            All button variants have proper disabled styling.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-secondary" disabled>
-              <Cog6ToothIcon className="w-5 h-5 mr-2" />
-              Disabled (Solid)
-            </button>
-            <button className="btn-secondary-outline" disabled>
-              <Cog6ToothIcon className="w-5 h-5 mr-2" />
-              Disabled (Outline)
-            </button>
-            <button className="btn-secondary-ghost" disabled>
-              <Cog6ToothIcon className="w-5 h-5 mr-2" />
-              Disabled (Ghost)
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Disabled States</CardTitle>
+            <CardDescription>
+              All button variants have proper disabled styling.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button variant="secondary" disabled>
+                <Cog6ToothIcon className="w-5 h-5 mr-2" />
+                Disabled (Solid)
+              </Button>
+              <Button variant="outline" disabled>
+                <Cog6ToothIcon className="w-5 h-5 mr-2" />
+                Disabled (Outline)
+              </Button>
+              <Button variant="ghost" disabled>
+                <Cog6ToothIcon className="w-5 h-5 mr-2" />
+                Disabled (Ghost)
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Modal Actions */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Modal Actions
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Common pattern for secondary actions alongside primary actions.
-          </p>
-          <button
-            className="btn-primary"
-            onClick={() => setShowModal(true)}
-          >
-            Open Modal
-          </button>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Modal Actions</CardTitle>
+            <CardDescription>
+              Common pattern for secondary actions alongside primary actions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button onClick={() => setShowModal(true)}>
+              Open Modal
+            </Button>
 
-          {showModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div
-                className="absolute inset-0 bg-black/50"
-                onClick={() => setShowModal(false)}
-              />
-              <div className="card relative shadow-xl p-6 max-w-md w-full">
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Confirm Action
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    Would you like to proceed with this action?
-                  </p>
-                </div>
-                <div className="flex justify-end gap-3">
-                  <button
-                    className="btn-secondary"
-                    onClick={() => setShowModal(false)}
-                  >
+            <Dialog open={showModal} onOpenChange={setShowModal}>
+              <DialogContent className="glass-dialog">
+                <DialogHeader>
+                  <DialogTitle>Confirm Action</DialogTitle>
+                </DialogHeader>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Would you like to proceed with this action?
+                </p>
+                <div className="flex justify-end gap-3 mt-4">
+                  <Button variant="outline" onClick={() => setShowModal(false)}>
                     Cancel
-                  </button>
-                  <button
-                    className="btn-primary"
+                  </Button>
+                  <Button
                     onClick={() => {
                       alert('Action confirmed!')
                       setShowModal(false)
                     }}
                   >
                     Confirm
-                  </button>
+                  </Button>
                 </div>
-              </div>
-            </div>
-          )}
-        </section>
+              </DialogContent>
+            </Dialog>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Toolbar Actions */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Toolbar Actions
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Secondary buttons work great in toolbars for auxiliary actions.
-          </p>
-          <div className="bg-gray-100 dark:bg-gray-800/50 p-3 rounded-lg flex flex-wrap items-center gap-2">
-            <button className="btn-primary">
-              Save Document
-            </button>
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
-            <button className="btn-secondary-ghost">
-              <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
-              Export
-            </button>
-            <button className="btn-secondary-ghost">
-              <DocumentDuplicateIcon className="w-5 h-5 mr-2" />
-              Duplicate
-            </button>
-            <button className="btn-secondary-ghost">
-              <ArrowPathIcon className="w-5 h-5 mr-2" />
-              Refresh
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Toolbar Actions</CardTitle>
+            <CardDescription>
+              Secondary buttons work great in toolbars for auxiliary actions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-gray-100 dark:bg-gray-800/50 p-3 rounded-lg flex flex-wrap items-center gap-2">
+              <Button>
+                Save Document
+              </Button>
+              <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 mx-1" />
+              <Button variant="ghost">
+                <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
+                Export
+              </Button>
+              <Button variant="ghost">
+                <DocumentDuplicateIcon className="w-5 h-5 mr-2" />
+                Duplicate
+              </Button>
+              <Button variant="ghost">
+                <ArrowPathIcon className="w-5 h-5 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Inline Actions */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Inline Actions
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Ghost and outline variants for less prominent actions in lists.
-          </p>
-          <div className="space-y-3">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Inline Actions</CardTitle>
+            <CardDescription>
+              Ghost and outline variants for less prominent actions in lists.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
             {['Document 1.pdf', 'Document 2.pdf', 'Contract.docx'].map((doc) => (
               <div
                 key={doc}
@@ -232,93 +232,95 @@ export default function TestButtonSecondaryPage() {
               >
                 <span className="text-gray-900 dark:text-white">{doc}</span>
                 <div className="flex gap-2">
-                  <button className="btn-secondary-ghost text-sm py-1 px-3">
+                  <Button variant="ghost" size="sm">
                     <ArrowDownTrayIcon className="w-4 h-4 mr-1" />
                     Download
-                  </button>
-                  <button className="btn-secondary-ghost text-sm py-1 px-3">
+                  </Button>
+                  <Button variant="ghost" size="sm">
                     <DocumentDuplicateIcon className="w-4 h-4" />
-                  </button>
+                  </Button>
                 </div>
               </div>
             ))}
-          </div>
-        </section>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Form Actions */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Form Actions
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Using secondary outline for cancel actions in forms.
-          </p>
-          <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Case Title
-              </label>
-              <input
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Form Actions</CardTitle>
+            <CardDescription>
+              Using secondary outline for cancel actions in forms.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="case-title">Case Title</Label>
+              <Input
+                id="case-title"
                 type="text"
-                className="input"
                 defaultValue="Property Sale - 123 Main Street"
               />
             </div>
             <div className="flex justify-end gap-3">
-              <button className="btn-secondary-outline">
+              <Button variant="outline">
                 Cancel
-              </button>
-              <button className="btn-primary">
+              </Button>
+              <Button>
                 Save Changes
-              </button>
+              </Button>
             </div>
-          </div>
-        </section>
+          </CardContent>
+        </Card>
 
         {/* Button Sizes */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Button Sizes (with Tailwind utilities)
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Combine with Tailwind utilities for different sizes.
-          </p>
-          <div className="flex flex-wrap items-center gap-4">
-            <button className="btn-secondary text-xs py-1 px-2">
-              Extra Small
-            </button>
-            <button className="btn-secondary text-sm py-1.5 px-3">
-              Small
-            </button>
-            <button className="btn-secondary">
-              Default
-            </button>
-            <button className="btn-secondary text-lg py-3 px-6">
-              Large
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Button Sizes (with Tailwind utilities)</CardTitle>
+            <CardDescription>
+              Combine with Tailwind utilities for different sizes.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap items-center gap-4">
+              <Button variant="secondary" size="sm" className="text-xs">
+                Extra Small
+              </Button>
+              <Button variant="secondary" size="sm">
+                Small
+              </Button>
+              <Button variant="secondary">
+                Default
+              </Button>
+              <Button variant="secondary" size="lg">
+                Large
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Icon-only Buttons */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Icon-only Buttons
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Secondary buttons can be used for icon-only actions.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-secondary !px-2">
-              <Cog6ToothIcon className="w-5 h-5" />
-            </button>
-            <button className="btn-secondary-outline !px-2">
-              <ArrowPathIcon className="w-5 h-5" />
-            </button>
-            <button className="btn-secondary-ghost !px-2">
-              <EllipsisHorizontalIcon className="w-5 h-5" />
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Icon-only Buttons</CardTitle>
+            <CardDescription>
+              Secondary buttons can be used for icon-only actions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button variant="secondary" size="icon">
+                <Cog6ToothIcon className="w-5 h-5" />
+              </Button>
+              <Button variant="outline" size="icon">
+                <ArrowPathIcon className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <EllipsisHorizontalIcon className="w-5 h-5" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

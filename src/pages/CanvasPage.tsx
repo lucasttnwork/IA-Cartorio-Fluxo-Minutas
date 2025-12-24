@@ -13,7 +13,6 @@ import {
   useEdgesState,
   MarkerType,
   Connection,
-  addEdge,
   useReactFlow,
   SelectionMode,
 } from '@xyflow/react'
@@ -37,6 +36,12 @@ import {
   MagnifyingGlassPlusIcon,
   MagnifyingGlassMinusIcon,
 } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { cn } from '@/lib/utils'
 import { PersonNode, PropertyNode, ContextMenu, EditPersonModal, EditPropertyModal, SuggestionsPanel } from '../components/canvas'
 import type { PersonNodeData, PropertyNodeData, ContextMenuItem } from '../components/canvas'
 import { useCanvasData } from '../hooks/useCanvasData'
@@ -236,7 +241,7 @@ export default function CanvasPage() {
   }, [data.edges])
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [_edges, _setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   // Track selected nodes whenever nodes change
   useEffect(() => {
@@ -288,7 +293,8 @@ export default function CanvasPage() {
           case_id: caseId,
         }
 
-        const { error } = await supabase.from(tableName).insert(entity)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error } = await (supabase as any).from(tableName).insert(entity)
 
         if (error) {
           console.error('Error adding entity:', error)
@@ -313,7 +319,8 @@ export default function CanvasPage() {
       if (!caseId) return
 
       try {
-        const { error } = await supabase.from('graph_edges').insert({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error } = await (supabase as any).from('graph_edges').insert({
           case_id: caseId,
           source_type: suggestion.sourceType,
           source_id: suggestion.sourceId,
@@ -393,7 +400,8 @@ export default function CanvasPage() {
         const targetId = connection.target!.split('-')[1]
 
         // Insert into graph_edges table
-        const { data: newEdge, error: insertError } = await supabase
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { error: insertError } = await (supabase as any)
           .from('graph_edges')
           .insert({
             case_id: caseId,
@@ -490,7 +498,7 @@ export default function CanvasPage() {
     // Only update if nodes actually changed
     const newNodes = [...personNodes, ...propertyNodes]
     if (JSON.stringify(newNodes) !== JSON.stringify(nodes)) {
-      onNodesChange([{ type: 'reset', item: newNodes }])
+      setNodes(newNodes)
     }
   }, [data, nodes, onNodesChange])
 
@@ -531,10 +539,10 @@ export default function CanvasPage() {
     })
 
     // Only update if edges actually changed
-    if (JSON.stringify(newEdges) !== JSON.stringify(edges)) {
-      onEdgesChange([{ type: 'reset', item: newEdges }])
+    if (JSON.stringify(newEdges) !== JSON.stringify(_edges)) {
+      setEdges(newEdges)
     }
-  }, [data.edges, edges, onEdgesChange])
+  }, [data.edges, _edges, onEdgesChange])
 
   // Handle node context menu (right-click on node)
   const handleNodeContextMenu = useCallback(
@@ -838,53 +846,59 @@ export default function CanvasPage() {
 
         <div className="flex items-center gap-2">
           {/* Zoom Controls */}
-          <div className="flex items-center gap-1 border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
-            <button
+          <div className="flex items-center gap-0.5 glass-subtle rounded-lg overflow-hidden p-1">
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => zoomOut({ duration: 200 })}
-              className="px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               title="Diminuir zoom (ou use Ctrl + scroll)"
+              className="h-9 w-9 p-0"
             >
               <MagnifyingGlassMinusIcon className="w-5 h-5" />
-            </button>
+            </Button>
             <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => zoomIn({ duration: 200 })}
-              className="px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               title="Aumentar zoom (ou use Ctrl + scroll)"
+              className="h-9 w-9 p-0"
             >
               <MagnifyingGlassPlusIcon className="w-5 h-5" />
-            </button>
+            </Button>
             <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
-            <button
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => fitView({ padding: 0.2, duration: 300 })}
-              className="px-3 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               title="Ajustar visualização"
+              className="h-9 w-9 p-0"
             >
               <ArrowsPointingOutIcon className="w-5 h-5" />
-            </button>
+            </Button>
           </div>
-          <button
+          <Button
+            variant={showMinimap ? "default" : "outline"}
             onClick={() => setShowMinimap(!showMinimap)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-              showMinimap
-                ? 'bg-purple-500 text-white border-purple-600 hover:bg-purple-600'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-            }`}
+            className={cn(
+              "gap-2",
+              showMinimap && "bg-purple-500 hover:bg-purple-600"
+            )}
           >
             <MapIcon className="w-5 h-5" />
             {showMinimap ? 'Ocultar Minimapa' : 'Mostrar Minimapa'}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={selectionMode === SelectionMode.Full ? "default" : "outline"}
             onClick={() =>
               setSelectionMode(
                 selectionMode === SelectionMode.Partial ? SelectionMode.Full : SelectionMode.Partial
               )
             }
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-              selectionMode === SelectionMode.Full
-                ? 'bg-indigo-500 text-white border-indigo-600 hover:bg-indigo-600'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-            }`}
+            className={cn(
+              "gap-2",
+              selectionMode === SelectionMode.Full && "bg-indigo-500 hover:bg-indigo-600"
+            )}
             title={
               selectionMode === SelectionMode.Full
                 ? 'Box Selection: Arraste para selecionar múltiplos nós'
@@ -893,34 +907,35 @@ export default function CanvasPage() {
           >
             <RectangleGroupIcon className="w-5 h-5" />
             {selectionMode === SelectionMode.Full ? 'Seleção em Caixa Ativa' : 'Ativar Seleção em Caixa'}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant={connectionMode ? "default" : "outline"}
             onClick={() => setConnectionMode(!connectionMode)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-              connectionMode
-                ? 'bg-blue-500 text-white border-blue-600 hover:bg-blue-600'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-            }`}
+            className={cn(
+              "gap-2",
+              connectionMode && "bg-blue-500 hover:bg-blue-600"
+            )}
           >
             <LinkIcon className="w-5 h-5" />
             {connectionMode ? 'Modo Conexão Ativo' : 'Ativar Modo Conexão'}
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleGenerateDraft}
             disabled={isGeneratingDraft}
-            className="btn-primary flex items-center gap-2"
+            className="gap-2"
           >
-            <DocumentTextIcon className={`w-5 h-5 ${isGeneratingDraft ? 'animate-pulse' : ''}`} />
+            <DocumentTextIcon className={cn("w-5 h-5", isGeneratingDraft && "animate-pulse")} />
             {isGeneratingDraft ? 'Gerando...' : 'Gerar Minuta'}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="outline"
             onClick={reload}
             disabled={isLoading}
-            className="btn-secondary flex items-center gap-2"
+            className="gap-2"
           >
-            <ArrowPathIcon className={`w-5 h-5 ${isLoading ? 'animate-spin' : ''}`} />
+            <ArrowPathIcon className={cn("w-5 h-5", isLoading && "animate-spin")} />
             Atualizar
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -929,12 +944,11 @@ export default function CanvasPage() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4"
         >
-          <div className="flex items-center gap-3">
-            <ExclamationTriangleIcon className="w-5 h-5 text-red-500" />
-            <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
-          </div>
+          <Alert variant="destructive" className="mb-4">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         </motion.div>
       )}
 
@@ -946,64 +960,46 @@ export default function CanvasPage() {
           className="mb-4 space-y-2"
         >
           {validationWarnings.map((warning) => (
-            <div
+            <Alert
               key={warning.id}
-              className={`rounded-lg p-4 border ${
-                warning.type === 'error'
-                  ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-                  : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-              }`}
+              variant={warning.type === 'error' ? 'destructive' : 'default'}
+              className={cn(
+                warning.type === 'warning' && "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800"
+              )}
             >
-              <div className="flex items-start gap-3">
-                <ExclamationTriangleIcon
-                  className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                    warning.type === 'error' ? 'text-red-500' : 'text-yellow-500'
-                  }`}
-                />
-                <div className="flex-1">
-                  <h4
-                    className={`text-sm font-semibold ${
-                      warning.type === 'error'
-                        ? 'text-red-700 dark:text-red-300'
-                        : 'text-yellow-700 dark:text-yellow-300'
-                    }`}
-                  >
-                    {warning.title}
-                  </h4>
-                  <p
-                    className={`mt-1 text-sm ${
-                      warning.type === 'error'
-                        ? 'text-red-600 dark:text-red-400'
-                        : 'text-yellow-600 dark:text-yellow-400'
-                    }`}
-                  >
-                    {warning.description}
-                  </p>
-                  {warning.affectedEntities.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {warning.affectedEntities.map((entity, idx) => (
-                        <span
-                          key={idx}
-                          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                            entity.type === 'person'
-                              ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                              : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                          }`}
-                        >
-                          {entity.name}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              <ExclamationTriangleIcon className="h-4 w-4" />
+              <div className="flex-1">
+                <h4 className="text-sm font-semibold mb-1">
+                  {warning.title}
+                </h4>
+                <AlertDescription className="mb-2">
+                  {warning.description}
+                </AlertDescription>
+                {warning.affectedEntities.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {warning.affectedEntities.map((entity, idx) => (
+                      <Badge
+                        key={idx}
+                        variant="outline"
+                        className={cn(
+                          entity.type === 'person'
+                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                            : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                        )}
+                      >
+                        {entity.name}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
-            </div>
+            </Alert>
           ))}
         </motion.div>
       )}
 
       {/* Canvas */}
-      <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <Card className="flex-1 glass-card overflow-hidden p-0 border-0">
         {isLoading ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center">
@@ -1030,12 +1026,12 @@ export default function CanvasPage() {
         ) : (
           <ReactFlow
             nodes={nodes}
-            edges={edges}
+            edges={_edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onNodeContextMenu={handleNodeContextMenu}
-            onPaneContextMenu={handlePaneContextMenu}
+            onPaneContextMenu={handlePaneContextMenu as any}
             onEdgeContextMenu={handleEdgeContextMenu}
             nodeTypes={nodeTypes}
             fitView
@@ -1043,7 +1039,7 @@ export default function CanvasPage() {
             maxZoom={1.5}
             defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
             className="bg-gray-50 dark:bg-gray-900"
-            connectionMode="loose"
+            connectionMode={'loose' as any}
             connectOnClick={connectionMode}
             selectionMode={selectionMode}
             panOnDrag={selectionMode !== SelectionMode.Full}
@@ -1087,7 +1083,7 @@ export default function CanvasPage() {
                 zoomable
               />
             )}
-            <Panel position="top-right" className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+            <Panel position="top-right" className="glass-card p-3 rounded-lg shadow-lg">
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-blue-500"></div>
@@ -1118,7 +1114,7 @@ export default function CanvasPage() {
 
             {/* Selection Info Panel */}
             {selectedNodes.length > 0 && showSelectionPanel && (
-              <Panel position="bottom-left" className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border-2 border-indigo-500">
+              <Panel position="bottom-left" className="glass-elevated p-4 rounded-lg shadow-lg border-2 border-indigo-500">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
@@ -1127,13 +1123,15 @@ export default function CanvasPage() {
                         {selectedNodes.length} {selectedNodes.length === 1 ? 'Item Selecionado' : 'Itens Selecionados'}
                       </h3>
                     </div>
-                    <button
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => setShowSelectionPanel(false)}
-                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                      className="h-6 w-6 p-0"
                       title="Fechar painel"
                     >
                       ×
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="flex gap-4 text-xs">
@@ -1152,19 +1150,23 @@ export default function CanvasPage() {
                   </div>
 
                   <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-                    <button
+                    <Button
+                      variant="destructive"
+                      size="sm"
                       onClick={handleDeleteSelectedNodes}
-                      className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-xs font-medium"
+                      className="flex-1 gap-1"
                     >
                       <TrashIcon className="w-4 h-4" />
                       Deletar
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
                       onClick={handleClearSelection}
-                      className="flex-1 px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors text-xs font-medium"
+                      className="flex-1"
                     >
                       Limpar Seleção
-                    </button>
+                    </Button>
                   </div>
 
                   <div className="pt-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
@@ -1175,113 +1177,100 @@ export default function CanvasPage() {
             )}
           </ReactFlow>
         )}
-      </div>
+      </Card>
 
       {/* Relationship Selection Dialog */}
-      {connectionDialog.isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              Selecionar Tipo de Relacionamento
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+      <Dialog open={connectionDialog.isOpen} onOpenChange={(open) => !open && setConnectionDialog({
+        isOpen: false,
+        connection: null,
+        sourceType: null,
+        targetType: null,
+      })}>
+        <DialogContent className="glass-dialog sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Selecionar Tipo de Relacionamento</DialogTitle>
+            <DialogDescription>
               Escolha o tipo de relacionamento entre {connectionDialog.sourceType === 'person' ? 'pessoa' : 'propriedade'} e{' '}
               {connectionDialog.targetType === 'person' ? 'pessoa' : 'propriedade'}:
-            </p>
+            </DialogDescription>
+          </DialogHeader>
 
-            <div className="space-y-2 mb-6">
-              {/* Show relevant relationship options based on connection types */}
-              {connectionDialog.sourceType === 'person' && connectionDialog.targetType === 'property' && (
-                <>
-                  <button
-                    onClick={() => createGraphEdge('sells')}
-                    disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <div className="font-medium text-gray-900 dark:text-white">Vende</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa vende a propriedade
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => createGraphEdge('buys')}
-                    disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <div className="font-medium text-gray-900 dark:text-white">Compra</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa compra a propriedade
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => createGraphEdge('owns')}
-                    disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <div className="font-medium text-gray-900 dark:text-white">Proprietário</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa é proprietária da propriedade
-                    </div>
-                  </button>
-                </>
-              )}
-
-              {connectionDialog.sourceType === 'person' && connectionDialog.targetType === 'person' && (
-                <>
-                  <button
-                    onClick={() => createGraphEdge('spouse_of')}
-                    disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <div className="font-medium text-gray-900 dark:text-white">Cônjuge de</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa é cônjuge da outra pessoa
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => createGraphEdge('represents')}
-                    disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    <div className="font-medium text-gray-900 dark:text-white">Representa</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa representa a outra pessoa
-                    </div>
-                  </button>
-                </>
-              )}
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() =>
-                  setConnectionDialog({
-                    isOpen: false,
-                    connection: null,
-                    sourceType: null,
-                    targetType: null,
-                  })
-                }
-                disabled={isCreatingEdge}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-
-            {isCreatingEdge && (
-              <div className="mt-4 flex items-center justify-center">
-                <ArrowPathIcon className="w-5 h-5 text-blue-500 animate-spin mr-2" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Criando conexão...</span>
-              </div>
+          <div className="space-y-2 my-4">
+            {/* Show relevant relationship options based on connection types */}
+            {connectionDialog.sourceType === 'person' && connectionDialog.targetType === 'property' && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => createGraphEdge('sells')}
+                  disabled={isCreatingEdge}
+                  className="w-full justify-start h-auto py-3 flex-col items-start"
+                >
+                  <div className="font-medium">Vende</div>
+                  <div className="text-sm text-muted-foreground font-normal">
+                    Pessoa vende a propriedade
+                  </div>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => createGraphEdge('buys')}
+                  disabled={isCreatingEdge}
+                  className="w-full justify-start h-auto py-3 flex-col items-start"
+                >
+                  <div className="font-medium">Compra</div>
+                  <div className="text-sm text-muted-foreground font-normal">
+                    Pessoa compra a propriedade
+                  </div>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => createGraphEdge('owns')}
+                  disabled={isCreatingEdge}
+                  className="w-full justify-start h-auto py-3 flex-col items-start"
+                >
+                  <div className="font-medium">Proprietário</div>
+                  <div className="text-sm text-muted-foreground font-normal">
+                    Pessoa é proprietária da propriedade
+                  </div>
+                </Button>
+              </>
             )}
-          </motion.div>
-        </div>
-      )}
+
+            {connectionDialog.sourceType === 'person' && connectionDialog.targetType === 'person' && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => createGraphEdge('spouse_of')}
+                  disabled={isCreatingEdge}
+                  className="w-full justify-start h-auto py-3 flex-col items-start"
+                >
+                  <div className="font-medium">Cônjuge de</div>
+                  <div className="text-sm text-muted-foreground font-normal">
+                    Pessoa é cônjuge da outra pessoa
+                  </div>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => createGraphEdge('represents')}
+                  disabled={isCreatingEdge}
+                  className="w-full justify-start h-auto py-3 flex-col items-start"
+                >
+                  <div className="font-medium">Representa</div>
+                  <div className="text-sm text-muted-foreground font-normal">
+                    Pessoa representa a outra pessoa
+                  </div>
+                </Button>
+              </>
+            )}
+          </div>
+
+          {isCreatingEdge && (
+            <div className="flex items-center justify-center py-2">
+              <ArrowPathIcon className="w-5 h-5 text-blue-500 animate-spin mr-2" />
+              <span className="text-sm text-muted-foreground">Criando conexão...</span>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Context Menu */}
       <ContextMenu

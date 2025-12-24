@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card'
 import Breadcrumb from '../components/common/Breadcrumb'
 
 export default function TestBreadcrumbPage() {
@@ -14,24 +15,27 @@ export default function TestBreadcrumbPage() {
         </div>
 
         {/* Default Breadcrumb Style */}
-        <div className="card p-6">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-            Default Breadcrumb Style
-          </h2>
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <Breadcrumb />
-          </div>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            Note: Breadcrumb is context-aware and shows based on current route.
-            On this test page, it may not display items since we're not in a case context.
-          </p>
-        </div>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Default Breadcrumb Style</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+              <Breadcrumb />
+            </div>
+            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              Note: Breadcrumb is context-aware and shows based on current route.
+              On this test page, it may not display items since we're not in a case context.
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Static Breadcrumb Examples */}
-        <div className="card p-6">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-            Breadcrumb Style Examples (Static)
-          </h2>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Breadcrumb Style Examples (Static)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
 
           {/* Example 1: Simple */}
           <div className="mb-6">
@@ -135,14 +139,16 @@ export default function TestBreadcrumbPage() {
               </nav>
             </div>
           </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* CSS Classes Reference */}
-        <div className="card p-6">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-            CSS Classes Reference
-          </h2>
-          <div className="overflow-x-auto">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>CSS Classes Reference</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
                 <tr className="border-b dark:border-gray-700">
@@ -189,15 +195,17 @@ export default function TestBreadcrumbPage() {
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Feature Checklist */}
-        <div className="card p-6">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-            Feature Checklist
-          </h2>
-          <ul className="space-y-2">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Feature Checklist</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
             {[
               'Responsive design with text truncation',
               'Dark mode support',
@@ -216,8 +224,9 @@ export default function TestBreadcrumbPage() {
                 {feature}
               </li>
             ))}
-          </ul>
-        </div>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

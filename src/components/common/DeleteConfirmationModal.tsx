@@ -1,4 +1,13 @@
 import { ExclamationTriangleIcon, TrashIcon } from '@heroicons/react/24/outline'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 
 interface DeleteConfirmationModalProps {
   isOpen: boolean
@@ -19,39 +28,35 @@ export default function DeleteConfirmationModal({
   confirmLabel = 'Delete',
   isDeleting = false,
 }: DeleteConfirmationModalProps) {
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <div className="card relative shadow-xl p-6 max-w-md w-full">
-        <div className="flex items-start gap-4 mb-4">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="glass-dialog max-w-md">
+        <div className="flex items-start gap-4">
           <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
             <ExclamationTriangleIcon className="w-6 h-6 text-red-600 dark:text-red-400" />
           </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {title}
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {message}
-            </p>
+          <div className="flex-1">
+            <DialogHeader className="text-left p-0 space-y-2">
+              <DialogTitle className="text-red-600 dark:text-red-400">
+                {title}
+              </DialogTitle>
+              <DialogDescription className="text-sm text-gray-500 dark:text-gray-400">
+                {message}
+              </DialogDescription>
+            </DialogHeader>
           </div>
         </div>
-        <div className="flex justify-end gap-3">
-          <button
-            className="btn-secondary"
+
+        <DialogFooter>
+          <Button
+            variant="outline"
             onClick={onClose}
             disabled={isDeleting}
           >
             Cancel
-          </button>
-          <button
-            className="btn-danger"
+          </Button>
+          <Button
+            variant="destructive"
             onClick={onConfirm}
             disabled={isDeleting}
           >
@@ -69,9 +74,9 @@ export default function DeleteConfirmationModal({
                 {confirmLabel}
               </>
             )}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

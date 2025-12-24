@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { ChevronRightIcon, HomeIcon } from '@heroicons/react/24/outline'
 import { useMemo } from 'react'
+import { cn } from '@/lib/utils'
 
 interface BreadcrumbItem {
   label: string
@@ -70,26 +71,40 @@ export default function Breadcrumb({ caseName }: BreadcrumbProps) {
   }
 
   return (
-    <nav className="breadcrumb" aria-label="Breadcrumb">
-      <ol className="breadcrumb-list">
+    <nav aria-label="Breadcrumb" className="flex items-center">
+      <ol className="flex items-center gap-1">
         {breadcrumbs.map((item, index) => {
           const isLast = index === breadcrumbs.length - 1
           const Icon = item.icon
 
           return (
-            <li key={item.label} className="breadcrumb-item">
+            <li key={item.label} className="flex items-center gap-1">
               {index > 0 && (
-                <ChevronRightIcon className="breadcrumb-separator" aria-hidden="true" />
+                <ChevronRightIcon
+                  className="w-4 h-4 text-gray-400 dark:text-gray-500"
+                  aria-hidden="true"
+                />
               )}
               {isLast ? (
-                <span className="breadcrumb-current" aria-current="page">
-                  {Icon && <Icon className="breadcrumb-icon" />}
-                  <span className="breadcrumb-text">{item.label}</span>
+                <span
+                  className="flex items-center gap-1.5 text-sm font-medium text-gray-700 dark:text-gray-300"
+                  aria-current="page"
+                >
+                  {Icon && <Icon className="w-4 h-4" />}
+                  <span>{item.label}</span>
                 </span>
               ) : (
-                <Link to={item.href!} className="breadcrumb-link">
-                  {Icon && <Icon className="breadcrumb-icon" />}
-                  <span className="breadcrumb-text">{item.label}</span>
+                <Link
+                  to={item.href!}
+                  className={cn(
+                    'flex items-center gap-1.5 text-sm font-medium',
+                    'text-blue-600 hover:text-blue-700',
+                    'dark:text-blue-400 dark:hover:text-blue-300',
+                    'transition-colors'
+                  )}
+                >
+                  {Icon && <Icon className="w-4 h-4" />}
+                  <span>{item.label}</span>
                 </Link>
               )}
             </li>

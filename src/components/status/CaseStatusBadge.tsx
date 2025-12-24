@@ -1,16 +1,41 @@
-import { Fragment, useState } from 'react'
-import { Menu, Transition } from '@headlessui/react'
+import { useState } from 'react'
 import { ChevronDownIcon, CheckIcon } from '@heroicons/react/20/solid'
 import type { CaseStatus } from '../../types'
 import { useUpdateCase } from '../../hooks/useCases'
+import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
 
-// Status badge classes following design system
-const statusBadgeClasses: Record<CaseStatus, string> = {
-  draft: 'badge badge-info',
-  processing: 'badge badge-warning',
-  review: 'badge badge-warning',
-  approved: 'badge badge-success',
-  archived: 'badge bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+// Status badge variant mapping
+const statusVariants: Record<CaseStatus, {
+  variant: 'default' | 'secondary' | 'destructive' | 'outline'
+  className: string
+}> = {
+  draft: {
+    variant: 'default',
+    className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200 dark:border-blue-800',
+  },
+  processing: {
+    variant: 'default',
+    className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800',
+  },
+  review: {
+    variant: 'default',
+    className: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200 dark:border-orange-800',
+  },
+  approved: {
+    variant: 'default',
+    className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800',
+  },
+  archived: {
+    variant: 'secondary',
+    className: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600',
+  },
 }
 
 // Status display labels
@@ -83,65 +108,58 @@ export default function CaseStatusBadge({
   }
 
   const availableTransitions = validTransitions[currentStatus] || []
+  const config = statusVariants[currentStatus]
 
   if (readonly || availableTransitions.length === 0) {
     return (
-      <span className={statusBadgeClasses[currentStatus]}>
+      <Badge className={cn(config.className)}>
         {statusLabels[currentStatus]}
-      </span>
+      </Badge>
     )
   }
 
   return (
-    <Menu as="div" className="relative inline-block text-left">
-      <Menu.Button
-        className={`${statusBadgeClasses[currentStatus]} cursor-pointer hover:opacity-80 transition-opacity inline-flex items-center gap-1`}
-        disabled={isPending || isChanging}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Badge
+          className={cn(
+            config.className,
+            'cursor-pointer hover:opacity-80 transition-opacity inline-flex items-center gap-1'
+          )}
+          aria-label={`Change status from ${statusLabels[currentStatus]}`}
+        >
+          {statusLabels[currentStatus]}
+          <ChevronDownIcon className="h-4 w-4" aria-hidden="true" />
+        </Badge>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="glass-popover w-56"
+        align="end"
       >
-        {statusLabels[currentStatus]}
-        <ChevronDownIcon className="h-4 w-4" aria-hidden="true" />
-      </Menu.Button>
-
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
-        <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-          <div className="py-1">
-            {availableTransitions.map((status) => (
-              <Menu.Item key={status}>
-                {({ active }) => (
-                  <button
-                    onClick={() => handleStatusChange(status)}
-                    className={`${
-                      active
-                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-                        : 'text-gray-700 dark:text-gray-300'
-                    } group flex w-full items-center px-4 py-2 text-sm`}
-                    disabled={isPending || isChanging}
-                  >
-                    <div className="flex-1">
-                      <div className="font-medium">{statusLabels[status]}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        {statusDescriptions[status]}
-                      </div>
-                    </div>
-                    {currentStatus === status && (
-                      <CheckIcon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    )}
-                  </button>
-                )}
-              </Menu.Item>
-            ))}
-          </div>
-        </Menu.Items>
-      </Transition>
-    </Menu>
+        {availableTransitions.map((status) => (
+          <DropdownMenuItem
+            key={status}
+            onClick={() => handleStatusChange(status)}
+            disabled={isPending || isChanging}
+            className="cursor-pointer focus:bg-gray-100 dark:focus:bg-gray-700"
+          >
+            <div className="flex items-center w-full">
+              <div className="flex-1">
+                <div className="font-medium text-gray-900 dark:text-white">
+                  {statusLabels[status]}
+                </div>
+                <div className="text-xs text-gray-500 dark:text-gray-400">
+                  {statusDescriptions[status]}
+                </div>
+              </div>
+              {currentStatus === status && (
+                <CheckIcon className="h-5 w-5 text-blue-600 dark:text-blue-400 ml-2" />
+              )}
+            </div>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 

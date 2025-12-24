@@ -8,9 +8,17 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   ArrowPathIcon,
+  ExclamationTriangleIcon,
 } from '@heroicons/react/24/outline'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { cn } from '@/lib/utils'
 import type { UploadProgress, Document } from '../../types'
 import { supabase, uploadDocument, createProcessingJob } from '../../lib/supabase'
+import { validateFileContent, FileValidationError } from '../../utils/fileValidation'
 
 // Accepted file types for document upload
 const ACCEPTED_FILE_TYPES = {
@@ -333,85 +341,79 @@ export default function DocumentDropzone({
   return (
     <div className="space-y-4">
       {/* Dropzone Area */}
-      <div
+      <Card
         {...getRootProps()}
-        className={`
-          relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200
-          ${isDragActive && !isDragReject
-            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-            : isDragReject
-            ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-            : disabled || isUploading
-            ? 'border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 cursor-not-allowed'
-            : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800/50'
-          }
-        `}
+        className={cn(
+          "glass-card border-2 border-dashed cursor-pointer transition-all duration-200",
+          isDragActive && !isDragReject && "border-blue-500 bg-blue-50 dark:bg-blue-900/20",
+          isDragReject && "border-red-500 bg-red-50 dark:bg-red-900/20",
+          (disabled || isUploading) && "border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800/50 cursor-not-allowed opacity-60",
+          !isDragActive && !isDragReject && !disabled && !isUploading && "hover:border-blue-400 dark:hover:border-blue-500 hover:bg-gray-50/50 dark:hover:bg-gray-800/30"
+        )}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} aria-label="File upload input" />
 
-        <motion.div
-          animate={{
-            scale: isDragActive ? 1.05 : 1,
-            y: isDragActive ? -5 : 0,
-          }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-          className="flex flex-col items-center"
-        >
-          <div
-            className={`
-              w-16 h-16 rounded-full flex items-center justify-center mb-4
-              ${isDragActive && !isDragReject
-                ? 'bg-blue-100 dark:bg-blue-900/30'
-                : isDragReject
-                ? 'bg-red-100 dark:bg-red-900/30'
-                : 'bg-gray-100 dark:bg-gray-700'
-              }
-            `}
+        <CardContent className="p-8">
+          <motion.div
+            animate={{
+              scale: isDragActive ? 1.05 : 1,
+              y: isDragActive ? -5 : 0,
+            }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            className="flex flex-col items-center text-center"
           >
-            <CloudArrowUpIcon
-              className={`w-8 h-8 ${
-                isDragActive && !isDragReject
-                  ? 'text-blue-500'
-                  : isDragReject
-                  ? 'text-red-500'
-                  : 'text-gray-400 dark:text-gray-500'
-              }`}
-            />
-          </div>
+            <div
+              className={cn(
+                "w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-colors",
+                isDragActive && !isDragReject && "bg-blue-100 dark:bg-blue-900/30",
+                isDragReject && "bg-red-100 dark:bg-red-900/30",
+                !isDragActive && !isDragReject && "bg-gray-100 dark:bg-gray-700"
+              )}
+            >
+              <CloudArrowUpIcon
+                className={cn(
+                  "w-8 h-8 transition-colors",
+                  isDragActive && !isDragReject && "text-blue-500",
+                  isDragReject && "text-red-500",
+                  !isDragActive && !isDragReject && "text-gray-400 dark:text-gray-500"
+                )}
+              />
+            </div>
 
-          {isDragActive && !isDragReject ? (
-            <>
-              <p className="text-lg font-medium text-blue-600 dark:text-blue-400">
-                Drop files here
-              </p>
-              <p className="text-sm text-blue-500 dark:text-blue-400 mt-1">
-                Release to upload
-              </p>
-            </>
-          ) : isDragReject ? (
-            <>
-              <p className="text-lg font-medium text-red-600 dark:text-red-400">
-                Invalid file type
-              </p>
-              <p className="text-sm text-red-500 dark:text-red-400 mt-1">
-                Please use PDF, JPG, PNG, TIFF, or WebP files
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="text-lg font-medium text-gray-900 dark:text-white">
-                Drag & drop documents here
-              </p>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                or click to browse files
-              </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
-                PDF, JPG, PNG, TIFF, WebP - Max {MAX_FILE_SIZE / 1024 / 1024}MB per file - Up to {MAX_FILES} files
-              </p>
-            </>
-          )}
-        </motion.div>
-      </div>
+            {isDragActive && !isDragReject ? (
+              <>
+                <p className="text-lg font-medium text-blue-600 dark:text-blue-400">
+                  Drop files here
+                </p>
+                <p className="text-sm text-blue-500 dark:text-blue-400 mt-1">
+                  Release to upload
+                </p>
+              </>
+            ) : isDragReject ? (
+              <>
+                <p className="text-lg font-medium text-red-600 dark:text-red-400">
+                  Invalid file type
+                </p>
+                <p className="text-sm text-red-500 dark:text-red-400 mt-1">
+                  Please use PDF, JPG, PNG, TIFF, or WebP files
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-lg font-medium text-gray-900 dark:text-white">
+                  Drag & drop documents here
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  or click to browse files
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+                  PDF, JPG, PNG, TIFF, WebP - Max {MAX_FILE_SIZE / 1024 / 1024}MB per file - Up to {MAX_FILES} files
+                </p>
+              </>
+            )}
+          </motion.div>
+        </CardContent>
+      </Card>
 
       {/* File Queue */}
       <AnimatePresence>
@@ -427,110 +429,116 @@ export default function DocumentDropzone({
               <h3 className="text-sm font-medium text-gray-900 dark:text-white">
                 {uploadQueue.length} file{uploadQueue.length !== 1 ? 's' : ''} selected
               </h3>
-              <div className="flex gap-2">
-                <button
-                  onClick={clearAll}
-                  disabled={isUploading}
-                  className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50"
-                >
-                  Clear all
-                </button>
-              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearAll}
+                disabled={isUploading}
+                className="h-8"
+              >
+                Clear all
+              </Button>
             </div>
 
             {/* File List */}
-            <div className="space-y-2 max-h-64 overflow-y-auto scrollbar-thin">
-              {uploadQueue.map((file) => {
-                const progress = uploadProgress.get(file.name)
-                return (
-                  <motion.div
-                    key={file.name}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 10 }}
-                    className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg"
-                  >
-                    {/* File Icon or Preview */}
-                    <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                      {file.preview ? (
-                        <img
-                          src={file.preview}
-                          alt={file.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <DocumentIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                      )}
-                    </div>
+            <ScrollArea className="max-h-64">
+              <div className="space-y-2 pr-4">
+                {uploadQueue.map((file) => {
+                  const progress = uploadProgress.get(file.name)
+                  return (
+                    <motion.div
+                      key={file.name}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 10 }}
+                    >
+                      <Card className="glass-subtle">
+                        <CardContent className="p-3 flex items-center gap-3">
+                          {/* File Icon or Preview */}
+                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+                            {file.preview ? (
+                              <img
+                                src={file.preview}
+                                alt={file.name}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <DocumentIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                            )}
+                          </div>
 
-                    {/* File Info */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                        {file.name}
-                      </p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {formatFileSize(file.size)}
-                        </span>
-                        {progress?.status === 'error' && (
-                          <span className="text-xs text-red-500">{progress.error}</span>
-                        )}
-                      </div>
+                          {/* File Info */}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                              {file.name}
+                            </p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {formatFileSize(file.size)}
+                              </span>
+                              {progress?.status === 'error' && progress.error && (
+                                <Alert variant="destructive" className="py-1 px-2 border-0">
+                                  <AlertDescription className="text-xs">
+                                    {progress.error}
+                                  </AlertDescription>
+                                </Alert>
+                              )}
+                            </div>
 
-                      {/* Progress Bar */}
-                      {progress && progress.status !== 'error' && progress.status !== 'complete' && (
-                        <div className="mt-2 h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress.progress}%` }}
-                            className={`h-full rounded-full ${
-                              progress.status === 'processing'
-                                ? 'bg-blue-500'
-                                : 'bg-green-500'
-                            }`}
-                          />
-                        </div>
-                      )}
-                    </div>
+                            {/* Progress Bar */}
+                            {progress && progress.status !== 'error' && progress.status !== 'complete' && (
+                              <Progress
+                                value={progress.progress}
+                                className="mt-2 h-1.5"
+                              />
+                            )}
+                          </div>
 
-                    {/* Status / Remove Button */}
-                    <div className="flex-shrink-0">
-                      {progress ? (
-                        getStatusIcon(progress.status)
-                      ) : (
-                        <button
-                          onClick={() => removeFile(file.name)}
-                          disabled={isUploading}
-                          className="p-1 rounded-md text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 disabled:opacity-50"
-                        >
-                          <XMarkIcon className="w-5 h-5" />
-                        </button>
-                      )}
-                    </div>
-                  </motion.div>
-                )
-              })}
-            </div>
+                          {/* Status / Remove Button */}
+                          <div className="flex-shrink-0">
+                            {progress ? (
+                              getStatusIcon(progress.status)
+                            ) : (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => removeFile(file.name)}
+                                disabled={isUploading}
+                                className="h-8 w-8"
+                                aria-label={`Remove ${file.name}`}
+                              >
+                                <XMarkIcon className="w-4 h-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            </ScrollArea>
 
             {/* Upload Button */}
             <div className="flex justify-end gap-3 pt-2">
-              <button
+              <Button
                 onClick={uploadFiles}
                 disabled={isUploading || uploadQueue.length === 0}
-                className="btn-primary"
+                size="lg"
+                className="gap-2"
               >
                 {isUploading ? (
                   <>
-                    <ArrowPathIcon className="w-5 h-5 mr-2 animate-spin" />
+                    <ArrowPathIcon className="w-5 h-5 animate-spin" />
                     Uploading...
                   </>
                 ) : (
                   <>
-                    <CloudArrowUpIcon className="w-5 h-5 mr-2" />
+                    <CloudArrowUpIcon className="w-5 h-5" />
                     Upload {uploadQueue.length} file{uploadQueue.length !== 1 ? 's' : ''}
                   </>
                 )}
-              </button>
+              </Button>
             </div>
           </motion.div>
         )}

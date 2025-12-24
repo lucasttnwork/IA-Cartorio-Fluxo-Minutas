@@ -10,6 +10,8 @@
  */
 
 import { useState } from 'react'
+import { Button } from '../components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select'
 import { ExpandableCard, ExpandableCardGroup } from '../components/common/ExpandableCard'
 import {
   UserIcon,
@@ -31,6 +33,9 @@ export default function TestExpandableCardPage() {
     security: false,
     preferences: false,
   })
+  const [sessionTimeout, setSessionTimeout] = useState('15')
+  const [language, setLanguage] = useState('pt')
+  const [theme, setTheme] = useState('system')
 
   const toggleSection = (section: string) => {
     setMultipleExpanded(prev => ({
@@ -204,12 +209,12 @@ export default function TestExpandableCardPage() {
         </h2>
 
         <div className="flex items-center gap-4 mb-2">
-          <button
+          <Button
             onClick={() => setControlledExpanded(!controlledExpanded)}
-            className="btn-primary text-sm"
+            size="sm"
           >
             {controlledExpanded ? 'Collapse' : 'Expand'} Card
-          </button>
+          </Button>
           <span className="text-sm text-gray-500 dark:text-gray-400">
             State: {controlledExpanded ? 'Expanded' : 'Collapsed'}
           </span>
@@ -292,18 +297,23 @@ export default function TestExpandableCardPage() {
                   <p className="font-medium text-gray-900 dark:text-white">Two-factor authentication</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Add extra security</p>
                 </div>
-                <button className="btn-secondary text-sm">Enable</button>
+                <Button variant="outline" size="sm">Enable</Button>
               </div>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">Session timeout</p>
                   <p className="text-sm text-gray-500 dark:text-gray-400">Auto logout after inactivity</p>
                 </div>
-                <select className="input w-32">
-                  <option>15 min</option>
-                  <option>30 min</option>
-                  <option>1 hour</option>
-                </select>
+                <Select value={sessionTimeout} onValueChange={setSessionTimeout}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="15">15 min</SelectItem>
+                    <SelectItem value="30">30 min</SelectItem>
+                    <SelectItem value="60">1 hour</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </ExpandableCard>
@@ -323,21 +333,31 @@ export default function TestExpandableCardPage() {
                 <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                   Language
                 </label>
-                <select className="input">
-                  <option>English</option>
-                  <option>Portuguese</option>
-                  <option>Spanish</option>
-                </select>
+                <Select value={language} onValueChange={setLanguage}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="pt">Portuguese</SelectItem>
+                    <SelectItem value="es">Spanish</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                   Theme
                 </label>
-                <select className="input">
-                  <option>System</option>
-                  <option>Light</option>
-                  <option>Dark</option>
-                </select>
+                <Select value={theme} onValueChange={setTheme}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="system">System</SelectItem>
+                    <SelectItem value="light">Light</SelectItem>
+                    <SelectItem value="dark">Dark</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </ExpandableCard>

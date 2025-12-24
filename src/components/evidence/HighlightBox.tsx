@@ -113,7 +113,7 @@ function Tooltip({ label, confidence, value, position, visible }: TooltipProps) 
       role="tooltip"
       aria-live="polite"
     >
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2 min-w-[120px] max-w-[250px]">
+      <div className="glass-popover p-3 min-w-[120px] max-w-[250px]">
         {/* Label */}
         <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
           {label}
@@ -127,13 +127,13 @@ function Tooltip({ label, confidence, value, position, visible }: TooltipProps) 
         )}
 
         {/* Confidence score */}
-        <div className="flex items-center gap-1.5 mt-1.5">
+        <div className="flex items-center gap-1.5 mt-2">
           <span className="text-xs text-gray-500 dark:text-gray-400">
             Confiança:
           </span>
           <span
             className={`
-              text-xs font-medium px-1.5 py-0.5 rounded
+              text-xs font-medium px-2 py-1 rounded-md
               ${getConfidenceBgColor(confidence)}
               ${getConfidenceColor(confidence)}
             `}

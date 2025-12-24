@@ -12,12 +12,16 @@ import { TiptapEditor } from '../components/editor'
 import { ChatPanel } from '../components/chat'
 import { chatService } from '../services/chat'
 import { draftOperationsService } from '../services/draftOperations'
+import { Alert } from '@/components/ui/alert'
+import { Card } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
+import { ExclamationTriangleIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
 import type { ChatMessage, ChatSession, PendingItem, ChatOperation } from '../types'
 
 export default function DraftPage() {
   const { caseId } = useParams()
   const [content, setContent] = useState('')
-  const [pendingItems, setPendingItems] = useState<PendingItem[]>([])
+  const [pendingItems, _setPendingItems] = useState<PendingItem[]>([])
   const [chatSession, setChatSession] = useState<ChatSession | null>(null)
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -305,26 +309,45 @@ export default function DraftPage() {
   }
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex flex-col">
-      {/* Header */}
-      <div className="flex-shrink-0 mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
-          Editor de Minuta
-        </h1>
-        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-          <span>Caso: {caseId}</span>
-          {error && (
-            <span className="text-red-500 dark:text-red-400">
-              {error}
-            </span>
-          )}
+    <div className="h-[calc(100vh-8rem)] flex flex-col gap-4 p-4">
+      {/* Header Card */}
+      <Card className="glass-card p-6 flex-shrink-0">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 shadow-md">
+              <DocumentTextIcon className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Editor de Minuta
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                Caso: <span className="font-semibold text-gray-700 dark:text-gray-300">{caseId || 'N/A'}</span>
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
+      </Card>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert className="border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 shadow-md">
+          <ExclamationTriangleIcon className="h-4 w-4 text-red-600 dark:text-red-400" />
+          <div className="ml-3">
+            <p className="text-sm font-medium text-red-800 dark:text-red-300">
+              Erro
+            </p>
+            <p className="text-sm text-red-700 dark:text-red-400">
+              {error}
+            </p>
+          </div>
+        </Alert>
+      )}
 
       {/* Two-Panel Layout */}
-      <div className="flex-1 flex gap-4 overflow-hidden">
+      <div className={cn("flex-1 flex gap-4 overflow-hidden", error && "pt-0")}>
         {/* Left Panel - Editor */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden rounded-lg shadow-lg">
           <TiptapEditor
             content={content}
             onChange={handleContentChange}
@@ -335,7 +358,7 @@ export default function DraftPage() {
         </div>
 
         {/* Right Panel - Chat */}
-        <div className="w-96 flex-shrink-0">
+        <div className="w-96 flex-shrink-0 rounded-lg overflow-hidden shadow-lg">
           <ChatPanel
             sessionId={chatSession?.id}
             messages={messages}

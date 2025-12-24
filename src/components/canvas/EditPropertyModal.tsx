@@ -11,6 +11,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
 import type { Property, Address, Encumbrance } from '../../types'
 import { supabase } from '../../lib/supabase'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Button } from '../ui/button'
+import { Textarea } from '../ui/textarea'
+import { cn } from '@/lib/utils'
 
 // -----------------------------------------------------------------------------
 // Constants
@@ -322,7 +327,8 @@ export function EditPropertyModal({
       }
 
       // Update in database
-      const { data: updatedProperty, error: updateError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: updatedProperty, error: updateError } = await (supabase as any)
         .from('properties')
         .update(updateData)
         .eq('id', property.id)
@@ -387,7 +393,11 @@ export function EditPropertyModal({
               damping: 25,
               stiffness: 300,
             }}
-            className="absolute inset-4 sm:inset-8 md:inset-12 lg:inset-20 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden flex flex-col"
+            className={cn(
+              "absolute inset-4 sm:inset-8 md:inset-12 lg:inset-20",
+              "glass-dialog",
+              "rounded-xl shadow-2xl overflow-hidden flex flex-col"
+            )}
             tabIndex={-1}
           >
             {/* Header */}
@@ -403,15 +413,16 @@ export function EditPropertyModal({
                   {property.registry_number || 'Matrícula não informada'}
                 </p>
               </div>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={onClose}
                 disabled={isSaving}
-                className="p-2 rounded-lg text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 transition-colors"
                 aria-label="Fechar modal"
               >
                 <XMarkIcon className="w-5 h-5" />
-              </button>
+              </Button>
             </div>
 
             {/* Error Alert */}
@@ -430,26 +441,22 @@ export function EditPropertyModal({
                     Informações de Registro
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Número da Matrícula
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="registry_number">Número da Matrícula</Label>
+                      <Input
+                        id="registry_number"
                         type="text"
                         value={formData.registry_number}
                         onChange={(e) => handleFieldChange('registry_number', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Cartório de Registro
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="registry_office">Cartório de Registro</Label>
+                      <Input
+                        id="registry_office"
                         type="text"
                         value={formData.registry_office}
                         onChange={(e) => handleFieldChange('registry_office', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -461,125 +468,105 @@ export function EditPropertyModal({
                     Detalhes do Imóvel
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Área (m²)
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="area_sqm">Área (m²)</Label>
+                      <Input
+                        id="area_sqm"
                         type="number"
                         step="0.01"
                         value={formData.area_sqm}
                         onChange={(e) => handleFieldChange('area_sqm', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Número IPTU
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="iptu_number">Número IPTU</Label>
+                      <Input
+                        id="iptu_number"
                         type="text"
                         value={formData.iptu_number}
                         onChange={(e) => handleFieldChange('iptu_number', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Descrição
-                      </label>
-                      <textarea
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="description">Descrição</Label>
+                      <Textarea
+                        id="description"
                         value={formData.description}
                         onChange={(e) => handleFieldChange('description', e.target.value)}
                         rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Address Section */}
-                <div>
+                <div className="glass-subtle p-4 rounded-lg">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">
                     Localização
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Rua
-                      </label>
-                      <input
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="street">Rua</Label>
+                      <Input
+                        id="street"
                         type="text"
                         value={formData.address.street}
                         onChange={(e) => handleAddressChange('street', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Número
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="number">Número</Label>
+                      <Input
+                        id="number"
                         type="text"
                         value={formData.address.number}
                         onChange={(e) => handleAddressChange('number', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Complemento
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="complement">Complemento</Label>
+                      <Input
+                        id="complement"
                         type="text"
                         value={formData.address.complement}
                         onChange={(e) => handleAddressChange('complement', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Bairro
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="neighborhood">Bairro</Label>
+                      <Input
+                        id="neighborhood"
                         type="text"
                         value={formData.address.neighborhood}
                         onChange={(e) => handleAddressChange('neighborhood', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Cidade
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="city">Cidade</Label>
+                      <Input
+                        id="city"
                         type="text"
                         value={formData.address.city}
                         onChange={(e) => handleAddressChange('city', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Estado
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="state">Estado</Label>
+                      <Input
+                        id="state"
                         type="text"
                         value={formData.address.state}
                         onChange={(e) => handleAddressChange('state', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         maxLength={2}
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        CEP
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="zip">CEP</Label>
+                      <Input
+                        id="zip"
                         type="text"
                         value={formData.address.zip}
                         onChange={(e) => handleAddressChange('zip', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -591,14 +578,16 @@ export function EditPropertyModal({
                     <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                       Ônus e Gravames
                     </h3>
-                    <button
+                    <Button
                       type="button"
+                      size="sm"
+                      variant="default"
                       onClick={handleAddEncumbrance}
-                      className="flex items-center gap-1 px-3 py-1.5 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                      className="bg-green-500 hover:bg-green-600"
                     >
-                      <PlusIcon className="w-4 h-4" />
+                      <PlusIcon className="w-4 h-4 mr-1" />
                       Adicionar
-                    </button>
+                    </Button>
                   </div>
                   {formData.encumbrances.length === 0 ? (
                     <p className="text-sm text-gray-500 dark:text-gray-400 italic">
@@ -609,67 +598,73 @@ export function EditPropertyModal({
                       {formData.encumbrances.map((encumbrance, index) => (
                         <div
                           key={index}
-                          className="p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-900"
+                          className="glass-subtle p-4 rounded-lg"
                         >
                           <div className="flex items-start justify-between mb-3">
                             <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                               Ônus #{index + 1}
                             </h4>
-                            <button
+                            <Button
                               type="button"
+                              size="icon"
+                              variant="ghost"
                               onClick={() => handleRemoveEncumbrance(index)}
-                              className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                              className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                               aria-label="Remover ônus"
                             >
                               <TrashIcon className="w-4 h-4" />
-                            </button>
+                            </Button>
                           </div>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div>
-                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                            <div className="space-y-2">
+                              <Label htmlFor={`encumbrance_type_${index}`} className="text-xs">
                                 Tipo
-                              </label>
-                              <input
+                              </Label>
+                              <Input
+                                id={`encumbrance_type_${index}`}
                                 type="text"
                                 value={encumbrance.type}
                                 onChange={(e) =>
                                   handleEncumbranceChange(index, 'type', e.target.value)
                                 }
-                                className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="Ex: Hipoteca, Penhora"
+                                className="h-8 text-sm"
                               />
                             </div>
-                            <div>
-                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                            <div className="space-y-2">
+                              <Label htmlFor={`encumbrance_beneficiary_${index}`} className="text-xs">
                                 Beneficiário
-                              </label>
-                              <input
+                              </Label>
+                              <Input
+                                id={`encumbrance_beneficiary_${index}`}
                                 type="text"
                                 value={encumbrance.beneficiary || ''}
                                 onChange={(e) =>
                                   handleEncumbranceChange(index, 'beneficiary', e.target.value)
                                 }
-                                className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="h-8 text-sm"
                               />
                             </div>
-                            <div className="md:col-span-2">
-                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                            <div className="md:col-span-2 space-y-2">
+                              <Label htmlFor={`encumbrance_description_${index}`} className="text-xs">
                                 Descrição
-                              </label>
-                              <textarea
+                              </Label>
+                              <Textarea
+                                id={`encumbrance_description_${index}`}
                                 value={encumbrance.description}
                                 onChange={(e) =>
                                   handleEncumbranceChange(index, 'description', e.target.value)
                                 }
                                 rows={2}
-                                className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="text-sm"
                               />
                             </div>
-                            <div>
-                              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
+                            <div className="space-y-2">
+                              <Label htmlFor={`encumbrance_value_${index}`} className="text-xs">
                                 Valor (R$)
-                              </label>
-                              <input
+                              </Label>
+                              <Input
+                                id={`encumbrance_value_${index}`}
                                 type="number"
                                 step="0.01"
                                 value={encumbrance.value || ''}
@@ -680,7 +675,7 @@ export function EditPropertyModal({
                                     e.target.value ? parseFloat(e.target.value) : undefined
                                   )
                                 }
-                                className="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="h-8 text-sm"
                               />
                             </div>
                           </div>
@@ -694,29 +689,28 @@ export function EditPropertyModal({
 
             {/* Footer */}
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-              <button
+              <Button
                 type="button"
+                variant="ghost"
                 onClick={onClose}
                 disabled={isSaving}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancelar
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSaving ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
                     Salvando...
                   </>
                 ) : (
                   'Salvar Alterações'
                 )}
-              </button>
+              </Button>
             </div>
           </motion.div>
         </div>

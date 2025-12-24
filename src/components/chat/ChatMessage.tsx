@@ -20,6 +20,10 @@ import {
 } from '@heroicons/react/24/outline'
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { Card } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 // -----------------------------------------------------------------------------
 // Types
@@ -91,63 +95,59 @@ function OperationPreview({ operation, messageId, onApprove, onReject }: Operati
   const isRejected = operation.status === 'rejected'
 
   return (
-    <div className={`mt-3 p-4 rounded-xl border-2 shadow-sm transition-all duration-200 ${
-      isApproved
-        ? 'bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-900/10 border-green-300 dark:border-green-700'
-        : isRejected
-        ? 'bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-900/20 dark:to-red-900/10 border-red-300 dark:border-red-700'
-        : 'bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-900/10 border-blue-300 dark:border-blue-700'
-    }`}>
+    <Card className={cn(
+      "mt-3 p-4 border-2 shadow-sm transition-all duration-200",
+      isApproved && "bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/20 dark:to-green-900/10 border-green-300 dark:border-green-700",
+      isRejected && "bg-gradient-to-br from-red-50 to-red-100/50 dark:from-red-900/20 dark:to-red-900/10 border-red-300 dark:border-red-700",
+      isPending && "bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/20 dark:to-blue-900/10 border-blue-300 dark:border-blue-700"
+    )}>
       <div className="flex items-center justify-between mb-3">
-        <div className={`flex items-center gap-2.5 text-sm font-semibold ${
-          isApproved
-            ? 'text-green-900 dark:text-green-100'
-            : isRejected
-            ? 'text-red-900 dark:text-red-100'
-            : 'text-blue-900 dark:text-blue-100'
-        }`}>
+        <div className={cn(
+          "flex items-center gap-2.5 text-sm font-semibold",
+          isApproved && "text-green-900 dark:text-green-100",
+          isRejected && "text-red-900 dark:text-red-100",
+          isPending && "text-blue-900 dark:text-blue-100"
+        )}>
           {getOperationIcon(operation.type)}
           <span>{getOperationLabel(operation.type)}</span>
         </div>
 
         {/* Status Badge */}
         {isApproved && (
-          <span className="text-xs px-3 py-1.5 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full font-semibold shadow-sm">
+          <Badge variant="outline" className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-300 dark:border-green-700">
             ✓ Aprovada
-          </span>
+          </Badge>
         )}
         {isRejected && (
-          <span className="text-xs px-3 py-1.5 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 rounded-full font-semibold shadow-sm">
+          <Badge variant="outline" className="bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-300 dark:border-red-700">
             ✗ Rejeitada
-          </span>
+          </Badge>
         )}
         {isPending && (
-          <span className="text-xs px-3 py-1.5 bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 rounded-full font-semibold shadow-sm animate-pulse-subtle">
+          <Badge variant="outline" className="bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 border-yellow-300 dark:border-yellow-700 animate-pulse-subtle">
             ⏳ Aguardando aprovação
-          </span>
+          </Badge>
         )}
       </div>
 
       {operation.target_path && (
-        <div className={`text-xs mb-1 ${
-          isApproved
-            ? 'text-green-700 dark:text-green-300'
-            : isRejected
-            ? 'text-red-700 dark:text-red-300'
-            : 'text-blue-700 dark:text-blue-300'
-        }`}>
+        <div className={cn(
+          "text-xs mb-1",
+          isApproved && "text-green-700 dark:text-green-300",
+          isRejected && "text-red-700 dark:text-red-300",
+          isPending && "text-blue-700 dark:text-blue-300"
+        )}>
           <span className="font-medium">Campo:</span> {operation.target_path}
         </div>
       )}
 
       {operation.section_id && (
-        <div className={`text-xs mb-1 ${
-          isApproved
-            ? 'text-green-700 dark:text-green-300'
-            : isRejected
-            ? 'text-red-700 dark:text-red-300'
-            : 'text-blue-700 dark:text-blue-300'
-        }`}>
+        <div className={cn(
+          "text-xs mb-1",
+          isApproved && "text-green-700 dark:text-green-300",
+          isRejected && "text-red-700 dark:text-red-300",
+          isPending && "text-blue-700 dark:text-blue-300"
+        )}>
           <span className="font-medium">Seção:</span> {operation.section_id}
         </div>
       )}
@@ -174,13 +174,12 @@ function OperationPreview({ operation, messageId, onApprove, onReject }: Operati
       )}
 
       {operation.reason && (
-        <div className={`mt-2 text-xs italic ${
-          isApproved
-            ? 'text-green-600 dark:text-green-400'
-            : isRejected
-            ? 'text-red-600 dark:text-red-400'
-            : 'text-blue-600 dark:text-blue-400'
-        }`}>
+        <div className={cn(
+          "mt-2 text-xs italic",
+          isApproved && "text-green-600 dark:text-green-400",
+          isRejected && "text-red-600 dark:text-red-400",
+          isPending && "text-blue-600 dark:text-blue-400"
+        )}>
           {operation.reason}
         </div>
       )}
@@ -188,37 +187,24 @@ function OperationPreview({ operation, messageId, onApprove, onReject }: Operati
       {/* Action Buttons (only for pending operations) */}
       {isPending && onApprove && onReject && (
         <div className="mt-4 flex gap-3">
-          <button
+          <Button
             onClick={() => onApprove(messageId, operation)}
-            className="
-              flex-1 flex items-center justify-center gap-2 px-4 py-2.5
-              bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
-              dark:from-green-600 dark:to-green-700 dark:hover:from-green-700 dark:hover:to-green-800
-              text-white text-sm font-semibold rounded-xl
-              transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500
-              shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95
-            "
+            className="flex-1 bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 dark:from-green-600 dark:to-green-700 dark:hover:from-green-700 dark:hover:to-green-800"
           >
-            <CheckCircleIcon className="w-4 h-4" />
+            <CheckCircleIcon className="w-4 h-4 mr-2" />
             Aprovar
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => onReject(messageId, operation)}
-            className="
-              flex-1 flex items-center justify-center gap-2 px-4 py-2.5
-              bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700
-              dark:from-red-600 dark:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800
-              text-white text-sm font-semibold rounded-xl
-              transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500
-              shadow-md hover:shadow-lg transform hover:scale-105 active:scale-95
-            "
+            variant="destructive"
+            className="flex-1 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:from-red-600 dark:to-red-700 dark:hover:from-red-700 dark:hover:to-red-800"
           >
-            <XMarkIcon className="w-4 h-4" />
+            <XMarkIcon className="w-4 h-4 mr-2" />
             Rejeitar
-          </button>
+          </Button>
         </div>
       )}
-    </div>
+    </Card>
   )
 }
 
@@ -231,17 +217,17 @@ export function ChatMessage({ message, onApproveOperation, onRejectOperation, is
   const isSystem = message.role === 'system'
 
   return (
-    <div className={`flex gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'} animate-fade-in`}>
+    <div className={cn(
+      "flex gap-3 animate-fade-in",
+      isUser ? "flex-row-reverse" : "flex-row"
+    )}>
       {/* Avatar */}
-      <div className={`
-        flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-md
-        ${isUser
-          ? 'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700'
-          : isSystem
-            ? 'bg-gradient-to-br from-gray-400 to-gray-500 dark:from-gray-600 dark:to-gray-700'
-            : 'bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700'
-        }
-      `}>
+      <div className={cn(
+        "flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-md",
+        isUser && "bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700",
+        isSystem && "bg-gradient-to-br from-gray-400 to-gray-500 dark:from-gray-600 dark:to-gray-700",
+        !isUser && !isSystem && "bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700"
+      )}>
         {isUser ? (
           <UserIcon className="w-5 h-5 text-white" />
         ) : (
@@ -250,22 +236,22 @@ export function ChatMessage({ message, onApproveOperation, onRejectOperation, is
       </div>
 
       {/* Message Content */}
-      <div className={`flex-1 max-w-[80%] ${isUser ? 'text-right' : 'text-left'}`}>
+      <div className={cn(
+        "flex-1 max-w-[80%]",
+        isUser ? "text-right" : "text-left"
+      )}>
         {/* Message Bubble */}
-        <div className={`
-          inline-block px-5 py-3 rounded-2xl shadow-sm
-          ${isUser
-            ? 'bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white'
-            : isSystem
-              ? 'bg-gradient-to-br from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-800 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600'
-              : 'bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700'
-          }
-        `}>
+        <Card className={cn(
+          "inline-block px-5 py-3 shadow-sm",
+          isUser && "bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white border-blue-600",
+          isSystem && "glass-subtle text-gray-800 dark:text-gray-200",
+          !isUser && !isSystem && "glass-card text-gray-900 dark:text-gray-100"
+        )}>
           <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">
             {message.content}
             {isStreaming && <span className="inline-block w-1.5 h-4 ml-1 bg-current animate-pulse"></span>}
           </p>
-        </div>
+        </Card>
 
         {/* Operation Preview (for assistant messages) */}
         {!isUser && message.operation && (
@@ -280,10 +266,10 @@ export function ChatMessage({ message, onApproveOperation, onRejectOperation, is
         )}
 
         {/* Timestamp */}
-        <div className={`
-          text-xs text-gray-500 dark:text-gray-400 mt-2 px-1
-          ${isUser ? 'text-right' : 'text-left'}
-        `}>
+        <div className={cn(
+          "text-xs text-gray-500 dark:text-gray-400 mt-2 px-1",
+          isUser ? "text-right" : "text-left"
+        )}>
           {formatDistanceToNow(new Date(message.created_at), {
             addSuffix: true,
             locale: ptBR

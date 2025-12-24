@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
 import {
   formatCurrency,
   parseCurrency,
@@ -42,21 +45,21 @@ export default function TestCurrencyPage() {
         </div>
 
         {/* Interactive Input Test */}
-        <div className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Interactive Input Test
-          </h2>
-          <div className="space-y-4">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Interactive Input Test</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Label htmlFor="currency-input">
                 Type a number (auto-formatted as you type)
-              </label>
-              <input
+              </Label>
+              <Input
+                id="currency-input"
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}
                 placeholder="0,00"
-                className="input"
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -85,14 +88,15 @@ export default function TestCurrencyPage() {
                 </p>
               </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Format Examples */}
-        <div className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Format Examples
-          </h2>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Format Examples</CardTitle>
+          </CardHeader>
+          <CardContent>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
               <thead className="bg-gray-50 dark:bg-gray-800">
@@ -137,14 +141,15 @@ export default function TestCurrencyPage() {
               </tbody>
             </table>
           </div>
-        </div>
+        </CardContent>
+        </Card>
 
         {/* Additional Functions */}
-        <div className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Additional Functions
-          </h2>
-          <div className="space-y-4">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Additional Functions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 formatCurrencyCompact()
@@ -222,8 +227,8 @@ export default function TestCurrencyPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

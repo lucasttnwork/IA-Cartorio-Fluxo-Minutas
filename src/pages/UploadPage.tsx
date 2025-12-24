@@ -11,6 +11,10 @@ import {
   ArrowPathIcon,
   FolderOpenIcon,
 } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 import DocumentDropzone, { UploadResult } from '../components/upload/DocumentDropzone'
 import { useCaseStore } from '../stores/caseStore'
 import { useDocumentStatusSubscription } from '../hooks/useDocumentStatusSubscription'
@@ -271,36 +275,35 @@ export default function UploadPage() {
           </p>
         </div>
         {uploadedDocs.length > 0 && (
-          <Link
-            to={`/case/${caseId}/entities`}
-            className="btn-primary"
-          >
-            Continuar para Entidades
-          </Link>
+          <Button asChild>
+            <Link to={`/case/${caseId}/entities`}>
+              Continuar para Entidades
+            </Link>
+          </Button>
         )}
       </div>
 
       {/* Upload Area */}
-      <div className="card p-6">
-        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-          Enviar Documentos
-        </h2>
-        <DocumentDropzone
-          caseId={caseId || ''}
-          onUploadComplete={handleUploadComplete}
-        />
-      </div>
+      <Card className="glass-card">
+        <CardContent className="p-6">
+          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
+            Enviar Documentos
+          </h2>
+          <DocumentDropzone
+            caseId={caseId || ''}
+            onUploadComplete={handleUploadComplete}
+          />
+        </CardContent>
+      </Card>
 
       {/* Uploaded Documents List */}
-      <div className="card">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-            Documentos Enviados
-          </h2>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle>Documentos Enviados</CardTitle>
+          <CardDescription>
             {uploadedDocs.length} documento{uploadedDocs.length !== 1 ? 's' : ''} neste caso
-          </p>
-        </div>
+          </CardDescription>
+        </CardHeader>
 
         <AnimatePresence mode="popLayout">
           {isLoading ? (
@@ -359,24 +362,20 @@ export default function UploadPage() {
                           <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                             {doc.original_name}
                           </p>
-                          <span className={`badge ${statusInfo.className}`}>
-                            <StatusIcon
-                              className={`w-3 h-3 mr-1 ${
-                                doc.status === 'processing' ? 'animate-spin' : ''
-                              }`}
-                            />
+                          <Badge variant={doc.status === 'processed' ? 'default' : 'secondary'} className="gap-1">
+                            <StatusIcon className={cn("w-3 h-3", doc.status === 'processing' && "animate-spin")} />
                             {statusInfo.label}
-                          </span>
+                          </Badge>
                           {/* Document Type Badge with Confidence */}
                           {doc.doc_type && (
-                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${getDocTypeBadgeClass(doc.doc_type_confidence)}`}>
+                            <Badge variant="outline" className={cn("gap-1", getDocTypeBadgeClass(doc.doc_type_confidence))}>
                               {documentTypeLabels[doc.doc_type]}
                               {doc.doc_type_confidence !== null && (
-                                <span className={`font-semibold ${getConfidenceColor(doc.doc_type_confidence)}`}>
+                                <span className={cn("font-semibold", getConfidenceColor(doc.doc_type_confidence))}>
                                   ({formatConfidence(doc.doc_type_confidence)})
                                 </span>
                               )}
-                            </span>
+                            </Badge>
                           )}
                         </div>
                         <div className="flex items-center gap-3 mt-1">
@@ -396,19 +395,22 @@ export default function UploadPage() {
 
                       {/* Actions */}
                       <div className="flex items-center gap-2">
-                        <button
-                          className="p-2 rounded-md text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           title="Ver documento"
                         >
                           <EyeIcon className="w-5 h-5" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleRemoveDocument(doc.id)}
-                          className="p-2 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                          className="hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
                           title="Remover documento"
                         >
                           <TrashIcon className="w-5 h-5" />
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </motion.li>
@@ -417,27 +419,29 @@ export default function UploadPage() {
             </ul>
           )}
         </AnimatePresence>
-      </div>
+      </Card>
 
       {/* Help Section - Document Types */}
-      <div className="card p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-        <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">
-          Tipos de Documento Suportados (Deteccao Automatica)
-        </h3>
-        <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2">
-          {Object.entries(documentTypeLabels).map(([type, label]) => (
-            <div
-              key={type}
-              className="text-xs text-blue-700 dark:text-blue-300"
-            >
-              - {label}
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-xs text-blue-600 dark:text-blue-400">
-          Os arquivos sao processados automaticamente usando OCR e IA para identificar o tipo de documento e extrair informacoes relevantes. A porcentagem indica o nivel de confianca da deteccao.
-        </p>
-      </div>
+      <Card className="glass-card border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10">
+        <CardContent className="p-6">
+          <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-3">
+            Tipos de Documento Suportados (Deteccao Automatica)
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {Object.entries(documentTypeLabels).map(([type, label]) => (
+              <div
+                key={type}
+                className="text-xs text-blue-700 dark:text-blue-300"
+              >
+                - {label}
+              </div>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-blue-600 dark:text-blue-400">
+            Os arquivos sao processados automaticamente usando OCR e IA para identificar o tipo de documento e extrair informacoes relevantes. A porcentagem indica o nivel de confianca da deteccao.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 }

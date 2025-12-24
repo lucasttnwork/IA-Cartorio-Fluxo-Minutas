@@ -6,6 +6,8 @@
  */
 
 import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Alert, AlertDescription } from '../components/ui/alert'
 import { TiptapEditor } from '../components/editor'
 import type { PendingItem } from '../types'
 
@@ -100,101 +102,109 @@ export default function TestPendingItemsPage() {
         </div>
 
         {/* Pending Items Legend */}
-        <div className="mb-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-            Legenda de Itens Pendentes
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex items-center gap-2">
-              <span className="pending-item-highlight inline-block px-2 py-1">
-                Aviso (Amarelo)
-              </span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                Itens que precisam de revisão
-              </span>
+        <Card className="glass-card mb-6">
+          <CardHeader>
+            <CardTitle>Legenda de Itens Pendentes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-2">
+                <span className="pending-item-highlight inline-block px-2 py-1">
+                  Aviso (Amarelo)
+                </span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Itens que precisam de revisão
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="pending-item-highlight inline-block px-2 py-1" data-pending-severity="error">
+                  Erro (Vermelho)
+                </span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Itens críticos faltando
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="pending-item-highlight inline-block px-2 py-1" data-pending-severity="info">
+                  Info (Azul)
+                </span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  Informações complementares
+                </span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="pending-item-highlight inline-block px-2 py-1" data-pending-severity="error">
-                Erro (Vermelho)
-              </span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                Itens críticos faltando
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="pending-item-highlight inline-block px-2 py-1" data-pending-severity="info">
-                Info (Azul)
-              </span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                Informações complementares
-              </span>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Pending Items List */}
-        <div className="mb-6 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-            Lista de Itens Pendentes ({pendingItems.length})
-          </h2>
-          <ul className="space-y-2">
-            {pendingItems.map((item) => (
-              <li
-                key={item.id}
-                className="flex items-start gap-3 p-3 rounded-md bg-gray-50 dark:bg-gray-700/50"
-              >
-                <span
-                  className={`
-                    inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
-                    ${
-                      item.severity === 'error'
-                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                        : item.severity === 'warning'
-                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                        : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                    }
-                  `}
+        <Card className="glass-card mb-6">
+          <CardHeader>
+            <CardTitle>Lista de Itens Pendentes ({pendingItems.length})</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {pendingItems.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-start gap-3 p-3 rounded-md bg-gray-50 dark:bg-gray-700/50"
                 >
-                  {item.severity === 'error' ? '!' : item.severity === 'warning' ? '⚠' : 'i'}
-                </span>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">
-                    {item.field_path}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    {item.reason}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+                  <span
+                    className={`
+                      inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-medium
+                      ${
+                        item.severity === 'error'
+                          ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                          : item.severity === 'warning'
+                          ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                          : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                      }
+                    `}
+                  >
+                    {item.severity === 'error' ? '!' : item.severity === 'warning' ? '⚠' : 'i'}
+                  </span>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      {item.field_path}
+                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      {item.reason}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
 
         {/* Editor */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Editor de Minuta
-          </h2>
-          <TiptapEditor
-            content={content}
-            onChange={handleContentChange}
-            placeholder="Comece a escrever a minuta..."
-            pendingItems={pendingItems}
-          />
-        </div>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Editor de Minuta</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TiptapEditor
+              content={content}
+              onChange={handleContentChange}
+              placeholder="Comece a escrever a minuta..."
+              pendingItems={pendingItems}
+            />
+          </CardContent>
+        </Card>
 
         {/* Instructions */}
-        <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-          <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-300 mb-2">
-            💡 Instruções
-          </h3>
-          <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
-            <li>• Passe o mouse sobre os textos destacados para ver o efeito hover</li>
-            <li>• Os textos sublinhados em ondulado indicam itens pendentes</li>
-            <li>• Cores diferentes indicam níveis de severidade (amarelo = aviso, vermelho = erro, azul = info)</li>
-            <li>• Você pode editar o texto normalmente no editor</li>
-          </ul>
-        </div>
+        <Alert className="mt-6 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+          <AlertDescription className="text-blue-900 dark:text-blue-100">
+            <h3 className="text-sm font-semibold mb-2">
+              💡 Instruções
+            </h3>
+            <ul className="text-sm text-blue-800 dark:text-blue-400 space-y-1">
+              <li>• Passe o mouse sobre os textos destacados para ver o efeito hover</li>
+              <li>• Os textos sublinhados em ondulado indicam itens pendentes</li>
+              <li>• Cores diferentes indicam níveis de severidade (amarelo = aviso, vermelho = erro, azul = info)</li>
+              <li>• Você pode editar o texto normalmente no editor</li>
+            </ul>
+          </AlertDescription>
+        </Alert>
       </div>
     </div>
   )

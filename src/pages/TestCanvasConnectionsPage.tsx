@@ -29,6 +29,9 @@ import {
   RectangleGroupIcon,
   CheckCircleIcon,
 } from '@heroicons/react/24/outline'
+import { Card, CardContent } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import { Alert, AlertDescription } from '../components/ui/alert'
 import { PersonNode, PropertyNode, ContextMenu } from '../components/canvas'
 import type { PersonNodeData, PropertyNodeData, ContextMenuItem } from '../components/canvas'
 import type { RelationshipType } from '../types'
@@ -525,50 +528,41 @@ export default function TestCanvasConnectionsPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <button
+            <Button
               onClick={() => setShowMinimap(!showMinimap)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                showMinimap
-                  ? 'bg-purple-500 text-white border-purple-600 hover:bg-purple-600'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+              variant={showMinimap ? 'default' : 'outline'}
+              className={showMinimap ? 'bg-purple-500 hover:bg-purple-600 text-white' : ''}
             >
-              <MapIcon className="w-5 h-5" />
+              <MapIcon className="w-5 h-5 mr-2" />
               {showMinimap ? 'Ocultar Minimapa' : 'Mostrar Minimapa'}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() =>
                 setSelectionMode(
                   selectionMode === SelectionMode.Partial ? SelectionMode.Full : SelectionMode.Partial
                 )
               }
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                selectionMode === SelectionMode.Full
-                  ? 'bg-indigo-500 text-white border-indigo-600 hover:bg-indigo-600'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+              variant={selectionMode === SelectionMode.Full ? 'default' : 'outline'}
+              className={selectionMode === SelectionMode.Full ? 'bg-indigo-500 hover:bg-indigo-600 text-white' : ''}
               title={
                 selectionMode === SelectionMode.Full
                   ? 'Box Selection: Arraste para selecionar múltiplos nós'
                   : 'Clique para ativar seleção em caixa'
               }
             >
-              <RectangleGroupIcon className="w-5 h-5" />
+              <RectangleGroupIcon className="w-5 h-5 mr-2" />
               {selectionMode === SelectionMode.Full ? 'Seleção em Caixa Ativa' : 'Ativar Seleção em Caixa'}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setConnectionMode(!connectionMode)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                connectionMode
-                  ? 'bg-blue-500 text-white border-blue-600 hover:bg-blue-600'
-                  : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
+              variant={connectionMode ? 'default' : 'outline'}
+              className={connectionMode ? 'bg-blue-500 hover:bg-blue-600 text-white' : ''}
             >
-              <LinkIcon className="w-5 h-5" />
+              <LinkIcon className="w-5 h-5 mr-2" />
               {connectionMode ? 'Modo Conexão Ativo' : 'Ativar Modo Conexão'}
-            </button>
+            </Button>
 
-            <button
+            <Button
               onClick={() => {
                 // Simulate a connection from Pedro Santos to REG-002
                 const connection = {
@@ -584,20 +578,20 @@ export default function TestCanvasConnectionsPage() {
                   targetType: 'property',
                 })
               }}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-green-600 bg-green-500 text-white hover:bg-green-600 transition-colors"
+              className="bg-green-500 hover:bg-green-600 text-white"
             >
-              <SparklesIcon className="w-5 h-5" />
+              <SparklesIcon className="w-5 h-5 mr-2" />
               Testar Conexão
-            </button>
+            </Button>
           </div>
         </div>
 
         {connectionMode && (
-          <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-            <p className="text-sm text-blue-800 dark:text-blue-200">
+          <Alert className="mt-3 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+            <AlertDescription className="text-blue-800 dark:text-blue-200">
               <strong>Modo Conexão Ativo:</strong> Clique e arraste de um nó para outro para criar uma conexão.
-            </p>
-          </div>
+            </AlertDescription>
+          </Alert>
         )}
       </div>
 
@@ -609,55 +603,58 @@ export default function TestCanvasConnectionsPage() {
               key={warning.id}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`rounded-lg p-4 border ${
-                warning.type === 'error'
-                  ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
-                  : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-              }`}
             >
-              <div className="flex items-start gap-3">
-                <ExclamationTriangleIcon
-                  className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                    warning.type === 'error' ? 'text-red-500' : 'text-yellow-500'
-                  }`}
-                />
-                <div className="flex-1">
-                  <h4
-                    className={`text-sm font-semibold ${
-                      warning.type === 'error'
-                        ? 'text-red-700 dark:text-red-300'
-                        : 'text-yellow-700 dark:text-yellow-300'
+              <Alert
+                className={`${
+                  warning.type === 'error'
+                    ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20'
+                    : 'border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/20'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <ExclamationTriangleIcon
+                    className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                      warning.type === 'error' ? 'text-red-500' : 'text-yellow-500'
                     }`}
-                  >
-                    {warning.title}
-                  </h4>
-                  <p
-                    className={`mt-1 text-sm ${
-                      warning.type === 'error'
-                        ? 'text-red-600 dark:text-red-400'
-                        : 'text-yellow-600 dark:text-yellow-400'
-                    }`}
-                  >
-                    {warning.description}
-                  </p>
-                  {warning.affectedEntities.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {warning.affectedEntities.map((entity, idx) => (
-                        <span
-                          key={idx}
-                          className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
-                            entity.type === 'person'
-                              ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
-                              : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                          }`}
-                        >
-                          {entity.name}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  />
+                  <div className="flex-1">
+                    <h4
+                      className={`text-sm font-semibold ${
+                        warning.type === 'error'
+                          ? 'text-red-700 dark:text-red-300'
+                          : 'text-yellow-700 dark:text-yellow-300'
+                      }`}
+                    >
+                      {warning.title}
+                    </h4>
+                    <AlertDescription
+                      className={`mt-1 ${
+                        warning.type === 'error'
+                          ? 'text-red-600 dark:text-red-400'
+                          : 'text-yellow-600 dark:text-yellow-400'
+                      }`}
+                    >
+                      {warning.description}
+                    </AlertDescription>
+                    {warning.affectedEntities.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {warning.affectedEntities.map((entity, idx) => (
+                          <span
+                            key={idx}
+                            className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium ${
+                              entity.type === 'person'
+                                ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                                : 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+                            }`}
+                          >
+                            {entity.name}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </Alert>
             </motion.div>
           ))}
         </div>
@@ -710,86 +707,96 @@ export default function TestCanvasConnectionsPage() {
           )}
 
           <Panel position="top-left">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 max-w-xs">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
-                Legenda
-              </h3>
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Pessoa</span>
+            <Card className="glass-card max-w-xs">
+              <CardContent className="pt-6">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">
+                  Legenda
+                </h3>
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                    <span className="text-gray-600 dark:text-gray-400">Pessoa</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <span className="text-gray-600 dark:text-gray-400">Propriedade</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-0.5 bg-green-500"></div>
+                    <span className="text-gray-600 dark:text-gray-400">Confirmado</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-0.5 bg-yellow-500"></div>
+                    <span className="text-gray-600 dark:text-gray-400">Não confirmado</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Propriedade</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-0.5 bg-green-500"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Confirmado</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-0.5 bg-yellow-500"></div>
-                  <span className="text-gray-600 dark:text-gray-400">Não confirmado</span>
-                </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </Panel>
 
           {/* Selection Info Panel */}
           {selectedNodes.length > 0 && showSelectionPanel && (
-            <Panel position="bottom-left" className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-lg border-2 border-indigo-500">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-2">
-                    <CheckCircleIcon className="w-5 h-5 text-indigo-500" />
-                    <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                      {selectedNodes.length} {selectedNodes.length === 1 ? 'Item Selecionado' : 'Itens Selecionados'}
-                    </h3>
-                  </div>
-                  <button
-                    onClick={() => setShowSelectionPanel(false)}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                    title="Fechar painel"
-                  >
-                    ×
-                  </button>
-                </div>
+            <Panel position="bottom-left">
+              <Card className="glass-card border-2 border-indigo-500">
+                <CardContent className="pt-6">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        <CheckCircleIcon className="w-5 h-5 text-indigo-500" />
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+                          {selectedNodes.length} {selectedNodes.length === 1 ? 'Item Selecionado' : 'Itens Selecionados'}
+                        </h3>
+                      </div>
+                      <Button
+                        onClick={() => setShowSelectionPanel(false)}
+                        variant="ghost"
+                        size="sm"
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        title="Fechar painel"
+                      >
+                        ×
+                      </Button>
+                    </div>
 
-                <div className="flex gap-4 text-xs">
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {selectedNodes.filter((n) => n.id.startsWith('person-')).length} Pessoa(s)
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {selectedNodes.filter((n) => n.id.startsWith('property-')).length} Propriedade(s)
-                    </span>
-                  </div>
-                </div>
+                    <div className="flex gap-4 text-xs">
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {selectedNodes.filter((n) => n.id.startsWith('person-')).length} Pessoa(s)
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {selectedNodes.filter((n) => n.id.startsWith('property-')).length} Propriedade(s)
+                        </span>
+                      </div>
+                    </div>
 
-                <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
-                  <button
-                    onClick={handleDeleteSelectedNodes}
-                    className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-xs font-medium"
-                  >
-                    <TrashIcon className="w-4 h-4" />
-                    Deletar
-                  </button>
-                  <button
-                    onClick={handleClearSelection}
-                    className="flex-1 px-3 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg transition-colors text-xs font-medium"
-                  >
-                    Limpar Seleção
-                  </button>
-                </div>
+                    <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                      <Button
+                        onClick={handleDeleteSelectedNodes}
+                        variant="destructive"
+                        className="flex-1 text-xs"
+                      >
+                        <TrashIcon className="w-4 h-4 mr-1" />
+                        Deletar
+                      </Button>
+                      <Button
+                        onClick={handleClearSelection}
+                        variant="outline"
+                        className="flex-1 text-xs"
+                      >
+                        Limpar Seleção
+                      </Button>
+                    </div>
 
-                <div className="pt-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
-                  <p>💡 Dica: Use Ctrl + Clique para selecionar múltiplos nós</p>
-                </div>
-              </div>
+                    <div className="pt-2 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+                      <p>💡 Dica: Use Ctrl + Clique para selecionar múltiplos nós</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </Panel>
           )}
         </ReactFlow>
@@ -815,66 +822,81 @@ export default function TestCanvasConnectionsPage() {
               {/* Show relevant relationship options based on connection types */}
               {connectionDialog.sourceType === 'person' && connectionDialog.targetType === 'property' && (
                 <>
-                  <button
+                  <Button
                     onClick={() => createGraphEdge('sells')}
                     disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    variant="outline"
+                    className="w-full justify-start text-left h-auto py-3"
                   >
-                    <div className="font-medium text-gray-900 dark:text-white">Vende</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa vende a propriedade
+                    <div className="w-full">
+                      <div className="font-medium text-gray-900 dark:text-white">Vende</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        Pessoa vende a propriedade
+                      </div>
                     </div>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => createGraphEdge('buys')}
                     disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    variant="outline"
+                    className="w-full justify-start text-left h-auto py-3"
                   >
-                    <div className="font-medium text-gray-900 dark:text-white">Compra</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa compra a propriedade
+                    <div className="w-full">
+                      <div className="font-medium text-gray-900 dark:text-white">Compra</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        Pessoa compra a propriedade
+                      </div>
                     </div>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => createGraphEdge('owns')}
                     disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    variant="outline"
+                    className="w-full justify-start text-left h-auto py-3"
                   >
-                    <div className="font-medium text-gray-900 dark:text-white">Proprietário</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa é proprietária da propriedade
+                    <div className="w-full">
+                      <div className="font-medium text-gray-900 dark:text-white">Proprietário</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        Pessoa é proprietária da propriedade
+                      </div>
                     </div>
-                  </button>
+                  </Button>
                 </>
               )}
 
               {connectionDialog.sourceType === 'person' && connectionDialog.targetType === 'person' && (
                 <>
-                  <button
+                  <Button
                     onClick={() => createGraphEdge('spouse_of')}
                     disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    variant="outline"
+                    className="w-full justify-start text-left h-auto py-3"
                   >
-                    <div className="font-medium text-gray-900 dark:text-white">Cônjuge de</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa é cônjuge da outra pessoa
+                    <div className="w-full">
+                      <div className="font-medium text-gray-900 dark:text-white">Cônjuge de</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        Pessoa é cônjuge da outra pessoa
+                      </div>
                     </div>
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => createGraphEdge('represents')}
                     disabled={isCreatingEdge}
-                    className="w-full px-4 py-3 text-left rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    variant="outline"
+                    className="w-full justify-start text-left h-auto py-3"
                   >
-                    <div className="font-medium text-gray-900 dark:text-white">Representa</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Pessoa representa a outra pessoa
+                    <div className="w-full">
+                      <div className="font-medium text-gray-900 dark:text-white">Representa</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">
+                        Pessoa representa a outra pessoa
+                      </div>
                     </div>
-                  </button>
+                  </Button>
                 </> )}
             </div>
 
             <div className="flex justify-end gap-2">
-              <button
+              <Button
                 onClick={() =>
                   setConnectionDialog({
                     isOpen: false,
@@ -884,10 +906,10 @@ export default function TestCanvasConnectionsPage() {
                   })
                 }
                 disabled={isCreatingEdge}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                variant="outline"
               >
                 Cancelar
-              </button>
+              </Button>
             </div>
 
             {isCreatingEdge && (

@@ -1,7 +1,15 @@
 import { useState } from 'react'
-import { TrashIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline'
+import { Card, CardContent } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu'
 import DeleteConfirmationModal from '../components/common/DeleteConfirmationModal'
 import type { Case } from '../types'
+import { TrashIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 
 // Mock case data for testing
 const mockCases: Case[] = [
@@ -43,12 +51,20 @@ const mockCases: Case[] = [
   },
 ]
 
-const statusBadgeClasses = {
-  draft: 'badge badge-info',
-  processing: 'badge badge-warning',
-  review: 'badge badge-warning',
-  approved: 'badge badge-success',
-  archived: 'badge bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+const getStatusBadgeColor = (status: string): string => {
+  switch (status) {
+    case 'draft':
+      return 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+    case 'processing':
+    case 'review':
+      return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+    case 'approved':
+      return 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+    case 'archived':
+      return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+    default:
+      return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+  }
 }
 
 const statusLabels = {
@@ -70,15 +86,11 @@ export default function TestCaseDeletionPage() {
   const [cases, setCases] = useState<Case[]>(mockCases)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [caseToDelete, setCaseToDelete] = useState<Case | null>(null)
-  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const handleDeleteClick = (caseItem: Case, e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const handleDeleteClick = (caseItem: Case) => {
     setCaseToDelete(caseItem)
     setShowDeleteModal(true)
-    setOpenMenuId(null)
   }
 
   const handleConfirmDelete = () => {
@@ -94,12 +106,6 @@ export default function TestCaseDeletionPage() {
     }
   }
 
-  const toggleMenu = (caseId: string, e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setOpenMenuId(openMenuId === caseId ? null : caseId)
-  }
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -113,66 +119,53 @@ export default function TestCaseDeletionPage() {
         </div>
 
         {cases.length === 0 ? (
-          <div className="card p-12 text-center">
-            <p className="text-gray-500 dark:text-gray-400">
-              All cases have been deleted. Refresh the page to reset.
-            </p>
-            <button
-              onClick={() => setCases(mockCases)}
-              className="btn-primary mt-4"
-            >
-              Reset Cases
-            </button>
-          </div>
+          <Card className="glass-card">
+            <CardContent className="py-12 text-center">
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                All cases have been deleted. Refresh the page to reset.
+              </p>
+              <Button onClick={() => setCases(mockCases)}>Reset Cases</Button>
+            </CardContent>
+          </Card>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cases.map((caseItem: Case) => (
-              <div key={caseItem.id} className="relative">
-                <div className="card-hover block p-4">
-                  <div className="flex items-start justify-between gap-2">
+              <Card key={caseItem.id} className="glass-card">
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between gap-2 mb-4">
                     <h3 className="font-medium text-gray-900 dark:text-white truncate flex-1">
                       {caseItem.title}
                     </h3>
                     <div className="flex items-center gap-2">
-                      <span className={statusBadgeClasses[caseItem.status]}>
-                        {statusLabels[caseItem.status]}
+                      <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getStatusBadgeColor(caseItem.status)}`}>
+                        {statusLabels[caseItem.status as keyof typeof statusLabels]}
                       </span>
-                      <div className="relative">
-                        <button
-                          onClick={(e) => toggleMenu(caseItem.id, e)}
-                          className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          aria-label="More options"
-                        >
-                          <EllipsisVerticalIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                        </button>
-                        {openMenuId === caseItem.id && (
-                          <>
-                            <div
-                              className="fixed inset-0 z-10"
-                              onClick={() => setOpenMenuId(null)}
-                            />
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
-                              <button
-                                onClick={(e) => handleDeleteClick(caseItem, e)}
-                                className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
-                              >
-                                <TrashIcon className="w-4 h-4" />
-                                Delete Case
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <EllipsisVerticalIcon className="w-4 h-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteClick(caseItem)}
+                            className="text-red-600 dark:text-red-400"
+                          >
+                            <TrashIcon className="w-4 h-4 mr-2" />
+                            Delete Case
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </div>
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {actTypeLabels[caseItem.act_type] || caseItem.act_type.replace('_', ' ')}
                   </p>
                   <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
                     ID: {caseItem.id}
                   </p>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}

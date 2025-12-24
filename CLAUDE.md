@@ -107,3 +107,157 @@ Copy `.env.example` to `.env.local`. Required:
 - `SUPABASE_SERVICE_ROLE_KEY` - Worker service role (bypasses RLS)
 - `GOOGLE_PROJECT_ID`, `DOCUMENT_AI_PROCESSOR_ID` - Document AI
 - `GEMINI_API_KEY` - Gemini API
+
+## UI Refactoring Guide
+
+**Complete refactoring documentation available in:** `REFACTORING_SHADCN_GLASSMORPHISM.md`
+
+This file contains:
+- Comprehensive inventory of all 38 components and 33 pages
+- Step-by-step refactoring guide for each component
+- Implementation patterns and best practices
+- Complete checklist for 15 phases of refactoring
+- Before/after code examples
+- Glassmorphism application patterns
+- CSS consolidation strategy
+- QA testing procedures
+
+**Quick Links:**
+- [Refactoring Overview](REFACTORING_SHADCN_GLASSMORPHISM.md#visão-geral)
+- [Implementation Phases](REFACTORING_SHADCN_GLASSMORPHISM.md#fases)
+- [Component Refactoring Guide](REFACTORING_SHADCN_GLASSMORPHISM.md#componentes-mapeamento)
+- [Implementation Checklist](REFACTORING_SHADCN_GLASSMORPHISM.md#checklist)
+
+---
+
+## Design System & UI Guidelines
+
+### ShadCN UI Integration
+The project uses **ShadCN UI** as the component foundation with custom **Glassmorphism** styling for a modern, transparent aesthetic.
+
+**Component Structure:**
+- **ShadCN Components** (`src/components/ui/`): Base components from ShadCN UI library (Button, Card, Dialog, Input, etc.)
+- **Custom Components** (`src/components/common/`): Project-specific reusable components (Avatar, Pagination, etc.)
+- **Feature Components** (`src/components/{canvas,case,chat,etc.}/`): Feature-specific UI organized by domain
+
+**Key Utilities:**
+- `cn()` utility (`src/lib/utils.ts`): Merge Tailwind classes without conflicts
+  ```typescript
+  import { cn } from "@/lib/utils"
+  <div className={cn("base-class", condition && "conditional-class")} />
+  ```
+
+**Configuration Files:**
+- `components.json`: ShadCN configuration (style: new-york, cssVariables: true)
+- `tailwind.config.js`: Extended with ShadCN theme colors and animation plugin
+- `src/styles/index.css`: CSS variables for theming + glassmorphism utility classes
+
+### Glassmorphism Design Language
+
+**Core Principle:** Create depth and hierarchy through transparency, subtle blur effects, and refined shadows. All glassmorphism classes support dark mode automatically.
+
+**Available Glassmorphism Classes:**
+- `.glass` - Standard glassmorphism with medium blur (80% opacity, backdrop-blur-md)
+- `.glass-card` - Cards with glassmorphism styling (rounded, border, shadow-xl)
+- `.glass-strong` - Heavy blur for modals and overlays (90% opacity, backdrop-blur-xl)
+- `.glass-subtle` - Light blur for secondary elements (60% opacity, backdrop-blur-sm)
+- `.glass-dialog` - Dialogs with strong blur (95% opacity, strong border definition)
+- `.glass-popover` - Popovers and tooltips (medium blur with shadow-2xl)
+- `.glass-gradient` - Glassmorphism with gradient backgrounds
+- `.glass-elevated` - Elevated cards with ring borders and strong shadow
+
+**Usage Patterns:**
+
+1. **Cards and Containers:**
+```tsx
+import { Card, CardContent } from "@/components/ui/card"
+
+<Card className="glass-card">
+  <CardContent>Content goes here</CardContent>
+</Card>
+```
+
+2. **Dialogs and Modals:**
+```tsx
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+
+<DialogContent className="glass-dialog">
+  Modal content with glassmorphic background
+</DialogContent>
+```
+
+3. **Custom Glassmorphism with ShadCN Components:**
+```tsx
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+
+<Button className={cn("glass-card", "px-6 py-4")}>
+  Glassmorphic Button
+</Button>
+```
+
+**Design Guidelines:**
+- Use **glassmorphism for elevated UI elements** (cards, modals, popovers, overlays)
+- Maintain **WCAG AA accessibility compliance** - existing standard enforced
+- Combine ShadCN component variants with glassmorphism classes using `cn()` utility
+- Prefer `.glass-card` for standard cards, `.glass-dialog` for modals/overlays
+- Use `.glass-subtle` for background panels, `.glass-strong` for focused content
+- Test in both light and dark modes (toggle via `class="dark"` on root element)
+
+**Dark Mode Support:**
+- All glassmorphism classes automatically adapt to dark mode
+- Dark mode uses `dark:bg-gray-900/XX` opacity variants
+- CSS variables switch automatically when `.dark` class is applied
+- Example: `.glass-card` uses `dark:border-gray-700/50` in dark mode
+
+### Icon Libraries
+
+**Primary Library:** Heroicons (`@heroicons/react`)
+- Continue using for consistency with existing design
+- 24px outline and solid variants available
+- `import { DocumentIcon } from '@heroicons/react/24/outline'`
+
+**Secondary Library:** Lucide React (`lucide-react`)
+- Available via ShadCN components
+- Use when Heroicons icon doesn't exist
+- `import { FileText } from 'lucide-react'`
+
+Both libraries coexist. Use Heroicons for custom components to maintain visual consistency.
+
+### When Building New Components
+
+1. **Check ShadCN first:** Use `npx shadcn@latest add <component-name>` if available
+2. **Apply glassmorphism:** Add `.glass-*` classes as needed for visual style
+3. **Use `cn()` utility:** For dynamic className composition
+4. **Maintain accessibility:** Follow WCAG AA standards (existing requirement)
+5. **Test dark mode:** Ensure components work in both light/dark themes
+6. **Document evidence:** Link UI elements to source documents when applicable
+
+### Component Installation Reference
+
+**Commonly needed ShadCN components:**
+```bash
+# Layout & Structure
+npx shadcn@latest add separator scroll-area tabs
+
+# Forms
+npx shadcn@latest add select checkbox radio-group switch
+
+# Overlays
+npx shadcn@latest add dropdown-menu popover tooltip
+
+# Feedback
+npx shadcn@latest add badge alert toast
+
+# Data Display
+npx shadcn@latest add table avatar skeleton
+```
+
+### Migration Strategy
+
+- **Existing custom components:** Keep in `src/components/common/` - no immediate changes required
+- **New features:** Use ShadCN components + glassmorphism styling
+- **Refactoring:** Gradually replace custom components with ShadCN equivalents as needed
+- **CSS classes:** Existing custom classes (`.btn-primary`, `.card`, etc.) remain functional
+
+The goal is **progressive enhancement**, not a hard cutover.

@@ -15,6 +15,8 @@
 import { useState, ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDownIcon } from '@heroicons/react/24/outline'
+import { Card, CardContent } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 
 export interface ExpandableCardProps {
   /** Header content - always visible */
@@ -106,24 +108,28 @@ export function ExpandableCard({
   }
 
   return (
-    <motion.div
-      layout="position"
-      className={`card overflow-hidden ${className}`}
-    >
+    <Card className={cn('glass-card overflow-hidden', className)}>
       {/* Header - Always visible, clickable to toggle */}
       <button
         type="button"
         onClick={handleToggle}
         disabled={disabled}
-        className={`
-          w-full text-left p-4
-          flex items-center gap-3
-          transition-colors duration-150
-          ${!disabled ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50' : 'cursor-default'}
-          ${disabled ? 'opacity-60' : ''}
-          ${headerClassName}
-        `}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            handleToggle()
+          }
+        }}
+        className={cn(
+          'w-full text-left p-4 flex items-center gap-3',
+          'transition-colors duration-150',
+          !disabled && 'cursor-pointer hover:bg-white/50 dark:hover:bg-gray-800/50',
+          disabled && 'cursor-default opacity-60',
+          headerClassName
+        )}
         aria-expanded={expanded}
+        role="button"
+        tabIndex={0}
       >
         {/* Icon */}
         {icon && (
@@ -179,18 +185,16 @@ export function ExpandableCard({
             variants={contentVariants}
             className="overflow-hidden"
           >
-            <div
-              className={`
-                border-t border-gray-200 dark:border-gray-700
-                ${contentClassName}
-              `}
-            >
+            <CardContent className={cn(
+              'border-t border-white/20 dark:border-gray-700/50',
+              contentClassName
+            )}>
               {children}
-            </div>
+            </CardContent>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </Card>
   )
 }
 
@@ -216,7 +220,7 @@ export function ExpandableCardGroup({
   return (
     <motion.div
       layout
-      className={`flex flex-col ${gap} ${className}`}
+      className={cn('flex flex-col', gap, className)}
     >
       {children}
     </motion.div>

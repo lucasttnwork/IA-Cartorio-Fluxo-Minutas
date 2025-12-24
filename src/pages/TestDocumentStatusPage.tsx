@@ -9,6 +9,9 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select'
 import {
   DocumentIcon,
   TrashIcon,
@@ -380,83 +383,83 @@ export default function TestDocumentStatusPage() {
         </div>
 
         {/* Controls */}
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Simulation Controls
-          </h2>
-
-          <div className="flex flex-wrap items-center gap-4">
-            {/* Add Document */}
-            <button
-              onClick={addDocument}
-              disabled={isSimulating}
-              className="btn-secondary flex items-center gap-2"
-            >
-              <DocumentIcon className="w-5 h-5" />
-              Add Document
-            </button>
-
-            {/* Start/Stop Processing */}
-            {!isSimulating ? (
-              <button
-                onClick={startSimulation}
-                disabled={documents.length === 0}
-                className="btn-primary flex items-center gap-2"
-              >
-                <PlayIcon className="w-5 h-5" />
-                Start Processing
-              </button>
-            ) : (
-              <button
-                onClick={stopSimulation}
-                className="btn-primary bg-red-600 hover:bg-red-700 flex items-center gap-2"
-              >
-                <StopIcon className="w-5 h-5" />
-                Stop
-              </button>
-            )}
-
-            {/* Reset */}
-            <button
-              onClick={resetSimulation}
-              className="btn-ghost flex items-center gap-2"
-            >
-              <ArrowPathIcon className="w-5 h-5" />
-              Reset
-            </button>
-
-            {/* Speed Control */}
-            <div className="flex items-center gap-2 ml-4">
-              <BoltIcon className="w-4 h-4 text-gray-400" />
-              <select
-                value={simulationSpeed}
-                onChange={(e) => setSimulationSpeed(e.target.value as 'slow' | 'normal' | 'fast')}
-                className="input-field text-sm py-1"
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Simulation Controls</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Add Document */}
+              <Button
+                onClick={addDocument}
                 disabled={isSimulating}
+                variant="secondary"
               >
-                <option value="slow">Slow</option>
-                <option value="normal">Normal</option>
-                <option value="fast">Fast</option>
-              </select>
-            </div>
+                <DocumentIcon className="w-5 h-5 mr-2" />
+                Add Document
+              </Button>
 
-            {/* Failure Chance */}
-            <div className="flex items-center gap-2">
-              <ExclamationCircleIcon className="w-4 h-4 text-gray-400" />
-              <span className="text-sm text-gray-500">Failure:</span>
-              <input
-                type="range"
-                min="0"
-                max="50"
-                value={failureChance}
-                onChange={(e) => setFailureChance(Number(e.target.value))}
-                className="w-20"
-                disabled={isSimulating}
-              />
-              <span className="text-sm text-gray-500">{failureChance}%</span>
+              {/* Start/Stop Processing */}
+              {!isSimulating ? (
+                <Button
+                  onClick={startSimulation}
+                  disabled={documents.length === 0}
+                >
+                  <PlayIcon className="w-5 h-5 mr-2" />
+                  Start Processing
+                </Button>
+              ) : (
+                <Button
+                  onClick={stopSimulation}
+                  variant="destructive"
+                >
+                  <StopIcon className="w-5 h-5 mr-2" />
+                  Stop
+                </Button>
+              )}
+
+              {/* Reset */}
+              <Button
+                onClick={resetSimulation}
+                variant="ghost"
+              >
+                <ArrowPathIcon className="w-5 h-5 mr-2" />
+                Reset
+              </Button>
+
+              {/* Speed Control */}
+              <div className="flex items-center gap-2 ml-4">
+                <BoltIcon className="w-4 h-4 text-gray-400" />
+                <Select value={simulationSpeed} onValueChange={(value) => setSimulationSpeed(value as 'slow' | 'normal' | 'fast')}>
+                  <SelectTrigger className="w-24 text-sm py-1" disabled={isSimulating}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="slow">Slow</SelectItem>
+                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="fast">Fast</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Failure Chance */}
+              <div className="flex items-center gap-2">
+                <ExclamationCircleIcon className="w-4 h-4 text-gray-400" />
+                <span className="text-sm text-gray-500">Failure:</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="50"
+                  value={failureChance}
+                  onChange={(e) => setFailureChance(Number(e.target.value))}
+                  className="w-20"
+                  disabled={isSimulating}
+                />
+                <span className="text-sm text-gray-500">{failureChance}%</span>
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Documents */}
@@ -471,17 +474,15 @@ export default function TestDocumentStatusPage() {
             )}
 
             {/* Documents List */}
-            <div className="card">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Documents
-                </h2>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <Card className="glass-card">
+              <CardHeader>
+                <CardTitle>Documents</CardTitle>
+                <CardDescription>
                   {documents.length} document{documents.length !== 1 ? 's' : ''}
-                </p>
-              </div>
-
-              <AnimatePresence mode="popLayout">
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <AnimatePresence mode="popLayout">
                 {documents.length === 0 ? (
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -599,23 +600,20 @@ export default function TestDocumentStatusPage() {
                     ))}
                   </ul>
                 )}
-              </AnimatePresence>
-            </div>
+                </AnimatePresence>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Right Column - Status History */}
           <div className="space-y-6">
-            <div className="card">
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-                  Status Log
-                </h2>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                  Real-time status updates
-                </p>
-              </div>
-
-              <div className="p-4 max-h-96 overflow-y-auto">
+            <Card className="glass-card">
+              <CardHeader>
+                <CardTitle>Status Log</CardTitle>
+                <CardDescription>Real-time status updates</CardDescription>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="p-4 max-h-96 overflow-y-auto">
                 <AnimatePresence mode="popLayout">
                   {statusHistory.length === 0 ? (
                     <p className="text-sm text-gray-500 text-center py-4">
@@ -646,44 +644,51 @@ export default function TestDocumentStatusPage() {
                     </ul>
                   )}
                 </AnimatePresence>
-              </div>
-            </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Status Badge Demo */}
-            <div className="card p-6">
-              <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">
-                Status Badge Variants
-              </h3>
-              <div className="space-y-3">
-                {(['uploaded', 'processing', 'processed', 'needs_review', 'approved', 'failed'] as DocumentStatus[]).map(
-                  (status) => (
-                    <div key={status} className="flex items-center justify-between">
-                      <span className="text-sm text-gray-600 dark:text-gray-400 capitalize">
-                        {status.replace('_', ' ')}
-                      </span>
-                      <DocumentStatusBadge status={status} size="sm" />
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
+            <Card className="glass-card">
+              <CardHeader>
+                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                  Status Badge Variants
+                </h3>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {(['uploaded', 'processing', 'processed', 'needs_review', 'approved', 'failed'] as DocumentStatus[]).map(
+                    (status) => (
+                      <div key={status} className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400 capitalize">
+                          {status.replace('_', ' ')}
+                        </span>
+                        <DocumentStatusBadge status={status} size="sm" />
+                      </div>
+                    )
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
         {/* Feature Info */}
-        <div className="card p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-          <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-2">
-            About This Demo
-          </h3>
-          <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
-            <li>- Real-time status updates using simulated backend processing</li>
-            <li>- Documents progress through OCR, Extraction, Consensus, and Entity Resolution</li>
-            <li>- Status badges update automatically as processing progresses</li>
-            <li>- Processing panel shows overall and per-document progress</li>
-            <li>- Configurable simulation speed and failure rate</li>
-            <li>- In production, this connects to Supabase Realtime subscriptions</li>
-          </ul>
-        </div>
+        <Card className="glass-card bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+          <CardHeader>
+            <CardTitle className="text-sm">About This Demo</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="text-sm text-blue-700 dark:text-blue-300 space-y-1">
+              <li>- Real-time status updates using simulated backend processing</li>
+              <li>- Documents progress through OCR, Extraction, Consensus, and Entity Resolution</li>
+              <li>- Status badges update automatically as processing progresses</li>
+              <li>- Processing panel shows overall and per-document progress</li>
+              <li>- Configurable simulation speed and failure rate</li>
+              <li>- In production, this connects to Supabase Realtime subscriptions</li>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

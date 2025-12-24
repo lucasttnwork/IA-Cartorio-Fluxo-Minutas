@@ -3,8 +3,10 @@ import { motion } from 'framer-motion'
 import {
   MagnifyingGlassIcon,
   XMarkIcon,
-  FolderIcon,
 } from '@heroicons/react/24/outline'
+import { Card, CardContent } from '../components/ui/card'
+import { Input } from '../components/ui/input'
+import { Button } from '../components/ui/button'
 
 // Mock case data for testing
 const mockCases = [
@@ -58,12 +60,20 @@ const mockCases = [
   },
 ]
 
-const statusBadgeClasses: Record<string, string> = {
-  draft: 'badge badge-info',
-  processing: 'badge badge-warning',
-  review: 'badge badge-warning',
-  approved: 'badge badge-success',
-  archived: 'badge bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+const getStatusBadgeColor = (status: string): string => {
+  switch (status) {
+    case 'draft':
+      return 'inline-block px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+    case 'processing':
+    case 'review':
+      return 'inline-block px-2 py-1 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
+    case 'approved':
+      return 'inline-block px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
+    case 'archived':
+      return 'inline-block px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+    default:
+      return 'inline-block px-2 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'
+  }
 }
 
 const statusLabels: Record<string, string> = {
@@ -123,23 +133,25 @@ export default function TestCaseSearchPage() {
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </div>
-          <input
+          <Input
             type="text"
             placeholder="Search cases by title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            className="pl-10 pr-10"
             data-testid="search-input"
           />
           {searchQuery && (
-            <button
+            <Button
               onClick={clearSearch}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              variant="ghost"
+              size="sm"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
               aria-label="Clear search"
               data-testid="clear-search"
             >
               <XMarkIcon className="h-5 w-5" />
-            </button>
+            </Button>
           )}
         </div>
 
@@ -159,29 +171,27 @@ export default function TestCaseSearchPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="card p-8 sm:p-12"
             data-testid="empty-state"
           >
-            <div className="text-center">
-              <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                <MagnifyingGlassIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-              </div>
-              <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-                No cases found
-              </h3>
-              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-                No cases match "{debouncedSearchQuery}". Try a different search term.
-              </p>
-              <div className="mt-6">
-                <button
-                  onClick={clearSearch}
-                  className="btn-secondary"
-                >
-                  <XMarkIcon className="w-5 h-5 mr-2" />
-                  Clear Search
-                </button>
-              </div>
-            </div>
+            <Card className="glass-card">
+              <CardContent className="py-12 text-center">
+                <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                  <MagnifyingGlassIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                </div>
+                <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+                  No cases found
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                  No cases match "{debouncedSearchQuery}". Try a different search term.
+                </p>
+                <div className="mt-6">
+                  <Button variant="secondary" onClick={clearSearch}>
+                    <XMarkIcon className="w-5 h-5 mr-2" />
+                    Clear Search
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="cases-grid">
@@ -191,20 +201,23 @@ export default function TestCaseSearchPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="card-hover p-4"
                 data-testid={`case-card-${caseItem.id}`}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <h3 className="font-medium text-gray-900 dark:text-white truncate flex-1">
-                    {caseItem.title}
-                  </h3>
-                  <span className={statusBadgeClasses[caseItem.status]}>
-                    {statusLabels[caseItem.status]}
-                  </span>
-                </div>
-                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                  {actTypeLabels[caseItem.act_type] || caseItem.act_type.replace('_', ' ')}
-                </p>
+                <Card className="glass-card">
+                  <CardContent className="pt-6">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-medium text-gray-900 dark:text-white truncate flex-1">
+                        {caseItem.title}
+                      </h3>
+                      <span className={getStatusBadgeColor(caseItem.status)}>
+                        {statusLabels[caseItem.status]}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                      {actTypeLabels[caseItem.act_type] || caseItem.act_type.replace('_', ' ')}
+                    </p>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
           </div>

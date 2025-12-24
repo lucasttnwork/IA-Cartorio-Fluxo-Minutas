@@ -9,6 +9,8 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Button } from '../components/ui/button'
 import CreateCaseModal from '../components/case/CreateCaseModal'
 
 export default function TestCaseCreationPage() {
@@ -29,21 +31,21 @@ export default function TestCaseCreationPage() {
         </div>
 
         {/* Test Controls */}
-        <div className="card p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Test Controls
-          </h2>
-          <div className="flex gap-4">
-            <button
-              onClick={() => {
-                setShowModal(true)
-                setLastAction('Modal opened')
-              }}
-              className="btn-primary"
-            >
-              Open Create Case Modal
-            </button>
-          </div>
+        <Card className="glass-card mb-6">
+          <CardHeader>
+            <CardTitle>Test Controls</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
+              <Button
+                onClick={() => {
+                  setShowModal(true)
+                  setLastAction('Modal opened')
+                }}
+              >
+                Open Create Case Modal
+              </Button>
+            </div>
 
           {lastAction && (
             <motion.div
@@ -56,14 +58,16 @@ export default function TestCaseCreationPage() {
               </p>
             </motion.div>
           )}
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Feature Checklist */}
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Feature Checklist
-          </h2>
-          <ul className="space-y-2 text-sm">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Feature Checklist</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-sm">
             <li className="flex items-center gap-2">
               <span className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                 <svg className="w-3 h-3 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
@@ -160,8 +164,9 @@ export default function TestCaseCreationPage() {
               </span>
               <span className="text-gray-700 dark:text-gray-300">Form validation with error messages</span>
             </li>
-          </ul>
-        </div>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Create Case Modal */}

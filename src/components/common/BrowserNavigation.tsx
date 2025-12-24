@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect, useCallback } from 'react'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
 
 interface NavigationState {
   canGoBack: boolean
@@ -78,27 +79,29 @@ export default function BrowserNavigation() {
   }, [navigationState, handleGoBack, handleGoForward])
 
   return (
-    <div className="browser-navigation" role="navigation" aria-label="Browser history navigation">
-      <button
+    <div className="flex gap-1" role="navigation" aria-label="Browser history navigation">
+      <Button
         type="button"
+        variant="outline"
+        size="icon"
         onClick={handleGoBack}
         disabled={!navigationState.canGoBack}
-        className="browser-nav-button"
         aria-label="Go back"
         title="Go back (Alt + Left Arrow)"
       >
         <ArrowLeftIcon className="w-5 h-5" />
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
+        variant="outline"
+        size="icon"
         onClick={handleGoForward}
         disabled={!navigationState.canGoForward}
-        className="browser-nav-button"
         aria-label="Go forward"
         title="Go forward (Alt + Right Arrow)"
       >
         <ArrowRightIcon className="w-5 h-5" />
-      </button>
+      </Button>
     </div>
   )
 }

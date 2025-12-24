@@ -1,13 +1,21 @@
 import { memo } from 'react'
-import { Handle, Position, NodeProps } from '@xyflow/react'
+import { Handle, Position } from '@xyflow/react'
 import { HomeIcon, MapPinIcon, DocumentTextIcon, BanknotesIcon } from '@heroicons/react/24/outline'
 import type { Property } from '../../types'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
-export interface PropertyNodeData {
+export interface PropertyNodeData extends Record<string, unknown> {
   property: Property
 }
 
-function PropertyNode({ data, selected }: NodeProps<PropertyNodeData>) {
+interface PropertyNodeProps {
+  data: PropertyNodeData
+  selected?: boolean
+}
+
+function PropertyNode({ data, selected }: PropertyNodeProps) {
   const { property } = data
 
   // Format address for display
@@ -18,13 +26,13 @@ function PropertyNode({ data, selected }: NodeProps<PropertyNodeData>) {
   }
 
   return (
-    <div
-      className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg border-2 transition-all ${
+    <Card
+      className={cn(
+        'glass-card transition-all min-w-[280px] max-w-[320px]',
         selected
-          ? 'border-green-500 shadow-xl'
-          : 'border-gray-200 dark:border-gray-700 hover:border-green-300'
-      }`}
-      style={{ minWidth: '280px', maxWidth: '320px' }}
+          ? 'border-green-500 shadow-xl ring-2 ring-green-400 ring-offset-2'
+          : 'border-white/20 dark:border-gray-700/50 hover:border-green-300'
+      )}
     >
       {/* Handle for incoming connections (top) */}
       <Handle type="target" position={Position.Top} className="w-3 h-3 !bg-green-500" />
@@ -45,7 +53,7 @@ function PropertyNode({ data, selected }: NodeProps<PropertyNodeData>) {
       </div>
 
       {/* Content */}
-      <div className="p-3 space-y-2">
+      <CardContent className="p-3 space-y-2">
         {/* Registry Number */}
         {property.registry_number && (
           <div className="flex items-center gap-2 text-xs">
@@ -110,31 +118,32 @@ function PropertyNode({ data, selected }: NodeProps<PropertyNodeData>) {
         {/* Encumbrances Badge */}
         {property.encumbrances && property.encumbrances.length > 0 && (
           <div className="pt-1">
-            <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300">
+            <Badge className="bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-200/50 dark:border-orange-800/50">
               {property.encumbrances.length} ônus/gravame(s)
-            </span>
+            </Badge>
           </div>
         )}
 
         {/* Confidence Badge */}
         <div className="flex justify-end pt-1">
-          <span
-            className={
+          <Badge
+            className={cn(
+              'font-medium',
               property.confidence >= 0.8
-                ? 'confidence-badge-high'
+                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
                 : property.confidence >= 0.6
-                ? 'confidence-badge-medium'
-                : 'confidence-badge-low'
-            }
+                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+            )}
           >
             {Math.round(property.confidence * 100)}% confiança
-          </span>
+          </Badge>
         </div>
-      </div>
+      </CardContent>
 
       {/* Handle for outgoing connections (bottom) */}
       <Handle type="source" position={Position.Bottom} className="w-3 h-3 !bg-green-500" />
-    </div>
+    </Card>
   )
 }
 

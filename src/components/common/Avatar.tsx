@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { cn } from '@/lib/utils'
 
 export interface AvatarProps {
   name?: string
@@ -76,26 +77,26 @@ export default function Avatar({
   const colorClass = useMemo(() => getAvatarColor(name), [name])
 
   return (
-    <div className={`relative inline-flex ${className}`}>
+    <div className={cn('relative inline-flex', className)}>
       {src ? (
         <img
           src={src}
           alt={name}
-          className={`${sizeClasses[size]} rounded-full object-cover ring-2 ring-white dark:ring-gray-800 shadow-sm`}
+          className={cn(
+            sizeClasses[size],
+            'rounded-full object-cover ring-2 ring-white dark:ring-gray-800 shadow-sm'
+          )}
         />
       ) : (
         <div
-          className={`
-            ${sizeClasses[size]}
-            ${colorClass}
-            rounded-full
-            flex items-center justify-center
-            font-semibold text-white
-            ring-2 ring-white dark:ring-gray-800
-            shadow-sm
-            transition-transform duration-200
-            hover:scale-105
-          `}
+          className={cn(
+            sizeClasses[size],
+            colorClass,
+            'rounded-full flex items-center justify-center',
+            'font-semibold text-white',
+            'ring-2 ring-white dark:ring-gray-800 shadow-sm',
+            'transition-transform duration-200 hover:scale-105'
+          )}
         >
           {initials}
         </div>
@@ -103,13 +104,11 @@ export default function Avatar({
 
       {status && (
         <span
-          className={`
-            absolute bottom-0 right-0
-            ${statusSizeClasses[size]}
-            ${statusColors[status]}
-            rounded-full
-            ring-2 ring-white dark:ring-gray-800
-          `}
+          className={cn(
+            'absolute bottom-0 right-0 rounded-full ring-2 ring-white dark:ring-gray-800',
+            statusSizeClasses[size],
+            statusColors[status]
+          )}
           aria-label={`Status: ${status}`}
         />
       )}

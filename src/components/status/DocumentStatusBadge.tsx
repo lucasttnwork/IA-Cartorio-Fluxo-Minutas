@@ -16,6 +16,8 @@ import {
   DocumentCheckIcon,
 } from '@heroicons/react/24/outline'
 import type { DocumentStatus, JobStatus } from '../../types'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
 export interface DocumentStatusBadgeProps {
   /** Current document status */
@@ -41,9 +43,6 @@ interface StatusConfig {
   shortLabel: string
   icon: typeof CheckCircleIcon
   className: string
-  bgClassName: string
-  textClassName: string
-  iconClassName: string
   animate?: boolean
 }
 
@@ -52,56 +51,38 @@ const statusConfigs: Record<DocumentStatus, StatusConfig> = {
     label: 'Uploaded',
     shortLabel: 'Uploaded',
     icon: ClockIcon,
-    className: 'badge-info',
-    bgClassName: 'bg-blue-100 dark:bg-blue-900/30',
-    textClassName: 'text-blue-800 dark:text-blue-300',
-    iconClassName: 'text-blue-700 dark:text-blue-300',
+    className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border-blue-200/50 dark:border-blue-800/50',
   },
   processing: {
     label: 'Processing',
     shortLabel: 'Processing',
     icon: ArrowPathIcon,
-    className: 'badge-warning',
-    bgClassName: 'bg-yellow-100 dark:bg-yellow-900/30',
-    textClassName: 'text-yellow-800 dark:text-yellow-300',
-    iconClassName: 'text-yellow-700 dark:text-yellow-300',
+    className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200/50 dark:border-yellow-800/50',
     animate: true,
   },
   processed: {
     label: 'Processed',
     shortLabel: 'Done',
     icon: CheckCircleIcon,
-    className: 'badge-success',
-    bgClassName: 'bg-green-100 dark:bg-green-900/30',
-    textClassName: 'text-green-800 dark:text-green-300',
-    iconClassName: 'text-green-700 dark:text-green-300',
+    className: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200/50 dark:border-green-800/50',
   },
   needs_review: {
     label: 'Needs Review',
     shortLabel: 'Review',
     icon: EyeIcon,
-    className: 'badge-warning',
-    bgClassName: 'bg-orange-100 dark:bg-orange-900/30',
-    textClassName: 'text-orange-900 dark:text-orange-300',
-    iconClassName: 'text-orange-800 dark:text-orange-300',
+    className: 'bg-orange-100 text-orange-900 dark:bg-orange-900/30 dark:text-orange-300 border-orange-200/50 dark:border-orange-800/50',
   },
   approved: {
     label: 'Approved',
     shortLabel: 'Approved',
     icon: DocumentCheckIcon,
-    className: 'badge-success',
-    bgClassName: 'bg-emerald-100 dark:bg-emerald-900/30',
-    textClassName: 'text-emerald-800 dark:text-emerald-300',
-    iconClassName: 'text-emerald-700 dark:text-emerald-300',
+    className: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 border-emerald-200/50 dark:border-emerald-800/50',
   },
   failed: {
     label: 'Failed',
     shortLabel: 'Failed',
     icon: ExclamationCircleIcon,
-    className: 'badge-error',
-    bgClassName: 'bg-red-100 dark:bg-red-900/30',
-    textClassName: 'text-red-800 dark:text-red-300',
-    iconClassName: 'text-red-700 dark:text-red-300',
+    className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200/50 dark:border-red-800/50',
   },
 }
 
@@ -170,47 +151,49 @@ export function DocumentStatusBadge({
 
   return (
     <AnimatePresence mode="wait">
-      <motion.span
+      <motion.div
         key={status}
         initial={animate ? { opacity: 0, scale: 0.9 } : false}
         animate={{ opacity: 1, scale: 1 }}
         exit={animate ? { opacity: 0, scale: 0.9 } : undefined}
         transition={{ duration: 0.2 }}
-        className={`
-          inline-flex items-center rounded-full font-medium
-          ${config.bgClassName}
-          ${config.textClassName}
-          ${sizeConfig.badge}
-          ${isClickable ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}
-          ${isTransitioning ? 'ring-2 ring-offset-1 ring-blue-400' : ''}
-          ${className}
-        `}
-        onClick={onClick}
-        role={isClickable ? 'button' : 'status'}
-        aria-label={`Document status: ${config.label}`}
-        tabIndex={isClickable ? 0 : undefined}
+        className="relative inline-flex"
       >
-        <Icon
-          className={`
-            ${sizeConfig.icon}
-            ${config.iconClassName}
-            ${config.animate ? 'animate-spin' : ''}
-          `}
-        />
-        {showLabel && (
-          <span className="truncate">{displayLabel}</span>
-        )}
-
-        {/* Progress indicator for processing status */}
-        {status === 'processing' && progress !== undefined && progress > 0 && progress < 100 && (
-          <motion.div
-            className="absolute bottom-0 left-0 h-0.5 bg-yellow-500 rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.3 }}
+        <Badge
+          className={cn(
+            'inline-flex items-center rounded-full font-medium relative',
+            config.className,
+            sizeConfig.badge,
+            isClickable && 'cursor-pointer hover:opacity-80 transition-opacity',
+            isTransitioning && 'ring-2 ring-offset-1 ring-blue-400 dark:ring-blue-500',
+            className
+          )}
+          onClick={onClick}
+          role={isClickable ? 'button' : 'status'}
+          aria-label={`Document status: ${config.label}`}
+          tabIndex={isClickable ? 0 : undefined}
+        >
+          <Icon
+            className={cn(
+              sizeConfig.icon,
+              config.animate && 'animate-spin'
+            )}
           />
-        )}
-      </motion.span>
+          {showLabel && (
+            <span className="truncate">{displayLabel}</span>
+          )}
+
+          {/* Progress indicator for processing status */}
+          {status === 'processing' && progress !== undefined && progress > 0 && progress < 100 && (
+            <motion.div
+              className="absolute bottom-0 left-0 h-0.5 bg-yellow-600 dark:bg-yellow-500 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          )}
+        </Badge>
+      </motion.div>
     </AnimatePresence>
   )
 }

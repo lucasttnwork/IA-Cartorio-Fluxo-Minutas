@@ -1,4 +1,10 @@
 import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog'
+import { Label } from '../components/ui/label'
+import { Loader2 } from 'lucide-react'
 import {
   PlusIcon,
   CheckIcon,
@@ -30,163 +36,152 @@ export default function TestButtonPrimaryPage() {
         </div>
 
         {/* Primary Button Variants */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Primary Button Variants
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Three variants available: solid, outline, and ghost for different levels of visual emphasis.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-primary">
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Create (Solid)
-            </button>
-            <button className="btn-primary-outline">
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Create (Outline)
-            </button>
-            <button className="btn-primary-ghost">
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Create (Ghost)
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Primary Button Variants</CardTitle>
+            <CardDescription>
+              Three variants available: solid, outline, and ghost for different levels of visual emphasis.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button>
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Create (Solid)
+              </Button>
+              <Button variant="outline">
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Create (Outline)
+              </Button>
+              <Button variant="ghost">
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Create (Ghost)
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Comparison with Other Button Types */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Button Type Comparison
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Side-by-side comparison with other button styles.
-          </p>
-          <div className="space-y-4">
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500 w-24">Primary:</span>
-              <button className="btn-primary">Primary Action</button>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Button Type Comparison</CardTitle>
+            <CardDescription>
+              Side-by-side comparison with other button styles.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-500 w-24">Primary:</span>
+                <Button>Primary Action</Button>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-500 w-24">Secondary:</span>
+                <Button variant="outline">Secondary Action</Button>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-500 w-24">Danger:</span>
+                <Button variant="destructive">Danger Action</Button>
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-sm text-gray-500 w-24">Ghost:</span>
+                <Button variant="ghost">Ghost Action</Button>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500 w-24">Secondary:</span>
-              <button className="btn-secondary">Secondary Action</button>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500 w-24">Danger:</span>
-              <button className="btn-danger">Danger Action</button>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-500 w-24">Ghost:</span>
-              <button className="btn-ghost">Ghost Action</button>
-            </div>
-          </div>
-        </section>
+          </CardContent>
+        </Card>
 
         {/* Primary Buttons with Icons */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Primary Buttons with Icons
-          </h2>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-primary">
-              <PlusIcon className="w-5 h-5 mr-2" />
-              New Case
-            </button>
-            <button className="btn-primary">
-              <DocumentPlusIcon className="w-5 h-5 mr-2" />
-              Add Document
-            </button>
-            <button className="btn-primary">
-              <PaperAirplaneIcon className="w-5 h-5 mr-2" />
-              Submit
-            </button>
-            <button className="btn-primary">
-              <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
-              Download
-            </button>
-            <button className="btn-primary">
-              <CheckIcon className="w-5 h-5 mr-2" />
-              Confirm
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Primary Buttons with Icons</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button>
+                <PlusIcon className="w-5 h-5 mr-2" />
+                New Case
+              </Button>
+              <Button>
+                <DocumentPlusIcon className="w-5 h-5 mr-2" />
+                Add Document
+              </Button>
+              <Button>
+                <PaperAirplaneIcon className="w-5 h-5 mr-2" />
+                Submit
+              </Button>
+              <Button>
+                <ArrowDownTrayIcon className="w-5 h-5 mr-2" />
+                Download
+              </Button>
+              <Button>
+                <CheckIcon className="w-5 h-5 mr-2" />
+                Confirm
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Disabled States */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Disabled States
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            All button variants have proper disabled styling.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-primary" disabled>
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Disabled (Solid)
-            </button>
-            <button className="btn-primary-outline" disabled>
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Disabled (Outline)
-            </button>
-            <button className="btn-primary-ghost" disabled>
-              <PlusIcon className="w-5 h-5 mr-2" />
-              Disabled (Ghost)
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Disabled States</CardTitle>
+            <CardDescription>
+              All button variants have proper disabled styling.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button disabled>
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Disabled (Solid)
+              </Button>
+              <Button variant="outline" disabled>
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Disabled (Outline)
+              </Button>
+              <Button variant="ghost" disabled>
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Disabled (Ghost)
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Loading State */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Loading State
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Primary button with loading indicator for async operations.
-          </p>
-          <button
-            className="btn-primary"
-            onClick={handleLoadingDemo}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <span className="flex items-center">
-                <svg
-                  className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                Processing...
-              </span>
-            ) : (
-              <>
-                <PaperAirplaneIcon className="w-5 h-5 mr-2" />
-                Click to Load
-              </>
-            )}
-          </button>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Loading State</CardTitle>
+            <CardDescription>
+              Primary button with loading indicator for async operations.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={handleLoadingDemo} disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <PaperAirplaneIcon className="w-5 h-5 mr-2" />
+                  Click to Load
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Call to Action */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Call to Action
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Primary buttons for main call-to-action elements.
-          </p>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Call to Action</CardTitle>
+            <CardDescription>
+              Primary buttons for main call-to-action elements.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
           <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-8 text-center">
             <h3 className="text-2xl font-bold text-white mb-2">
               Start Your New Case
@@ -199,112 +194,95 @@ export default function TestButtonPrimaryPage() {
               <ArrowRightIcon className="w-5 h-5 inline-block ml-2" />
             </button>
           </div>
-        </section>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Modal Actions */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Modal Actions
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Common pattern for modal confirmation with primary action.
-          </p>
-          <button
-            className="btn-primary"
-            onClick={() => setShowModal(true)}
-          >
-            <DocumentPlusIcon className="w-5 h-5 mr-2" />
-            Open Modal
-          </button>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Modal Actions</CardTitle>
+            <CardDescription>
+              Common pattern for modal confirmation with primary action.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => setShowModal(true)}>
+              <DocumentPlusIcon className="w-5 h-5 mr-2" />
+              Open Modal
+            </Button>
 
-          {showModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div
-                className="absolute inset-0 bg-black/50"
-                onClick={() => setShowModal(false)}
-              />
-              <div className="card relative shadow-xl p-6 max-w-md w-full">
-                <div className="mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Create New Case
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <Dialog open={showModal} onOpenChange={setShowModal}>
+              <DialogContent className="glass-dialog">
+                <DialogHeader>
+                  <DialogTitle>Create New Case</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Fill in the details to create a new document case.
                   </p>
+                  <div>
+                    <Label htmlFor="case-title">Case Title</Label>
+                    <Input
+                      id="case-title"
+                      placeholder="Enter case title..."
+                    />
+                  </div>
+                  <div className="flex justify-end gap-3">
+                    <Button variant="outline" onClick={() => setShowModal(false)}>
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        alert('Case created!')
+                        setShowModal(false)
+                      }}
+                    >
+                      <PlusIcon className="w-5 h-5 mr-2" />
+                      Create Case
+                    </Button>
+                  </div>
                 </div>
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Case Title
-                  </label>
-                  <input
-                    type="text"
-                    className="input"
-                    placeholder="Enter case title..."
-                  />
-                </div>
-                <div className="flex justify-end gap-3">
-                  <button
-                    className="btn-secondary"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="btn-primary"
-                    onClick={() => {
-                      alert('Case created!')
-                      setShowModal(false)
-                    }}
-                  >
-                    <PlusIcon className="w-5 h-5 mr-2" />
-                    Create Case
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </section>
+              </DialogContent>
+            </Dialog>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Form Actions */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Form Actions
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Using primary button as the main form action.
-          </p>
-          <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Case Title
-              </label>
-              <input
-                type="text"
-                className="input"
-                defaultValue="Property Sale - 123 Main Street"
-              />
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Form Actions</CardTitle>
+            <CardDescription>
+              Using primary button as the main form action.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
+              <div className="mb-4">
+                <Label htmlFor="case-title-form">Case Title</Label>
+                <Input
+                  id="case-title-form"
+                  defaultValue="Property Sale - 123 Main Street"
+                />
+              </div>
+              <div className="mb-4">
+                <Label htmlFor="description">Description</Label>
+                <textarea
+                  id="description"
+                  className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  rows={3}
+                  defaultValue="Standard property sale transaction with single buyer and seller."
+                />
+              </div>
+              <div className="flex justify-end gap-3">
+                <Button variant="outline">Cancel</Button>
+                <Button>
+                  <CheckIcon className="w-5 h-5 mr-2" />
+                  Save Changes
+                </Button>
+              </div>
             </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Description
-              </label>
-              <textarea
-                className="input"
-                rows={3}
-                defaultValue="Standard property sale transaction with single buyer and seller."
-              />
-            </div>
-            <div className="flex justify-end gap-3">
-              <button className="btn-secondary">
-                Cancel
-              </button>
-              <button className="btn-primary">
-                <CheckIcon className="w-5 h-5 mr-2" />
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </section>
+          </CardContent>
+        </Card>
 
         {/* Button Sizes */}
         <section className="card p-6">

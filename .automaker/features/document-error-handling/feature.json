@@ -3,16 +3,18 @@
   "category": "Document Processing",
   "title": "Handle Corrupt/Invalid Files",
   "description": "Handle corrupt/invalid file upload",
-  "status": "backlog",
+  "status": "in_progress",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
     "document-upload"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
-  "model": "sonnet",
-  "thinkingLevel": "low",
+  "updatedAt": "2025-12-24T17:45:35.638Z",
+  "model": "opus",
+  "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-24T17:45:32.730Z"
 }

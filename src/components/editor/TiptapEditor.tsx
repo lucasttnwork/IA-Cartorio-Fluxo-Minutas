@@ -34,6 +34,10 @@ import {
   ArrowUturnRightIcon,
 } from '@heroicons/react/24/outline'
 import type { PendingItem as PendingItemType } from '../../types'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
 
 // -----------------------------------------------------------------------------
 // Types
@@ -68,23 +72,20 @@ function ToolbarButton({
   title,
 }: ToolbarButtonProps) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`
-        p-2 rounded-md transition-colors
-        ${
-          isActive
-            ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-            : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
-        }
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
-      `}
+      variant={isActive ? "secondary" : "ghost"}
+      size="icon"
+      className={cn(
+        "h-9 w-9",
+        isActive && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/70"
+      )}
     >
       <div className="w-5 h-5">{icon}</div>
-    </button>
+    </Button>
   )
 }
 
@@ -93,7 +94,7 @@ function ToolbarButton({
 // -----------------------------------------------------------------------------
 
 function ToolbarDivider() {
-  return <div className="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1" />
+  return <Separator orientation="vertical" className="h-6 mx-1" />
 }
 
 // -----------------------------------------------------------------------------
@@ -110,7 +111,7 @@ function Toolbar({ editor }: ToolbarProps) {
   }
 
   return (
-    <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-2 flex items-center gap-1 flex-wrap">
+    <div className="border-b glass-subtle p-2 flex items-center gap-1 flex-wrap">
       {/* Undo/Redo */}
       <ToolbarButton
         onClick={() => editor.chain().focus().undo().run()}
@@ -263,7 +264,7 @@ export function TiptapEditor({
   placeholder = 'Comece a escrever...',
   className = '',
   editable = true,
-  pendingItems = [],
+  pendingItems: _pendingItems = [],
 }: TiptapEditorProps) {
   const editor = useEditor({
     extensions: [
@@ -294,21 +295,12 @@ export function TiptapEditor({
   })
 
   return (
-    <div
-      className={`
-        tiptap-editor
-        border border-gray-200 dark:border-gray-700
-        rounded-lg
-        bg-white dark:bg-gray-800
-        overflow-hidden
-        ${className}
-      `}
-    >
+    <Card className={cn("tiptap-editor glass-card overflow-hidden", className)}>
       {editable && <Toolbar editor={editor} />}
       <div className="overflow-y-auto max-h-[600px]">
         <EditorContent editor={editor} />
       </div>
-    </div>
+    </Card>
   )
 }
 

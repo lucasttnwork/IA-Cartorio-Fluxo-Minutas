@@ -13,6 +13,8 @@
     <frontend>
       <framework>React 18+ with TypeScript and Vite</framework>
       <styling>TailwindCSS</styling>
+      <component_library>ShadCN UI - Accessible, customizable component system built on Radix UI primitives</component_library>
+      <design_language>Glassmorphism - Modern transparent interfaces with backdrop blur, subtle borders, and elevated shadows</design_language>
       <animations>Framer Motion</animations>
       <canvas>React Flow (Xyflow) - infinite canvas with nodes, edges, pan/zoom</canvas>
       <rich_text_editor>Tiptap (ProseMirror-based, headless)</rich_text_editor>
@@ -58,6 +60,147 @@
       <file_access>Signed URLs with short expiration</file_access>
     </communication>
   </technology_stack>
+
+  <design_system>
+    <component_structure>
+      <shadcn_components path="src/components/ui/">
+        Base components from ShadCN UI library. Installed via CLI with "npx shadcn@latest add [component-name]".
+        Customizable through className prop and CSS variables. Includes: Button, Card, Input, Dialog, Dropdown, Popover, etc.
+      </shadcn_components>
+      <custom_components path="src/components/common/">
+        Project-specific reusable components (Avatar, Pagination, DeleteConfirmationModal, etc.).
+        Built with ShadCN primitives when possible. All maintain WCAG AA accessibility standards.
+      </custom_components>
+      <feature_components path="src/components/{canvas,case,chat,consensus,editor,entities,evidence,layout,status,upload}/">
+        Feature-specific UI components organized by domain. Examples: EntityCard, EvidenceModal, DocumentUpload, etc.
+      </feature_components>
+    </component_structure>
+
+    <glassmorphism_system>
+      <principle>
+        Create depth and hierarchy through transparency, blur effects, and subtle shadows.
+        All glassmorphism classes support dark mode automatically via CSS variables.
+      </principle>
+      <utility_classes>
+        <class name=".glass">Standard glassmorphism - backdrop-blur-md, bg-white/80 (light) | bg-gray-900/80 (dark)</class>
+        <class name=".glass-card">Cards - glass + rounded-lg + border-white/20 + shadow-xl</class>
+        <class name=".glass-strong">Strong blur - backdrop-blur-xl, 90% opacity for modals/overlays</class>
+        <class name=".glass-subtle">Subtle blur - backdrop-blur-sm, 60% opacity for background elements</class>
+        <class name=".glass-dialog">Dialogs - 95% opacity with strong blur and border definition</class>
+        <class name=".glass-popover">Popovers and tooltips - medium blur with shadow-2xl</class>
+        <class name=".glass-gradient">Glassmorphism with gradient backgrounds (from-white/90 to-white/70)</class>
+        <class name=".glass-elevated">Elevated cards - glass-strong + shadow-2xl + ring-1 ring borders</class>
+      </utility_classes>
+      <usage_guidelines>
+        - Cards and containers: .glass-card
+        - Modals and dialogs: .glass-dialog or .glass-strong
+        - Popovers and tooltips: .glass-popover
+        - Background panels: .glass-subtle
+        - Elevated content: .glass-elevated
+      </usage_guidelines>
+    </glassmorphism_system>
+
+    <theming>
+      <css_variables>
+        Theme colors defined as HSL CSS variables in src/styles/index.css.
+
+        ShadCN variables (light mode):
+        - --background: 0 0% 100%, --foreground: 222.2 84% 4.9%
+        - --primary: 221.2 83.2% 53.3%, --card: 0 0% 100%
+        - --muted, --accent, --destructive, --border, --input, --ring
+
+        ShadCN variables (dark mode):
+        - --background: 222.2 84% 4.9%, --foreground: 210 40% 98%
+        - --primary: 217.2 91.2% 59.8% (lighter blue for dark mode)
+
+        Custom legacy variables preserved:
+        - --color-primary, --color-bg, --color-text, --color-text-muted, --color-border
+        - --color-success, --color-warning, --color-error (existing design system)
+
+        Both systems coexist without conflict. ShadCN uses hsl(), legacy uses rgb space values.
+      </css_variables>
+      <dark_mode>
+        Class-based dark mode strategy: darkMode: 'class' in Tailwind config
+        Toggle by adding/removing "dark" class on root HTML element
+        All components and glassmorphism classes support dark mode via CSS variables
+        Example: .glass-card uses dark:border-gray-700/50 in dark mode
+      </dark_mode>
+    </theming>
+
+    <accessibility>
+      <wcag_compliance>
+        All components must meet WCAG AA standards (minimum 4.5:1 contrast for text).
+        Color palette annotated with contrast ratios in tailwind.config.js.
+        Glassmorphism classes maintain readability in both light/dark modes.
+        Existing accessibility features:
+        - Focus-visible states throughout
+        - High contrast mode support
+        - Reduced motion preferences respected
+        - ARIA-compliant markup patterns
+      </wcag_compliance>
+      <keyboard_navigation>
+        All interactive elements must be keyboard accessible.
+        ShadCN components have built-in keyboard support via Radix UI primitives.
+        Custom components must implement proper focus management and keyboard event handling.
+      </keyboard_navigation>
+    </accessibility>
+
+    <component_development_workflow>
+      <step_1>Check if ShadCN component exists: npx shadcn@latest add [component-name]</step_1>
+      <step_2>Customize with className prop using cn() utility from @/lib/utils</step_2>
+      <step_3>Apply glassmorphism classes (.glass-*) as appropriate for visual style</step_3>
+      <step_4>Test in both light and dark modes (toggle dark class on root element)</step_4>
+      <step_5>Verify WCAG AA compliance for colors and contrast ratios</step_5>
+      <step_6>Ensure keyboard navigation works correctly (Tab, Enter, Escape)</step_6>
+      <step_7>Link UI elements to source documents/evidence when applicable</step_7>
+    </component_development_workflow>
+
+    <icon_libraries>
+      <primary>Heroicons (@heroicons/react) - Existing icon library, preferred for consistency
+        - 24px outline and solid variants
+        - Used throughout existing components
+        - Example: import { DocumentIcon } from '@heroicons/react/24/outline'
+      </primary>
+      <secondary>Lucide React (lucide-react) - ShadCN default, available when needed
+        - Use when Heroicons doesn't have desired icon
+        - Example: import { FileText } from 'lucide-react'
+      </secondary>
+      <note>Both libraries coexist. Use Heroicons for custom components to maintain visual consistency with existing design.</note>
+    </icon_libraries>
+
+    <utility_functions>
+      <cn_function path="src/lib/utils.ts">
+        Merges Tailwind classes without conflicts using clsx + tailwind-merge.
+        Essential for ShadCN components and dynamic className composition.
+        Usage: cn("base-class", condition && "conditional-class")
+      </cn_function>
+    </utility_functions>
+
+    <configuration_files>
+      <components_json path="components.json">
+        ShadCN configuration file. Controls component generation, styling approach, and aliases.
+        Key settings: style="new-york", cssVariables=true, baseColor="slate"
+      </components_json>
+      <tailwind_config path="tailwind.config.js">
+        Extended with ShadCN theme colors (border, input, ring, background, etc.).
+        Added borderRadius for ShadCN components.
+        Added tailwindcss-animate plugin for animations.
+      </tailwind_config>
+      <index_css path="src/styles/index.css">
+        Contains ShadCN CSS variables (light and dark mode).
+        Glassmorphism utility classes (@layer components).
+        All existing custom styles preserved and functional.
+      </index_css>
+    </configuration_files>
+
+    <migration_strategy>
+      <existing_components>Keep in src/components/common/ - no immediate changes required. All continue to work.</existing_components>
+      <new_features>Use ShadCN components combined with glassmorphism styling</new_features>
+      <refactoring>Gradually replace custom components with ShadCN equivalents as needed</refactoring>
+      <css_classes>Existing custom classes (.btn-primary, .card, etc.) remain functional</css_classes>
+      <philosophy>Progressive enhancement, not a hard cutover</philosophy>
+    </migration_strategy>
+  </design_system>
 
   <prerequisites>
     <environment_setup>

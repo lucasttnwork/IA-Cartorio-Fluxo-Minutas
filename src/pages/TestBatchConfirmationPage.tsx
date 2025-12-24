@@ -1,6 +1,9 @@
 import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Alert, AlertDescription } from '../components/ui/alert'
 import { EntityTable } from '../components/entities'
 import type { ExtractedEntity } from '../types'
+import { CheckCircleIcon } from '@heroicons/react/24/outline'
 
 // Mock entity data for testing
 const mockEntities: ExtractedEntity[] = [
@@ -104,9 +107,9 @@ export default function TestBatchConfirmationPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Page Header */}
-        <div className="mb-8">
+        <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
             Teste: Confirmação em Lote de Entidades
           </h1>
@@ -117,35 +120,41 @@ export default function TestBatchConfirmationPage() {
         </div>
 
         {/* Instructions */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-6">
-          <h2 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2">
-            Como testar:
-          </h2>
-          <ul className="list-disc list-inside text-sm text-blue-800 dark:text-blue-200 space-y-1">
-            <li>Use o checkbox no cabeçalho da tabela para selecionar todas as entidades</li>
-            <li>Ou clique nos checkboxes individuais para selecionar entidades específicas</li>
-            <li>Quando entidades estiverem selecionadas, aparecerá uma barra de ações no topo</li>
-            <li>Clique em "Confirmar em Lote" para abrir o modal de confirmação</li>
-            <li>Revise as entidades selecionadas no modal</li>
-            <li>Confirme ou cancele a operação</li>
-          </ul>
-        </div>
+        <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+          <CheckCircleIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+          <AlertDescription className="text-blue-800 dark:text-blue-200">
+            <strong className="block text-blue-900 dark:text-blue-100 mb-2">Como testar:</strong>
+            <ul className="list-disc list-inside space-y-1 text-sm">
+              <li>Use o checkbox no cabeçalho da tabela para selecionar todas as entidades</li>
+              <li>Ou clique nos checkboxes individuais para selecionar entidades específicas</li>
+              <li>Quando entidades estiverem selecionadas, aparecerá uma barra de ações no topo</li>
+              <li>Clique em "Confirmar em Lote" para abrir o modal de confirmação</li>
+              <li>Revise as entidades selecionadas no modal</li>
+              <li>Confirme ou cancele a operação</li>
+            </ul>
+          </AlertDescription>
+        </Alert>
 
         {/* Entity Table */}
-        <div className="card p-6">
-          <EntityTable
-            entities={entities}
-            isLoading={false}
-            onEntityClick={(entity) => {
-              console.log('Entity clicked:', entity)
-            }}
-          />
-        </div>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Tabela de Entidades</CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <EntityTable
+              entities={entities}
+              isLoading={false}
+              onEntityClick={(entity) => {
+                console.log('Entity clicked:', entity)
+              }}
+            />
+          </CardContent>
+        </Card>
 
         {/* Footer Info */}
-        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div className="text-center text-sm text-gray-500 dark:text-gray-400 space-y-1">
           <p>Total de entidades de teste: {entities.length}</p>
-          <p className="mt-1">
+          <p>
             Esta é uma página de demonstração com dados mockados para testar a funcionalidade.
           </p>
         </div>

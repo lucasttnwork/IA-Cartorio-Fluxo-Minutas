@@ -19,39 +19,42 @@ import {
   ArrowPathIcon,
   FolderOpenIcon,
 } from '@heroicons/react/24/outline'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import { Badge } from '../components/ui/badge'
 import DocumentDropzone, { UploadResult } from '../components/upload/DocumentDropzone'
 import type { Document, DocumentStatus, DocumentType } from '../types'
 
 // Status badge styling
-const statusConfig: Record<DocumentStatus, { label: string; className: string; icon: typeof CheckCircleIcon }> = {
+const statusConfig: Record<DocumentStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon: typeof CheckCircleIcon }> = {
   uploaded: {
     label: 'Uploaded',
-    className: 'badge-info',
+    variant: 'secondary',
     icon: ClockIcon,
   },
   processing: {
     label: 'Processing',
-    className: 'badge-warning',
+    variant: 'outline',
     icon: ArrowPathIcon,
   },
   processed: {
     label: 'Processed',
-    className: 'badge-success',
+    variant: 'default',
     icon: CheckCircleIcon,
   },
   needs_review: {
     label: 'Needs Review',
-    className: 'badge-warning',
+    variant: 'outline',
     icon: ExclamationCircleIcon,
   },
   approved: {
     label: 'Approved',
-    className: 'badge-success',
+    variant: 'default',
     icon: CheckCircleIcon,
   },
   failed: {
     label: 'Failed',
-    className: 'badge-error',
+    variant: 'destructive',
     icon: ExclamationCircleIcon,
   },
 }
@@ -163,26 +166,29 @@ export default function TestUploadPage() {
         </div>
 
         {/* Upload Area */}
-        <div className="card p-6">
-          <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-            Upload Documents
-          </h2>
-          <DocumentDropzone
-            caseId={testCaseId}
-            onUploadComplete={handleUploadComplete}
-          />
-        </div>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Upload Documents</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <DocumentDropzone
+              caseId={testCaseId}
+              onUploadComplete={handleUploadComplete}
+            />
+          </CardContent>
+        </Card>
 
         {/* Uploaded Documents List */}
-        <div className="card">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h2 className="text-lg font-medium text-gray-900 dark:text-white">
-              Uploaded Documents
-            </h2>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-              {uploadedDocs.length} document{uploadedDocs.length !== 1 ? 's' : ''} uploaded
-            </p>
-          </div>
+        <Card className="glass-card">
+          <CardHeader>
+            <div>
+              <CardTitle>Uploaded Documents</CardTitle>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                {uploadedDocs.length} document{uploadedDocs.length !== 1 ? 's' : ''} uploaded
+              </p>
+            </div>
+          </CardHeader>
+          <CardContent className="p-0">
 
           <AnimatePresence mode="popLayout">
             {uploadedDocs.length === 0 ? (
@@ -227,14 +233,14 @@ export default function TestUploadPage() {
                             <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
                               {doc.original_name}
                             </p>
-                            <span className={`badge ${statusInfo.className}`}>
+                            <Badge variant={statusInfo.variant}>
                               <StatusIcon
                                 className={`w-3 h-3 mr-1 ${
                                   doc.status === 'processing' ? 'animate-spin' : ''
                                 }`}
                               />
                               {statusInfo.label}
-                            </span>
+                            </Badge>
                           </div>
                           <div className="flex items-center gap-3 mt-1">
                             <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -253,19 +259,23 @@ export default function TestUploadPage() {
 
                         {/* Actions */}
                         <div className="flex items-center gap-2">
-                          <button
-                            className="p-2 rounded-md text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="text-gray-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                             title="View document"
                           >
                             <EyeIcon className="w-5 h-5" />
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => handleRemoveDocument(doc.id)}
-                            className="p-2 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                            className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
                             title="Remove document"
                           >
                             <TrashIcon className="w-5 h-5" />
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </motion.li>
@@ -274,13 +284,15 @@ export default function TestUploadPage() {
               </ul>
             )}
           </AnimatePresence>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Feature Checklist */}
-        <div className="card p-6">
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-            Feature Checklist
-          </h2>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Feature Checklist</CardTitle>
+          </CardHeader>
+          <CardContent>
           <ul className="space-y-2 text-sm">
             {[
               'Drag & drop multiple files',
@@ -305,13 +317,17 @@ export default function TestUploadPage() {
               </li>
             ))}
           </ul>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Supported File Types Info */}
-        <div className="card p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-          <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">
-            Supported Document Types
-          </h3>
+        <Card className="glass-card border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+          <CardHeader>
+            <h3 className="text-sm font-medium text-blue-900 dark:text-blue-100">
+              Supported Document Types
+            </h3>
+          </CardHeader>
+          <CardContent>
           <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2">
             {Object.entries(documentTypeLabels).map(([type, label]) => (
               <div
@@ -321,8 +337,9 @@ export default function TestUploadPage() {
                 • {label}
               </div>
             ))}
-          </div>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

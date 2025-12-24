@@ -1,23 +1,31 @@
 import { memo } from 'react'
-import { Handle, Position, NodeProps } from '@xyflow/react'
+import { Handle, Position } from '@xyflow/react'
 import { UserIcon, IdentificationIcon, PhoneIcon, EnvelopeIcon } from '@heroicons/react/24/outline'
 import type { Person } from '../../types'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
 
-export interface PersonNodeData {
+export interface PersonNodeData extends Record<string, unknown> {
   person: Person
 }
 
-function PersonNode({ data, selected }: NodeProps<PersonNodeData>) {
+interface PersonNodeProps {
+  data: PersonNodeData
+  selected?: boolean
+}
+
+function PersonNode({ data, selected }: PersonNodeProps) {
   const { person } = data
 
   return (
-    <div
-      className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg border-2 transition-all ${
+    <Card
+      className={cn(
+        'glass-card transition-all min-w-[280px] max-w-[320px]',
         selected
-          ? 'border-blue-500 shadow-xl'
-          : 'border-gray-200 dark:border-gray-700 hover:border-blue-300'
-      }`}
-      style={{ minWidth: '280px', maxWidth: '320px' }}
+          ? 'border-blue-500 shadow-xl ring-2 ring-blue-400 ring-offset-2'
+          : 'border-white/20 dark:border-gray-700/50 hover:border-blue-300'
+      )}
     >
       {/* Handle for incoming connections (top) */}
       <Handle type="target" position={Position.Top} className="w-3 h-3 !bg-blue-500" />
@@ -38,7 +46,7 @@ function PersonNode({ data, selected }: NodeProps<PersonNodeData>) {
       </div>
 
       {/* Content */}
-      <div className="p-3 space-y-2">
+      <CardContent className="p-3 space-y-2">
         {/* CPF */}
         {person.cpf && (
           <div className="flex items-center gap-2 text-xs">
@@ -95,23 +103,24 @@ function PersonNode({ data, selected }: NodeProps<PersonNodeData>) {
 
         {/* Confidence Badge */}
         <div className="flex justify-end pt-1">
-          <span
-            className={
+          <Badge
+            className={cn(
+              'font-medium',
               person.confidence >= 0.8
-                ? 'confidence-badge-high'
+                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
                 : person.confidence >= 0.6
-                ? 'confidence-badge-medium'
-                : 'confidence-badge-low'
-            }
+                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300'
+                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+            )}
           >
             {Math.round(person.confidence * 100)}% confiança
-          </span>
+          </Badge>
         </div>
-      </div>
+      </CardContent>
 
       {/* Handle for outgoing connections (bottom) */}
       <Handle type="source" position={Position.Bottom} className="w-3 h-3 !bg-blue-500" />
-    </div>
+    </Card>
   )
 }
 

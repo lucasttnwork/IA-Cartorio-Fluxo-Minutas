@@ -1,4 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface PaginationProps {
   currentPage: number
@@ -58,29 +60,37 @@ export function Pagination({
   }
 
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+    <nav
+      className="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-3 sm:px-6"
+      role="navigation"
+      aria-label="Pagination"
+    >
       {/* Mobile View */}
       <div className="flex flex-1 justify-between sm:hidden">
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Go to previous page"
         >
           Anterior
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Go to next page"
         >
           Próximo
-        </button>
+        </Button>
       </div>
 
       {/* Desktop View */}
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             Mostrando <span className="font-medium">{startItem}</span> a{' '}
             <span className="font-medium">{endItem}</span> de{' '}
             <span className="font-medium">{totalItems}</span> resultados
@@ -88,14 +98,20 @@ export function Pagination({
 
           {onPageSizeChange && (
             <div className="flex items-center gap-2">
-              <label htmlFor="pageSize" className="text-sm text-gray-700">
+              <label htmlFor="pageSize" className="text-sm text-gray-700 dark:text-gray-300">
                 Por página:
               </label>
               <select
                 id="pageSize"
                 value={pageSize}
                 onChange={(e) => onPageSizeChange(Number(e.target.value))}
-                className="rounded-md border border-gray-300 px-3 py-1 text-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className={cn(
+                  'rounded-md border border-gray-300 dark:border-gray-600',
+                  'bg-white dark:bg-gray-700',
+                  'text-gray-900 dark:text-gray-100',
+                  'px-3 py-1 text-sm',
+                  'focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+                )}
               >
                 {pageSizeOptions.map((size) => (
                   <option key={size} value={size}>
@@ -107,16 +123,17 @@ export function Pagination({
           )}
         </div>
 
-        <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm">
+        <div className="flex items-center gap-1">
           {/* Previous Button */}
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:cursor-not-allowed disabled:opacity-50"
+            aria-label="Go to previous page"
           >
-            <span className="sr-only">Anterior</span>
-            <ChevronLeftIcon className="h-5 w-5" />
-          </button>
+            <ChevronLeftIcon className="h-4 w-4" />
+          </Button>
 
           {/* Page Numbers */}
           {getPageNumbers().map((page, index) => {
@@ -124,7 +141,7 @@ export function Pagination({
               return (
                 <span
                   key={`ellipsis-${index}`}
-                  className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 ring-1 ring-inset ring-gray-300"
+                  className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   ...
                 </span>
@@ -135,31 +152,31 @@ export function Pagination({
             const isActive = pageNumber === currentPage
 
             return (
-              <button
+              <Button
                 key={pageNumber}
+                variant={isActive ? 'default' : 'outline'}
+                size="sm"
                 onClick={() => onPageChange(pageNumber)}
-                className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-gray-300 focus:z-20 ${
-                  isActive
-                    ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                    : 'text-gray-900 hover:bg-gray-50'
-                }`}
+                aria-current={isActive ? 'page' : undefined}
+                aria-label={`Go to page ${pageNumber}`}
               >
                 {pageNumber}
-              </button>
+              </Button>
             )
           })}
 
           {/* Next Button */}
-          <button
+          <Button
+            variant="outline"
+            size="icon"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 disabled:cursor-not-allowed disabled:opacity-50"
+            aria-label="Go to next page"
           >
-            <span className="sr-only">Próximo</span>
-            <ChevronRightIcon className="h-5 w-5" />
-          </button>
-        </nav>
+            <ChevronRightIcon className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
-    </div>
+    </nav>
   )
 }

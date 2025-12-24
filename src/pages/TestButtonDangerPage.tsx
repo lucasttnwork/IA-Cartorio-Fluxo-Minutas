@@ -1,4 +1,9 @@
 import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import { Input } from '../components/ui/input'
+import { Label } from '../components/ui/label'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog'
 import {
   TrashIcon,
   ExclamationTriangleIcon,
@@ -23,155 +28,157 @@ export default function TestButtonDangerPage() {
         </div>
 
         {/* Danger Button Variants */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Danger Button Variants
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Three variants available: solid, outline, and ghost for different levels of visual emphasis.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-danger">
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Delete (Solid)
-            </button>
-            <button className="btn-danger-outline">
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Delete (Outline)
-            </button>
-            <button className="btn-danger-ghost">
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Delete (Ghost)
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Danger Button Variants</CardTitle>
+            <CardDescription>
+              Three variants available: solid, outline, and ghost for different levels of visual emphasis.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button variant="destructive">
+                <TrashIcon className="w-5 h-5 mr-2" />
+                Delete (Solid)
+              </Button>
+              <Button variant="outline">
+                <TrashIcon className="w-5 h-5 mr-2" />
+                Delete (Outline)
+              </Button>
+              <Button variant="ghost">
+                <TrashIcon className="w-5 h-5 mr-2" />
+                Delete (Ghost)
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Comparison with Other Button Types */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Button Type Comparison
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Side-by-side comparison with other button styles.
-          </p>
-          <div className="space-y-4">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Button Type Comparison</CardTitle>
+            <CardDescription>
+              Side-by-side comparison with other button styles.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Primary:</span>
-              <button className="btn-primary">Primary Action</button>
+              <Button>Primary Action</Button>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Secondary:</span>
-              <button className="btn-secondary">Secondary Action</button>
+              <Button variant="secondary">Secondary Action</Button>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Danger:</span>
-              <button className="btn-danger">Danger Action</button>
+              <Button variant="destructive">Danger Action</Button>
             </div>
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-500 w-24">Ghost:</span>
-              <button className="btn-ghost">Ghost Action</button>
+              <Button variant="ghost">Ghost Action</Button>
             </div>
-          </div>
-        </section>
+          </CardContent>
+        </Card>
 
         {/* Danger Buttons with Icons */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Danger Buttons with Icons
-          </h2>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-danger">
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Delete Item
-            </button>
-            <button className="btn-danger">
-              <XMarkIcon className="w-5 h-5 mr-2" />
-              Cancel Order
-            </button>
-            <button className="btn-danger">
-              <XCircleIcon className="w-5 h-5 mr-2" />
-              Remove User
-            </button>
-            <button className="btn-danger">
-              <NoSymbolIcon className="w-5 h-5 mr-2" />
-              Block Account
-            </button>
-            <button className="btn-danger">
-              <ExclamationTriangleIcon className="w-5 h-5 mr-2" />
-              Force Reset
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Danger Buttons with Icons</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button variant="destructive">
+                <TrashIcon className="w-5 h-5 mr-2" />
+                Delete Item
+              </Button>
+              <Button variant="destructive">
+                <XMarkIcon className="w-5 h-5 mr-2" />
+                Cancel Order
+              </Button>
+              <Button variant="destructive">
+                <XCircleIcon className="w-5 h-5 mr-2" />
+                Remove User
+              </Button>
+              <Button variant="destructive">
+                <NoSymbolIcon className="w-5 h-5 mr-2" />
+                Block Account
+              </Button>
+              <Button variant="destructive">
+                <ExclamationTriangleIcon className="w-5 h-5 mr-2" />
+                Force Reset
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Disabled States */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Disabled States
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            All button variants have proper disabled styling.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <button className="btn-danger" disabled>
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Disabled (Solid)
-            </button>
-            <button className="btn-danger-outline" disabled>
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Disabled (Outline)
-            </button>
-            <button className="btn-danger-ghost" disabled>
-              <TrashIcon className="w-5 h-5 mr-2" />
-              Disabled (Ghost)
-            </button>
-          </div>
-        </section>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Disabled States</CardTitle>
+            <CardDescription>
+              All button variants have proper disabled styling.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-4">
+              <Button variant="destructive" disabled>
+                <TrashIcon className="w-5 h-5 mr-2" />
+                Disabled (Solid)
+              </Button>
+              <Button variant="outline" disabled>
+                <TrashIcon className="w-5 h-5 mr-2" />
+                Disabled (Outline)
+              </Button>
+              <Button variant="ghost" disabled>
+                <TrashIcon className="w-5 h-5 mr-2" />
+                Disabled (Ghost)
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Confirmation Modal */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Confirmation Modal
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Common pattern for destructive action confirmation.
-          </p>
-          <button
-            className="btn-danger"
-            onClick={() => setShowDeleteModal(true)}
-          >
-            <TrashIcon className="w-5 h-5 mr-2" />
-            Delete Case
-          </button>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Confirmation Modal</CardTitle>
+            <CardDescription>
+              Common pattern for destructive action confirmation.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button
+              variant="destructive"
+              onClick={() => setShowDeleteModal(true)}
+            >
+              <TrashIcon className="w-5 h-5 mr-2" />
+              Delete Case
+            </Button>
 
-          {showDeleteModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-              <div
-                className="absolute inset-0 bg-black/50"
-                onClick={() => setShowDeleteModal(false)}
-              />
-              <div className="card relative shadow-xl p-6 max-w-md w-full">
-                <div className="flex items-start gap-4 mb-4">
+            <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+              <DialogContent className="glass-dialog">
+                <div className="flex items-start gap-4">
                   <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
                     <ExclamationTriangleIcon className="w-6 h-6 text-red-600 dark:text-red-400" />
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      Delete Case
-                    </h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                  <div className="flex-1">
+                    <DialogHeader>
+                      <DialogTitle>Delete Case</DialogTitle>
+                    </DialogHeader>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
                       Are you sure you want to delete this case? This action cannot be undone.
                     </p>
                   </div>
                 </div>
-                <div className="flex justify-end gap-3">
-                  <button
-                    className="btn-secondary"
+                <div className="flex justify-end gap-3 mt-4">
+                  <Button
+                    variant="outline"
                     onClick={() => setShowDeleteModal(false)}
                   >
                     Cancel
-                  </button>
-                  <button
-                    className="btn-danger"
+                  </Button>
+                  <Button
+                    variant="destructive"
                     onClick={() => {
                       alert('Case deleted!')
                       setShowDeleteModal(false)
@@ -179,95 +186,97 @@ export default function TestButtonDangerPage() {
                   >
                     <TrashIcon className="w-5 h-5 mr-2" />
                     Delete
-                  </button>
+                  </Button>
                 </div>
-              </div>
-            </div>
-          )}
-        </section>
+              </DialogContent>
+            </Dialog>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Inline Actions */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Inline Actions
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Ghost and outline variants for less prominent destructive actions.
-          </p>
-          <div className="space-y-3">
-            {['Document 1.pdf', 'Document 2.pdf', 'Contract.docx'].map((doc) => (
-              <div
-                key={doc}
-                className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg"
-              >
-                <span className="text-gray-900 dark:text-white">{doc}</span>
-                <div className="flex gap-2">
-                  <button className="btn-secondary text-sm py-1 px-3">
-                    View
-                  </button>
-                  <button className="btn-danger-ghost text-sm py-1 px-3">
-                    <TrashIcon className="w-4 h-4" />
-                  </button>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Inline Actions</CardTitle>
+            <CardDescription>
+              Ghost and outline variants for less prominent destructive actions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {['Document 1.pdf', 'Document 2.pdf', 'Contract.docx'].map((doc) => (
+                <div
+                  key={doc}
+                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg"
+                >
+                  <span className="text-gray-900 dark:text-white">{doc}</span>
+                  <div className="flex gap-2">
+                    <Button variant="secondary" size="sm">
+                      View
+                    </Button>
+                    <Button variant="ghost" size="sm">
+                      <TrashIcon className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Use Case: Form Cancel */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Use Case: Form Actions
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Using danger outline for cancel/discard actions in forms.
-          </p>
-          <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-lg">
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Case Title
-              </label>
-              <input
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Use Case: Form Actions</CardTitle>
+            <CardDescription>
+              Using danger outline for cancel/discard actions in forms.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="case-title">Case Title</Label>
+              <Input
+                id="case-title"
                 type="text"
-                className="input"
                 defaultValue="Property Sale - 123 Main Street"
               />
             </div>
             <div className="flex justify-end gap-3">
-              <button className="btn-danger-outline">
+              <Button variant="outline">
                 <XMarkIcon className="w-5 h-5 mr-2" />
                 Discard Changes
-              </button>
-              <button className="btn-primary">
+              </Button>
+              <Button>
                 Save Changes
-              </button>
+              </Button>
             </div>
-          </div>
-        </section>
+          </CardContent>
+        </Card>
 
-        {/* Button Sizes (using custom classes) */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Button Sizes (with Tailwind utilities)
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            Combine with Tailwind utilities for different sizes.
-          </p>
-          <div className="flex flex-wrap items-center gap-4">
-            <button className="btn-danger text-xs py-1 px-2">
-              Extra Small
-            </button>
-            <button className="btn-danger text-sm py-1.5 px-3">
-              Small
-            </button>
-            <button className="btn-danger">
-              Default
-            </button>
-            <button className="btn-danger text-lg py-3 px-6">
-              Large
-            </button>
-          </div>
-        </section>
+        {/* Button Sizes (with ShadCN utilities) */}
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Button Sizes (with ShadCN size prop)</CardTitle>
+            <CardDescription>
+              Use the size prop for different button dimensions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap items-center gap-4">
+              <Button variant="destructive" size="sm" className="text-xs">
+                Extra Small
+              </Button>
+              <Button variant="destructive" size="sm">
+                Small
+              </Button>
+              <Button variant="destructive">
+                Default
+              </Button>
+              <Button variant="destructive" size="lg">
+                Large
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

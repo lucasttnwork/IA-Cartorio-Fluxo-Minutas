@@ -18,14 +18,19 @@ import { Pagination } from '../components/common/Pagination'
 import SortControls, { type SortOption } from '../components/common/SortControls'
 import type { Case, CaseStatus } from '../types'
 import { formatDate } from '../utils/dateFormat'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 
-// Status badge classes following design system
-const statusBadgeClasses: Record<CaseStatus, string> = {
-  draft: 'badge badge-info',
-  processing: 'badge badge-warning',
-  review: 'badge badge-warning',
-  approved: 'badge badge-success',
-  archived: 'badge bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300',
+// Status badge variants mapping
+const statusBadgeVariant: Record<CaseStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+  draft: 'outline',
+  processing: 'secondary',
+  review: 'secondary',
+  approved: 'default',
+  archived: 'outline',
 }
 
 // Status display labels
@@ -48,14 +53,16 @@ const actTypeLabels: Record<string, string> = {
 // Loading skeleton component
 function CaseCardSkeleton() {
   return (
-    <div className="card p-4 animate-pulse">
-      <div className="flex items-start justify-between gap-2">
-        <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
-        <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
-      </div>
-      <div className="mt-2 h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-      <div className="mt-3 h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-    </div>
+    <Card className="glass-card animate-pulse">
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
+          <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+        </div>
+        <div className="mt-2 h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
+        <div className="mt-3 h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -159,7 +166,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Page Header - Following design system spacing and typography */}
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
@@ -169,13 +176,10 @@ export default function DashboardPage() {
             Manage your document cases and drafts
           </p>
         </div>
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="btn-primary"
-        >
+        <Button onClick={() => setShowCreateModal(true)}>
           <PlusIcon className="w-5 h-5 mr-2" />
           New Case
-        </button>
+        </Button>
       </div>
 
       {/* Search Bar, Status Filter, and Sort Controls */}
@@ -184,12 +188,12 @@ export default function DashboardPage() {
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <MagnifyingGlassIcon className="h-5 w-5 text-gray-400 dark:text-gray-500" />
           </div>
-          <input
+          <Input
             type="text"
             placeholder="Search cases by title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="block w-full pl-10 pr-10 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            className="pl-10 pr-10"
           />
           {searchQuery && (
             <button
@@ -204,7 +208,7 @@ export default function DashboardPage() {
         <select
           value={statusFilter}
           onChange={(e) => handleStatusFilterChange(e.target.value as CaseStatus | 'all')}
-          className="px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+          className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
         >
           <option value="all">All Status</option>
           <option value="draft">Draft</option>
@@ -229,76 +233,73 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="card p-8 sm:p-12"
         >
-          <div className="text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-              <ExclamationCircleIcon className="h-8 w-8 text-red-500 dark:text-red-400" />
-            </div>
-            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-              Failed to load cases
-            </h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-              {error instanceof Error ? error.message : 'An unexpected error occurred'}
-            </p>
-            <div className="mt-6">
-              <button
-                onClick={() => refetch()}
-                className="btn-secondary"
-              >
-                <ArrowPathIcon className="w-5 h-5 mr-2" />
-                Try Again
-              </button>
-            </div>
-          </div>
+          <Card className="glass-card">
+            <CardContent className="p-8 sm:p-12">
+              <div className="text-center">
+                <div className="mx-auto w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                  <ExclamationCircleIcon className="h-8 w-8 text-red-500 dark:text-red-400" />
+                </div>
+                <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+                  Failed to load cases
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                  {error instanceof Error ? error.message : 'An unexpected error occurred'}
+                </p>
+                <div className="mt-6">
+                  <Button onClick={() => refetch()} variant="outline">
+                    <ArrowPathIcon className="w-5 h-5 mr-2" />
+                    Try Again
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
       ) : cases.length === 0 ? (
-        /* Empty State - Using card design system component */
+        /* Empty State */
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="card p-8 sm:p-12"
         >
-          <div className="text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-              {debouncedSearchQuery ? (
-                <MagnifyingGlassIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-              ) : (
-                <FolderIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-              )}
-            </div>
-            <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-              {debouncedSearchQuery ? 'No cases found' : 'No cases yet'}
-            </h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-              {debouncedSearchQuery
-                ? `No cases match "${debouncedSearchQuery}". Try a different search term.`
-                : 'Get started by creating a new case to manage your notary documents and drafts.'}
-            </p>
-            <div className="mt-6">
-              {debouncedSearchQuery ? (
-                <button
-                  onClick={clearSearch}
-                  className="btn-secondary"
-                >
-                  <XMarkIcon className="w-5 h-5 mr-2" />
-                  Clear Search
-                </button>
-              ) : (
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="btn-primary"
-                >
-                  <PlusIcon className="w-5 h-5 mr-2" />
-                  Create Your First Case
-                </button>
-              )}
-            </div>
-          </div>
+          <Card className="glass-card">
+            <CardContent className="p-8 sm:p-12">
+              <div className="text-center">
+                <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                  {debouncedSearchQuery ? (
+                    <MagnifyingGlassIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                  ) : (
+                    <FolderIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                  )}
+                </div>
+                <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
+                  {debouncedSearchQuery ? 'No cases found' : 'No cases yet'}
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                  {debouncedSearchQuery
+                    ? `No cases match "${debouncedSearchQuery}". Try a different search term.`
+                    : 'Get started by creating a new case to manage your notary documents and drafts.'}
+                </p>
+                <div className="mt-6">
+                  {debouncedSearchQuery ? (
+                    <Button onClick={clearSearch} variant="outline">
+                      <XMarkIcon className="w-5 h-5 mr-2" />
+                      Clear Search
+                    </Button>
+                  ) : (
+                    <Button onClick={() => setShowCreateModal(true)}>
+                      <PlusIcon className="w-5 h-5 mr-2" />
+                      Create Your First Case
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
       ) : (
         <>
-          {/* Cases Grid - Using card-hover design system component */}
+          {/* Cases Grid */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cases.map((caseItem: Case, index: number) => (
               <motion.div
@@ -308,52 +309,56 @@ export default function DashboardPage() {
                 transition={{ delay: index * 0.05 }}
                 className="relative"
               >
-                <Link
-                  to={`/case/${caseItem.id}`}
-                  className="card-hover block p-4"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-medium text-gray-900 dark:text-white truncate flex-1">
-                      {caseItem.title}
-                    </h3>
-                    <div className="flex items-center gap-2">
-                      <span className={statusBadgeClasses[caseItem.status]}>
-                        {statusLabels[caseItem.status]}
-                      </span>
-                      <div className="relative">
-                        <button
-                          onClick={(e) => toggleMenu(caseItem.id, e)}
-                          className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                          aria-label="More options"
-                        >
-                          <EllipsisVerticalIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                        </button>
-                        {openMenuId === caseItem.id && (
-                          <>
-                            <div
-                              className="fixed inset-0 z-10"
-                              onClick={() => setOpenMenuId(null)}
-                            />
-                            <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20">
-                              <button
-                                onClick={(e) => handleDeleteClick(caseItem, e)}
-                                className="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2"
-                              >
-                                <TrashIcon className="w-4 h-4" />
-                                Delete Case
-                              </button>
-                            </div>
-                          </>
-                        )}
+                <Link to={`/case/${caseItem.id}`}>
+                  <Card className="glass-card hover:shadow-lg transition-shadow cursor-pointer">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="font-medium text-gray-900 dark:text-white truncate flex-1">
+                          {caseItem.title}
+                        </h3>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={statusBadgeVariant[caseItem.status]}>
+                            {statusLabels[caseItem.status]}
+                          </Badge>
+                          <div className="relative">
+                            <Button
+                              onClick={(e) => toggleMenu(caseItem.id, e)}
+                              variant="ghost"
+                              size="sm"
+                              className="h-auto p-1"
+                              aria-label="More options"
+                            >
+                              <EllipsisVerticalIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                            </Button>
+                            {openMenuId === caseItem.id && (
+                              <>
+                                <div
+                                  className="fixed inset-0 z-10"
+                                  onClick={() => setOpenMenuId(null)}
+                                />
+                                <Card className="glass-popover absolute right-0 top-full mt-1 w-48 py-1 z-20">
+                                  <Button
+                                    onClick={(e) => handleDeleteClick(caseItem, e)}
+                                    variant="ghost"
+                                    className="w-full justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                  >
+                                    <TrashIcon className="w-4 h-4 mr-2" />
+                                    Delete Case
+                                  </Button>
+                                </Card>
+                              </>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    {actTypeLabels[caseItem.act_type] || caseItem.act_type.replace('_', ' ')}
-                  </p>
-                  <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
-                    Created {formatDate(caseItem.created_at, 'medium')}
-                  </p>
+                      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        {actTypeLabels[caseItem.act_type] || caseItem.act_type.replace('_', ' ')}
+                      </p>
+                      <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
+                        Created {formatDate(caseItem.created_at, 'medium')}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </Link>
               </motion.div>
             ))}
@@ -376,7 +381,7 @@ export default function DashboardPage() {
         </>
       )}
 
-      {/* Create Case Modal - Enhanced multi-step flow */}
+      {/* Create Case Modal */}
       <CreateCaseModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}

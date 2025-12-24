@@ -24,6 +24,28 @@
 
     /* Border colors - Light mode */
     --color-border: 229 231 235; /* #E5E7EB */
+
+    /* ===== SHADCN THEME VARIABLES (LIGHT MODE) ===== */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
   }
 
   .dark {
@@ -43,6 +65,27 @@
     --color-success-dark: 110 231 183; /* #6EE7B7 (green-300) - 8.44:1 on gray-900 */
     --color-warning-dark: 252 211 77; /* #FCD34D (amber-300) - 10.35:1 on gray-900 */
     --color-error-dark: 252 165 165; /* #FCA5A5 (red-300) - 7.37:1 on gray-900 */
+
+    /* ===== SHADCN THEME VARIABLES (DARK MODE) ===== */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
   }
 
   body {
@@ -70,6 +113,39 @@
 
 /* Custom component styles */
 @layer components {
+  /* ===== GLASSMORPHISM UTILITIES ===== */
+  .glass {
+    @apply backdrop-blur-md bg-white/80 dark:bg-gray-900/80;
+  }
+
+  .glass-card {
+    @apply glass rounded-lg border border-white/20 dark:border-gray-700/50 shadow-xl;
+  }
+
+  .glass-strong {
+    @apply backdrop-blur-xl bg-white/90 dark:bg-gray-900/90;
+  }
+
+  .glass-subtle {
+    @apply backdrop-blur-sm bg-white/60 dark:bg-gray-900/60;
+  }
+
+  .glass-popover {
+    @apply glass rounded-md border border-white/30 dark:border-gray-600/50 shadow-2xl;
+  }
+
+  .glass-dialog {
+    @apply backdrop-blur-xl bg-white/95 dark:bg-gray-900/95 border border-white/20 dark:border-gray-700/30;
+  }
+
+  .glass-gradient {
+    @apply glass bg-gradient-to-br from-white/90 to-white/70 dark:from-gray-900/90 dark:to-gray-800/70;
+  }
+
+  .glass-elevated {
+    @apply glass-strong shadow-2xl ring-1 ring-black/5 dark:ring-white/10;
+  }
+
   /* Avatar styles */
   .avatar {
     @apply relative inline-flex items-center justify-center rounded-full font-semibold;

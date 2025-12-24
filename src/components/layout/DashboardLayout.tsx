@@ -6,6 +6,7 @@ import Breadcrumb from '../common/Breadcrumb'
 import BrowserNavigation from '../common/BrowserNavigation'
 import Avatar from '../common/Avatar'
 import UserProfileDropdown from '../common/UserProfileDropdown'
+import ThemeToggle from '../common/ThemeToggle'
 import {
   HomeIcon,
   DocumentArrowUpIcon,
@@ -158,13 +159,17 @@ export default function DashboardLayout() {
               <Breadcrumb />
             </div>
           </div>
-          {/* Header avatar - visible on mobile */}
-          <div className="lg:hidden">
-            <Avatar
-              name={appUser?.full_name || 'User'}
-              size="sm"
-              status="online"
-            />
+          {/* Theme toggle and avatar */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            {/* Header avatar - visible on mobile */}
+            <div className="lg:hidden">
+              <Avatar
+                name={appUser?.full_name || 'User'}
+                size="sm"
+                status="online"
+              />
+            </div>
           </div>
         </header>
 

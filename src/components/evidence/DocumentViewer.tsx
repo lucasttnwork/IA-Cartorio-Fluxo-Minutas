@@ -21,6 +21,8 @@ import {
   MagnifyingGlassMinusIcon,
   ArrowsPointingOutIcon,
 } from '@heroicons/react/24/outline'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import type {
   DocumentViewerProps,
   DocumentDimensions,
@@ -102,24 +104,23 @@ function ZoomControls({
   const canZoomOut = scale > minScale
 
   return (
-    <div className="document-viewer-controls absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-1 z-10">
+    <div className="document-viewer-controls absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 glass-popover rounded-lg shadow-2xl p-1 z-10">
       {/* Zoom Out Button */}
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         onClick={onZoomOut}
         disabled={!canZoomOut}
-        className={`
-          p-2 rounded-md transition-colors
-          ${canZoomOut
-            ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-            : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
-          }
-        `}
+        className={cn(
+          "h-9 w-9",
+          !canZoomOut && "opacity-50 cursor-not-allowed"
+        )}
         aria-label="Diminuir zoom"
         title="Diminuir zoom (- ou scroll para baixo)"
       >
         <MagnifyingGlassMinusIcon className="w-5 h-5" />
-      </button>
+      </Button>
 
       {/* Zoom Level Display */}
       <span className="min-w-[56px] text-center text-sm font-medium text-gray-700 dark:text-gray-300 tabular-nums">
@@ -127,36 +128,37 @@ function ZoomControls({
       </span>
 
       {/* Zoom In Button */}
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         onClick={onZoomIn}
         disabled={!canZoomIn}
-        className={`
-          p-2 rounded-md transition-colors
-          ${canZoomIn
-            ? 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-            : 'text-gray-300 dark:text-gray-600 cursor-not-allowed'
-          }
-        `}
+        className={cn(
+          "h-9 w-9",
+          !canZoomIn && "opacity-50 cursor-not-allowed"
+        )}
         aria-label="Aumentar zoom"
         title="Aumentar zoom (+ ou scroll para cima)"
       >
         <MagnifyingGlassPlusIcon className="w-5 h-5" />
-      </button>
+      </Button>
 
       {/* Divider */}
       <div className="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1" />
 
       {/* Reset Button */}
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="icon"
         onClick={onReset}
-        className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+        className="h-9 w-9"
         aria-label="Redefinir zoom"
         title="Redefinir zoom (0)"
       >
         <ArrowsPointingOutIcon className="w-5 h-5" />
-      </button>
+      </Button>
     </div>
   )
 }
@@ -208,12 +210,14 @@ function ErrorDisplay({ message, onRetry }: ErrorDisplayProps) {
         </div>
         <p className="text-sm text-gray-600 dark:text-gray-400">{message}</p>
         {onRetry && (
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={onRetry}
-            className="text-sm text-blue-500 hover:text-blue-600 dark:hover:text-blue-400 font-medium"
+            className="mt-2"
           >
             Tentar novamente
-          </button>
+          </Button>
         )}
       </div>
     </div>

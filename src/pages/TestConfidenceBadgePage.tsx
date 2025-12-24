@@ -6,6 +6,7 @@
  */
 
 import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/react/24/outline'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 
 export default function TestConfidenceBadgePage() {
   const confidenceLevels = [
@@ -37,7 +38,7 @@ export default function TestConfidenceBadgePage() {
         </div>
 
         {/* Basic Badge Showcase */}
-        <section className="card p-8">
+        <section className="glass-card p-8">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
             Basic Badge Styles
           </h2>
@@ -108,7 +109,7 @@ export default function TestConfidenceBadgePage() {
         </section>
 
         {/* Badge Spectrum */}
-        <section className="card p-8">
+        <section className="glass-card p-8">
           <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6">
             Confidence Spectrum
           </h2>
@@ -127,7 +128,7 @@ export default function TestConfidenceBadgePage() {
         </section>
 
         {/* In Context - Entity Table Row */}
-        <section className="card overflow-hidden">
+        <section className="glass-card overflow-hidden">
           <div className="p-6 border-b border-gray-200 dark:border-gray-700">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
               Entity Table Context
@@ -182,73 +183,79 @@ export default function TestConfidenceBadgePage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* High Confidence Card */}
-            <div className="card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  João Silva
-                </h3>
-                <span className="confidence-badge-high">
-                  <CheckCircleIcon className="confidence-badge-icon" />
-                  95%
-                </span>
-              </div>
-              <div className="space-y-2 text-sm">
-                <p className="text-gray-500 dark:text-gray-400">CPF: 123.456.789-00</p>
-                <p className="text-gray-500 dark:text-gray-400">RG: 12.345.678-9</p>
-              </div>
-            </div>
+            <Card className="glass-card">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    João Silva
+                  </h3>
+                  <span className="confidence-badge-high">
+                    <CheckCircleIcon className="confidence-badge-icon" />
+                    95%
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <p className="text-gray-500 dark:text-gray-400">CPF: 123.456.789-00</p>
+                  <p className="text-gray-500 dark:text-gray-400">RG: 12.345.678-9</p>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Medium Confidence Card */}
-            <div className="card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Maria Santos
-                </h3>
-                <span className="confidence-badge-medium">
-                  <ExclamationCircleIcon className="confidence-badge-icon" />
-                  68%
-                </span>
-              </div>
-              <div className="space-y-2 text-sm">
-                <p className="text-gray-500 dark:text-gray-400">CPF: 987.654.321-00</p>
-                <p className="text-gray-500 dark:text-gray-400">RG: Pending</p>
-              </div>
-            </div>
+            <Card className="glass-card">
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Maria Santos
+                  </h3>
+                  <span className="confidence-badge-medium">
+                    <ExclamationCircleIcon className="confidence-badge-icon" />
+                    68%
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <p className="text-gray-500 dark:text-gray-400">CPF: 987.654.321-00</p>
+                  <p className="text-gray-500 dark:text-gray-400">RG: Pending</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
         {/* Dark Mode Toggle */}
-        <section className="card p-8 text-center">
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-            Design Features
-          </h2>
-          <ul className="text-left max-w-2xl mx-auto space-y-3 text-gray-600 dark:text-gray-400">
-            <li className="flex items-start gap-3">
-              <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-              <span>Gradient backgrounds for depth and visual interest</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-              <span>Subtle borders for definition and clarity</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-              <span>Consistent sizing with icon support</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-              <span>WCAG AA compliant color contrast in both modes</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-              <span>Smooth transitions and hover effects</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
-              <span>Full dark mode support with adapted shadows</span>
-            </li>
-          </ul>
-        </section>
+        <Card className="glass-card">
+          <CardHeader className="text-center">
+            <CardTitle>Design Features</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="text-left max-w-2xl mx-auto space-y-3 text-gray-600 dark:text-gray-400">
+              <li className="flex items-start gap-3">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span>Gradient backgrounds for depth and visual interest</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span>Subtle borders for definition and clarity</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span>Consistent sizing with icon support</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span>WCAG AA compliant color contrast in both modes</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span>Smooth transitions and hover effects</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <CheckCircleIcon className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                <span>Full dark mode support with adapted shadows</span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

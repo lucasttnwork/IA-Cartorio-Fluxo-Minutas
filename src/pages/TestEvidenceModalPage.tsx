@@ -20,6 +20,10 @@ import {
   PhotoIcon,
   ArrowPathIcon,
 } from '@heroicons/react/24/outline'
+import { Card, CardContent } from '../components/ui/card'
+import { Button } from '../components/ui/button'
+import { Badge } from '../components/ui/badge'
+import { Alert, AlertDescription } from '../components/ui/alert'
 import { EvidenceModal } from '../components/evidence'
 import type { EvidenceItem, EvidenceBoundingBox } from '../types/evidence'
 
@@ -241,29 +245,31 @@ export default function TestEvidenceModalPage() {
       </div>
 
       {/* Keyboard Shortcuts Reference */}
-      <section className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-        <h2 className="text-sm font-medium text-blue-900 dark:text-blue-100 mb-3">
-          ⌨️ Atalhos de Teclado (quando o modal está aberto)
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-          <div className="flex items-center gap-2">
-            <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">ESC</kbd>
-            <span className="text-gray-600 dark:text-gray-400">Fechar</span>
+      <Alert className="border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
+        <AlertDescription className="text-blue-900 dark:text-blue-100">
+          <h2 className="text-sm font-medium mb-3">
+            ⌨️ Atalhos de Teclado (quando o modal está aberto)
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">ESC</kbd>
+              <span className="text-gray-600 dark:text-gray-400">Fechar</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">← / ↑</kbd>
+              <span className="text-gray-600 dark:text-gray-400">Box anterior</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">→ / ↓</kbd>
+              <span className="text-gray-600 dark:text-gray-400">Próximo box</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">Home</kbd>
+              <span className="text-gray-600 dark:text-gray-400">Primeiro box</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">← / ↑</kbd>
-            <span className="text-gray-600 dark:text-gray-400">Box anterior</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">→ / ↓</kbd>
-            <span className="text-gray-600 dark:text-gray-400">Próximo box</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">Home</kbd>
-            <span className="text-gray-600 dark:text-gray-400">Primeiro box</span>
-          </div>
-        </div>
-      </section>
+        </AlertDescription>
+      </Alert>
 
       {/* Test Cases */}
       <section className="space-y-4">
@@ -273,121 +279,131 @@ export default function TestEvidenceModalPage() {
 
         <div className="grid gap-4">
           {/* Multiple Bounding Boxes */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-                  <DocumentTextIcon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white">
-                    Múltiplos Bounding Boxes
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    Documento RG com 5 campos destacados e diferentes níveis de confiança
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="badge badge-success">Alta: 2</span>
-                    <span className="badge badge-warning">Média: 2</span>
-                    <span className="badge badge-error">Baixa: 1</span>
+          <Card className="glass-card">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                    <DocumentTextIcon className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-gray-900 dark:text-white">
+                      Múltiplos Bounding Boxes
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                      Documento RG com 5 campos destacados e diferentes níveis de confiança
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <Badge variant="default">Alta: 2</Badge>
+                      <Badge variant="secondary">Média: 2</Badge>
+                      <Badge variant="destructive">Baixa: 1</Badge>
+                    </div>
                   </div>
                 </div>
+                <Button
+                  onClick={() => openModal(sampleEvidenceRG)}
+                  className="flex items-center gap-2"
+                >
+                  <EyeIcon className="w-4 h-4" />
+                  Visualizar
+                </Button>
               </div>
-              <button
-                onClick={() => openModal(sampleEvidenceRG)}
-                className="btn-primary flex items-center gap-2"
-              >
-                <EyeIcon className="w-4 h-4" />
-                Visualizar
-              </button>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Property Document */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-                  <PhotoIcon className="w-6 h-6 text-green-600 dark:text-green-400" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white">
-                    Documento de Imóvel
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    Escritura com 3 campos destacados, documento multi-página
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      Página 1 de 3
-                    </span>
+          <Card className="glass-card">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                    <PhotoIcon className="w-6 h-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-gray-900 dark:text-white">
+                      Documento de Imóvel
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                      Escritura com 3 campos destacados, documento multi-página
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        Página 1 de 3
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <Button
+                  onClick={() => openModal(sampleEvidenceProperty)}
+                  className="flex items-center gap-2"
+                >
+                  <EyeIcon className="w-4 h-4" />
+                  Visualizar
+                </Button>
               </div>
-              <button
-                onClick={() => openModal(sampleEvidenceProperty)}
-                className="btn-primary flex items-center gap-2"
-              >
-                <EyeIcon className="w-4 h-4" />
-                Visualizar
-              </button>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Single Bounding Box */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-                  <DocumentTextIcon className="w-6 h-6 text-amber-600 dark:text-amber-400" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white">
-                    Box Único
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    Procuração com apenas 1 campo destacado (navegação desabilitada)
-                  </p>
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    <span className="badge badge-warning">Confiança: 78%</span>
+          <Card className="glass-card">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                    <DocumentTextIcon className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-gray-900 dark:text-white">
+                      Box Único
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                      Procuração com apenas 1 campo destacado (navegação desabilitada)
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <Badge variant="secondary">Confiança: 78%</Badge>
+                    </div>
                   </div>
                 </div>
+                <Button
+                  onClick={() => openModal(sampleEvidenceSingleBox)}
+                  variant="outline"
+                  className="flex items-center gap-2"
+                >
+                  <EyeIcon className="w-4 h-4" />
+                  Visualizar
+                </Button>
               </div>
-              <button
-                onClick={() => openModal(sampleEvidenceSingleBox)}
-                className="btn-secondary flex items-center gap-2"
-              >
-                <EyeIcon className="w-4 h-4" />
-                Visualizar
-              </button>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* No Bounding Boxes */}
-          <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                  <DocumentTextIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+          <Card className="glass-card">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                    <DocumentTextIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-gray-900 dark:text-white">
+                      Sem Bounding Boxes
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                      Documento sem evidências destacadas (caso de borda)
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white">
-                    Sem Bounding Boxes
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                    Documento sem evidências destacadas (caso de borda)
-                  </p>
-                </div>
+                <Button
+                  onClick={() => openModal(sampleEvidenceNoBoxes)}
+                  variant="outline"
+                  className="flex items-center gap-2"
+                >
+                  <EyeIcon className="w-4 h-4" />
+                  Visualizar
+                </Button>
               </div>
-              <button
-                onClick={() => openModal(sampleEvidenceNoBoxes)}
-                className="btn-secondary flex items-center gap-2"
-              >
-                <EyeIcon className="w-4 h-4" />
-                Visualizar
-              </button>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -397,58 +413,60 @@ export default function TestEvidenceModalPage() {
           Funcionalidades para Verificar
         </h2>
 
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-          <ul className="space-y-3 text-sm">
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-0.5">✓</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong>Bounding boxes renderizam corretamente</strong> - Cores por nível de confiança (verde/amarelo/vermelho)
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-0.5">✓</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong>Pan/Zoom funciona</strong> - Scroll do mouse para zoom, arrastar para pan
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-0.5">✓</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong>Navegação por teclado</strong> - ESC fecha, setas navegam entre boxes
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-0.5">✓</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong>Clique no box seleciona</strong> - Click em um box o seleciona
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-0.5">✓</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong>Tooltips no hover</strong> - Passar o mouse sobre box mostra label e confiança
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-0.5">✓</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong>Responsivo</strong> - Redimensionar a janela mantém a precisão dos boxes
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-0.5">✓</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong>Focus trap</strong> - Tab mantém foco dentro do modal
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-0.5">✓</span>
-              <span className="text-gray-700 dark:text-gray-300">
-                <strong>Backdrop fecha modal</strong> - Clicar fora do conteúdo fecha o modal
-              </span>
-            </li>
-          </ul>
-        </div>
+        <Card className="glass-card">
+          <CardContent className="pt-6">
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Bounding boxes renderizam corretamente</strong> - Cores por nível de confiança (verde/amarelo/vermelho)
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Pan/Zoom funciona</strong> - Scroll do mouse para zoom, arrastar para pan
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Navegação por teclado</strong> - ESC fecha, setas navegam entre boxes
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Clique no box seleciona</strong> - Click em um box o seleciona
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Tooltips no hover</strong> - Passar o mouse sobre box mostra label e confiança
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Responsivo</strong> - Redimensionar a janela mantém a precisão dos boxes
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Focus trap</strong> - Tab mantém foco dentro do modal
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Backdrop fecha modal</strong> - Clicar fora do conteúdo fecha o modal
+                </span>
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
       </section>
 
       {/* Quick Actions */}
@@ -458,15 +476,15 @@ export default function TestEvidenceModalPage() {
         </h2>
 
         <div className="flex flex-wrap gap-3">
-          <button
+          <Button
             onClick={() => openModal(sampleEvidenceRG)}
-            className="btn-primary flex items-center gap-2"
+            className="flex items-center gap-2"
           >
             <EyeIcon className="w-4 h-4" />
             Abrir Modal Padrão
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => {
               // Cycle through all evidences
               const evidences = [
@@ -481,11 +499,12 @@ export default function TestEvidenceModalPage() {
               const nextIndex = (currentIndex + 1) % evidences.length
               openModal(evidences[nextIndex])
             }}
-            className="btn-secondary flex items-center gap-2"
+            variant="outline"
+            className="flex items-center gap-2"
           >
             <ArrowPathIcon className="w-4 h-4" />
             Ciclar Evidências
-          </button>
+          </Button>
         </div>
       </section>
 

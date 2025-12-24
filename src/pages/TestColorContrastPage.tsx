@@ -5,6 +5,8 @@
  */
 
 import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Button } from '../components/ui/button'
 import {
   getContrastRatio,
   meetsWCAG_AA,
@@ -55,239 +57,262 @@ export default function TestColorContrastPage() {
                 WCAG 2.1 AA Compliance Testing (4.5:1 minimum for normal text)
               </p>
             </div>
-            <button
+            <Button
               onClick={() => setDarkMode(!darkMode)}
-              className="btn-primary"
               aria-label={`Switch to ${darkMode ? 'light' : 'dark'} mode`}
             >
               {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-            </button>
+            </Button>
           </div>
 
           {/* WCAG Standards Reference */}
-          <div className="card p-6">
-            <h2 className="text-xl font-semibold mb-4">WCAG 2.1 Standards</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <h3 className="font-medium">Level AA (Required)</h3>
-                <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
-                  <li>• Normal text: <strong>4.5:1</strong> minimum</li>
-                  <li>• Large text (18pt+): <strong>3:1</strong> minimum</li>
-                  <li>• UI components: <strong>3:1</strong> minimum</li>
-                </ul>
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>WCAG 2.1 Standards</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <h3 className="font-medium">Level AA (Required)</h3>
+                  <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
+                    <li>• Normal text: <strong>4.5:1</strong> minimum</li>
+                    <li>• Large text (18pt+): <strong>3:1</strong> minimum</li>
+                    <li>• UI components: <strong>3:1</strong> minimum</li>
+                  </ul>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="font-medium">Level AAA (Enhanced)</h3>
+                  <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
+                    <li>• Normal text: <strong>7:1</strong> minimum</li>
+                    <li>• Large text (18pt+): <strong>4.5:1</strong> minimum</li>
+                  </ul>
+                </div>
               </div>
-              <div className="space-y-2">
-                <h3 className="font-medium">Level AAA (Enhanced)</h3>
-                <ul className="text-sm space-y-1 text-gray-700 dark:text-gray-300">
-                  <li>• Normal text: <strong>7:1</strong> minimum</li>
-                  <li>• Large text (18pt+): <strong>4.5:1</strong> minimum</li>
-                </ul>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Color Contrast Checker */}
-          <div className="card p-6">
-            <h2 className="text-xl font-semibold mb-4">Color Pair Analysis</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-gray-300 dark:border-gray-600">
-                    <th className="text-left py-3 px-4">Color Pair</th>
-                    <th className="text-left py-3 px-4">Foreground</th>
-                    <th className="text-left py-3 px-4">Background</th>
-                    <th className="text-center py-3 px-4">Contrast Ratio</th>
-                    <th className="text-center py-3 px-4">WCAG Level</th>
-                    <th className="text-center py-3 px-4">Preview</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {colorPairs.map((pair, index) => {
-                    const ratio = getContrastRatio(pair.fg, pair.bg)
-                    const level = getWCAGLevel(ratio)
-                    const passes = meetsWCAG_AA(pair.fg, pair.bg)
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>Color Pair Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-gray-300 dark:border-gray-600">
+                      <th className="text-left py-3 px-4">Color Pair</th>
+                      <th className="text-left py-3 px-4">Foreground</th>
+                      <th className="text-left py-3 px-4">Background</th>
+                      <th className="text-center py-3 px-4">Contrast Ratio</th>
+                      <th className="text-center py-3 px-4">WCAG Level</th>
+                      <th className="text-center py-3 px-4">Preview</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {colorPairs.map((pair, index) => {
+                      const ratio = getContrastRatio(pair.fg, pair.bg)
+                      const level = getWCAGLevel(ratio)
+                      const passes = meetsWCAG_AA(pair.fg, pair.bg)
 
-                    return (
-                      <tr
-                        key={index}
-                        className="border-b border-gray-200 dark:border-gray-700"
-                      >
-                        <td className="py-3 px-4 font-medium">{pair.name}</td>
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2">
+                      return (
+                        <tr
+                          key={index}
+                          className="border-b border-gray-200 dark:border-gray-700"
+                        >
+                          <td className="py-3 px-4 font-medium">{pair.name}</td>
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-6 h-6 rounded border border-gray-300 dark:border-gray-600"
+                                style={{ backgroundColor: pair.fg }}
+                                aria-label={`Color ${pair.fg}`}
+                              />
+                              <span className="text-xs font-mono">{pair.fg}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-6 h-6 rounded border border-gray-300 dark:border-gray-600"
+                                style={{ backgroundColor: pair.bg }}
+                                aria-label={`Color ${pair.bg}`}
+                              />
+                              <span className="text-xs font-mono">{pair.bg}</span>
+                            </div>
+                          </td>
+                          <td className="py-3 px-4 text-center font-mono">
+                            {formatContrastRatio(ratio)}
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span
+                              className={`badge ${
+                                level === 'AAA'
+                                  ? 'badge-success'
+                                  : level === 'AA'
+                                  ? 'badge-info'
+                                  : 'badge-error'
+                              }`}
+                            >
+                              {level}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-center">
                             <div
-                              className="w-6 h-6 rounded border border-gray-300 dark:border-gray-600"
-                              style={{ backgroundColor: pair.fg }}
-                              aria-label={`Color ${pair.fg}`}
-                            />
-                            <span className="text-xs font-mono">{pair.fg}</span>
-                          </div>
-                        </td>
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2">
-                            <div
-                              className="w-6 h-6 rounded border border-gray-300 dark:border-gray-600"
-                              style={{ backgroundColor: pair.bg }}
-                              aria-label={`Color ${pair.bg}`}
-                            />
-                            <span className="text-xs font-mono">{pair.bg}</span>
-                          </div>
-                        </td>
-                        <td className="py-3 px-4 text-center font-mono">
-                          {formatContrastRatio(ratio)}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span
-                            className={`badge ${
-                              level === 'AAA'
-                                ? 'badge-success'
-                                : level === 'AA'
-                                ? 'badge-info'
-                                : 'badge-error'
-                            }`}
-                          >
-                            {level}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <div
-                            className="inline-block px-3 py-1 rounded"
-                            style={{
-                              backgroundColor: pair.bg,
-                              color: pair.fg,
-                            }}
-                          >
-                            Sample Text
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                              className="inline-block px-3 py-1 rounded"
+                              style={{
+                                backgroundColor: pair.bg,
+                                color: pair.fg,
+                              }}
+                            >
+                              Sample Text
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Status Badges Test */}
-          <div className="card p-6">
-            <h2 className="text-xl font-semibold mb-4">Status Badge Components</h2>
-            <div className="space-y-4">
-              <div className="flex flex-wrap gap-3">
-                {statuses.map((status) => (
-                  <DocumentStatusBadge key={status} status={status} />
-                ))}
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>Status Badge Components</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-3">
+                  {statuses.map((status) => (
+                    <DocumentStatusBadge key={status} status={status} />
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {statuses.map((status) => (
+                    <DocumentStatusBadge key={status} status={status} size="lg" />
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {statuses.map((status) => (
+                    <DocumentStatusBadge key={status} status={status} size="sm" />
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-3">
-                {statuses.map((status) => (
-                  <DocumentStatusBadge key={status} status={status} size="lg" />
-                ))}
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {statuses.map((status) => (
-                  <DocumentStatusBadge key={status} status={status} size="sm" />
-                ))}
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Button Variants Test */}
-          <div className="card p-6">
-            <h2 className="text-xl font-semibold mb-4">Button Components</h2>
-            <div className="space-y-4">
-              <div className="flex flex-wrap gap-3">
-                <button className="btn-primary">Primary Button</button>
-                <button className="btn-primary-outline">Primary Outline</button>
-                <button className="btn-primary-ghost">Primary Ghost</button>
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>Button Components</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-3">
+                  <Button>Primary Button</Button>
+                  <Button variant="outline">Primary Outline</Button>
+                  <Button variant="ghost">Primary Ghost</Button>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="secondary">Secondary Button</Button>
+                  <Button variant="outline">Secondary Outline</Button>
+                  <Button variant="ghost">Secondary Ghost</Button>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="destructive">Danger Button</Button>
+                  <Button variant="outline">Danger Outline</Button>
+                  <Button variant="ghost">Danger Ghost</Button>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <button className="btn-secondary">Secondary Button</button>
-                <button className="btn-secondary-outline">Secondary Outline</button>
-                <button className="btn-secondary-ghost">Secondary Ghost</button>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <button className="btn-danger">Danger Button</button>
-                <button className="btn-danger-outline">Danger Outline</button>
-                <button className="btn-danger-ghost">Danger Ghost</button>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Text Variations */}
-          <div className="card p-6">
-            <h2 className="text-xl font-semibold mb-4">Text Variations</h2>
-            <div className="space-y-3">
-              <p className="text-gray-900 dark:text-gray-50">
-                <strong>Primary Text:</strong> This is the main body text with maximum
-                contrast for readability.
-              </p>
-              <p className="text-gray-600 dark:text-gray-300">
-                <strong>Secondary Text:</strong> This is muted text that still meets WCAG
-                AA standards.
-              </p>
-              <p className="confidence-high">
-                <strong>Success/High Confidence:</strong> Positive status indicator with
-                green color.
-              </p>
-              <p className="confidence-medium">
-                <strong>Warning/Medium Confidence:</strong> Caution indicator with amber
-                color.
-              </p>
-              <p className="confidence-low">
-                <strong>Error/Low Confidence:</strong> Alert indicator with red color.
-              </p>
-            </div>
-          </div>
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>Text Variations</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <p className="text-gray-900 dark:text-gray-50">
+                  <strong>Primary Text:</strong> This is the main body text with maximum
+                  contrast for readability.
+                </p>
+                <p className="text-gray-600 dark:text-gray-300">
+                  <strong>Secondary Text:</strong> This is muted text that still meets WCAG
+                  AA standards.
+                </p>
+                <p className="confidence-high">
+                  <strong>Success/High Confidence:</strong> Positive status indicator with
+                  green color.
+                </p>
+                <p className="confidence-medium">
+                  <strong>Warning/Medium Confidence:</strong> Caution indicator with amber
+                  color.
+                </p>
+                <p className="confidence-low">
+                  <strong>Error/Low Confidence:</strong> Alert indicator with red color.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* WCAG Predefined Colors */}
-          <div className="card p-6">
-            <h2 className="text-xl font-semibold mb-4">
-              Predefined WCAG-Compliant Colors
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {Object.entries(WCAG_COLORS).map(([key, modes]) => (
-                <div key={key} className="space-y-2">
-                  <h3 className="font-medium capitalize">{key}</h3>
-                  <div className="space-y-2">
-                    <div
-                      className="p-3 rounded"
-                      style={{
-                        backgroundColor: modes.light.bg,
-                        color: modes.light.text,
-                      }}
-                    >
-                      Light Mode Sample
-                    </div>
-                    <div
-                      className="p-3 rounded"
-                      style={{
-                        backgroundColor: modes.dark.bg,
-                        color: modes.dark.text,
-                      }}
-                    >
-                      Dark Mode Sample
+          <Card className="glass-card">
+            <CardHeader>
+              <CardTitle>Predefined WCAG-Compliant Colors</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.entries(WCAG_COLORS).map(([key, modes]) => (
+                  <div key={key} className="space-y-2">
+                    <h3 className="font-medium capitalize">{key}</h3>
+                    <div className="space-y-2">
+                      <div
+                        className="p-3 rounded"
+                        style={{
+                          backgroundColor: modes.light.bg,
+                          color: modes.light.text,
+                        }}
+                      >
+                        Light Mode Sample
+                      </div>
+                      <div
+                        className="p-3 rounded"
+                        style={{
+                          backgroundColor: modes.dark.bg,
+                          color: modes.dark.text,
+                        }}
+                      >
+                        Dark Mode Sample
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Accessibility Features Summary */}
-          <div className="card p-6 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-700 dark:border-blue-400">
-            <h2 className="text-xl font-semibold mb-4">
-              ✅ Accessibility Features Implemented
-            </h2>
-            <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-              <li>• All text meets WCAG 2.1 AA contrast ratio (4.5:1 minimum)</li>
-              <li>• UI components meet 3:1 contrast requirement</li>
-              <li>• Dark mode with accessible color palette</li>
-              <li>• ARIA labels for interactive elements</li>
-              <li>• Screen reader support with sr-only utility class</li>
-              <li>• Semantic HTML with proper roles</li>
-              <li>• Focus indicators for keyboard navigation</li>
-              <li>• Reduced motion support via CSS media queries</li>
-            </ul>
-          </div>
+          <Card className="glass-card bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-700 dark:border-blue-400">
+            <CardHeader>
+              <CardTitle>✅ Accessibility Features Implemented</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                <li>• All text meets WCAG 2.1 AA contrast ratio (4.5:1 minimum)</li>
+                <li>• UI components meet 3:1 contrast requirement</li>
+                <li>• Dark mode with accessible color palette</li>
+                <li>• ARIA labels for interactive elements</li>
+                <li>• Screen reader support with sr-only utility class</li>
+                <li>• Semantic HTML with proper roles</li>
+                <li>• Focus indicators for keyboard navigation</li>
+                <li>• Reduced motion support via CSS media queries</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

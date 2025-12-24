@@ -6,6 +6,7 @@
  */
 
 import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { PropertyEntityCard } from '../components/entities'
 import type { Property } from '../types'
 
@@ -266,61 +267,63 @@ export default function TestPropertyEntityCardPage() {
         </div>
 
         {/* Feature Summary */}
-        <div className="mt-8 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
-            Features Demonstrated
-          </h3>
-          <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              All required property fields displayed with appropriate icons
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Registry information (matricula and cartorio)
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Location details (address and IPTU)
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Property characteristics (area and description)
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Encumbrances display with detailed information
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Confidence indicator with color coding (high/medium/low)
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Expand/collapse animation for better organization
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Click handlers for card and individual fields
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Selection state with visual feedback
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Compact mode for space-efficient display
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Responsive design for different screen sizes
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              Dark mode support
-            </li>
-          </ul>
-        </div>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Features Demonstrated</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                All required property fields displayed with appropriate icons
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Registry information (matricula and cartorio)
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Location details (address and IPTU)
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Property characteristics (area and description)
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Encumbrances display with detailed information
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Confidence indicator with color coding (high/medium/low)
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Expand/collapse animation for better organization
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Click handlers for card and individual fields
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Selection state with visual feedback
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Compact mode for space-efficient display
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Responsive design for different screen sizes
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                Dark mode support
+              </li>
+            </ul>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

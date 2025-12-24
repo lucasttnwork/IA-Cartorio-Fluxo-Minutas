@@ -1,4 +1,11 @@
-import { ChevronUpDownIcon } from '@heroicons/react/24/outline'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
 
 export type SortField = 'updated_at' | 'created_at' | 'title' | 'status' | 'act_type'
 export type SortOrder = 'asc' | 'desc'
@@ -29,8 +36,8 @@ const sortOptions: Array<{ value: string; label: string; field: SortField; order
 export default function SortControls({ currentSort, onSortChange }: SortControlsProps) {
   const currentValue = `${currentSort.field}_${currentSort.order}`
 
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOption = sortOptions.find(opt => opt.value === e.target.value)
+  const handleValueChange = (value: string) => {
+    const selectedOption = sortOptions.find(opt => opt.value === value)
     if (selectedOption) {
       onSortChange({
         field: selectedOption.field,
@@ -41,29 +48,21 @@ export default function SortControls({ currentSort, onSortChange }: SortControls
 
   return (
     <div className="flex items-center gap-2">
-      <label
-        htmlFor="sort-select"
-        className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap"
-      >
+      <Label htmlFor="sort-select" className="whitespace-nowrap">
         Sort by:
-      </label>
-      <div className="relative">
-        <select
-          id="sort-select"
-          value={currentValue}
-          onChange={handleChange}
-          className="appearance-none block pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors cursor-pointer"
-        >
+      </Label>
+      <Select value={currentValue} onValueChange={handleValueChange}>
+        <SelectTrigger id="sort-select" className="w-[200px]">
+          <SelectValue placeholder="Select sorting..." />
+        </SelectTrigger>
+        <SelectContent className="glass-popover">
           {sortOptions.map((option) => (
-            <option key={option.value} value={option.value}>
+            <SelectItem key={option.value} value={option.value}>
               {option.label}
-            </option>
+            </SelectItem>
           ))}
-        </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-          <ChevronUpDownIcon className="h-4 w-4 text-gray-400 dark:text-gray-500" />
-        </div>
-      </div>
+        </SelectContent>
+      </Select>
     </div>
   )
 }

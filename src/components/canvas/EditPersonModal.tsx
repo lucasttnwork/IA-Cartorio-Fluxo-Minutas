@@ -11,6 +11,17 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import type { Person, MaritalStatus, Address } from '../../types'
 import { supabase } from '../../lib/supabase'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Button } from '../ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
+import { cn } from '@/lib/utils'
 
 // -----------------------------------------------------------------------------
 // Constants
@@ -316,7 +327,8 @@ export function EditPersonModal({
       }
 
       // Update in database
-      const { data: updatedPerson, error: updateError } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data: updatedPerson, error: updateError } = await (supabase as any)
         .from('people')
         .update(updateData)
         .eq('id', person.id)
@@ -381,7 +393,11 @@ export function EditPersonModal({
               damping: 25,
               stiffness: 300,
             }}
-            className="absolute inset-4 sm:inset-8 md:inset-12 lg:inset-20 bg-white dark:bg-gray-800 rounded-xl shadow-2xl overflow-hidden flex flex-col"
+            className={cn(
+              "absolute inset-4 sm:inset-8 md:inset-12 lg:inset-20",
+              "glass-dialog",
+              "rounded-xl shadow-2xl overflow-hidden flex flex-col"
+            )}
             tabIndex={-1}
           >
             {/* Header */}
@@ -397,15 +413,16 @@ export function EditPersonModal({
                   {person.full_name}
                 </p>
               </div>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={onClose}
                 disabled={isSaving}
-                className="p-2 rounded-lg text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-gray-300 transition-colors"
                 aria-label="Fechar modal"
               >
                 <XMarkIcon className="w-5 h-5" />
-              </button>
+              </Button>
             </div>
 
             {/* Error Alert */}
@@ -424,49 +441,44 @@ export function EditPersonModal({
                     Identificação
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Nome Completo *
-                      </label>
-                      <input
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="full_name">
+                        Nome Completo <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="full_name"
                         type="text"
                         value={formData.full_name}
                         onChange={(e) => handleFieldChange('full_name', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
+                        aria-required="true"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        CPF
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="cpf">CPF</Label>
+                      <Input
+                        id="cpf"
                         type="text"
                         value={formData.cpf}
                         onChange={(e) => handleFieldChange('cpf', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        RG
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="rg">RG</Label>
+                      <Input
+                        id="rg"
                         type="text"
                         value={formData.rg}
                         onChange={(e) => handleFieldChange('rg', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Órgão Emissor RG
-                      </label>
-                      <input
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="rg_issuer">Órgão Emissor RG</Label>
+                      <Input
+                        id="rg_issuer"
                         type="text"
                         value={formData.rg_issuer}
                         onChange={(e) => handleFieldChange('rg_issuer', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -478,56 +490,49 @@ export function EditPersonModal({
                     Informações Pessoais
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Data de Nascimento
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="birth_date">Data de Nascimento</Label>
+                      <Input
+                        id="birth_date"
                         type="date"
                         value={formData.birth_date}
                         onChange={(e) => handleFieldChange('birth_date', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Nacionalidade
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="nationality">Nacionalidade</Label>
+                      <Input
+                        id="nationality"
                         type="text"
                         value={formData.nationality}
                         onChange={(e) => handleFieldChange('nationality', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Estado Civil
-                      </label>
-                      <select
+                    <div className="space-y-2">
+                      <Label htmlFor="marital_status">Estado Civil</Label>
+                      <Select
                         value={formData.marital_status}
-                        onChange={(e) =>
-                          handleFieldChange('marital_status', e.target.value)
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        onValueChange={(value) => handleFieldChange('marital_status', value)}
                       >
-                        <option value="">Selecione...</option>
-                        {MARITAL_STATUS_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger id="marital_status">
+                          <SelectValue placeholder="Selecione..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {MARITAL_STATUS_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Profissão
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="profession">Profissão</Label>
+                      <Input
+                        id="profession"
                         type="text"
                         value={formData.profession}
                         onChange={(e) => handleFieldChange('profession', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -539,26 +544,22 @@ export function EditPersonModal({
                     Contato
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Email
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        id="email"
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleFieldChange('email', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Telefone
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">Telefone</Label>
+                      <Input
+                        id="phone"
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => handleFieldChange('phone', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -570,113 +571,95 @@ export function EditPersonModal({
                     Filiação
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Nome do Pai
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="father_name">Nome do Pai</Label>
+                      <Input
+                        id="father_name"
                         type="text"
                         value={formData.father_name}
                         onChange={(e) => handleFieldChange('father_name', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Nome da Mãe
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="mother_name">Nome da Mãe</Label>
+                      <Input
+                        id="mother_name"
                         type="text"
                         value={formData.mother_name}
                         onChange={(e) => handleFieldChange('mother_name', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
                 </div>
 
                 {/* Address Section */}
-                <div>
+                <div className="glass-subtle p-4 rounded-lg">
                   <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-3">
                     Endereço
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Rua
-                      </label>
-                      <input
+                    <div className="md:col-span-2 space-y-2">
+                      <Label htmlFor="street">Rua</Label>
+                      <Input
+                        id="street"
                         type="text"
                         value={formData.address.street}
                         onChange={(e) => handleAddressChange('street', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Número
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="number">Número</Label>
+                      <Input
+                        id="number"
                         type="text"
                         value={formData.address.number}
                         onChange={(e) => handleAddressChange('number', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Complemento
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="complement">Complemento</Label>
+                      <Input
+                        id="complement"
                         type="text"
                         value={formData.address.complement}
                         onChange={(e) => handleAddressChange('complement', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Bairro
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="neighborhood">Bairro</Label>
+                      <Input
+                        id="neighborhood"
                         type="text"
                         value={formData.address.neighborhood}
                         onChange={(e) => handleAddressChange('neighborhood', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Cidade
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="city">Cidade</Label>
+                      <Input
+                        id="city"
                         type="text"
                         value={formData.address.city}
                         onChange={(e) => handleAddressChange('city', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        Estado
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="state">Estado</Label>
+                      <Input
+                        id="state"
                         type="text"
                         value={formData.address.state}
                         onChange={(e) => handleAddressChange('state', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         maxLength={2}
                       />
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                        CEP
-                      </label>
-                      <input
+                    <div className="space-y-2">
+                      <Label htmlFor="zip">CEP</Label>
+                      <Input
+                        id="zip"
                         type="text"
                         value={formData.address.zip}
                         onChange={(e) => handleAddressChange('zip', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     </div>
                   </div>
@@ -686,29 +669,28 @@ export function EditPersonModal({
 
             {/* Footer */}
             <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
-              <button
+              <Button
                 type="button"
+                variant="ghost"
                 onClick={onClose}
                 disabled={isSaving}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancelar
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
                 onClick={handleSave}
                 disabled={isSaving || !formData.full_name.trim()}
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {isSaving ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
                     Salvando...
                   </>
                 ) : (
                   'Salvar Alterações'
                 )}
-              </button>
+              </Button>
             </div>
           </motion.div>
         </div>

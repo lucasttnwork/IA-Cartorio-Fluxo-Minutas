@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import Avatar from '../components/common/Avatar'
 import AvatarGroup from '../components/common/AvatarGroup'
 import UserProfileDropdown from '../components/common/UserProfileDropdown'
@@ -34,10 +35,11 @@ export default function TestAvatarPage() {
         </div>
 
         {/* Avatar Sizes */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Avatar Sizes
-          </h2>
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Avatar Sizes</CardTitle>
+          </CardHeader>
+          <CardContent>
           <div className="flex items-end gap-6">
             <div className="text-center">
               <Avatar name="Maria Silva" size="xs" />
@@ -60,14 +62,16 @@ export default function TestAvatarPage() {
               <p className="text-xs text-gray-500 mt-2">XL</p>
             </div>
           </div>
-        </section>
+          </CardContent>
+        </Card>
 
         {/* Avatar with Status */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Avatar with Status Indicator
-          </h2>
-          <div className="flex items-center gap-8">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Avatar with Status Indicator</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-8">
             <div className="text-center">
               <Avatar name="Online User" size="lg" status="online" />
               <p className="text-xs text-gray-500 mt-2">Online</p>
@@ -84,33 +88,37 @@ export default function TestAvatarPage() {
               <Avatar name="Offline User" size="lg" status="offline" />
               <p className="text-xs text-gray-500 mt-2">Offline</p>
             </div>
-          </div>
-        </section>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Avatar Colors */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Avatar Colors (Based on Name)
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Each avatar gets a consistent color based on the user's name.
-          </p>
-          <div className="flex flex-wrap gap-4">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Avatar Colors (Based on Name)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Each avatar gets a consistent color based on the user's name.
+            </p>
+            <div className="flex flex-wrap gap-4">
             {['Alice', 'Bob', 'Charlie', 'Diana', 'Edward', 'Fiona', 'George', 'Helena', 'Ivan', 'Julia'].map((name) => (
               <div key={name} className="text-center">
                 <Avatar name={name} size="md" />
                 <p className="text-xs text-gray-500 mt-1">{name}</p>
               </div>
             ))}
-          </div>
-        </section>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Avatar Group */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Avatar Group
-          </h2>
-          <div className="space-y-6">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Avatar Group</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                 Small (max 4)
@@ -129,18 +137,20 @@ export default function TestAvatarPage() {
               </p>
               <AvatarGroup avatars={mockUsers} max={5} size="lg" />
             </div>
-          </div>
-        </section>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* User Profile Dropdown */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            User Profile Dropdown
-          </h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-            Click on the profile to see the dropdown menu.
-          </p>
-          <div className="flex gap-8">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>User Profile Dropdown</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Click on the profile to see the dropdown menu.
+            </p>
+            <div className="flex gap-8">
             <div className="w-64 p-3 bg-gray-100 dark:bg-gray-800 rounded-lg">
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Admin User</p>
               <UserProfileDropdown
@@ -162,27 +172,31 @@ export default function TestAvatarPage() {
                 onSignOut={() => alert('Sign out clicked!')}
               />
             </div>
-          </div>
-        </section>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Role Badges */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Role Badges
-          </h2>
-          <div className="flex gap-4">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Role Badges</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
             <span className="role-badge-admin">Administrator</span>
             <span className="role-badge-supervisor">Supervisor</span>
             <span className="role-badge-clerk">Clerk</span>
-          </div>
-        </section>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Simulated Sidebar */}
-        <section className="card p-6">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-            Sidebar User Profile (as it appears in the app)
-          </h2>
-          <div className="w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle>Sidebar User Profile (as it appears in the app)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
             <div className="p-4 border-b dark:border-gray-700">
               <span className="text-lg font-semibold text-gray-900 dark:text-white">
                 Minuta Canvas
@@ -204,8 +218,9 @@ export default function TestAvatarPage() {
                 onSignOut={() => alert('Sign out clicked!')}
               />
             </div>
-          </div>
-        </section>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
