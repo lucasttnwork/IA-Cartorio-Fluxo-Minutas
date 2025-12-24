@@ -21,6 +21,26 @@ import {
   CheckCircleIcon,
 } from '@heroicons/react/24/outline'
 import type { ExtractedEntity, EntityType } from '../../types'
+import { Input } from '../ui/input'
+import { Checkbox } from '../ui/checkbox'
+import { Button } from '../ui/button'
+import { Badge } from '../ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '../ui/dialog'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '../ui/table'
+import { cn } from '@/lib/utils'
 
 // Entity type configuration with icons and colors
 const entityTypeConfig: Record<EntityType, { label: string; icon: typeof UserIcon; color: string; bgColor: string }> = {
@@ -161,11 +181,11 @@ export default function EntityTable({
     setSelectedEntities(new Set())
   }
 
-  // Get confidence badge class
+  // Get confidence badge styling
   const getConfidenceBadgeClass = (confidence: number): string => {
-    if (confidence >= 0.8) return 'confidence-badge-high'
-    if (confidence >= 0.6) return 'confidence-badge-medium'
-    return 'confidence-badge-low'
+    if (confidence >= 0.8) return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800'
+    if (confidence >= 0.6) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800'
+    return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800'
   }
 
   // Render sort icon
@@ -189,7 +209,7 @@ export default function EntityTable({
 
   if (entities.length === 0) {
     return (
-      <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+      <div className="glass-subtle text-center py-12 rounded-lg">
         <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
         <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
           Nenhuma entidade extraida
@@ -209,7 +229,7 @@ export default function EntityTable({
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
+          className="glass-card border-blue-200 dark:border-blue-800 p-4"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -218,19 +238,21 @@ export default function EntityTable({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <button
+              <Button
                 onClick={() => setSelectedEntities(new Set())}
-                className="btn-secondary text-sm py-1.5"
+                variant="outline"
+                size="sm"
               >
                 Limpar Seleção
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleBatchConfirm}
-                className="btn-primary text-sm py-1.5 flex items-center gap-2"
+                size="sm"
+                className="flex items-center gap-2"
               >
                 <CheckCircleIcon className="w-4 h-4" />
                 Confirmar em Lote
-              </button>
+              </Button>
             </div>
           </div>
         </motion.div>
@@ -240,33 +262,33 @@ export default function EntityTable({
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Search Input */}
         <div className="relative flex-1">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+          <Input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar entidades..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full pl-10 dark:bg-gray-800 dark:border-gray-600 dark:text-white"
           />
         </div>
 
         {/* Filter Toggle */}
-        <button
+        <Button
           onClick={() => setShowFilters(!showFilters)}
-          className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-colors ${
-            selectedTypes.length > 0
-              ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-              : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
-          }`}
+          variant={selectedTypes.length > 0 ? "default" : "outline"}
+          className={cn(
+            "flex items-center gap-2",
+            selectedTypes.length > 0 && "bg-blue-500 hover:bg-blue-600"
+          )}
         >
           <FunnelIcon className="w-5 h-5" />
           <span>Filtros</span>
           {selectedTypes.length > 0 && (
-            <span className="ml-1 px-2 py-0.5 text-xs bg-blue-500 text-white rounded-full">
+            <span className="ml-1 px-2 py-0.5 text-xs bg-white/20 rounded-full">
               {selectedTypes.length}
             </span>
           )}
-        </button>
+        </Button>
       </div>
 
       {/* Filter Pills */}
@@ -278,38 +300,40 @@ export default function EntityTable({
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex flex-wrap gap-2 p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+            <div className="flex flex-wrap gap-2 p-4 glass-subtle rounded-lg">
               {availableTypes.map((type) => {
                 const config = entityTypeConfig[type]
                 const isSelected = selectedTypes.includes(type)
                 const Icon = config.icon
 
                 return (
-                  <button
+                  <Button
                     key={type}
                     onClick={() => toggleTypeFilter(type)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                      isSelected
-                        ? `${config.bgColor} ${config.color}`
-                        : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'
-                    }`}
+                    variant={isSelected ? "default" : "outline"}
+                    size="sm"
+                    className={cn(
+                      "flex items-center gap-1.5",
+                      isSelected && `${config.bgColor} ${config.color} hover:opacity-90`
+                    )}
                   >
                     <Icon className="w-4 h-4" />
                     {config.label}
                     <span className="ml-1 text-xs opacity-70">
                       ({entities.filter(e => e.type === type).length})
                     </span>
-                  </button>
+                  </Button>
                 )
               })}
 
               {selectedTypes.length > 0 && (
-                <button
+                <Button
                   onClick={() => setSelectedTypes([])}
-                  className="px-3 py-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                  variant="ghost"
+                  size="sm"
                 >
                   Limpar filtros
-                </button>
+                </Button>
               )}
             </div>
           </motion.div>
@@ -322,120 +346,97 @@ export default function EntityTable({
       </div>
 
       {/* Entity Table */}
-      <div className="overflow-hidden bg-white dark:bg-gray-800 shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-900/50">
-              <tr>
-                <th scope="col" className="px-4 py-3 w-12">
-                  <input
-                    type="checkbox"
-                    checked={selectedEntities.size === filteredEntities.length && filteredEntities.length > 0}
-                    onChange={toggleSelectAll}
-                    className="checkbox"
-                  />
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={() => handleSort('type')}
-                >
-                  Tipo <SortIcon field="type" />
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={() => handleSort('value')}
-                >
-                  Valor <SortIcon field="value" />
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
-                  onClick={() => handleSort('confidence')}
-                >
-                  Confianca <SortIcon field="confidence" />
-                </th>
-                <th
-                  scope="col"
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
-                >
-                  Contexto
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              <AnimatePresence>
-                {filteredEntities.map((entity, index) => {
-                  const config = entityTypeConfig[entity.type]
-                  const Icon = config.icon
+      <div className="glass-card overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="w-12">
+                <Checkbox
+                  checked={selectedEntities.size === filteredEntities.length && filteredEntities.length > 0}
+                  onCheckedChange={toggleSelectAll}
+                  aria-label="Select all entities"
+                />
+              </TableHead>
+              <TableHead
+                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => handleSort('type')}
+              >
+                Tipo <SortIcon field="type" />
+              </TableHead>
+              <TableHead
+                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => handleSort('value')}
+              >
+                Valor <SortIcon field="value" />
+              </TableHead>
+              <TableHead
+                className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                onClick={() => handleSort('confidence')}
+              >
+                Confianca <SortIcon field="confidence" />
+              </TableHead>
+              <TableHead>Contexto</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <AnimatePresence>
+              {filteredEntities.map((entity, index) => {
+                const config = entityTypeConfig[entity.type]
+                const Icon = config.icon
 
-                  return (
-                    <motion.tr
-                      key={entity.id || index}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ delay: index * 0.02 }}
-                      className={`${
-                        selectedEntities.has(entity.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                      } ${onEntityClick ? 'hover:bg-gray-50 dark:hover:bg-gray-700/50' : ''}`}
+                return (
+                  <TableRow
+                    key={entity.id || index}
+                    className={cn(
+                      selectedEntities.has(entity.id) && "bg-blue-50 dark:bg-blue-900/20",
+                      onEntityClick && "cursor-pointer"
+                    )}
+                  >
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedEntities.has(entity.id)}
+                        onCheckedChange={() => toggleEntitySelection(entity.id)}
+                        onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                        aria-label={`Select ${entity.value}`}
+                      />
+                    </TableCell>
+                    <TableCell onClick={() => onEntityClick?.(entity)}>
+                      <div className={cn(
+                        "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium",
+                        config.bgColor,
+                        config.color
+                      )}>
+                        <Icon className="w-3.5 h-3.5" />
+                        {config.label}
+                      </div>
+                    </TableCell>
+                    <TableCell onClick={() => onEntityClick?.(entity)}>
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        {entity.value}
+                      </div>
+                      {entity.normalized_value && entity.normalized_value !== entity.value && (
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                          Normalizado: {entity.normalized_value}
+                        </div>
+                      )}
+                    </TableCell>
+                    <TableCell onClick={() => onEntityClick?.(entity)}>
+                      <Badge className={cn('font-medium', getConfidenceBadgeClass(entity.confidence))}>
+                        {Math.round(entity.confidence * 100)}%
+                      </Badge>
+                    </TableCell>
+                    <TableCell
+                      onClick={() => onEntityClick?.(entity)}
+                      className="max-w-xs truncate"
                     >
-                      <td className="px-4 py-3 whitespace-nowrap">
-                        <input
-                          type="checkbox"
-                          checked={selectedEntities.has(entity.id)}
-                          onChange={(e) => {
-                            e.stopPropagation()
-                            toggleEntitySelection(entity.id)
-                          }}
-                          onClick={(e) => e.stopPropagation()}
-                          className="checkbox"
-                        />
-                      </td>
-                      <td
-                        className="px-4 py-3 whitespace-nowrap cursor-pointer"
-                        onClick={() => onEntityClick?.(entity)}
-                      >
-                        <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bgColor} ${config.color}`}>
-                          <Icon className="w-3.5 h-3.5" />
-                          {config.label}
-                        </div>
-                      </td>
-                      <td
-                        className="px-4 py-3 cursor-pointer"
-                        onClick={() => onEntityClick?.(entity)}
-                      >
-                        <div className="text-sm font-medium text-gray-900 dark:text-white">
-                          {entity.value}
-                        </div>
-                        {entity.normalized_value && entity.normalized_value !== entity.value && (
-                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                            Normalizado: {entity.normalized_value}
-                          </div>
-                        )}
-                      </td>
-                      <td
-                        className="px-4 py-3 whitespace-nowrap cursor-pointer"
-                        onClick={() => onEntityClick?.(entity)}
-                      >
-                        <span className={getConfidenceBadgeClass(entity.confidence)}>
-                          {Math.round(entity.confidence * 100)}%
-                        </span>
-                      </td>
-                      <td
-                        className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate cursor-pointer"
-                        onClick={() => onEntityClick?.(entity)}
-                      >
-                        {entity.context || '-'}
-                      </td>
-                    </motion.tr>
-                  )
-                })}
-              </AnimatePresence>
-            </tbody>
-          </table>
-        </div>
+                      {entity.context || '-'}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </AnimatePresence>
+          </TableBody>
+        </Table>
 
         {filteredEntities.length === 0 && (
           <div className="text-center py-8 text-gray-500 dark:text-gray-400">
@@ -445,95 +446,75 @@ export default function EntityTable({
       </div>
 
       {/* Batch Confirmation Modal */}
-      <AnimatePresence>
-        {showBatchConfirmModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-2xl w-full max-h-[80vh] overflow-hidden"
-            >
-              {/* Modal Header */}
-              <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    Confirmar Entidades em Lote
-                  </h3>
-                  <button
-                    onClick={() => setShowBatchConfirmModal(false)}
-                    className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                  >
-                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+      <Dialog open={showBatchConfirmModal} onOpenChange={setShowBatchConfirmModal}>
+        <DialogContent className="glass-dialog max-w-2xl max-h-[80vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle>Confirmar Entidades em Lote</DialogTitle>
+          </DialogHeader>
 
-              {/* Modal Body */}
-              <div className="px-6 py-4 overflow-y-auto max-h-[60vh]">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  Você está prestes a confirmar {selectedEntities.size} entidade{selectedEntities.size !== 1 ? 's' : ''}.
-                  Esta ação marcará todas as entidades selecionadas como confirmadas.
-                </p>
+          <div className="overflow-y-auto max-h-[60vh]">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+              Você está prestes a confirmar {selectedEntities.size} entidade{selectedEntities.size !== 1 ? 's' : ''}.
+              Esta ação marcará todas as entidades selecionadas como confirmadas.
+            </p>
 
-                {/* Selected Entities Summary */}
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
-                    Entidades Selecionadas:
-                  </h4>
-                  <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4 space-y-2 max-h-96 overflow-y-auto">
-                    {Array.from(selectedEntities).map((entityId) => {
-                      const entity = entities.find(e => e.id === entityId)
-                      if (!entity) return null
-                      const config = entityTypeConfig[entity.type]
-                      const Icon = config.icon
+            {/* Selected Entities Summary */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                Entidades Selecionadas:
+              </h4>
+              <div className="glass-subtle rounded-lg p-4 space-y-2 max-h-96 overflow-y-auto">
+                {Array.from(selectedEntities).map((entityId) => {
+                  const entity = entities.find(e => e.id === entityId)
+                  if (!entity) return null
+                  const config = entityTypeConfig[entity.type]
+                  const Icon = config.icon
 
-                      return (
-                        <div
-                          key={entityId}
-                          className="flex items-center justify-between py-2 px-3 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700"
-                        >
-                          <div className="flex items-center gap-3 flex-1 min-w-0">
-                            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bgColor} ${config.color}`}>
-                              <Icon className="w-3.5 h-3.5" />
-                              {config.label}
-                            </div>
-                            <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                              {entity.value}
-                            </span>
-                          </div>
-                          <span className={getConfidenceBadgeClass(entity.confidence)}>
-                            {Math.round(entity.confidence * 100)}%
-                          </span>
+                  return (
+                    <div
+                      key={entityId}
+                      className="flex items-center justify-between py-2 px-3 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700"
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className={cn(
+                          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium",
+                          config.bgColor,
+                          config.color
+                        )}>
+                          <Icon className="w-3.5 h-3.5" />
+                          {config.label}
                         </div>
-                      )
-                    })}
-                  </div>
-                </div>
+                        <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                          {entity.value}
+                        </span>
+                      </div>
+                      <Badge className={cn('font-medium', getConfidenceBadgeClass(entity.confidence))}>
+                        {Math.round(entity.confidence * 100)}%
+                      </Badge>
+                    </div>
+                  )
+                })}
               </div>
-
-              {/* Modal Footer */}
-              <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
-                <button
-                  onClick={() => setShowBatchConfirmModal(false)}
-                  className="btn-secondary"
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={confirmBatchOperation}
-                  className="btn-primary flex items-center gap-2"
-                >
-                  <CheckCircleIcon className="w-5 h-5" />
-                  Confirmar {selectedEntities.size} Entidade{selectedEntities.size !== 1 ? 's' : ''}
-                </button>
-              </div>
-            </motion.div>
+            </div>
           </div>
-        )}
-      </AnimatePresence>
+
+          <DialogFooter>
+            <Button
+              onClick={() => setShowBatchConfirmModal(false)}
+              variant="outline"
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={confirmBatchOperation}
+              className="flex items-center gap-2"
+            >
+              <CheckCircleIcon className="w-5 h-5" />
+              Confirmar {selectedEntities.size} Entidade{selectedEntities.size !== 1 ? 's' : ''}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

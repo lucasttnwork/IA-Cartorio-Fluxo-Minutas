@@ -13,6 +13,11 @@ import {
 import { useCreateCase } from '../../hooks/useCases'
 import { formatCurrencyInput, parseCurrency, formatCurrency } from '../../utils'
 import type { ActType } from '../../types'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Textarea } from '../ui/textarea'
+import { Button } from '../ui/button'
+import { cn } from '../../lib/utils'
 
 // Act type options for the form
 const actTypeOptions: { value: ActType; label: string; description: string }[] = [
@@ -217,33 +222,38 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             </div>
 
             {/* Case Title */}
-            <div>
-              <label
+            <div className="space-y-2">
+              <Label
                 htmlFor="case-title"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="text-gray-700 dark:text-gray-300"
               >
                 Case Title <span className="text-red-500">*</span>
-              </label>
-              <input
+              </Label>
+              <Input
                 id="case-title"
                 type="text"
                 value={formData.title}
                 onChange={(e) => updateFormData('title', e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="e.g., Property Sale - 123 Main Street"
-                className={`input ${errors.title ? 'input-error' : ''}`}
+                className={cn(
+                  "dark:bg-gray-800 dark:border-gray-600 dark:text-white",
+                  errors.title && "border-red-500 focus-visible:ring-red-500"
+                )}
                 autoFocus
+                aria-invalid={!!errors.title}
+                aria-describedby={errors.title ? "title-error" : undefined}
               />
               {errors.title && (
-                <p className="mt-1 text-sm text-red-500">{errors.title}</p>
+                <p id="title-error" className="text-sm text-red-500">{errors.title}</p>
               )}
             </div>
 
             {/* Act Type Selection */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <div className="space-y-2">
+              <Label className="text-gray-700 dark:text-gray-300">
                 Act Type <span className="text-red-500">*</span>
-              </label>
+              </Label>
               <div className="grid grid-cols-2 gap-3">
                 {actTypeOptions.map((option) => (
                   <button
@@ -268,20 +278,20 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             </div>
 
             {/* Description */}
-            <div>
-              <label
+            <div className="space-y-2">
+              <Label
                 htmlFor="case-description"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="text-gray-700 dark:text-gray-300"
               >
                 Description <span className="text-gray-400">(optional)</span>
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 id="case-description"
                 value={formData.description}
                 onChange={(e) => updateFormData('description', e.target.value)}
                 placeholder="Brief description of this case..."
                 rows={3}
-                className="input resize-none"
+                className="dark:bg-gray-800 dark:border-gray-600 dark:text-white resize-none"
               />
             </div>
           </motion.div>
@@ -313,39 +323,44 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             </div>
 
             {/* Price */}
-            <div>
-              <label
+            <div className="space-y-2">
+              <Label
                 htmlFor="case-price"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="text-gray-700 dark:text-gray-300"
               >
                 {formData.act_type === 'lease' ? 'Monthly Rent' : 'Price'}{' '}
                 {formData.act_type === 'purchase_sale' && <span className="text-red-500">*</span>}
-              </label>
+              </Label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 text-sm">
                   R$
                 </span>
-                <input
+                <Input
                   id="case-price"
                   type="text"
                   value={formData.price}
                   onChange={(e) => updateFormData('price', e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="0,00"
-                  className={`input pl-10 ${errors.price ? 'input-error' : ''}`}
+                  className={cn(
+                    "dark:bg-gray-800 dark:border-gray-600 dark:text-white pl-10",
+                    errors.price && "border-red-500 focus-visible:ring-red-500"
+                  )}
+                  aria-invalid={!!errors.price}
+                  aria-describedby={errors.price ? "price-error" : undefined}
                 />
               </div>
               {errors.price && (
-                <p className="mt-1 text-sm text-red-500">{errors.price}</p>
+                <p id="price-error" className="text-sm text-red-500">{errors.price}</p>
               )}
             </div>
 
             {/* Payment Method */}
             {formData.act_type === 'purchase_sale' && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300">
                   Payment Method
-                </label>
+                </Label>
                 <div className="flex gap-3">
                   <button
                     type="button"
@@ -389,14 +404,15 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
+                className="space-y-2"
               >
-                <label
+                <Label
                   htmlFor="installments-count"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                  className="text-gray-700 dark:text-gray-300"
                 >
                   Number of Installments
-                </label>
-                <input
+                </Label>
+                <Input
                   id="installments-count"
                   type="number"
                   min="2"
@@ -405,7 +421,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                   onChange={(e) => updateFormData('installments_count', e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder="e.g., 12"
-                  className="input"
+                  className="dark:bg-gray-800 dark:border-gray-600 dark:text-white"
                 />
               </motion.div>
             )}
@@ -473,20 +489,20 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             </div>
 
             {/* Notes */}
-            <div>
-              <label
+            <div className="space-y-2">
+              <Label
                 htmlFor="case-notes"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                className="text-gray-700 dark:text-gray-300"
               >
                 Notes <span className="text-gray-400">(optional)</span>
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 id="case-notes"
                 value={formData.notes}
                 onChange={(e) => updateFormData('notes', e.target.value)}
                 placeholder="Any additional information or special conditions..."
                 rows={4}
-                className="input resize-none"
+                className="dark:bg-gray-800 dark:border-gray-600 dark:text-white resize-none"
               />
             </div>
           </motion.div>
@@ -516,7 +532,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="card relative shadow-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            className="glass-dialog relative shadow-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto"
           >
             {/* Modal Header */}
             <div className="flex items-center justify-between mb-2">
@@ -543,36 +559,36 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             <div className="mt-6 flex justify-between gap-3">
               <div>
                 {currentStep > 0 && (
-                  <button
+                  <Button
+                    variant="outline"
                     onClick={handleBack}
-                    className="btn-secondary"
                     disabled={createCaseMutation.isPending}
                   >
                     <ArrowLeftIcon className="w-4 h-4 mr-2" />
                     Back
-                  </button>
+                  </Button>
                 )}
               </div>
               <div className="flex gap-3">
-                <button
+                <Button
+                  variant="outline"
                   onClick={handleClose}
-                  className="btn-secondary"
                   disabled={createCaseMutation.isPending}
                 >
                   Cancel
-                </button>
+                </Button>
                 {currentStep < totalSteps - 1 ? (
-                  <button
+                  <Button
+                    variant="default"
                     onClick={handleNext}
-                    className="btn-primary"
                   >
                     Next
                     <ArrowRightIcon className="w-4 h-4 ml-2" />
-                  </button>
+                  </Button>
                 ) : (
-                  <button
+                  <Button
+                    variant="default"
                     onClick={handleCreate}
-                    className="btn-primary"
                     disabled={createCaseMutation.isPending}
                   >
                     {createCaseMutation.isPending ? (
@@ -586,7 +602,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                         Create Case
                       </>
                     )}
-                  </button>
+                  </Button>
                 )}
               </div>
             </div>
