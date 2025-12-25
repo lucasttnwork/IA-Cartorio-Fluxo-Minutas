@@ -9,6 +9,7 @@ import {
   DocumentTextIcon,
   CurrencyDollarIcon,
   UserGroupIcon,
+  ExclamationCircleIcon,
 } from '@heroicons/react/24/outline'
 import { useCreateCase } from '../../hooks/useCases'
 import { formatCurrencyInput, parseCurrency, formatCurrency } from '../../utils'
@@ -245,7 +246,10 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 aria-describedby={errors.title ? "title-error" : undefined}
               />
               {errors.title && (
-                <p id="title-error" className="text-sm text-red-500">{errors.title}</p>
+                <div id="title-error" className="form-error-message animate-form-error-slide-in">
+                  <ExclamationCircleIcon className="form-error-icon" />
+                  <span>{errors.title}</span>
+                </div>
               )}
             </div>
 
@@ -351,7 +355,10 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 />
               </div>
               {errors.price && (
-                <p id="price-error" className="text-sm text-red-500">{errors.price}</p>
+                <div id="price-error" className="form-error-message animate-form-error-slide-in">
+                  <ExclamationCircleIcon className="form-error-icon" />
+                  <span>{errors.price}</span>
+                </div>
               )}
             </div>
 
@@ -522,7 +529,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 glass-overlay"
             onClick={handleClose}
           />
 
@@ -532,7 +539,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="glass-dialog relative shadow-xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            className="glass-dialog relative p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto"
           >
             {/* Modal Header */}
             <div className="flex items-center justify-between mb-2">

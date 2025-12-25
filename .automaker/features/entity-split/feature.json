@@ -3,16 +3,18 @@
   "category": "Entity Management",
   "title": "Entity Split",
   "description": "Entity split - separate incorrectly merged persons",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
     "entity-merge"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
-  "model": "opus",
+  "updatedAt": "2025-12-25T00:54:38.764Z",
+  "model": "sonnet",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-25T00:48:22.151Z"
 }

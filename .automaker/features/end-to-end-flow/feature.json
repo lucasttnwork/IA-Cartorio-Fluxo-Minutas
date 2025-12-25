@@ -3,7 +3,7 @@
   "category": "Integration",
   "title": "Complete End-to-End Purchase/Sale Flow",
   "description": "Complete end-to-end purchase/sale flow",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "complex",
   "dependencies": [
@@ -17,9 +17,76 @@
     "export-html"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-25T01:50:44.527Z",
   "model": "opus",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "spec",
+  "skipTests": false,
+  "imagePaths": [],
+  "textFilePaths": [],
+  "branchName": "main",
+  "requirePlanApproval": false,
+  "startedAt": "2025-12-25T01:28:32.742Z",
+  "planSpec": {
+    "status": "approved",
+    "version": 1,
+    "reviewedByUser": false,
+    "content": "🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.{ts,tsx,js,jsx,json}\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"/package.json\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/**/*.{ts,tsx}\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\package.json\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\main.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\database.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/pages/**/*.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\App.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\DashboardPage.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\CaseOverviewPage.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\UploadPage.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\CanvasPage.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\DraftPage.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\EntitiesPage.tsx\"\n}\n\nNow I have a complete understanding of the codebase. Let me generate the specification.\n\n---\n\n## Specification: Complete End-to-End Purchase/Sale Flow\n\n### 1. **Problem**\nUsers need a seamless end-to-end workflow to process purchase and sale transactions in the notary system. Currently, while individual components exist (case creation, document upload, entity extraction, canvas visualization, draft generation), there is no dedicated flow page that guides users through the complete journey from case creation to final document generation. Users have to navigate manually between pages without clear progress indication or workflow guidance.\n\n### 2. **Solution**\nCreate a dedicated purchase/sale flow component with a step-by-step wizard interface that orchestrates the complete transaction workflow: Case Creation → Document Upload → Entity Extraction & Resolution → Canvas Review → Draft Generation, with real-time progress tracking and validation at each stage.\n\n### 3. **Acceptance Criteria**\n- GIVEN a user on the Dashboard, WHEN they click \"New Purchase/Sale Case\", THEN they are presented with a guided wizard flow showing all steps\n- GIVEN a user in the flow wizard, WHEN they complete document upload, THEN the flow automatically advances to entity extraction with progress indication\n- GIVEN entities are extracted, WHEN the user reviews the canvas, THEN they can confirm relationships and proceed to draft generation\n- GIVEN a completed flow, WHEN the draft is generated, THEN the user sees a summary with links to view/edit the draft\n- GIVEN any step in the flow, WHEN the user needs to go back, THEN they can navigate to previous steps without losing progress\n\n### 4. **Files to Modify**\n\n| File | Purpose | Action |\n|------|---------|--------|\n| src/pages/PurchaseSaleFlowPage.tsx | Main flow page with step wizard | create |\n| src/components/flow/FlowStepper.tsx | Step indicator component | create |\n| src/components/flow/FlowStepCard.tsx | Individual step card wrapper | create |\n| src/components/flow/index.ts | Barrel export for flow components | create |\n| src/hooks/usePurchaseSaleFlow.ts | Flow state management hook | create |\n| src/stores/flowStore.ts | Zustand store for flow state persistence | create |\n| src/App.tsx | Add route for flow page | modify |\n| src/pages/DashboardPage.tsx | Add button to start purchase/sale flow | modify |\n\n### 5. **Implementation Tasks**\n\n```tasks\n- [ ] T001: Create Zustand store for flow state management | File: src/stores/flowStore.ts\n- [ ] T002: Create usePurchaseSaleFlow hook for flow logic | File: src/hooks/usePurchaseSaleFlow.ts\n- [ ] T003: Create FlowStepper component for step visualization | File: src/components/flow/FlowStepper.tsx\n- [ ] T004: Create FlowStepCard component for step containers | File: src/components/flow/FlowStepCard.tsx\n- [ ] T005: Create barrel export for flow components | File: src/components/flow/index.ts\n- [ ] T006: Create main PurchaseSaleFlowPage with wizard | File: src/pages/PurchaseSaleFlowPage.tsx\n- [ ] T007: Add route for PurchaseSaleFlowPage in App.tsx | File: src/App.tsx\n- [ ] T008: Add \"Start Purchase/Sale Flow\" button on Dashboard | File: src/pages/DashboardPage.tsx\n```\n\n### 6. **Verification**\n1. Navigate to Dashboard at http://localhost:3007\n2. Click \"New Purchase/Sale Flow\" button\n3. Create a new case using the wizard\n4. Upload documents and verify progress to next step\n5. Review extracted entities in the canvas view\n6. Generate draft and verify completion summary\n7. Confirm all navigation (back/forward) works correctly\n8. Take screenshots at each step using Playwright MCP\n\n---",
+    "generatedAt": "2025-12-25T01:29:55.569Z",
+    "tasks": [
+      {
+        "id": "T001",
+        "description": "Create Zustand store for flow state management",
+        "filePath": "src/stores/flowStore.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T002",
+        "description": "Create usePurchaseSaleFlow hook for flow logic",
+        "filePath": "src/hooks/usePurchaseSaleFlow.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T003",
+        "description": "Create FlowStepper component for step visualization",
+        "filePath": "src/components/flow/FlowStepper.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T004",
+        "description": "Create FlowStepCard component for step containers",
+        "filePath": "src/components/flow/FlowStepCard.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T005",
+        "description": "Create barrel export for flow components",
+        "filePath": "src/components/flow/index.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T006",
+        "description": "Create main PurchaseSaleFlowPage with wizard",
+        "filePath": "src/pages/PurchaseSaleFlowPage.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T007",
+        "description": "Add route for PurchaseSaleFlowPage in App.tsx",
+        "filePath": "src/App.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T008",
+        "description": "Add \"Start Purchase/Sale Flow\" button on Dashboard",
+        "filePath": "src/pages/DashboardPage.tsx",
+        "status": "pending"
+      }
+    ],
+    "tasksTotal": 8,
+    "tasksCompleted": 8,
+    "approvedAt": "2025-12-25T01:29:55.572Z",
+    "currentTaskId": "T008"
+  }
 }

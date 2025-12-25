@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import Avatar from './Avatar'
 import type { User } from '../../types'
+import { useNavigate } from 'react-router-dom'
 
 interface UserProfileDropdownProps {
   user: User | null
@@ -40,19 +41,21 @@ export default function UserProfileDropdown({
   onSignOut,
   collapsed = false
 }: UserProfileDropdownProps) {
+  const navigate = useNavigate()
+
   const menuItems = [
     {
       label: 'View Profile',
       icon: UserCircleIcon,
       onClick: () => {
-        // TODO: Navigate to profile page
+        navigate('/profile')
       },
     },
     {
       label: 'Settings',
       icon: Cog6ToothIcon,
       onClick: () => {
-        // TODO: Navigate to settings
+        navigate('/settings')
       },
     },
     {

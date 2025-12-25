@@ -89,7 +89,7 @@ export default function BrowserNavigation() {
         aria-label="Go back"
         title="Go back (Alt + Left Arrow)"
       >
-        <ArrowLeftIcon className="w-5 h-5" />
+        <ArrowLeftIcon className="size-4" />
       </Button>
       <Button
         type="button"
@@ -100,7 +100,7 @@ export default function BrowserNavigation() {
         aria-label="Go forward"
         title="Go forward (Alt + Right Arrow)"
       >
-        <ArrowRightIcon className="w-5 h-5" />
+        <ArrowRightIcon className="size-4" />
       </Button>
     </div>
   )

@@ -3,18 +3,18 @@
   "category": "Entity Management",
   "title": "CPF Validation",
   "description": "CPF validation on person entity",
-  "status": "in_progress",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "person-entity-card"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-24T17:45:02.029Z",
+  "updatedAt": "2025-12-24T18:11:50.283Z",
   "model": "opus",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
   "planningMode": "lite",
   "branchName": "main",
-  "startedAt": "2025-12-24T17:45:00.473Z"
+  "startedAt": "2025-12-24T18:06:15.386Z"
 }

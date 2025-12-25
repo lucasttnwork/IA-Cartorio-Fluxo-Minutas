@@ -28,6 +28,11 @@ import {
   MapIcon,
   RectangleGroupIcon,
   CheckCircleIcon,
+  Bars3BottomLeftIcon,
+  Bars3BottomRightIcon,
+  Bars3Icon,
+  ArrowsUpDownIcon,
+  ArrowsRightLeftIcon,
 } from '@heroicons/react/24/outline'
 import { Card, CardContent } from '../components/ui/card'
 import { Button } from '../components/ui/button'
@@ -36,6 +41,7 @@ import { PersonNode, PropertyNode, ContextMenu } from '../components/canvas'
 import type { PersonNodeData, PropertyNodeData, ContextMenuItem } from '../components/canvas'
 import type { RelationshipType } from '../types'
 import { validateCanvas, type ValidationWarning } from '../utils/canvasValidation'
+import { alignNodes, distributeNodes, type AlignmentType, type DistributionType } from '../utils/canvasAlignment'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 
 // Test data - hardcoded for demo purposes
@@ -413,6 +419,36 @@ export default function TestCanvasConnectionsPage() {
     )
   }, [setNodes])
 
+  // Handle node alignment
+  const handleAlignNodes = useCallback((alignmentType: AlignmentType) => {
+    if (selectedNodes.length < 2) return
+
+    const alignedNodes = alignNodes(selectedNodes, alignmentType)
+
+    // Update node positions
+    setNodes((nds) =>
+      nds.map((node) => {
+        const alignedNode = alignedNodes.find((n) => n.id === node.id)
+        return alignedNode || node
+      })
+    )
+  }, [selectedNodes, setNodes])
+
+  // Handle node distribution
+  const handleDistributeNodes = useCallback((distributionType: DistributionType) => {
+    if (selectedNodes.length < 3) return
+
+    const distributedNodes = distributeNodes(selectedNodes, distributionType)
+
+    // Update node positions
+    setNodes((nds) =>
+      nds.map((node) => {
+        const distributedNode = distributedNodes.find((n) => n.id === node.id)
+        return distributedNode || node
+      })
+    )
+  }, [selectedNodes, setNodes])
+
   // Delete edge handler (for demo)
   const handleDeleteEdge = useCallback(
     (edgeId: string) => {
@@ -772,6 +808,98 @@ export default function TestCanvasConnectionsPage() {
                         </span>
                       </div>
                     </div>
+
+                    {/* Alignment Controls - only show when 2+ nodes selected */}
+                    {selectedNodes.length >= 2 && (
+                      <div className="space-y-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300">Alinhar</h4>
+                        <div className="grid grid-cols-3 gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAlignNodes('left')}
+                            className="h-8 px-2"
+                            title="Alinhar à esquerda"
+                          >
+                            <Bars3BottomLeftIcon className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAlignNodes('center-horizontal')}
+                            className="h-8 px-2"
+                            title="Centralizar horizontalmente"
+                          >
+                            <Bars3Icon className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAlignNodes('right')}
+                            className="h-8 px-2"
+                            title="Alinhar à direita"
+                          >
+                            <Bars3BottomRightIcon className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAlignNodes('top')}
+                            className="h-8 px-2"
+                            title="Alinhar ao topo"
+                          >
+                            <ArrowsUpDownIcon className="w-4 h-4 rotate-180" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAlignNodes('center-vertical')}
+                            className="h-8 px-2"
+                            title="Centralizar verticalmente"
+                          >
+                            <ArrowsUpDownIcon className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleAlignNodes('bottom')}
+                            className="h-8 px-2"
+                            title="Alinhar à base"
+                          >
+                            <ArrowsUpDownIcon className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Distribution Controls - only show when 3+ nodes selected */}
+                    {selectedNodes.length >= 3 && (
+                      <div className="space-y-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                        <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300">Distribuir</h4>
+                        <div className="grid grid-cols-2 gap-1">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDistributeNodes('horizontal')}
+                            className="h-8 gap-1.5"
+                            title="Distribuir horizontalmente"
+                          >
+                            <ArrowsRightLeftIcon className="w-4 h-4" />
+                            <span className="text-xs">Horiz.</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDistributeNodes('vertical')}
+                            className="h-8 gap-1.5"
+                            title="Distribuir verticalmente"
+                          >
+                            <ArrowsUpDownIcon className="w-4 h-4" />
+                            <span className="text-xs">Vert.</span>
+                          </Button>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
                       <Button

@@ -28,6 +28,10 @@ export interface EvidenceBoundingBox extends BoundingBox {
   fieldName?: string
   /** The extracted text content within this box */
   extractedText?: string
+  /** The manually overridden value (if user corrected the extraction) */
+  overriddenValue?: string
+  /** Whether this value has been manually overridden */
+  isOverridden?: boolean
 }
 
 /**
@@ -262,6 +266,11 @@ export type OnModalCloseHandler = () => void
  */
 export type OnTransformChangeHandler = (transform: ViewerTransform) => void
 
+/**
+ * Callback for when a bounding box value is overridden
+ */
+export type OnBoxOverrideHandler = (boxId: string, newValue: string) => void
+
 // -----------------------------------------------------------------------------
 // Props Types for Components
 // -----------------------------------------------------------------------------
@@ -276,6 +285,8 @@ export interface EvidenceModalProps {
   evidence: EvidenceItem | null
   /** Callback when modal closes */
   onClose: OnModalCloseHandler
+  /** Callback when a bounding box value is overridden */
+  onBoxOverride?: OnBoxOverrideHandler
   /** Optional configuration */
   config?: EvidenceModalConfig
   /** Custom class name */
@@ -322,6 +333,8 @@ export interface BoundingBoxOverlayProps {
   onBoxClick?: OnBoxClickHandler
   /** Callback when a box is hovered */
   onBoxHover?: OnBoxHoverHandler
+  /** Callback when a box value is overridden */
+  onBoxOverride?: OnBoxOverrideHandler
   /** Custom class name */
   className?: string
 }
@@ -344,6 +357,8 @@ export interface HighlightBoxProps {
   onMouseEnter?: () => void
   /** Callback when mouse leaves */
   onMouseLeave?: () => void
+  /** Callback when value is overridden */
+  onOverride?: (newValue: string) => void
   /** Custom style overrides */
   style?: Partial<HighlightBoxStyle>
   /** Custom class name */
@@ -412,6 +427,109 @@ export const DEFAULT_BOX_STYLES: Record<'high' | 'medium' | 'low', HighlightBoxS
     strokeWidth: 2,
     borderRadius: 2,
   },
+}
+
+// -----------------------------------------------------------------------------
+// Evidence Chain Types
+// -----------------------------------------------------------------------------
+
+/**
+ * Node types in the evidence chain
+ */
+export type EvidenceChainNodeType = 'document' | 'ocr' | 'llm' | 'consensus' | 'entity'
+
+/**
+ * A single node in the evidence chain
+ */
+export interface EvidenceChainNode {
+  /** Unique identifier for this node */
+  id: string
+  /** Type of the node */
+  type: EvidenceChainNodeType
+  /** Display label for the node */
+  label: string
+  /** Value at this stage of the chain */
+  value: string | null
+  /** Confidence score at this stage */
+  confidence: number
+  /** Timestamp when this stage occurred */
+  timestamp: string
+  /** Additional metadata for this node */
+  metadata?: Record<string, unknown>
+  /** Document ID if applicable */
+  documentId?: string
+  /** Page number if applicable */
+  pageNumber?: number
+  /** Bounding box if applicable */
+  boundingBox?: BoundingBox
+}
+
+/**
+ * A link between two nodes in the evidence chain
+ */
+export interface EvidenceChainLink {
+  /** Source node ID */
+  source: string
+  /** Target node ID */
+  target: string
+  /** Type of transformation/process */
+  type: 'extraction' | 'validation' | 'consensus' | 'resolution'
+  /** Label for the link */
+  label?: string
+}
+
+/**
+ * Complete evidence chain for a single field
+ */
+export interface EvidenceChain {
+  /** Field name this chain is for */
+  fieldName: string
+  /** Entity type */
+  entityType: 'person' | 'property'
+  /** Entity ID */
+  entityId: string
+  /** Current/final value */
+  currentValue: string | null
+  /** Overall confidence */
+  confidence: number
+  /** All nodes in the chain */
+  nodes: EvidenceChainNode[]
+  /** Links between nodes */
+  links: EvidenceChainLink[]
+  /** Whether there are conflicts in the chain */
+  hasConflicts: boolean
+  /** Whether the field is pending review */
+  isPending: boolean
+}
+
+/**
+ * Props for the EvidenceChainVisualization component
+ */
+export interface EvidenceChainVisualizationProps {
+  /** The evidence chain to visualize */
+  chain: EvidenceChain
+  /** Whether to show in compact mode */
+  compact?: boolean
+  /** Callback when a node is clicked */
+  onNodeClick?: (node: EvidenceChainNode) => void
+  /** Callback when document evidence is clicked */
+  onViewDocument?: (documentId: string, pageNumber?: number) => void
+  /** Custom class name */
+  className?: string
+}
+
+/**
+ * Props for individual chain node component
+ */
+export interface ChainNodeProps {
+  /** The node data */
+  node: EvidenceChainNode
+  /** Whether this node is selected */
+  isSelected?: boolean
+  /** Callback when clicked */
+  onClick?: () => void
+  /** Custom class name */
+  className?: string
 }
 
 // -----------------------------------------------------------------------------

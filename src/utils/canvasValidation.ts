@@ -1,4 +1,5 @@
-import type { Person, Property, GraphEdge, RelationshipType } from '../types'
+import type { Person, Property, GraphEdge, Document } from '../types'
+import { validateProxyDocument } from './proxyValidation'
 
 export interface ValidationWarning {
   id: string
@@ -17,13 +18,22 @@ export interface ValidationWarning {
  */
 export function validateCanvas(
   people: Person[],
-  properties: Property[],
-  edges: GraphEdge[]
+  _properties: Property[],
+  edges: GraphEdge[],
+  documents?: Document[]
 ): ValidationWarning[] {
   const warnings: ValidationWarning[] = []
 
   // Check for missing spouse consent
   warnings.push(...checkSpouseConsent(people, edges))
+
+  // Check for missing proxy documents on representation relationships
+  warnings.push(...checkProxyDocuments(people, edges))
+
+  // Check validity of attached proxy documents
+  if (documents) {
+    warnings.push(...checkProxyValidity(people, edges, documents))
+  }
 
   return warnings
 }
@@ -120,6 +130,142 @@ function checkSpouseConsent(people: Person[], edges: GraphEdge[]): ValidationWar
             type: 'person',
             id: spouseId,
             name: spouse?.full_name || 'Cônjuge',
+          },
+        ],
+      })
+    }
+  }
+
+  return warnings
+}
+
+/**
+ * Check if representation relationships have proxy documents attached
+ * Rule: Person-to-person "represents" relationships should have a proxy document
+ */
+function checkProxyDocuments(people: Person[], edges: GraphEdge[]): ValidationWarning[] {
+  const warnings: ValidationWarning[] = []
+
+  // Find all "represents" relationships
+  const representationEdges = edges.filter(
+    (edge) =>
+      edge.relationship === 'represents' &&
+      edge.source_type === 'person' &&
+      edge.target_type === 'person'
+  )
+
+  for (const edge of representationEdges) {
+    // Check if proxy document is attached
+    const hasProxyDocument = edge.metadata?.proxy_document_id
+
+    if (!hasProxyDocument) {
+      const representative = people.find((p) => p.id === edge.source_id)
+      const represented = people.find((p) => p.id === edge.target_id)
+
+      warnings.push({
+        id: `proxy-missing-${edge.id}`,
+        type: 'warning',
+        title: 'Procuracao nao anexada',
+        description: `${representative?.full_name || 'Representante'} representa ${
+          represented?.full_name || 'Representado'
+        }, mas nenhuma procuracao foi anexada a esta representacao. Anexe a procuracao para validar os poderes.`,
+        affectedEntities: [
+          {
+            type: 'person',
+            id: edge.source_id,
+            name: representative?.full_name || 'Representante',
+          },
+          {
+            type: 'person',
+            id: edge.target_id,
+            name: represented?.full_name || 'Representado',
+          },
+        ],
+      })
+    }
+  }
+
+  return warnings
+}
+
+/**
+ * Check validity of attached proxy documents
+ * Rule: Proxy documents must be valid (not expired, have required powers, etc.)
+ */
+function checkProxyValidity(
+  people: Person[],
+  edges: GraphEdge[],
+  documents: Document[]
+): ValidationWarning[] {
+  const warnings: ValidationWarning[] = []
+
+  // Find all "represents" relationships with attached proxy documents
+  const representationEdges = edges.filter(
+    (edge) =>
+      edge.relationship === 'represents' &&
+      edge.source_type === 'person' &&
+      edge.target_type === 'person' &&
+      edge.metadata?.proxy_document_id
+  )
+
+  for (const edge of representationEdges) {
+    const proxyDocumentId = edge.metadata?.proxy_document_id as string
+    const proxyDocument = documents.find((doc) => doc.id === proxyDocumentId)
+
+    if (!proxyDocument) {
+      // Document not found in provided list - skip
+      continue
+    }
+
+    // Validate the proxy document
+    const validationResult = validateProxyDocument(proxyDocument)
+
+    const representative = people.find((p) => p.id === edge.source_id)
+    const represented = people.find((p) => p.id === edge.target_id)
+
+    // Add errors as validation warnings
+    for (const error of validationResult.errors) {
+      warnings.push({
+        id: `proxy-invalid-${edge.id}-${error.code}`,
+        type: 'error',
+        title: 'Procuracao invalida',
+        description: `${representative?.full_name || 'Representante'} → ${
+          represented?.full_name || 'Representado'
+        }: ${error.message}`,
+        affectedEntities: [
+          {
+            type: 'person',
+            id: edge.source_id,
+            name: representative?.full_name || 'Representante',
+          },
+          {
+            type: 'person',
+            id: edge.target_id,
+            name: represented?.full_name || 'Representado',
+          },
+        ],
+      })
+    }
+
+    // Add warnings as validation warnings
+    for (const warning of validationResult.warnings) {
+      warnings.push({
+        id: `proxy-warning-${edge.id}-${warning.code}`,
+        type: 'warning',
+        title: 'Aviso sobre procuracao',
+        description: `${representative?.full_name || 'Representante'} → ${
+          represented?.full_name || 'Representado'
+        }: ${warning.message}`,
+        affectedEntities: [
+          {
+            type: 'person',
+            id: edge.source_id,
+            name: representative?.full_name || 'Representante',
+          },
+          {
+            type: 'person',
+            id: edge.target_id,
+            name: represented?.full_name || 'Representado',
           },
         ],
       })

@@ -28,6 +28,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { DocumentTypeBadge } from '@/components/status/DocumentTypeBadge'
 import { cn } from '@/lib/utils'
 import type { Document, DocumentStatus, DocumentType } from '../../types'
 
@@ -38,6 +39,8 @@ export interface DocumentCardProps {
   onView?: (document: Document) => void
   /** Callback when the delete button is clicked */
   onDelete?: (documentId: string) => void
+  /** Callback when the reprocess button is clicked */
+  onReprocess?: (documentId: string) => void
   /** Whether the card is selected */
   isSelected?: boolean
   /** Callback when the card is clicked */
@@ -46,6 +49,14 @@ export interface DocumentCardProps {
   animationDelay?: number
   /** Additional class names */
   className?: string
+  /** Optional thumbnail URL for image documents */
+  thumbnailUrl?: string
+  /** Whether reprocessing is in progress for this document */
+  isReprocessing?: boolean
+  /** Whether selection mode is enabled */
+  selectionMode?: boolean
+  /** Callback when selection checkbox is toggled */
+  onSelectionToggle?: (documentId: string) => void
 }
 
 // Status configuration with styling
@@ -177,14 +188,37 @@ export default function DocumentCard({
   document,
   onView,
   onDelete,
+  onReprocess,
   isSelected = false,
   onClick,
   animationDelay = 0,
   className = '',
+  thumbnailUrl,
+  isReprocessing = false,
+  selectionMode = false,
+  onSelectionToggle,
 }: DocumentCardProps) {
   const statusInfo = statusConfig[document.status]
   const StatusIcon = statusInfo.icon
   const { icon: DocIcon, bgClass: docIconBg, iconClass: docIconClass } = getDocumentIconComponent(document.mime_type)
+
+  // Check if this is an image document
+  const isImageDocument = document.mime_type.startsWith('image/')
+
+  // Handle checkbox click in selection mode
+  const handleCheckboxClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    onSelectionToggle?.(document.id)
+  }
+
+  // Handle card click - in selection mode, toggle selection; otherwise use onClick
+  const handleCardClick = () => {
+    if (selectionMode) {
+      onSelectionToggle?.(document.id)
+    } else {
+      onClick?.(document)
+    }
+  }
 
   return (
     <motion.div
@@ -206,15 +240,17 @@ export default function DocumentCard({
         'shadow-sm hover:shadow-lg',
         'transition-all duration-300 ease-out',
         // Selection state
-        isSelected && 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-900',
+        isSelected && 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-900 bg-blue-50/50 dark:bg-blue-900/20',
+        // Selection mode hover state
+        selectionMode && !isSelected && 'hover:ring-2 hover:ring-blue-300 hover:ring-offset-2 dark:hover:ring-blue-600 dark:ring-offset-gray-900',
         // Cursor state
-        onClick && 'cursor-pointer',
+        (onClick || selectionMode) && 'cursor-pointer',
         className
       )}
-      onClick={() => onClick?.(document)}
-      role={onClick ? 'button' : undefined}
-      tabIndex={onClick ? 0 : undefined}
-      onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick(document) : undefined}
+      onClick={handleCardClick}
+      role={(onClick || selectionMode) ? 'button' : undefined}
+      tabIndex={(onClick || selectionMode) ? 0 : undefined}
+      onKeyDown={(onClick || selectionMode) ? (e) => e.key === 'Enter' && handleCardClick() : undefined}
     >
       {/* Decorative gradient overlay on hover */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-transparent to-purple-500/0 group-hover:from-blue-500/5 group-hover:to-purple-500/5 transition-all duration-500 pointer-events-none" />
@@ -226,14 +262,49 @@ export default function DocumentCard({
 
       <div className="relative p-4">
         <div className="flex items-start gap-4">
-          {/* Document Icon with styled container */}
+          {/* Selection checkbox - shown in selection mode */}
+          {selectionMode && (
+            <div
+              className="flex-shrink-0 flex items-center"
+              onClick={handleCheckboxClick}
+            >
+              <div
+                className={cn(
+                  'w-5 h-5 rounded border-2 flex items-center justify-center transition-all duration-200',
+                  isSelected
+                    ? 'bg-blue-500 border-blue-500 dark:bg-blue-600 dark:border-blue-600'
+                    : 'border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500'
+                )}
+                role="checkbox"
+                aria-checked={isSelected}
+                aria-label={`Selecionar ${document.original_name}`}
+              >
+                {isSelected && (
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Document Icon/Thumbnail with styled container */}
           <div className={cn(
-            'flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center',
+            'flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center overflow-hidden',
             'shadow-sm border border-white/20 dark:border-gray-600/30',
             'transition-transform duration-300 group-hover:scale-105',
-            docIconBg
+            !thumbnailUrl && docIconBg
           )}>
-            <DocIcon className={cn('w-7 h-7', docIconClass)} />
+            {isImageDocument && thumbnailUrl ? (
+              <img
+                src={thumbnailUrl}
+                alt={document.original_name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            ) : (
+              <DocIcon className={cn('size-7', docIconClass)} />
+            )}
           </div>
 
           {/* Document Info */}
@@ -259,7 +330,7 @@ export default function DocumentCard({
                 )}
               >
                 <StatusIcon className={cn(
-                  'w-3.5 h-3.5',
+                  'size-3.5',
                   document.status === 'processing' && 'animate-spin'
                 )} />
                 {statusInfo.label}
@@ -267,30 +338,21 @@ export default function DocumentCard({
 
               {/* Document Type Badge with Confidence */}
               {document.doc_type && (
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    'gap-1.5 px-2.5 py-0.5 font-medium border shadow-sm',
-                    getDocTypeBadgeClass(document.doc_type_confidence)
-                  )}
-                >
-                  {documentTypeLabels[document.doc_type]}
-                  {document.doc_type_confidence !== null && (
-                    <span className={cn(
-                      'font-bold',
-                      getConfidenceColor(document.doc_type_confidence)
-                    )}>
-                      ({formatConfidence(document.doc_type_confidence)})
-                    </span>
-                  )}
-                </Badge>
+                <DocumentTypeBadge
+                  type={document.doc_type}
+                  confidence={document.doc_type_confidence}
+                  showConfidence={true}
+                  showIcon={true}
+                  size="sm"
+                  animate={false}
+                />
               )}
             </div>
 
             {/* Metadata row */}
             <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
               <span className="inline-flex items-center gap-1">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4" />
                 </svg>
                 {formatFileSize(document.file_size)}
@@ -299,7 +361,7 @@ export default function DocumentCard({
                 <>
                   <span className="text-gray-300 dark:text-gray-600">|</span>
                   <span className="inline-flex items-center gap-1">
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     {document.page_count} pagina{document.page_count !== 1 ? 's' : ''}
@@ -308,7 +370,7 @@ export default function DocumentCard({
               )}
               <span className="text-gray-300 dark:text-gray-600">|</span>
               <span className="inline-flex items-center gap-1">
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 {formatDate(document.created_at)}
@@ -329,7 +391,22 @@ export default function DocumentCard({
                 className="h-9 w-9 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:text-blue-600 dark:hover:text-blue-400"
                 title="Ver documento"
               >
-                <EyeIcon className="w-5 h-5" />
+                <EyeIcon className="size-4" />
+              </Button>
+            )}
+            {onReprocess && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onReprocess(document.id)
+                }}
+                disabled={isReprocessing || document.status === 'processing'}
+                className="h-9 w-9 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/30 hover:text-amber-600 dark:hover:text-amber-400 disabled:opacity-50"
+                title="Reprocessar documento"
+              >
+                <ArrowPathIcon className={cn('size-4', isReprocessing && 'animate-spin')} />
               </Button>
             )}
             {onDelete && (
@@ -343,7 +420,7 @@ export default function DocumentCard({
                 className="h-9 w-9 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 hover:text-red-600 dark:hover:text-red-400"
                 title="Remover documento"
               >
-                <TrashIcon className="w-5 h-5" />
+                <TrashIcon className="size-4" />
               </Button>
             )}
           </div>

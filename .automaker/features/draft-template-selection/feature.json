@@ -3,16 +3,18 @@
   "category": "Draft Editor",
   "title": "Draft Template Selection",
   "description": "Draft template selection",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
     "draft-generation"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
-  "model": "opus",
+  "updatedAt": "2025-12-24T20:27:15.569Z",
+  "model": "sonnet",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-24T20:19:07.727Z"
 }

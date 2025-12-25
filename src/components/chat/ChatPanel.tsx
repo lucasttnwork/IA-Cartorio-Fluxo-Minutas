@@ -16,6 +16,7 @@ import { useState, useRef, useEffect } from 'react'
 import { ChatMessage as ChatMessageType, ChatOperation } from '../../types'
 import { ChatMessage } from './ChatMessage'
 import { PaperAirplaneIcon, SparklesIcon, ArrowUturnLeftIcon } from '@heroicons/react/24/outline'
+import EmptyStateIllustration from '../common/EmptyStateIllustration'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Textarea } from '@/components/ui/textarea'
@@ -104,7 +105,7 @@ export function ChatPanel({
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-purple-500 dark:bg-purple-600 shadow-md">
-              <SparklesIcon className="w-5 h-5 text-white" />
+              <SparklesIcon className="size-5 text-white" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -126,7 +127,7 @@ export function ChatPanel({
               size="icon"
               className="hover:bg-gray-100 dark:hover:bg-gray-700"
             >
-              <ArrowUturnLeftIcon className="w-5 h-5" />
+              <ArrowUturnLeftIcon className="size-4" />
             </Button>
           )}
         </div>
@@ -138,11 +139,12 @@ export function ChatPanel({
           {messages.length === 0 ? (
             // Empty State
             <div className="h-[calc(100vh-300px)] flex flex-col items-center justify-center text-center px-4">
-              <div className="relative mb-6">
+              <div className="relative mb-4">
                 <div className="absolute inset-0 bg-purple-500/20 dark:bg-purple-400/20 rounded-full blur-2xl"></div>
-                <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 flex items-center justify-center shadow-xl">
-                  <SparklesIcon className="w-10 h-10 text-white animate-pulse-subtle" />
-                </div>
+                <EmptyStateIllustration
+                  type="chat"
+                  className="relative w-32 h-32"
+                />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                 Bem-vindo ao Assistente de Edição
@@ -179,7 +181,7 @@ export function ChatPanel({
               {isLoading && (
                 <div className="flex gap-3 animate-fade-in">
                   <div className="flex-shrink-0 w-10 h-10 rounded-full bg-purple-500 dark:bg-purple-600 flex items-center justify-center shadow-md">
-                    <SparklesIcon className="w-5 h-5 text-white animate-pulse" />
+                    <SparklesIcon className="size-5 text-white animate-pulse" />
                   </div>
                   <Card className="flex-1 glass-subtle">
                     <div className="inline-block px-5 py-3">
@@ -224,7 +226,7 @@ export function ChatPanel({
             size="icon"
             className="flex-shrink-0 bg-purple-500 hover:bg-purple-600 dark:bg-purple-600 dark:hover:bg-purple-700"
           >
-            <PaperAirplaneIcon className="w-5 h-5" />
+            <PaperAirplaneIcon className="size-4" />
           </Button>
         </form>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-3 flex items-center gap-1.5">

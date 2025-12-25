@@ -3,16 +3,18 @@
   "category": "UI Design",
   "title": "Table Styling Consistency",
   "description": "Table styling consistency",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
     "design-system-ui"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
-  "model": "opus",
+  "updatedAt": "2025-12-25T12:29:10.805Z",
+  "model": "sonnet",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-25T12:18:13.033Z"
 }

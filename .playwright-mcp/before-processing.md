@@ -1,0 +1,92 @@
+### Page state
+- Page URL: http://localhost:5179/test-document-status
+- Page Title: Minuta Canvas
+- Page Snapshot:
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: Real-time Status Demo
+      - heading "Document Processing Status - Live Updates" [level=1] [ref=e7]
+      - paragraph [ref=e8]: Demonstrates real-time document processing status updates with simulated backend processing.
+    - generic [ref=e9]:
+      - generic [ref=e11]: Simulation Controls
+      - generic [ref=e13]:
+        - button "Add Document" [ref=e14] [cursor=pointer]:
+          - img
+          - text: Add Document
+        - button "Start Processing" [disabled]:
+          - img
+          - text: Start Processing
+        - button "Reset" [ref=e15] [cursor=pointer]:
+          - img
+          - text: Reset
+        - generic [ref=e16]:
+          - img [ref=e17]
+          - combobox [ref=e19] [cursor=pointer]:
+            - generic: Normal
+            - img [ref=e20]
+        - generic [ref=e22]:
+          - img [ref=e23]
+          - generic [ref=e25]: "Failure:"
+          - slider [ref=e26]: "0"
+          - generic [ref=e27]: 0%
+    - generic [ref=e28]:
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]: Documents
+          - generic [ref=e33]: 0 documents
+        - generic [ref=e35]:
+          - img [ref=e37]
+          - heading "No documents" [level=3] [ref=e39]
+          - paragraph [ref=e40]: Add documents to start the simulation
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: Status Log
+            - generic [ref=e45]: Real-time status updates
+          - paragraph [ref=e48]: No status updates yet
+        - generic [ref=e49]:
+          - heading "Status Badge Variants" [level=3] [ref=e51]
+          - generic [ref=e53]:
+            - generic [ref=e54]:
+              - generic [ref=e55]: uploaded
+              - 'status "Document status: Uploaded" [ref=e57]':
+                - img [ref=e58]
+                - generic [ref=e60]: Uploaded
+            - generic [ref=e61]:
+              - generic [ref=e62]: processing
+              - 'status "Document status: Processing" [ref=e64]':
+                - img [ref=e65]
+                - generic [ref=e67]: Processing
+            - generic [ref=e68]:
+              - generic [ref=e69]: processed
+              - 'status "Document status: Processed" [ref=e71]':
+                - img [ref=e72]
+                - generic [ref=e74]: Processed
+            - generic [ref=e75]:
+              - generic [ref=e76]: needs review
+              - 'status "Document status: Needs Review" [ref=e78]':
+                - img [ref=e79]
+                - generic [ref=e82]: Needs Review
+            - generic [ref=e83]:
+              - generic [ref=e84]: approved
+              - 'status "Document status: Approved" [ref=e86]':
+                - img [ref=e87]
+                - generic [ref=e89]: Approved
+            - generic [ref=e90]:
+              - generic [ref=e91]: failed
+              - 'status "Document status: Failed" [ref=e93]':
+                - img [ref=e94]
+                - generic [ref=e96]: Failed
+    - generic [ref=e97]:
+      - generic [ref=e99]: About This Demo
+      - list [ref=e101]:
+        - listitem [ref=e102]: "- Real-time status updates using simulated backend processing"
+        - listitem [ref=e103]: "- Documents progress through OCR, Extraction, Consensus, and Entity Resolution"
+        - listitem [ref=e104]: "- Status badges update automatically as processing progresses"
+        - listitem [ref=e105]: "- Processing panel shows overall and per-document progress"
+        - listitem [ref=e106]: "- Configurable simulation speed and failure rate"
+        - listitem [ref=e107]: "- In production, this connects to Supabase Realtime subscriptions"
+  - region "Notifications alt+T"
+```

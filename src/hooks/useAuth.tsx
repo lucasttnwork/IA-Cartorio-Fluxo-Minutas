@@ -22,6 +22,8 @@ interface AuthContextType {
   ) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<{ error: Error | null }>
+  changePassword: (newPassword: string) => Promise<{ error: Error | null }>
+  updateProfile: (fullName: string) => Promise<{ error: Error | null }>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -122,6 +124,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function changePassword(newPassword: string) {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      })
+      return { error }
+    } catch (error) {
+      return { error: error as Error }
+    }
+  }
+
+  async function updateProfile(fullName: string) {
+    try {
+      if (!user?.id) {
+        return { error: new Error('User not authenticated') }
+      }
+
+      // Update the users table
+      const { error: dbError } = await supabase
+        .from('users')
+        .update({ full_name: fullName })
+        .eq('id', user.id)
+
+      if (dbError) {
+        return { error: dbError }
+      }
+
+      // Update auth metadata
+      const { error: authError } = await supabase.auth.updateUser({
+        data: {
+          full_name: fullName,
+        },
+      })
+
+      if (authError) {
+        return { error: authError }
+      }
+
+      // Refresh the app user data
+      await fetchAppUser(user.id)
+
+      return { error: null }
+    } catch (error) {
+      return { error: error as Error }
+    }
+  }
+
   const value = {
     user,
     appUser,
@@ -131,6 +180,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signUp,
     signOut,
     resetPassword,
+    changePassword,
+    updateProfile,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

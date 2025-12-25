@@ -28,7 +28,11 @@ import {
   DocumentTextIcon,
   CheckCircleIcon,
   ExclamationCircleIcon,
+  ClipboardDocumentIcon,
 } from '@heroicons/react/24/outline'
+import { Badge } from '../ui/badge'
+import { useDocumentNames } from '../../hooks/useDocumentNames'
+import { copyToClipboard } from '../../utils/clipboard'
 import type { Person, Address, MaritalStatus } from '../../types'
 
 export interface PersonEntityCardProps {
@@ -101,15 +105,25 @@ interface FieldRowProps {
 }
 
 function FieldRow({ icon: Icon, label, value, onClick, highlight }: FieldRowProps) {
+  const [isHovered, setIsHovered] = useState(false)
   const displayValue = value || '-'
   const hasValue = Boolean(value)
 
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (value) {
+      await copyToClipboard(value, label)
+    }
+  }
+
   return (
     <div
-      className={`flex items-start gap-3 py-2 px-3 rounded-lg transition-colors ${
+      className={`flex items-start gap-3 py-2 px-3 rounded-lg transition-colors group ${
         onClick ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50' : ''
       } ${highlight ? 'bg-amber-50 dark:bg-amber-900/20' : ''}`}
       onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
@@ -131,6 +145,17 @@ function FieldRow({ icon: Icon, label, value, onClick, highlight }: FieldRowProp
           {displayValue}
         </p>
       </div>
+      {hasValue && isHovered && (
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="flex-shrink-0 p-1.5 rounded-md hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors opacity-0 group-hover:opacity-100"
+          aria-label={`Copiar ${label}`}
+          title={`Copiar ${label}`}
+        >
+          <ClipboardDocumentIcon className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+        </button>
+      )}
     </div>
   )
 }
@@ -144,7 +169,9 @@ export default function PersonEntityCard({
   className = '',
 }: PersonEntityCardProps) {
   const [isExpanded, setIsExpanded] = useState(!compact)
+  const [showAllDocs, setShowAllDocs] = useState(false)
   const confidenceInfo = getConfidenceInfo(person.confidence)
+  const { documents, loading: loadingDocs } = useDocumentNames(person.source_docs)
 
   // Handle field click
   const handleFieldClick = (fieldName: string) => {
@@ -365,17 +392,71 @@ export default function PersonEntityCard({
             </div>
 
             {/* Footer with metadata */}
-            <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1">
-                    <DocumentTextIcon className="w-4 h-4" />
-                    {person.source_docs?.length || 0} documento(s)
-                  </span>
-                  <span>
-                    {filledFields}/{totalFields} campos preenchidos
-                  </span>
+            <div className="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 space-y-3">
+              {/* Source Documents Chips */}
+              {documents.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <DocumentTextIcon className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+                      Documentos de Origem ({documents.length})
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(showAllDocs ? documents : documents.slice(0, 3)).map((doc) => (
+                      <Badge
+                        key={doc.id}
+                        variant="outline"
+                        className="text-xs font-normal max-w-[200px] truncate cursor-default hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        title={doc.name}
+                      >
+                        <DocumentTextIcon className="w-3 h-3 mr-1 flex-shrink-0" />
+                        {doc.name}
+                      </Badge>
+                    ))}
+                    {documents.length > 3 && !showAllDocs && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setShowAllDocs(true)
+                        }}
+                        className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                      >
+                        +{documents.length - 3} mais
+                      </button>
+                    )}
+                    {documents.length > 3 && showAllDocs && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setShowAllDocs(false)
+                        }}
+                        className="text-xs text-blue-600 dark:text-blue-400 hover:underline font-medium"
+                      >
+                        Mostrar menos
+                      </button>
+                    )}
+                  </div>
                 </div>
+              )}
+              {loadingDocs && (
+                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                  <DocumentTextIcon className="w-4 h-4 animate-pulse" />
+                  <span>Carregando documentos...</span>
+                </div>
+              )}
+              {!loadingDocs && documents.length === 0 && person.source_docs && person.source_docs.length > 0 && (
+                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                  <DocumentTextIcon className="w-4 h-4" />
+                  <span>{person.source_docs.length} documento(s)</span>
+                </div>
+              )}
+
+              {/* Field count and creation date */}
+              <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-2 border-t border-gray-200 dark:border-gray-700">
+                <span>
+                  {filledFields}/{totalFields} campos preenchidos
+                </span>
                 <span title={new Date(person.created_at).toLocaleString('pt-BR')}>
                   Criado em {new Date(person.created_at).toLocaleDateString('pt-BR')}
                 </span>

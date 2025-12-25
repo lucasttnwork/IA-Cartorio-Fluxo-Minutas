@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Bar Styling Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Simulate the progress bar styles from the component */
+        .progress-root {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 9999px;
+        }
+
+        .progress-indicator {
+            height: 100%;
+            width: 100%;
+            flex: 1;
+            transition: all 500ms ease-out;
+        }
+
+        /* Size variants */
+        .size-sm { height: 0.25rem; }
+        .size-md { height: 0.5rem; }
+        .size-lg { height: 0.75rem; }
+
+        /* Track backgrounds */
+        .track-default { background: rgb(229, 231, 235); }
+        .track-success { background: rgb(220, 252, 231); }
+        .track-warning { background: rgb(254, 249, 195); }
+        .track-error { background: rgb(254, 226, 226); }
+        .track-gradient { background: rgb(229, 231, 235); }
+
+        /* Dark mode track backgrounds */
+        .dark .track-default { background: rgb(55, 65, 81); }
+        .dark .track-success { background: rgba(6, 78, 59, 0.3); }
+        .dark .track-warning { background: rgba(78, 70, 6, 0.3); }
+        .dark .track-error { background: rgba(127, 29, 29, 0.3); }
+        .dark .track-gradient { background: rgb(55, 65, 81); }
+
+        /* Indicator gradients */
+        .indicator-default {
+            background: linear-gradient(to right, rgb(59, 130, 246), rgb(37, 99, 235));
+        }
+        .indicator-success {
+            background: linear-gradient(to right, rgb(34, 197, 94), rgb(5, 150, 105));
+        }
+        .indicator-warning {
+            background: linear-gradient(to right, rgb(234, 179, 8), rgb(217, 119, 6));
+        }
+        .indicator-error {
+            background: linear-gradient(to right, rgb(239, 68, 68), rgb(225, 29, 72));
+        }
+        .indicator-gradient {
+            background: linear-gradient(to right, rgb(59, 130, 246), rgb(168, 85, 247), rgb(236, 72, 153));
+        }
+
+        /* Dark mode indicators */
+        .dark .indicator-default {
+            background: linear-gradient(to right, rgb(96, 165, 250), rgb(59, 130, 246));
+        }
+        .dark .indicator-success {
+            background: linear-gradient(to right, rgb(74, 222, 128), rgb(34, 197, 94));
+        }
+        .dark .indicator-warning {
+            background: linear-gradient(to right, rgb(250, 204, 21), rgb(251, 191, 36));
+        }
+        .dark .indicator-error {
+            background: linear-gradient(to right, rgb(248, 113, 113), rgb(239, 68, 68));
+        }
+        .dark .indicator-gradient {
+            background: linear-gradient(to right, rgb(96, 165, 250), rgb(192, 132, 252), rgb(244, 114, 182));
+        }
+
+        /* Glow effects */
+        .glow-default { box-shadow: 0 0 8px rgba(59, 130, 246, 0.5); }
+        .glow-success { box-shadow: 0 0 8px rgba(34, 197, 94, 0.5); }
+        .glow-warning { box-shadow: 0 0 8px rgba(234, 179, 8, 0.5); }
+        .glow-error { box-shadow: 0 0 8px rgba(239, 68, 68, 0.5); }
+        .glow-gradient { box-shadow: 0 0 12px rgba(168, 85, 247, 0.6); }
+
+        .dark .glow-default { box-shadow: 0 0 8px rgba(96, 165, 250, 0.5); }
+        .dark .glow-success { box-shadow: 0 0 8px rgba(74, 222, 128, 0.5); }
+        .dark .glow-warning { box-shadow: 0 0 8px rgba(250, 204, 21, 0.5); }
+        .dark .glow-error { box-shadow: 0 0 8px rgba(248, 113, 113, 0.5); }
+        .dark .glow-gradient { box-shadow: 0 0 12px rgba(192, 132, 252, 0.6); }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 p-8">
+    <div class="max-w-4xl mx-auto space-y-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                Progress Bar Styling Test
+            </h1>
+            <p class="text-gray-600 dark:text-gray-400">
+                Testing enhanced Progress component with gradients, animations, and variants
+            </p>
+            <button onclick="document.documentElement.classList.toggle('dark')"
+                    class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Toggle Dark Mode
+            </button>
+        </div>
+
+        <!-- Default Variant -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Default Variant</h2>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Small Size</span>
+                        <span class="text-sm text-gray-500" id="progress1">0%</span>
+                    </div>
+                    <div class="progress-root size-sm track-default">
+                        <div class="progress-indicator indicator-default" id="bar1" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Medium Size (Default)</span>
+                        <span class="text-sm text-gray-500" id="progress2">0%</span>
+                    </div>
+                    <div class="progress-root size-md track-default">
+                        <div class="progress-indicator indicator-default" id="bar2" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Large Size</span>
+                        <span class="text-sm text-gray-500" id="progress3">0%</span>
+                    </div>
+                    <div class="progress-root size-lg track-default">
+                        <div class="progress-indicator indicator-default" id="bar3" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">With Glow Effect</span>
+                        <span class="text-sm text-gray-500" id="progress4">0%</span>
+                    </div>
+                    <div class="progress-root size-md track-default">
+                        <div class="progress-indicator indicator-default glow-default" id="bar4" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Variant -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Success Variant</h2>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Complete</span>
+                        <span class="text-sm text-green-600 dark:text-green-400" id="progress5">0%</span>
+                    </div>
+                    <div class="progress-root size-md track-success">
+                        <div class="progress-indicator indicator-success" id="bar5" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">With Glow Effect</span>
+                        <span class="text-sm text-green-600 dark:text-green-400" id="progress6">0%</span>
+                    </div>
+                    <div class="progress-root size-lg track-success">
+                        <div class="progress-indicator indicator-success glow-success" id="bar6" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Warning Variant -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Warning Variant</h2>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Processing...</span>
+                        <span class="text-sm text-yellow-600 dark:text-yellow-400" id="progress7">0%</span>
+                    </div>
+                    <div class="progress-root size-md track-warning">
+                        <div class="progress-indicator indicator-warning" id="bar7" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">With Glow Effect</span>
+                        <span class="text-sm text-yellow-600 dark:text-yellow-400" id="progress8">0%</span>
+                    </div>
+                    <div class="progress-root size-lg track-warning">
+                        <div class="progress-indicator indicator-warning glow-warning" id="bar8" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Variant -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Error Variant</h2>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Upload Failed</span>
+                        <span class="text-sm text-red-600 dark:text-red-400" id="progress9">0%</span>
+                    </div>
+                    <div class="progress-root size-md track-error">
+                        <div class="progress-indicator indicator-error" id="bar9" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">With Glow Effect</span>
+                        <span class="text-sm text-red-600 dark:text-red-400" id="progress10">0%</span>
+                    </div>
+                    <div class="progress-root size-lg track-error">
+                        <div class="progress-indicator indicator-error glow-error" id="bar10" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gradient Variant -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Gradient Variant</h2>
+            <div class="space-y-4">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Rainbow Progress</span>
+                        <span class="text-sm text-purple-600 dark:text-purple-400" id="progress11">0%</span>
+                    </div>
+                    <div class="progress-root size-md track-gradient">
+                        <div class="progress-indicator indicator-gradient" id="bar11" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">With Glow Effect</span>
+                        <span class="text-sm text-purple-600 dark:text-purple-400" id="progress12">0%</span>
+                    </div>
+                    <div class="progress-root size-lg track-gradient">
+                        <div class="progress-indicator indicator-gradient glow-gradient" id="bar12" style="transform: translateX(-100%)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Static Examples -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Static Progress Values</h2>
+            <div class="space-y-6">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">25% Complete</span>
+                        <span class="text-sm text-gray-500">25%</span>
+                    </div>
+                    <div class="progress-root size-md track-default">
+                        <div class="progress-indicator indicator-default" style="transform: translateX(-75%)"></div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">50% Complete</span>
+                        <span class="text-sm text-gray-500">50%</span>
+                    </div>
+                    <div class="progress-root size-md track-success">
+                        <div class="progress-indicator indicator-success" style="transform: translateX(-50%)"></div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">75% Complete</span>
+                        <span class="text-sm text-gray-500">75%</span>
+                    </div>
+                    <div class="progress-root size-md track-warning">
+                        <div class="progress-indicator indicator-warning glow-warning" style="transform: translateX(-25%)"></div>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">100% Complete</span>
+                        <span class="text-sm text-gray-500">100%</span>
+                    </div>
+                    <div class="progress-root size-lg track-gradient">
+                        <div class="progress-indicator indicator-gradient glow-gradient" style="transform: translateX(0%)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animate progress bars
+        let progress = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const speeds = [2, 2, 2, 2, 3, 3, 4, 4, 5, 5, 2.5, 2.5];
+
+        setInterval(() => {
+            for (let i = 0; i < 12; i++) {
+                progress[i] = (progress[i] + speeds[i]) % 100;
+                const bar = document.getElementById(`bar${i + 1}`);
+                const text = document.getElementById(`progress${i + 1}`);
+                if (bar && text) {
+                    bar.style.transform = `translateX(-${100 - progress[i]}%)`;
+                    text.textContent = `${Math.round(progress[i])}%`;
+                }
+            }
+        }, 100);
+    </script>
+</body>
+</html>

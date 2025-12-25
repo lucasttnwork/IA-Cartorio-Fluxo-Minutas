@@ -1,21 +1,25 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   PlusIcon,
-  FolderIcon,
   ExclamationCircleIcon,
   ArrowPathIcon,
   TrashIcon,
   EllipsisVerticalIcon,
   MagnifyingGlassIcon,
-  XMarkIcon
+  XMarkIcon,
+  ArrowRightIcon,
+  DocumentTextIcon,
+  DocumentDuplicateIcon
 } from '@heroicons/react/24/outline'
-import { usePaginatedCases, useDeleteCase, type SortField, type SortOrder } from '../hooks/useCases'
+import { usePaginatedCases, useDeleteCase, useDuplicateCase, type SortField, type SortOrder } from '../hooks/useCases'
 import CreateCaseModal from '../components/case/CreateCaseModal'
 import DeleteConfirmationModal from '../components/common/DeleteConfirmationModal'
 import { Pagination } from '../components/common/Pagination'
 import SortControls, { type SortOption } from '../components/common/SortControls'
+import EmptyStateIllustration from '../components/common/EmptyStateIllustration'
+import PageTransition from '../components/common/PageTransition'
 import type { Case, CaseStatus } from '../types'
 import { formatDate } from '../utils/dateFormat'
 import { Card, CardContent } from '@/components/ui/card'
@@ -23,6 +27,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
 
 // Status badge variants mapping
 const statusBadgeVariant: Record<CaseStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
@@ -53,20 +58,21 @@ const actTypeLabels: Record<string, string> = {
 // Loading skeleton component
 function CaseCardSkeleton() {
   return (
-    <Card className="glass-card animate-pulse">
+    <Card className="glass-card">
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-2">
-          <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-2/3"></div>
-          <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+          <Skeleton className="h-5 w-2/3" />
+          <Skeleton className="h-5 w-16" />
         </div>
-        <div className="mt-2 h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3"></div>
-        <div className="mt-3 h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+        <Skeleton className="mt-2 h-4 w-1/3" />
+        <Skeleton className="mt-3 h-3 w-1/2" />
       </CardContent>
     </Card>
   )
 }
 
 export default function DashboardPage() {
+  const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(6)
   const [searchQuery, setSearchQuery] = useState('')
@@ -99,6 +105,7 @@ export default function DashboardPage() {
     statusFilter
   })
   const { mutate: deleteCase, isPending: isDeleting } = useDeleteCase()
+  const { mutate: duplicateCase, isPending: isDuplicating } = useDuplicateCase()
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [caseToDelete, setCaseToDelete] = useState<Case | null>(null)
@@ -142,6 +149,23 @@ export default function DashboardPage() {
     }
   }
 
+  const handleDuplicateClick = (caseItem: Case, e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setOpenMenuId(null)
+
+    duplicateCase(caseItem.id, {
+      onSuccess: (newCase) => {
+        // Navigate to the new duplicated case
+        navigate(`/case/${newCase.id}`)
+      },
+      onError: (error) => {
+        console.error('Failed to duplicate case:', error)
+        alert('Failed to duplicate case. Please try again.')
+      }
+    })
+  }
+
   const toggleMenu = (caseId: string, e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -165,7 +189,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <PageTransition>
+      <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -176,10 +201,20 @@ export default function DashboardPage() {
             Manage your document cases and drafts
           </p>
         </div>
-        <Button onClick={() => setShowCreateModal(true)}>
-          <PlusIcon className="w-5 h-5 mr-2" />
-          New Case
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button
+            onClick={() => navigate('/flow/purchase-sale')}
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+          >
+            <DocumentTextIcon className="w-5 h-5 mr-2" />
+            Start Purchase/Sale Flow
+            <ArrowRightIcon className="w-4 h-4 ml-2" />
+          </Button>
+          <Button onClick={() => setShowCreateModal(true)} variant="outline">
+            <PlusIcon className="w-5 h-5 mr-2" />
+            New Case
+          </Button>
+        </div>
       </div>
 
       {/* Search Bar, Status Filter, and Sort Controls */}
@@ -265,13 +300,10 @@ export default function DashboardPage() {
           <Card className="glass-card">
             <CardContent className="p-8 sm:p-12">
               <div className="text-center">
-                <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                  {debouncedSearchQuery ? (
-                    <MagnifyingGlassIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-                  ) : (
-                    <FolderIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-                  )}
-                </div>
+                <EmptyStateIllustration
+                  type={debouncedSearchQuery ? 'search' : 'folder'}
+                  className="w-40 h-40 mb-2"
+                />
                 <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                   {debouncedSearchQuery ? 'No cases found' : 'No cases yet'}
                 </h3>
@@ -280,17 +312,27 @@ export default function DashboardPage() {
                     ? `No cases match "${debouncedSearchQuery}". Try a different search term.`
                     : 'Get started by creating a new case to manage your notary documents and drafts.'}
                 </p>
-                <div className="mt-6">
+                <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
                   {debouncedSearchQuery ? (
                     <Button onClick={clearSearch} variant="outline">
                       <XMarkIcon className="w-5 h-5 mr-2" />
                       Clear Search
                     </Button>
                   ) : (
-                    <Button onClick={() => setShowCreateModal(true)}>
-                      <PlusIcon className="w-5 h-5 mr-2" />
-                      Create Your First Case
-                    </Button>
+                    <>
+                      <Button
+                        onClick={() => navigate('/flow/purchase-sale')}
+                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                      >
+                        <DocumentTextIcon className="w-5 h-5 mr-2" />
+                        Start Purchase/Sale Flow
+                        <ArrowRightIcon className="w-4 h-4 ml-2" />
+                      </Button>
+                      <Button onClick={() => setShowCreateModal(true)} variant="outline">
+                        <PlusIcon className="w-5 h-5 mr-2" />
+                        Create Case Manually
+                      </Button>
+                    </>
                   )}
                 </div>
               </div>
@@ -337,6 +379,15 @@ export default function DashboardPage() {
                                   onClick={() => setOpenMenuId(null)}
                                 />
                                 <Card className="glass-popover absolute right-0 top-full mt-1 w-48 py-1 z-20">
+                                  <Button
+                                    onClick={(e) => handleDuplicateClick(caseItem, e)}
+                                    variant="ghost"
+                                    className="w-full justify-start hover:bg-gray-50 dark:hover:bg-gray-800"
+                                    disabled={isDuplicating}
+                                  >
+                                    <DocumentDuplicateIcon className="w-4 h-4 mr-2" />
+                                    Duplicate Case
+                                  </Button>
                                   <Button
                                     onClick={(e) => handleDeleteClick(caseItem, e)}
                                     variant="ghost"
@@ -401,5 +452,6 @@ export default function DashboardPage() {
         isDeleting={isDeleting}
       />
     </div>
+    </PageTransition>
   )
 }

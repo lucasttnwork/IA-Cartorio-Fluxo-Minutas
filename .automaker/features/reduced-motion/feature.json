@@ -3,14 +3,16 @@
   "category": "Accessibility",
   "title": "Reduced Motion Preference",
   "description": "Reduced motion preference",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
-  "model": "opus",
+  "updatedAt": "2025-12-25T11:41:43.257Z",
+  "model": "sonnet",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-25T11:34:52.665Z"
 }

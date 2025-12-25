@@ -42,6 +42,7 @@ import {
   TableRow,
 } from '../ui/table'
 import { cn } from '@/lib/utils'
+import { Skeleton } from '../ui/skeleton'
 
 // Entity type configuration with icons and colors
 const entityTypeConfig: Record<EntityType, { label: string; icon: typeof UserIcon; color: string; bgColor: string }> = {
@@ -158,6 +159,14 @@ export default function EntityTable({
       result = result.filter(entity => selectedTypes.includes(entity.type))
     }
 
+    // Apply confidence filter
+    if (selectedConfidenceLevels.length > 0) {
+      result = result.filter(entity => {
+        const level = getConfidenceLevel(entity.confidence)
+        return selectedConfidenceLevels.includes(level)
+      })
+    }
+
     // Apply sorting
     result.sort((a, b) => {
       let comparison = 0
@@ -176,7 +185,7 @@ export default function EntityTable({
     })
 
     return result
-  }, [entities, searchQuery, selectedTypes, sortField, sortDirection])
+  }, [entities, searchQuery, selectedTypes, selectedConfidenceLevels, sortField, sortDirection])
 
   // Handle sort click
   const handleSort = (field: SortField) => {
@@ -194,6 +203,15 @@ export default function EntityTable({
       prev.includes(type)
         ? prev.filter(t => t !== type)
         : [...prev, type]
+    )
+  }
+
+  // Toggle confidence level filter
+  const toggleConfidenceFilter = (level: ConfidenceLevel) => {
+    setSelectedConfidenceLevels(prev =>
+      prev.includes(level)
+        ? prev.filter(l => l !== level)
+        : [...prev, level]
     )
   }
 
@@ -250,9 +268,22 @@ export default function EntityTable({
 
   if (isLoading) {
     return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
-        <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Skeleton className="h-10 flex-1" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+        <div className="glass-card overflow-hidden p-6 space-y-4">
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="flex items-center gap-4">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-8 w-24 rounded-full" />
+              <Skeleton className="h-6 flex-1" />
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-4 flex-1" />
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
@@ -325,17 +356,17 @@ export default function EntityTable({
         {/* Filter Toggle */}
         <Button
           onClick={() => setShowFilters(!showFilters)}
-          variant={selectedTypes.length > 0 ? "default" : "outline"}
+          variant={(selectedTypes.length > 0 || selectedConfidenceLevels.length > 0) ? "default" : "outline"}
           className={cn(
             "flex items-center gap-2",
-            selectedTypes.length > 0 && "bg-blue-500 hover:bg-blue-600"
+            (selectedTypes.length > 0 || selectedConfidenceLevels.length > 0) && "bg-blue-500 hover:bg-blue-600"
           )}
         >
           <FunnelIcon className="w-5 h-5" />
           <span>Filtros</span>
-          {selectedTypes.length > 0 && (
+          {(selectedTypes.length > 0 || selectedConfidenceLevels.length > 0) && (
             <span className="ml-1 px-2 py-0.5 text-xs bg-white/20 rounded-full">
-              {selectedTypes.length}
+              {selectedTypes.length + selectedConfidenceLevels.length}
             </span>
           )}
         </Button>
@@ -350,40 +381,87 @@ export default function EntityTable({
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex flex-wrap gap-2 p-4 glass-subtle rounded-lg">
-              {availableTypes.map((type) => {
-                const config = entityTypeConfig[type]
-                const isSelected = selectedTypes.includes(type)
-                const Icon = config.icon
+            <div className="p-4 glass-subtle rounded-lg space-y-4">
+              {/* Entity Type Filters */}
+              <div>
+                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                  Tipo de Entidade
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {availableTypes.map((type) => {
+                    const config = entityTypeConfig[type]
+                    const isSelected = selectedTypes.includes(type)
+                    const Icon = config.icon
 
-                return (
+                    return (
+                      <Button
+                        key={type}
+                        onClick={() => toggleTypeFilter(type)}
+                        variant={isSelected ? "default" : "outline"}
+                        size="sm"
+                        className={cn(
+                          "flex items-center gap-1.5",
+                          isSelected && `${config.bgColor} ${config.color} hover:opacity-90`
+                        )}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {config.label}
+                        <span className="ml-1 text-xs opacity-70">
+                          ({entities.filter(e => e.type === type).length})
+                        </span>
+                      </Button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Confidence Level Filters */}
+              <div>
+                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                  Nivel de Confianca
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {(Object.keys(confidenceLevelConfig) as ConfidenceLevel[]).map((level) => {
+                    const config = confidenceLevelConfig[level]
+                    const isSelected = selectedConfidenceLevels.includes(level)
+                    const count = entities.filter(e => getConfidenceLevel(e.confidence) === level).length
+
+                    return (
+                      <Button
+                        key={level}
+                        onClick={() => toggleConfidenceFilter(level)}
+                        variant={isSelected ? "default" : "outline"}
+                        size="sm"
+                        className={cn(
+                          "flex items-center gap-1.5",
+                          isSelected && `${config.bgColor} ${config.color} hover:opacity-90`
+                        )}
+                      >
+                        <AdjustmentsHorizontalIcon className="w-4 h-4" />
+                        {config.labelPt}
+                        <span className="ml-1 text-xs opacity-70">
+                          ({count})
+                        </span>
+                      </Button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Clear Filters */}
+              {(selectedTypes.length > 0 || selectedConfidenceLevels.length > 0) && (
+                <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                   <Button
-                    key={type}
-                    onClick={() => toggleTypeFilter(type)}
-                    variant={isSelected ? "default" : "outline"}
+                    onClick={() => {
+                      setSelectedTypes([])
+                      setSelectedConfidenceLevels([])
+                    }}
+                    variant="ghost"
                     size="sm"
-                    className={cn(
-                      "flex items-center gap-1.5",
-                      isSelected && `${config.bgColor} ${config.color} hover:opacity-90`
-                    )}
                   >
-                    <Icon className="w-4 h-4" />
-                    {config.label}
-                    <span className="ml-1 text-xs opacity-70">
-                      ({entities.filter(e => e.type === type).length})
-                    </span>
+                    Limpar todos os filtros
                   </Button>
-                )
-              })}
-
-              {selectedTypes.length > 0 && (
-                <Button
-                  onClick={() => setSelectedTypes([])}
-                  variant="ghost"
-                  size="sm"
-                >
-                  Limpar filtros
-                </Button>
+                </div>
               )}
             </div>
           </motion.div>

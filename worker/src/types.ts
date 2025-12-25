@@ -11,6 +11,8 @@ export interface ProcessingJob {
   created_at: string
   started_at: string | null
   completed_at: string | null
+  last_retry_at: string | null
+  retry_delay_ms: number
 }
 
 export type JobType =

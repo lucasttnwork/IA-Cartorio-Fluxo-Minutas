@@ -118,6 +118,7 @@ const sampleEvidenceRG: EvidenceItem = {
 
 /**
  * Sample evidence item for property document with multiple pages
+ * Includes bounding boxes on different pages to test multi-page navigation
  */
 const sampleEvidenceProperty: EvidenceItem = {
   id: 'evidence-property-1',
@@ -128,6 +129,7 @@ const sampleEvidenceProperty: EvidenceItem = {
   pageNumber: 1,
   totalPages: 3,
   boundingBoxes: [
+    // Page 1 boxes
     {
       id: 'prop-box-1',
       page: 1,
@@ -152,17 +154,55 @@ const sampleEvidenceProperty: EvidenceItem = {
       fieldName: 'propertyAddress',
       extractedText: 'Av. Paulista, 1000, Apto 101 - Bela Vista - São Paulo/SP',
     },
+    // Page 2 boxes
     {
       id: 'prop-box-3',
-      page: 1,
+      page: 2,
       label: 'Área Total',
       confidence: 0.92,
       x: 100,
-      y: 300,
+      y: 150,
       width: 150,
       height: 35,
       fieldName: 'totalArea',
       extractedText: '85,00 m²',
+    },
+    {
+      id: 'prop-box-4',
+      page: 2,
+      label: 'Valor Venal',
+      confidence: 0.88,
+      x: 100,
+      y: 220,
+      width: 180,
+      height: 35,
+      fieldName: 'assessedValue',
+      extractedText: 'R$ 450.000,00',
+    },
+    // Page 3 boxes
+    {
+      id: 'prop-box-5',
+      page: 3,
+      label: 'Assinatura do Vendedor',
+      confidence: 0.75,
+      x: 150,
+      y: 350,
+      width: 200,
+      height: 60,
+      fieldName: 'sellerSignature',
+      extractedText: '[Assinatura]',
+    },
+    {
+      id: 'prop-box-6',
+      page: 3,
+      label: 'Assinatura do Comprador',
+      confidence: 0.78,
+      x: 400,
+      y: 350,
+      width: 200,
+      height: 60,
+      fieldName: 'buyerSignature',
+      extractedText: '[Assinatura]',
     },
   ],
   entityType: 'property',
@@ -221,6 +261,7 @@ const sampleEvidenceNoBoxes: EvidenceItem = {
 export default function TestEvidenceModalPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [currentEvidence, setCurrentEvidence] = useState<EvidenceItem | null>(null)
+  const [overrideLog, setOverrideLog] = useState<Array<{ boxId: string; fieldName?: string; newValue: string; timestamp: Date }>>([])
 
   const openModal = (evidence: EvidenceItem) => {
     setCurrentEvidence(evidence)
@@ -230,6 +271,36 @@ export default function TestEvidenceModalPage() {
   const closeModal = () => {
     setIsModalOpen(false)
     setCurrentEvidence(null)
+  }
+
+  const handleBoxOverride = (boxId: string, newValue: string) => {
+    // Update the evidence item with the overridden value
+    if (currentEvidence) {
+      const updatedBoxes = currentEvidence.boundingBoxes.map(box => {
+        if (box.id === boxId) {
+          return {
+            ...box,
+            overriddenValue: newValue,
+            isOverridden: true,
+          }
+        }
+        return box
+      })
+
+      setCurrentEvidence({
+        ...currentEvidence,
+        boundingBoxes: updatedBoxes,
+      })
+
+      // Log the override for demonstration
+      const box = currentEvidence.boundingBoxes.find(b => b.id === boxId)
+      setOverrideLog(prev => [...prev, {
+        boxId,
+        fieldName: box?.fieldName,
+        newValue,
+        timestamp: new Date(),
+      }])
+    }
   }
 
   return (
@@ -266,6 +337,14 @@ export default function TestEvidenceModalPage() {
             <div className="flex items-center gap-2">
               <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">Home</kbd>
               <span className="text-gray-600 dark:text-gray-400">Primeiro box</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">PgUp</kbd>
+              <span className="text-gray-600 dark:text-gray-400">Página anterior</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-white dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-600 font-mono text-xs">PgDn</kbd>
+              <span className="text-gray-600 dark:text-gray-400">Próxima página</span>
             </div>
           </div>
         </AlertDescription>
@@ -324,12 +403,12 @@ export default function TestEvidenceModalPage() {
                       Documento de Imóvel
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                      Escritura com 3 campos destacados, documento multi-página
+                      Escritura com 6 campos distribuídos em 3 páginas - testa navegação multi-página
                     </p>
                     <div className="flex flex-wrap gap-2 mt-2">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
-                        Página 1 de 3
-                      </span>
+                      <Badge variant="outline">Página 1: 2 campos</Badge>
+                      <Badge variant="outline">Página 2: 2 campos</Badge>
+                      <Badge variant="outline">Página 3: 2 campos</Badge>
                     </div>
                   </div>
                 </div>
@@ -431,7 +510,13 @@ export default function TestEvidenceModalPage() {
               <li className="flex items-start gap-2">
                 <span className="text-green-500 mt-0.5">✓</span>
                 <span className="text-gray-700 dark:text-gray-300">
-                  <strong>Navegação por teclado</strong> - ESC fecha, setas navegam entre boxes
+                  <strong>Navegação por teclado</strong> - ESC fecha, setas navegam entre boxes, PgUp/PgDn navegam páginas
+                </span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-green-500 mt-0.5">✓</span>
+                <span className="text-gray-700 dark:text-gray-300">
+                  <strong>Multi-page PDF</strong> - Navegação entre páginas com filtro de bounding boxes por página
                 </span>
               </li>
               <li className="flex items-start gap-2">
@@ -532,11 +617,54 @@ export default function TestEvidenceModalPage() {
         </ul>
       </section>
 
+      {/* Override Log */}
+      {overrideLog.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-lg font-medium text-gray-800 dark:text-gray-200">
+            Registro de Correções
+          </h2>
+
+          <Card className="glass-card">
+            <CardContent className="pt-6">
+              <div className="space-y-2">
+                {overrideLog.map((log, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
+                  >
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
+                        {log.fieldName || log.boxId}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        Novo valor: <span className="font-medium text-blue-600 dark:text-blue-400">{log.newValue}</span>
+                      </div>
+                    </div>
+                    <div className="text-xs text-gray-400 dark:text-gray-500">
+                      {log.timestamp.toLocaleTimeString()}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setOverrideLog([])}
+                className="mt-3 w-full"
+              >
+                Limpar Registro
+              </Button>
+            </CardContent>
+          </Card>
+        </section>
+      )}
+
       {/* Evidence Modal */}
       <EvidenceModal
         isOpen={isModalOpen}
         evidence={currentEvidence}
         onClose={closeModal}
+        onBoxOverride={handleBoxOverride}
         config={{
           showZoomControls: true,
           enableKeyboardNavigation: true,

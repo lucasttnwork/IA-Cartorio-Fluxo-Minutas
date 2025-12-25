@@ -3,9 +3,10 @@ import { DocumentProcessorServiceClient } from '@google-cloud/documentai'
 import type { ProcessingJob, OcrResult, OcrBlock, BoundingBox } from '../types'
 
 // Document AI configuration from environment variables
-const GOOGLE_PROJECT_ID = process.env.GOOGLE_PROJECT_ID
-const DOCUMENT_AI_PROCESSOR_ID = process.env.DOCUMENT_AI_PROCESSOR_ID
-const DOCUMENT_AI_LOCATION = process.env.DOCUMENT_AI_LOCATION || 'us'
+// Support both naming conventions for flexibility
+const GOOGLE_PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID || process.env.GOOGLE_PROJECT_ID
+const DOCUMENT_AI_PROCESSOR_ID = process.env.GOOGLE_CLOUD_PROCESSOR_ID || process.env.DOCUMENT_AI_PROCESSOR_ID
+const DOCUMENT_AI_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || process.env.DOCUMENT_AI_LOCATION || 'us'
 
 // Initialize Document AI client
 let documentAiClient: DocumentProcessorServiceClient | null = null

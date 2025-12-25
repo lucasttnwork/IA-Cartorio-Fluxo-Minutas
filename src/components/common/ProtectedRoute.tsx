@@ -1,9 +1,12 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { useSessionTimeout } from '../../hooks/useSessionTimeout'
+import { SessionTimeoutWarning } from './SessionTimeoutWarning'
 
 export default function ProtectedRoute() {
-  const { user, loading } = useAuth()
+  const { user, loading, signOut } = useAuth()
   const location = useLocation()
+  const { showWarning, timeRemaining, extendSession } = useSessionTimeout()
 
   if (loading) {
     return (
@@ -21,5 +24,15 @@ export default function ProtectedRoute() {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  return <Outlet />
+  return (
+    <>
+      <Outlet />
+      <SessionTimeoutWarning
+        open={showWarning}
+        timeRemaining={timeRemaining}
+        onExtend={extendSession}
+        onLogout={signOut}
+      />
+    </>
+  )
 }

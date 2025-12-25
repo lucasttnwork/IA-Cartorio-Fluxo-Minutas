@@ -1,0 +1,169 @@
+### Page state
+- Page URL: http://localhost:5179/test-document-status
+- Page Title: Minuta Canvas
+- Page Snapshot:
+```yaml
+- generic [ref=e2]:
+  - generic [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]: Real-time Status Demo
+      - heading "Document Processing Status - Live Updates" [level=1] [ref=e7]
+      - paragraph [ref=e8]: Demonstrates real-time document processing status updates with simulated backend processing.
+    - generic [ref=e9]:
+      - generic [ref=e11]: Simulation Controls
+      - generic [ref=e13]:
+        - button "Add Document" [disabled]:
+          - img
+          - text: Add Document
+        - button "Stop" [active] [ref=e128] [cursor=pointer]:
+          - img
+          - text: Stop
+        - button "Reset" [ref=e15] [cursor=pointer]:
+          - img
+          - text: Reset
+        - generic [ref=e16]:
+          - img [ref=e17]
+          - combobox [disabled] [ref=e19]:
+            - generic: Normal
+            - img [ref=e20]
+        - generic [ref=e22]:
+          - img [ref=e23]
+          - generic [ref=e25]: "Failure:"
+          - slider [disabled] [ref=e26]: "0"
+          - generic [ref=e27]: 0%
+    - generic [ref=e28]:
+      - generic [ref=e29]:
+        - generic [ref=e130]:
+          - generic [ref=e131]:
+            - generic [ref=e132]:
+              - generic [ref=e133]:
+                - img [ref=e134]
+                - heading "Processing Status" [level=3] [ref=e136]
+              - generic [ref=e138]: 0%
+            - progressbar [ref=e139]
+            - generic [ref=e141]:
+              - generic [ref=e142]: 3 pending
+              - generic [ref=e144]: 1 processing
+              - generic [ref=e146]: 0 completed
+          - generic [ref=e148]:
+            - generic [ref=e149]:
+              - heading "Processing Steps" [level=4] [ref=e150]
+              - generic [ref=e151]:
+                - generic [ref=e152]:
+                  - img [ref=e153]
+                  - generic [ref=e155]:
+                    - generic [ref=e156]:
+                      - generic [ref=e157]: OCR
+                      - generic [ref=e158]: 0/1
+                    - progressbar [ref=e159]
+                - generic [ref=e161]:
+                  - img [ref=e162]
+                  - generic [ref=e164]:
+                    - generic [ref=e165]:
+                      - generic [ref=e166]: Extraction
+                      - generic [ref=e167]: 0/1
+                    - progressbar [ref=e168]
+                - generic [ref=e170]:
+                  - img [ref=e171]
+                  - generic [ref=e173]:
+                    - generic [ref=e174]:
+                      - generic [ref=e175]: Consensus
+                      - generic [ref=e176]: 0/1
+                    - progressbar [ref=e177]
+                - generic [ref=e179]:
+                  - img [ref=e180]
+                  - generic [ref=e182]:
+                    - generic [ref=e183]:
+                      - generic [ref=e184]: Entity Resolution
+                      - generic [ref=e185]: 0/1
+                    - progressbar [ref=e186]
+            - generic [ref=e188]:
+              - heading "Documents" [level=4] [ref=e189]
+              - generic [ref=e191]:
+                - img [ref=e192]
+                - generic [ref=e194]:
+                  - paragraph [ref=e195]: CNH_Vendedor.pdf
+                  - progressbar [ref=e196]
+                - generic [ref=e198]: 0/4
+                - img [ref=e199]
+        - generic [ref=e30]:
+          - generic [ref=e31]:
+            - generic [ref=e32]: Documents
+            - generic [ref=e33]: 1 document
+          - list [ref=e109]:
+            - listitem [ref=e110]:
+              - generic [ref=e111]:
+                - img [ref=e113]
+                - generic [ref=e115]:
+                  - generic [ref=e116]:
+                    - paragraph [ref=e117]: CNH_Vendedor.pdf
+                    - 'status "Document status: Processing" [ref=e202]':
+                      - img [ref=e203]
+                      - generic [ref=e205]: Processing
+                  - generic [ref=e206]:
+                    - generic [ref=e207]:
+                      - 'generic "ocr: processing" [ref=e208]':
+                        - img [ref=e209]
+                      - 'generic "extraction: pending" [ref=e212]':
+                        - img [ref=e213]
+                      - 'generic "consensus: pending" [ref=e216]':
+                        - img [ref=e217]
+                      - 'generic "entity_resolution: pending" [ref=e220]':
+                        - img [ref=e221]
+                    - generic [ref=e224]:
+                      - img [ref=e225]
+                      - text: ocr
+                - button "Remove document" [disabled] [ref=e123]:
+                  - img [ref=e124]
+      - generic [ref=e41]:
+        - generic [ref=e42]:
+          - generic [ref=e43]:
+            - generic [ref=e44]: Status Log
+            - generic [ref=e45]: Real-time status updates
+          - list [ref=e126]:
+            - listitem [ref=e227]: 06:08:29Processing simulation started
+            - listitem [ref=e228]: "06:08:20Document added: CNH_Vendedor.pdf"
+        - generic [ref=e49]:
+          - heading "Status Badge Variants" [level=3] [ref=e51]
+          - generic [ref=e53]:
+            - generic [ref=e54]:
+              - generic [ref=e55]: uploaded
+              - 'status "Document status: Uploaded" [ref=e57]':
+                - img [ref=e58]
+                - generic [ref=e60]: Uploaded
+            - generic [ref=e61]:
+              - generic [ref=e62]: processing
+              - 'status "Document status: Processing" [ref=e64]':
+                - img [ref=e65]
+                - generic [ref=e67]: Processing
+            - generic [ref=e68]:
+              - generic [ref=e69]: processed
+              - 'status "Document status: Processed" [ref=e71]':
+                - img [ref=e72]
+                - generic [ref=e74]: Processed
+            - generic [ref=e75]:
+              - generic [ref=e76]: needs review
+              - 'status "Document status: Needs Review" [ref=e78]':
+                - img [ref=e79]
+                - generic [ref=e82]: Needs Review
+            - generic [ref=e83]:
+              - generic [ref=e84]: approved
+              - 'status "Document status: Approved" [ref=e86]':
+                - img [ref=e87]
+                - generic [ref=e89]: Approved
+            - generic [ref=e90]:
+              - generic [ref=e91]: failed
+              - 'status "Document status: Failed" [ref=e93]':
+                - img [ref=e94]
+                - generic [ref=e96]: Failed
+    - generic [ref=e97]:
+      - generic [ref=e99]: About This Demo
+      - list [ref=e101]:
+        - listitem [ref=e102]: "- Real-time status updates using simulated backend processing"
+        - listitem [ref=e103]: "- Documents progress through OCR, Extraction, Consensus, and Entity Resolution"
+        - listitem [ref=e104]: "- Status badges update automatically as processing progresses"
+        - listitem [ref=e105]: "- Processing panel shows overall and per-document progress"
+        - listitem [ref=e106]: "- Configurable simulation speed and failure rate"
+        - listitem [ref=e107]: "- In production, this connects to Supabase Realtime subscriptions"
+  - region "Notifications alt+T"
+```

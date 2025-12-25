@@ -1,37 +1,51 @@
-import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
 import { useDarkMode } from '@/hooks/useDarkMode'
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline'
 
 /**
- * Theme Toggle Button Component
+ * Theme Toggle Switch Component
  *
- * Displays a button that toggles between light and dark modes
+ * Displays a toggle switch that controls light and dark modes
  * Shows appropriate icon based on current theme
  */
 export function ThemeToggle() {
-  const { isDark, isLoaded } = useDarkMode()
-  const { toggle } = useDarkMode()
+  const { isDark, isLoaded, toggle } = useDarkMode()
 
   if (!isLoaded) {
     return null // Don't render until theme is loaded
   }
 
   return (
-    <Button
-      onClick={toggle}
-      variant="ghost"
-      size="icon"
-      className="relative rounded-full"
-      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      data-testid="theme-toggle"
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-    >
-      {isDark ? (
-        <SunIcon className="w-5 h-5 text-yellow-400 transition-transform" />
-      ) : (
-        <MoonIcon className="w-5 h-5 text-slate-400 transition-transform" />
-      )}
-    </Button>
+    <div className="flex items-center gap-2">
+      <Label
+        htmlFor="theme-toggle"
+        className="sr-only"
+      >
+        {isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      </Label>
+      <div className="flex items-center gap-2">
+        <SunIcon
+          className={`w-4 h-4 transition-colors ${
+            isDark ? 'text-gray-400' : 'text-yellow-500'
+          }`}
+          aria-hidden="true"
+        />
+        <Switch
+          id="theme-toggle"
+          checked={isDark}
+          onCheckedChange={toggle}
+          data-testid="theme-toggle"
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        />
+        <MoonIcon
+          className={`w-4 h-4 transition-colors ${
+            isDark ? 'text-blue-400' : 'text-gray-400'
+          }`}
+          aria-hidden="true"
+        />
+      </div>
+    </div>
   )
 }
 

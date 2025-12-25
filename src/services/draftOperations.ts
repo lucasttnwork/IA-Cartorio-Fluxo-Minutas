@@ -6,7 +6,7 @@
  */
 
 import { supabase } from '../lib/supabase'
-import type { ChatOperation, CanonicalData, PaymentSchedule, Draft } from '../types'
+import type { ChatOperation, CanonicalData, PaymentSchedule, Draft, DraftTemplate } from '../types'
 
 // -----------------------------------------------------------------------------
 // Types
@@ -491,33 +491,57 @@ function generatePartiesSection(canonicalData: CanonicalData): string {
 
   canonicalData.people.forEach((person, index) => {
     const role = determinePersonRole(person.id, canonicalData.edges)
-    html += `<p><strong>${role}:</strong> ${person.full_name || 'Nome não informado'}`
+    const personPath = `people[${index}]`
+
+    html += `<p><strong>${role}:</strong> `
+    html += wrapEditableField(person.full_name || 'Nome não informado', `${personPath}.full_name`, 'text')
 
     if (person.cpf) {
-      html += `, CPF nº ${formatCPF(person.cpf)}`
+      html += `, CPF nº `
+      html += wrapEditableField(formatCPF(person.cpf), `${personPath}.cpf`, 'cpf')
     }
 
     if (person.rg && person.rg_issuer) {
-      html += `, RG nº ${person.rg} (${person.rg_issuer})`
+      html += `, RG nº `
+      html += wrapEditableField(person.rg, `${personPath}.rg`, 'text')
+      html += ` (`
+      html += wrapEditableField(person.rg_issuer, `${personPath}.rg_issuer`, 'text')
+      html += `)`
     }
 
     if (person.nationality) {
-      html += `, nacionalidade ${person.nationality}`
+      html += `, nacionalidade `
+      html += wrapEditableField(person.nationality, `${personPath}.nationality`, 'text')
     }
 
     if (person.marital_status) {
-      html += `, estado civil ${person.marital_status.toLowerCase()}`
+      html += `, estado civil `
+      html += wrapEditableField(person.marital_status.toLowerCase(), `${personPath}.marital_status`, 'text')
     }
 
     if (person.profession) {
-      html += `, profissão ${person.profession.toLowerCase()}`
+      html += `, profissão `
+      html += wrapEditableField(person.profession.toLowerCase(), `${personPath}.profession`, 'text')
     }
 
     if (person.address) {
       const addr = person.address
-      html += `, residente e domiciliado(a) em ${addr.street}, ${addr.number}`
-      if (addr.complement) html += `, ${addr.complement}`
-      html += `, ${addr.neighborhood}, ${addr.city}/${addr.state}, CEP ${formatCEP(addr.zip)}`
+      html += `, residente e domiciliado(a) em `
+      html += wrapEditableField(addr.street, `${personPath}.address.street`, 'text')
+      html += `, `
+      html += wrapEditableField(addr.number, `${personPath}.address.number`, 'text')
+      if (addr.complement) {
+        html += `, `
+        html += wrapEditableField(addr.complement, `${personPath}.address.complement`, 'text')
+      }
+      html += `, `
+      html += wrapEditableField(addr.neighborhood, `${personPath}.address.neighborhood`, 'text')
+      html += `, `
+      html += wrapEditableField(addr.city, `${personPath}.address.city`, 'text')
+      html += `/`
+      html += wrapEditableField(addr.state, `${personPath}.address.state`, 'text')
+      html += `, CEP `
+      html += wrapEditableField(formatCEP(addr.zip), `${personPath}.address.zip`, 'text')
     }
 
     html += '.</p>\n'
@@ -592,10 +616,13 @@ function generatePriceSection(canonicalData: CanonicalData): string {
   let html = '<h3>Preço e Forma de Pagamento</h3>\n'
 
   if (canonicalData.deal.price) {
-    html += `<p><strong>Valor Total:</strong> R$ ${canonicalData.deal.price.toLocaleString('pt-BR', {
+    const formattedPrice = canonicalData.deal.price.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
-    })}</p>\n`
+    })
+    html += `<p><strong>Valor Total:</strong> R$ `
+    html += wrapEditableField(formattedPrice, 'deal.price', 'currency')
+    html += `</p>\n`
   }
 
   return html
@@ -705,6 +732,13 @@ function formatCEP(cep: string): string {
   const cleaned = cep.replace(/\D/g, '')
   if (cleaned.length !== 8) return cep
   return cleaned.replace(/(\d{5})(\d{3})/, '$1-$2')
+}
+
+/**
+ * Helper: Wrap a field value in an inline-editable span
+ */
+function wrapEditableField(value: string, fieldPath: string, fieldType: string = 'text'): string {
+  return `<span data-field-path="${fieldPath}" data-field-type="${fieldType}" class="inline-edit-field" style="cursor: pointer; border-bottom: 2px dotted rgba(59, 130, 246, 0.5); transition: all 0.2s;">${value}</span>`
 }
 
 /**
@@ -958,11 +992,357 @@ async function logOperation(params: {
 }
 
 // -----------------------------------------------------------------------------
+// Draft Template Functions
+// -----------------------------------------------------------------------------
+
+/**
+ * Create a new draft from a template
+ */
+export interface CreateDraftFromTemplateParams {
+  caseId: string
+  template: DraftTemplate
+  userId?: string
+}
+
+export interface CreateDraftFromTemplateResult {
+  success: boolean
+  draft?: Draft
+  error?: string
+}
+
+export async function createDraftFromTemplate(
+  params: CreateDraftFromTemplateParams
+): Promise<CreateDraftFromTemplateResult> {
+  const { caseId, template, userId } = params
+
+  try {
+    // Check if a draft already exists for this case
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existingDrafts, error: checkError } = await (supabase as any)
+      .from('drafts')
+      .select('id, version')
+      .eq('case_id', caseId)
+      .order('version', { ascending: false })
+      .limit(1)
+
+    if (checkError) {
+      return {
+        success: false,
+        error: `Erro ao verificar minutas existentes: ${checkError.message}`,
+      }
+    }
+
+    // Determine version number
+    const version = existingDrafts && existingDrafts.length > 0
+      ? existingDrafts[0].version + 1
+      : 1
+
+    // Create draft content from template
+    const draftContent = {
+      sections: template.sections.map(section => ({
+        ...section,
+        // Ensure sections are properly ordered
+        order: section.order,
+      })),
+    }
+
+    // Generate HTML content from sections
+    const htmlContent = generateHtmlFromContent(draftContent)
+
+    // Create the draft in the database
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: newDraft, error: createError } = await (supabase as any)
+      .from('drafts')
+      .insert({
+        case_id: caseId,
+        version,
+        content: draftContent,
+        html_content: htmlContent,
+        pending_items: [],
+        status: 'generated',
+      })
+      .select()
+      .single()
+
+    if (createError) {
+      return {
+        success: false,
+        error: `Erro ao criar minuta: ${createError.message}`,
+      }
+    }
+
+    // Log the template creation if userId is provided
+    if (userId && newDraft) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (supabase as any).from('operations_log').insert({
+          case_id: caseId,
+          draft_id: newDraft.id,
+          user_id: userId,
+          operation_type: 'create_from_template',
+          target_path: '',
+          old_value: null,
+          new_value: { template_id: template.id, template_name: template.name },
+          reason: `Minuta criada a partir do modelo: ${template.name}`,
+        })
+      } catch (logError) {
+        console.error('Error logging template creation:', logError)
+        // Don't fail the operation if logging fails
+      }
+    }
+
+    return {
+      success: true,
+      draft: newDraft,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: `Erro ao criar minuta: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Draft Version Functions
+// -----------------------------------------------------------------------------
+
+/**
+ * Get all versions of drafts for a case
+ */
+export interface GetDraftVersionsParams {
+  caseId: string
+}
+
+export interface GetDraftVersionsResult {
+  success: boolean
+  versions?: Draft[]
+  error?: string
+}
+
+export async function getDraftVersions(
+  params: GetDraftVersionsParams
+): Promise<GetDraftVersionsResult> {
+  const { caseId } = params
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: versions, error } = await (supabase as any)
+      .from('drafts')
+      .select('*')
+      .eq('case_id', caseId)
+      .order('version', { ascending: false })
+
+    if (error) {
+      return {
+        success: false,
+        error: `Erro ao buscar versões: ${error.message}`,
+      }
+    }
+
+    return {
+      success: true,
+      versions: versions || [],
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: `Erro ao buscar versões: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+    }
+  }
+}
+
+/**
+ * Get a specific draft version by ID
+ */
+export interface GetDraftVersionParams {
+  draftId: string
+}
+
+export interface GetDraftVersionResult {
+  success: boolean
+  draft?: Draft
+  error?: string
+}
+
+export async function getDraftVersion(
+  params: GetDraftVersionParams
+): Promise<GetDraftVersionResult> {
+  const { draftId } = params
+
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: draft, error } = await (supabase as any)
+      .from('drafts')
+      .select('*')
+      .eq('id', draftId)
+      .single()
+
+    if (error) {
+      return {
+        success: false,
+        error: `Erro ao buscar versão: ${error.message}`,
+      }
+    }
+
+    return {
+      success: true,
+      draft,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: `Erro ao buscar versão: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+    }
+  }
+}
+
+/**
+ * Create a new version from an existing draft
+ * This creates a copy of the current draft with an incremented version number
+ */
+export interface CreateNewVersionParams {
+  caseId: string
+  baseDraftId?: string // If not provided, uses the latest version
+  userId?: string
+}
+
+export interface CreateNewVersionResult {
+  success: boolean
+  draft?: Draft
+  error?: string
+}
+
+export async function createNewVersion(
+  params: CreateNewVersionParams
+): Promise<CreateNewVersionResult> {
+  const { caseId, baseDraftId, userId } = params
+
+  try {
+    // Get the base draft (either specified or latest)
+    let baseDraft: Draft
+
+    if (baseDraftId) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
+        .from('drafts')
+        .select('*')
+        .eq('id', baseDraftId)
+        .single()
+
+      if (error) {
+        return {
+          success: false,
+          error: `Erro ao buscar minuta base: ${error.message}`,
+        }
+      }
+
+      baseDraft = data
+    } else {
+      // Get latest version
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase as any)
+        .from('drafts')
+        .select('*')
+        .eq('case_id', caseId)
+        .order('version', { ascending: false })
+        .limit(1)
+        .single()
+
+      if (error) {
+        return {
+          success: false,
+          error: `Erro ao buscar última versão: ${error.message}`,
+        }
+      }
+
+      baseDraft = data
+    }
+
+    // Get the highest version number for this case
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: existingDrafts, error: checkError } = await (supabase as any)
+      .from('drafts')
+      .select('version')
+      .eq('case_id', caseId)
+      .order('version', { ascending: false })
+      .limit(1)
+
+    if (checkError) {
+      return {
+        success: false,
+        error: `Erro ao verificar versões existentes: ${checkError.message}`,
+      }
+    }
+
+    const newVersion = existingDrafts && existingDrafts.length > 0
+      ? existingDrafts[0].version + 1
+      : 1
+
+    // Create new draft version
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: newDraft, error: createError } = await (supabase as any)
+      .from('drafts')
+      .insert({
+        case_id: caseId,
+        version: newVersion,
+        content: baseDraft.content,
+        html_content: baseDraft.html_content,
+        pending_items: baseDraft.pending_items || [],
+        status: 'generated',
+      })
+      .select()
+      .single()
+
+    if (createError) {
+      return {
+        success: false,
+        error: `Erro ao criar nova versão: ${createError.message}`,
+      }
+    }
+
+    // Log the version creation if userId is provided
+    if (userId && newDraft) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (supabase as any).from('operations_log').insert({
+          case_id: caseId,
+          draft_id: newDraft.id,
+          user_id: userId,
+          operation_type: 'create_new_version',
+          target_path: '',
+          old_value: { base_version: baseDraft.version },
+          new_value: { new_version: newVersion },
+          reason: `Nova versão criada a partir da versão ${baseDraft.version}`,
+        })
+      } catch (logError) {
+        console.error('Error logging version creation:', logError)
+        // Don't fail the operation if logging fails
+      }
+    }
+
+    return {
+      success: true,
+      draft: newDraft,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: `Erro ao criar nova versão: ${error instanceof Error ? error.message : 'Erro desconhecido'}`,
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Service Export
 // -----------------------------------------------------------------------------
 
 export const draftOperationsService = {
   applyOperation,
+  createDraftFromTemplate,
+  getDraftVersions,
+  getDraftVersion,
+  createNewVersion,
 }
 
 export default draftOperationsService

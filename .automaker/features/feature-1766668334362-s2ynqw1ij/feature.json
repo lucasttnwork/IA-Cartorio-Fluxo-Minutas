@@ -1,0 +1,105 @@
+{
+  "category": "Uncategorized",
+  "description": "Full Google OCR and Gemini API Integration for Document Processing\n\nImplement complete integration with Google Cloud OCR and Gemini API to enable automated document processing capabilities in the application.\n\nRequirements:\n- Set up Google Cloud project with API (OCR) and Gemini API access\n- Configure authentication using service account credentials or API keys\n- Implement document upload functionality supporting common formats (PDF, PNG, JPG, TIFF)\n- Integrate Cloud Vision API to extract text from uploaded documents\n- Process OCR results and structure extracted data appropriately\n- Send processed text to Gemini API for intelligent analysis and interpretation\n- Handle multi-page documents with proper pagination\n- Implement error handling for API failures, rate limits, and invalid documents\n- Add progress indicators for long-running document processing tasks\n- Store processed results with original documents for future reference\n- Create user interface for viewing OCR results and Gemini-generated insights\n- Ensure secure handling of API credentials (environment variables, secret management)\n- Add unit tests for API integration logic\n- Document API usage limits and cost considerations\n\nEdge Cases to Consider:\n- Low-quality scans or images with poor text clarity\n- Documents with mixed languages or special characters\n- Large files that may exceed API size limits\n- Network timeouts during processing\n- Concurrent document processing requests\n\nDependencies:\n- Google Cloud Platform account with billing enabled (already configured)\n- OCR API and Gemini API enabled in GCP project (already configured)\n- Appropriate storage solution for uploaded documents\n- Authentication system to track user document submissions\n\n.env already have the credentias for the api key. and the ./credentials directory has the google authentication .json",
+  "title": "Integrate Google OCR and Gemini for document processing",
+  "images": [],
+  "imagePaths": [],
+  "textFilePaths": [],
+  "skipTests": false,
+  "model": "opus",
+  "thinkingLevel": "none",
+  "branchName": "main",
+  "priority": 2,
+  "planningMode": "spec",
+  "requirePlanApproval": false,
+  "titleGenerating": false,
+  "status": "verified",
+  "id": "feature-1766668334362-s2ynqw1ij",
+  "startedAt": "2025-12-25T14:04:06.726Z",
+  "updatedAt": "2025-12-25T14:13:42.030Z",
+  "planSpec": {
+    "status": "approved",
+    "version": 1,
+    "reviewedByUser": false,
+    "content": "🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.{ts,tsx,js,jsx,json}\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"/home/user/repos/money-map/.env\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/credentials/*.json\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/**/*.{ts,tsx}\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\.env\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"credentials/**/*.json\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\package.json\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\App.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\main.tsx\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/**/*.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/api/**/*.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/services/**/*.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/src/**/*.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\services\\\\chatAI.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\services\\\\documentService.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\ocr.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\pages\\\\UploadPage.tsx\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\extraction.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\types.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\types\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\jobs\\\\processor.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"credentials/*.json\"\n}\n\n🔧 Tool: Bash\nInput: {\n  \"command\": \"ls -la \\\"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\credentials\\\" 2>/dev/null || dir \\\"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\credentials\\\" 2>/dev/null || echo \\\"No credentials directory found\\\"\",\n  \"description\": \"List credentials directory\"\n}\n\n🔧 Tool: Bash\nInput: {\n  \"command\": \"dir /b \\\"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\"\",\n  \"description\": \"List root directory contents\"\n}\n\nBased on my comprehensive analysis of the codebase, I can now provide the specification. The application already has a fully functional Google OCR (Document AI) and Gemini API integration system in place within the worker service. However, I need to verify the current state and identify what enhancements are needed.\n\n---\n\n## Specification: Full Google OCR and Gemini API Integration for Document Processing\n\n### 1. **Problem**\nUsers need to upload documents (PDF, PNG, JPG, TIFF) and have them automatically processed for text extraction (OCR) and intelligent analysis using AI. While the application has existing OCR and Gemini integration in the worker service, it lacks:\n- A dedicated UI page to view OCR results and Gemini-generated insights\n- Progress indicators during document processing\n- Proper error handling display for API failures\n- A way to view and compare OCR text alongside AI analysis\n- Unit tests for API integration logic\n\n### 2. **Solution**\nEnhance the existing OCR/Gemini integration with a new Document Processing Results page that displays OCR text, extracted data, Gemini insights, processing progress, and error states. Add comprehensive error handling, progress tracking, and unit tests.\n\n### 3. **Acceptance Criteria**\n- GIVEN a user uploads a document, WHEN the document is processed, THEN the user sees real-time progress indicators showing OCR and extraction status\n- GIVEN an OCR job completes, WHEN the user views the document, THEN they can see the extracted text, confidence scores, and detected language\n- GIVEN a Gemini analysis completes, WHEN the user views the document, THEN they can see the document type classification, extracted entities, and AI-generated insights\n- GIVEN an API failure occurs, WHEN the user views the document, THEN they see a clear error message with retry options\n- GIVEN a low-quality scan is uploaded, WHEN OCR confidence is below threshold, THEN the system warns the user about potential accuracy issues\n\n### 4. **Files to Modify**\n\n| File | Purpose | Action |\n|------|---------|--------|\n| `src/pages/DocumentProcessingPage.tsx` | New page to view OCR results and Gemini insights | create |\n| `src/components/documents/OcrResultsPanel.tsx` | Component to display OCR text and blocks | create |\n| `src/components/documents/GeminiInsightsPanel.tsx` | Component to display AI analysis | create |\n| `src/components/documents/ProcessingProgressCard.tsx` | Component for processing progress | create |\n| `src/components/documents/index.ts` | Export new components | modify |\n| `src/hooks/useDocumentProcessingStatus.ts` | Hook for real-time processing status | create |\n| `src/services/documentProcessingService.ts` | Service for fetching processing results | create |\n| `src/App.tsx` | Add route for new page | modify |\n| `worker/src/jobs/ocr.ts` | Enhance error handling and quality checks | modify |\n| `worker/src/jobs/extraction.ts` | Add structured insights output | modify |\n| `worker/__tests__/ocr.test.ts` | Unit tests for OCR job | create |\n| `worker/__tests__/extraction.test.ts` | Unit tests for extraction job | create |\n\n### 5. **Implementation Tasks**\n```tasks\n- [ ] T001: Create document processing service with API functions | File: src/services/documentProcessingService.ts\n- [ ] T002: Create real-time processing status hook | File: src/hooks/useDocumentProcessingStatus.ts\n- [ ] T003: Create OCR results panel component | File: src/components/documents/OcrResultsPanel.tsx\n- [ ] T004: Create Gemini insights panel component | File: src/components/documents/GeminiInsightsPanel.tsx\n- [ ] T005: Create processing progress card component | File: src/components/documents/ProcessingProgressCard.tsx\n- [ ] T006: Create document processing results page | File: src/pages/DocumentProcessingPage.tsx\n- [ ] T007: Update documents component exports | File: src/components/documents/index.ts\n- [ ] T008: Add route for document processing page | File: src/App.tsx\n- [ ] T009: Enhance OCR job with quality checks and better error handling | File: worker/src/jobs/ocr.ts\n- [ ] T010: Enhance extraction job with structured Gemini insights | File: worker/src/jobs/extraction.ts\n- [ ] T011: Create unit tests for OCR job | File: worker/__tests__/ocr.test.ts\n- [ ] T012: Create unit tests for extraction job | File: worker/__tests__/extraction.test.ts\n```\n\n### 6. **Verification**\n1. Upload a test document (PDF or image) through the Upload page\n2. Navigate to the new Document Processing page\n3. Verify real-time progress indicators update during processing\n4. Confirm OCR results display extracted text with confidence scores\n5. Confirm Gemini insights show document classification and extracted entities\n6. Test error handling by simulating API failures\n7. Run unit tests to verify API integration logic\n8. Use Playwright MCP tools to verify UI components render correctly\n\n---",
+    "generatedAt": "2025-12-25T13:23:15.264Z",
+    "tasks": [
+      {
+        "id": "T001",
+        "description": "Create document processing service with API functions",
+        "filePath": "src/services/documentProcessingService.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T002",
+        "description": "Create real-time processing status hook",
+        "filePath": "src/hooks/useDocumentProcessingStatus.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T003",
+        "description": "Create OCR results panel component",
+        "filePath": "src/components/documents/OcrResultsPanel.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T004",
+        "description": "Create Gemini insights panel component",
+        "filePath": "src/components/documents/GeminiInsightsPanel.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T005",
+        "description": "Create processing progress card component",
+        "filePath": "src/components/documents/ProcessingProgressCard.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T006",
+        "description": "Create document processing results page",
+        "filePath": "src/pages/DocumentProcessingPage.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T007",
+        "description": "Update documents component exports",
+        "filePath": "src/components/documents/index.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T008",
+        "description": "Add route for document processing page",
+        "filePath": "src/App.tsx",
+        "status": "pending"
+      },
+      {
+        "id": "T009",
+        "description": "Enhance OCR job with quality checks and better error handling",
+        "filePath": "worker/src/jobs/ocr.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T010",
+        "description": "Enhance extraction job with structured Gemini insights",
+        "filePath": "worker/src/jobs/extraction.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T011",
+        "description": "Create unit tests for OCR job",
+        "filePath": "worker/__tests__/ocr.test.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T012",
+        "description": "Create unit tests for extraction job",
+        "filePath": "worker/__tests__/extraction.test.ts",
+        "status": "pending"
+      }
+    ],
+    "tasksTotal": 12,
+    "tasksCompleted": 2,
+    "approvedAt": "2025-12-25T13:23:15.266Z",
+    "currentTaskId": "T003"
+  }
+}

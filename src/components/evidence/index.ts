@@ -4,7 +4,7 @@
  * Re-exports all evidence modal related components for convenient importing.
  *
  * Usage:
- * import { EvidenceModal, DocumentViewer, BoundingBoxOverlay, HighlightBox } from '@/components/evidence'
+ * import { EvidenceModal, DocumentViewer, BoundingBoxOverlay, HighlightBox, EvidenceChainVisualization } from '@/components/evidence'
  */
 
 // Main modal container component with portal, backdrop, and focus trap
@@ -18,3 +18,6 @@ export { default as BoundingBoxOverlay } from './BoundingBoxOverlay'
 
 // Individual highlight box component with hover tooltip
 export { default as HighlightBox } from './HighlightBox'
+
+// Evidence chain visualization component showing data provenance
+export { EvidenceChainVisualization } from './EvidenceChainVisualization'

@@ -1,0 +1,92 @@
+### Page state
+- Page URL: http://localhost:5178/test-tabs
+- Page Title: Minuta Canvas
+- Page Snapshot:
+```yaml
+- generic [ref=e2]:
+  - generic:
+    - link "Ir para o conteúdo principal" [ref=e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - link "Ir para a navegação" [ref=e4] [cursor=pointer]:
+      - /url: "#sidebar-navigation"
+  - status [ref=e5]
+  - generic [ref=e7]:
+    - generic [ref=e8]:
+      - heading "Tabs Component Styling" [level=1] [ref=e9]
+      - paragraph [ref=e10]: Demonstration of tab component variations for content organization and navigation.
+    - generic [ref=e11]:
+      - generic [ref=e12]:
+        - generic [ref=e13]: Basic Tabs
+        - generic [ref=e14]: Simple tabs with text labels for organizing content into sections.
+      - generic [ref=e16]:
+        - tablist [ref=e17]:
+          - tab "Account" [ref=e18] [cursor=pointer]
+          - tab "Settings" [active] [selected] [ref=e19] [cursor=pointer]
+          - tab "Notifications" [ref=e20] [cursor=pointer]
+        - tabpanel "Settings" [ref=e142]:
+          - generic [ref=e143]:
+            - heading "General Settings" [level=3] [ref=e144]
+            - paragraph [ref=e145]: Configure application preferences and display options.
+            - generic [ref=e146]:
+              - generic [ref=e147]:
+                - generic [ref=e148]: Dark Mode
+                - generic [ref=e149]: Enabled
+              - generic [ref=e150]:
+                - generic [ref=e151]: Language
+                - generic [ref=e152]: Português
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e35]: Tabs with Icons
+        - generic [ref=e36]: Enhanced tabs with icon labels for better visual recognition.
+      - generic [ref=e38]:
+        - tablist [ref=e39]:
+          - tab "Profile" [ref=e40] [cursor=pointer]:
+            - img [ref=e41]
+            - text: Profile
+          - tab "Settings" [ref=e43] [cursor=pointer]:
+            - img [ref=e44]
+            - text: Settings
+          - tab "Alerts" [selected] [ref=e47] [cursor=pointer]:
+            - img [ref=e48]
+            - text: Alerts
+          - tab "Security" [ref=e50] [cursor=pointer]:
+            - img [ref=e51]
+            - text: Security
+        - tabpanel "Alerts" [ref=e121]:
+          - generic [ref=e122]:
+            - heading "Alert Center" [level=3] [ref=e123]
+            - paragraph [ref=e125]: You have 3 unread alerts from the past week.
+    - generic [ref=e59]:
+      - generic [ref=e60]:
+        - generic [ref=e61]: Dashboard Style Tabs
+        - generic [ref=e62]: Tabs for dashboard views with metrics and data visualization.
+      - generic [ref=e64]:
+        - tablist [ref=e65]:
+          - tab "Overview" [ref=e66] [cursor=pointer]:
+            - img [ref=e67]
+            - text: Overview
+          - tab "Analytics" [selected] [ref=e69] [cursor=pointer]:
+            - img [ref=e70]
+            - text: Analytics
+          - tab "Documents" [ref=e72] [cursor=pointer]
+        - tabpanel "Analytics" [ref=e126]:
+          - generic [ref=e127]:
+            - heading "Analytics Dashboard" [level=3] [ref=e128]
+            - paragraph [ref=e130]: Chart visualization would go here
+    - generic [ref=e87]:
+      - generic [ref=e89]: Accessibility Features
+      - generic [ref=e90]:
+        - paragraph [ref=e91]:
+          - generic [ref=e92]: ✓
+          - text: Keyboard navigation with arrow keys and Tab key
+        - paragraph [ref=e93]:
+          - generic [ref=e94]: ✓
+          - text: Focus indicators with visible ring outline
+        - paragraph [ref=e95]:
+          - generic [ref=e96]: ✓
+          - text: Screen reader compatible with ARIA labels
+        - paragraph [ref=e97]:
+          - generic [ref=e98]: ✓
+          - text: Support for dark mode with proper color contrast
+  - region "Notifications alt+T"
+```

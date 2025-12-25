@@ -20,7 +20,7 @@ export default function TestButtonPrimaryPage() {
 
   const handleLoadingDemo = () => {
     setIsLoading(true)
-    setTimeout(() => setIsLoading(false), 2000)
+    setTimeout(() => setIsLoading(false), 5000)
   }
 
   return (
@@ -157,18 +157,9 @@ export default function TestButtonPrimaryPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={handleLoadingDemo} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <PaperAirplaneIcon className="w-5 h-5 mr-2" />
-                  Click to Load
-                </>
-              )}
+            <Button onClick={handleLoadingDemo} loading={isLoading}>
+              <PaperAirplaneIcon className="w-5 h-5 mr-2" />
+              {isLoading ? 'Processing...' : 'Click to Load'}
             </Button>
           </CardContent>
         </Card>

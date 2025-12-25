@@ -13,6 +13,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import type { ChatMessage } from '../types'
+import { chatCache } from '../services/chatCache'
 
 // -----------------------------------------------------------------------------
 // Constants
@@ -161,6 +162,12 @@ export function useChatHistory(options: UseChatHistoryOptions): UseChatHistoryRe
     setMessages([])
     if (enablePersistence) {
       clearMessagesFromStorage(sessionId)
+      // Also clear context cache if sessionId is a draftId
+      try {
+        chatCache.invalidateCache(sessionId)
+      } catch (error) {
+        console.error('Failed to invalidate context cache:', error)
+      }
     }
   }, [sessionId, enablePersistence])
 

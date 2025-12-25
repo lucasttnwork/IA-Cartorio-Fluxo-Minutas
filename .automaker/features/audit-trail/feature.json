@@ -3,7 +3,7 @@
   "category": "Audit",
   "title": "Audit Trail with Timeline",
   "description": "Audit trail captures all changes with evidence",
-  "status": "backlog",
+  "status": "verified",
   "priority": 1,
   "complexity": "moderate",
   "dependencies": [
@@ -12,9 +12,15 @@
     "chat-operations"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-25T00:18:28.662Z",
   "model": "opus",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "skipTests": false,
+  "imagePaths": [],
+  "textFilePaths": [],
+  "branchName": "main",
+  "requirePlanApproval": false,
+  "startedAt": "2025-12-25T00:09:05.923Z"
 }

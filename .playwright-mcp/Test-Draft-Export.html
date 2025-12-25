@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test_Draft_Export</title>
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      line-height: 1.6;
+      color: #000;
+      background: #fff;
+      padding: 2cm;
+      max-width: 21cm;
+      margin: 0 auto;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 18pt;
+      font-weight: bold;
+      margin-bottom: 1em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-size: 14pt;
+      font-weight: bold;
+      margin-top: 1.5em;
+      margin-bottom: 0.75em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      font-size: 12pt;
+      font-weight: bold;
+      margin-top: 1em;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      margin-bottom: 1em;
+      text-align: justify;
+      text-indent: 2em;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin-left: 2em;
+      margin-bottom: 1em;
+    }
+
+    li {
+      margin-bottom: 0.5em;
+    }
+
+    /* Text Formatting */
+    strong, b {
+      font-weight: bold;
+    }
+
+    em, i {
+      font-style: italic;
+    }
+
+    u {
+      text-decoration: underline;
+    }
+
+    s, strike, del {
+      text-decoration: line-through;
+    }
+
+    /* Code */
+    code {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: #f5f5f5;
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background-color: #f5f5f5;
+      padding: 1em;
+      border-radius: 5px;
+      overflow-x: auto;
+      margin-bottom: 1em;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+    }
+
+    /* Blockquote */
+    blockquote {
+      border-left: 4px solid #ccc;
+      padding-left: 1em;
+      margin-left: 0;
+      margin-bottom: 1em;
+      font-style: italic;
+      color: #555;
+    }
+
+    /* Horizontal Rule */
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 2em 0;
+    }
+
+    /* Metadata Section */
+    .metadata {
+      margin-bottom: 2em;
+      padding: 1em;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 10pt;
+    }
+
+    .metadata-item {
+      margin-bottom: 0.5em;
+    }
+
+    .metadata-label {
+      font-weight: bold;
+      margin-right: 0.5em;
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+      }
+
+      .metadata {
+        page-break-after: avoid;
+      }
+
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+
+      p {
+        orphans: 3;
+        widows: 3;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="metadata">
+    <h3>Informações do Documento</h3>
+    <div class="metadata-item"><span class="metadata-label">Caso:</span>test-case-demo</div>
+    <div class="metadata-item"><span class="metadata-label">Versão:</span>1</div>
+    <div class="metadata-item"><span class="metadata-label">Criado em:</span>25 de dezembro de 2025 às 00:55</div>
+    <div class="metadata-item"><span class="metadata-label">Atualizado em:</span>25 de dezembro de 2025 às 00:55</div>
+  </div>
+
+  <div class="content">
+    <h1>Welcome to the Draft Editor</h1><p>Start typing to test the formatting toolbar...</p>
+  </div>
+</body>
+</html>

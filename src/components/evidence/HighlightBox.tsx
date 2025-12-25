@@ -44,12 +44,25 @@ interface TooltipProps {
   value?: string
   position: TooltipPosition
   visible: boolean
+  isOverridden?: boolean
+  overriddenValue?: string
+  onEdit?: () => void
 }
 
-function Tooltip({ label, confidence, value, position, visible }: TooltipProps) {
+function Tooltip({
+  label,
+  confidence,
+  value,
+  position,
+  visible,
+  isOverridden,
+  overriddenValue,
+  onEdit
+}: TooltipProps) {
   if (!visible) return null
 
   const confidencePercent = Math.round(confidence * 100)
+  const displayValue = isOverridden ? overriddenValue : value
 
   // Determine confidence level for styling
   const getConfidenceColor = (conf: number): string => {
@@ -113,33 +126,70 @@ function Tooltip({ label, confidence, value, position, visible }: TooltipProps) 
       role="tooltip"
       aria-live="polite"
     >
-      <div className="glass-popover p-3 min-w-[120px] max-w-[250px]">
+      <div className="glass-popover p-3 min-w-[120px] max-w-[280px]">
         {/* Label */}
         <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
           {label}
         </div>
 
         {/* Extracted value if provided */}
-        {value && (
-          <div className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">
-            {value}
+        {displayValue && (
+          <div className="mt-1">
+            <div className={`text-xs break-words ${isOverridden ? 'text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-600 dark:text-gray-400'}`}>
+              {displayValue}
+            </div>
+            {isOverridden && (
+              <div className="text-[10px] text-gray-500 dark:text-gray-500 mt-0.5 italic">
+                Original: {value || '-'}
+              </div>
+            )}
           </div>
         )}
 
-        {/* Confidence score */}
-        <div className="flex items-center gap-1.5 mt-2">
-          <span className="text-xs text-gray-500 dark:text-gray-400">
-            Confiança:
-          </span>
-          <span
-            className={`
-              text-xs font-medium px-2 py-1 rounded-md
-              ${getConfidenceBgColor(confidence)}
-              ${getConfidenceColor(confidence)}
-            `}
-          >
-            {confidencePercent}%
-          </span>
+        {/* Override indicator badge */}
+        {isOverridden && (
+          <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-[10px] font-medium">
+            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            Valor corrigido
+          </div>
+        )}
+
+        {/* Bottom row: confidence + edit button */}
+        <div className="flex items-center justify-between gap-2 mt-2">
+          {/* Confidence score */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
+              Confiança:
+            </span>
+            <span
+              className={`
+                text-xs font-medium px-2 py-1 rounded-md
+                ${getConfidenceBgColor(confidence)}
+                ${getConfidenceColor(confidence)}
+              `}
+            >
+              {confidencePercent}%
+            </span>
+          </div>
+
+          {/* Edit button */}
+          {onEdit && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                onEdit()
+              }}
+              className="text-xs px-2 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded transition-colors flex items-center gap-1"
+              title="Corrigir valor"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+              Editar
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -158,11 +208,14 @@ export function HighlightBox({
   onClick,
   onMouseEnter,
   onMouseLeave,
+  onOverride,
   style: styleOverrides,
   className = '',
 }: HighlightBoxProps) {
   // Local hover state for internal tooltip management
   const [localHover, setLocalHover] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editValue, setEditValue] = useState('')
   const rectRef = useRef<SVGRectElement>(null)
 
   // Determine if tooltip should show (either controlled or local hover)
@@ -225,6 +278,25 @@ export function HighlightBox({
       onClick?.()
     }
   }, [onClick])
+
+  // Handle edit mode
+  const handleEditClick = useCallback(() => {
+    const currentValue = box.isOverridden ? box.overriddenValue : box.extractedText
+    setEditValue(currentValue || '')
+    setIsEditing(true)
+  }, [box.isOverridden, box.overriddenValue, box.extractedText])
+
+  const handleEditSave = useCallback(() => {
+    if (editValue.trim() && onOverride) {
+      onOverride(editValue.trim())
+    }
+    setIsEditing(false)
+  }, [editValue, onOverride])
+
+  const handleEditCancel = useCallback(() => {
+    setIsEditing(false)
+    setEditValue('')
+  }, [])
 
   // Compute dynamic styles for different states
   const getStateStyles = (): {
@@ -320,13 +392,13 @@ export function HighlightBox({
       )}
 
       {/* Tooltip - rendered as foreignObject for HTML content */}
-      {showTooltip && (
+      {showTooltip && !isEditing && (
         <foreignObject
           x={0}
           y={0}
           width="100%"
           height="100%"
-          style={{ overflow: 'visible', pointerEvents: 'none' }}
+          style={{ overflow: 'visible', pointerEvents: 'auto' }}
         >
           <Tooltip
             label={box.label}
@@ -334,7 +406,74 @@ export function HighlightBox({
             value={box.extractedText}
             position={tooltipPosition}
             visible={showTooltip}
+            isOverridden={box.isOverridden}
+            overriddenValue={box.overriddenValue}
+            onEdit={onOverride ? handleEditClick : undefined}
           />
+        </foreignObject>
+      )}
+
+      {/* Edit Modal - rendered as foreignObject */}
+      {isEditing && (
+        <foreignObject
+          x={0}
+          y={0}
+          width="100%"
+          height="100%"
+          style={{ overflow: 'visible', pointerEvents: 'auto' }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              left: tooltipPosition.x,
+              top: tooltipPosition.y - 100,
+              transform: 'translateX(-50%)',
+              zIndex: 100,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="glass-popover p-3 min-w-[250px] max-w-[350px]">
+              <div className="text-sm font-medium text-gray-900 dark:text-white mb-2">
+                Corrigir valor
+              </div>
+              <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                {box.label}
+              </div>
+
+              <input
+                type="text"
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.stopPropagation()
+                    handleEditSave()
+                  } else if (e.key === 'Escape') {
+                    e.stopPropagation()
+                    handleEditCancel()
+                  }
+                }}
+                className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Digite o valor correto"
+                autoFocus
+              />
+
+              <div className="flex gap-2 mt-3">
+                <button
+                  onClick={handleEditSave}
+                  className="flex-1 px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs rounded transition-colors"
+                >
+                  Salvar
+                </button>
+                <button
+                  onClick={handleEditCancel}
+                  className="flex-1 px-3 py-1.5 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-900 dark:text-white text-xs rounded transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          </div>
         </foreignObject>
       )}
     </g>

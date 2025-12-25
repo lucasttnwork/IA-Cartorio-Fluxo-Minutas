@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Print Stylesheet - Draft</title>
+  <link rel="stylesheet" href="./src/styles/index.css">
+  <style>
+    /* Mock editor container for testing */
+    .test-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .tiptap-editor {
+      background: white;
+      padding: 2rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      min-height: 500px;
+    }
+
+    .ProseMirror {
+      outline: none;
+    }
+
+    /* Mock UI elements that should be hidden in print */
+    .toolbar {
+      background: #f3f4f6;
+      padding: 1rem;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 1rem;
+    }
+
+    .chat-panel {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 300px;
+      height: 100vh;
+      background: white;
+      border-left: 1px solid #e5e7eb;
+      padding: 1rem;
+    }
+
+    button {
+      background: #3b82f6;
+      color: white;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <!-- Mock Toolbar (should be hidden in print) -->
+  <div class="toolbar">
+    <button>Bold</button>
+    <button>Italic</button>
+    <button>Underline</button>
+    <button>Print</button>
+  </div>
+
+  <!-- Mock Chat Panel (should be hidden in print) -->
+  <div class="chat-panel">
+    <h3>Chat Panel</h3>
+    <p>This should not appear in print</p>
+  </div>
+
+  <!-- Main Content Container -->
+  <div class="test-container">
+    <div class="tiptap-editor ProseMirror">
+      <!-- Metadata Section -->
+      <div class="metadata">
+        <h3>Informações do Documento</h3>
+        <div class="metadata-item">
+          <span class="metadata-label">Caso:</span> CASO-2024-001
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Versão:</span> 1
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Criado em:</span> 25 de dezembro de 2025, 10:30
+        </div>
+        <div class="metadata-item">
+          <span class="metadata-label">Atualizado em:</span> 25 de dezembro de 2025, 14:45
+        </div>
+      </div>
+
+      <!-- Draft Content -->
+      <h1>Escritura de Compra e Venda</h1>
+
+      <h2>Das Partes</h2>
+      <p>
+        <strong>VENDEDOR:</strong> João da Silva, brasileiro, casado, empresário, portador da Cédula de Identidade RG nº 12.345.678-9 SSP/SP, inscrito no CPF/MF sob o nº 123.456.789-00, residente e domiciliado na Rua das Flores, nº 100, Bairro Jardim Primavera, São Paulo/SP, CEP 01234-567.
+      </p>
+
+      <p>
+        <strong>COMPRADOR:</strong> Maria Santos, brasileira, solteira, engenheira, portadora da Cédula de Identidade RG nº 98.765.432-1 SSP/SP, inscrita no CPF/MF sob o nº 987.654.321-00, residente e domiciliada na Avenida Paulista, nº 1000, Bela Vista, São Paulo/SP, CEP 01310-100.
+      </p>
+
+      <h2>Do Objeto</h2>
+      <p>
+        O presente instrumento tem por objeto a compra e venda de um imóvel localizado na Rua Exemplo, nº 500, Bairro Centro, São Paulo/SP, com as seguintes características:
+      </p>
+
+      <ul>
+        <li>Área total do terreno: 300m²</li>
+        <li>Área construída: 180m²</li>
+        <li>03 (três) dormitórios</li>
+        <li>02 (duas) vagas de garagem</li>
+        <li>Matrícula nº 12.345 no 1º Cartório de Registro de Imóveis de São Paulo</li>
+      </ul>
+
+      <h2>Do Preço e Forma de Pagamento</h2>
+      <p>
+        O preço total ajustado para a presente transação é de <strong>R$ 850.000,00</strong> (oitocentos e cinquenta mil reais), que será pago da seguinte forma:
+      </p>
+
+      <ol>
+        <li>Entrada no valor de R$ 200.000,00 (duzentos mil reais) no ato da assinatura desta escritura;</li>
+        <li>Parcela intermediária de R$ 300.000,00 (trezentos mil reais) mediante financiamento bancário;</li>
+        <li>Saldo remanescente de R$ 350.000,00 (trezentos e cinquenta mil reais) em 12 parcelas mensais e sucessivas.</li>
+      </ol>
+
+      <h2>Das Declarações</h2>
+      <p>
+        O <em>VENDEDOR</em> declara que o imóvel objeto desta escritura encontra-se <u>livre e desembaraçado</u> de quaisquer ônus, dívidas ou gravames, sejam reais ou pessoais, respondendo pela evicção de direito.
+      </p>
+
+      <blockquote>
+        "O presente instrumento foi lavrado em conformidade com as normas legais vigentes e constitui título hábil para transferência da propriedade do imóvel."
+      </blockquote>
+
+      <h3>Tabela de Valores</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Descrição</th>
+            <th>Valor (R$)</th>
+            <th>Vencimento</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Entrada</td>
+            <td>200.000,00</td>
+            <td>25/12/2025</td>
+          </tr>
+          <tr>
+            <td>Financiamento</td>
+            <td>300.000,00</td>
+            <td>15/01/2026</td>
+          </tr>
+          <tr>
+            <td>Parcelas</td>
+            <td>350.000,00</td>
+            <td>12x</td>
+          </tr>
+          <tr>
+            <td><strong>Total</strong></td>
+            <td><strong>850.000,00</strong></td>
+            <td>-</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr>
+
+      <h2>Das Disposições Finais</h2>
+      <p>
+        As partes elegem o foro da Comarca de São Paulo/SP para dirimir quaisquer controvérsias oriundas do presente instrumento, com renúncia expressa a qualquer outro, por mais privilegiado que seja.
+      </p>
+
+      <p>
+        E, por estarem assim justos e contratados, assinam o presente instrumento em 03 (três) vias de igual teor e forma, na presença de duas testemunhas.
+      </p>
+
+      <p style="margin-top: 3rem; text-align: center;">
+        São Paulo, 25 de dezembro de 2025.
+      </p>
+
+      <div style="margin-top: 4rem;">
+        <p style="text-align: center; border-top: 1px solid #000; width: 300px; margin: 0 auto; padding-top: 0.5rem;">
+          <strong>VENDEDOR</strong><br>
+          João da Silva
+        </p>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <p style="text-align: center; border-top: 1px solid #000; width: 300px; margin: 0 auto; padding-top: 0.5rem;">
+          <strong>COMPRADOR</strong><br>
+          Maria Santos
+        </p>
+      </div>
+
+      <div style="margin-top: 2rem;">
+        <p><strong>Testemunhas:</strong></p>
+        <div style="display: flex; justify-content: space-around; margin-top: 2rem;">
+          <p style="border-top: 1px solid #000; width: 200px; padding-top: 0.5rem; text-align: center;">
+            Testemunha 1
+          </p>
+          <p style="border-top: 1px solid #000; width: 200px; padding-top: 0.5rem; text-align: center;">
+            Testemunha 2
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div style="margin-top: 2rem; padding: 1rem; background: #fef3c7; border: 1px solid #fbbf24; border-radius: 4px;">
+      <h3>📄 Instruções para Teste</h3>
+      <p><strong>Para testar o print stylesheet:</strong></p>
+      <ol>
+        <li>Abra este arquivo no navegador</li>
+        <li>Pressione <kbd>Ctrl+P</kbd> (ou <kbd>Cmd+P</kbd> no Mac) para abrir a visualização de impressão</li>
+        <li>Verifique que:
+          <ul>
+            <li>A barra de ferramentas (toolbar) não aparece</li>
+            <li>O painel de chat não aparece</li>
+            <li>O conteúdo está formatado profissionalmente</li>
+            <li>As margens estão adequadas (2cm)</li>
+            <li>Os cabeçalhos não ficam separados do conteúdo</li>
+            <li>A tabela está formatada corretamente</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    // Add a print button functionality
+    document.querySelectorAll('button').forEach(btn => {
+      if (btn.textContent === 'Print') {
+        btn.addEventListener('click', () => {
+          window.print();
+        });
+      }
+    });
+  </script>
+</body>
+</html>

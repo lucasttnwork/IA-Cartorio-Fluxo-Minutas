@@ -8,15 +8,20 @@ import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
   ClockIcon,
+  UserIcon,
+  HomeIcon,
+  PlusIcon,
 } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
-import { EntityTable } from '../components/entities'
+import { Skeleton } from '@/components/ui/skeleton'
+import { EntityTable, CreatePersonModal, CreatePropertyModal } from '../components/entities'
+import type { PersonFormData, PropertyFormData } from '../components/entities'
 import { supabase } from '../lib/supabase'
-import type { ExtractedEntity, Document, EntityExtractionResult } from '../types'
+import type { ExtractedEntity, Document, EntityExtractionResult, Person, Property, Address } from '../types'
 
 interface ExtractionData {
   llm_result?: {
@@ -32,6 +37,11 @@ export default function EntitiesPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isExtracting, setIsExtracting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Modal states
+  const [showCreatePersonModal, setShowCreatePersonModal] = useState(false)
+  const [showCreatePropertyModal, setShowCreatePropertyModal] = useState(false)
+  const [isCreatingEntity, setIsCreatingEntity] = useState(false)
 
   // Load documents and their extracted entities
   const loadData = useCallback(async () => {
@@ -217,6 +227,113 @@ export default function EntitiesPage() {
     }
   }
 
+  // Handle person creation
+  const handleCreatePerson = async (personData: PersonFormData) => {
+    if (!caseId) return
+
+    setIsCreatingEntity(true)
+    try {
+      // Build address object if any address fields are filled
+      const hasAddress = personData.address_street || personData.address_city
+      const address: Address | null = hasAddress ? {
+        street: personData.address_street || null,
+        number: personData.address_number || null,
+        complement: personData.address_complement || null,
+        neighborhood: personData.address_neighborhood || null,
+        city: personData.address_city || null,
+        state: personData.address_state || null,
+        zip: personData.address_zip || null,
+        country: personData.address_country || null,
+      } : null
+
+      // Create person record
+      const { error } = await supabase
+        .from('people')
+        .insert({
+          case_id: caseId,
+          full_name: personData.full_name,
+          cpf: personData.cpf || null,
+          rg: personData.rg || null,
+          rg_issuer: personData.rg_issuer || null,
+          birth_date: personData.birth_date || null,
+          nationality: personData.nationality || null,
+          marital_status: personData.marital_status || null,
+          profession: personData.profession || null,
+          email: personData.email || null,
+          phone: personData.phone || null,
+          father_name: personData.father_name || null,
+          mother_name: personData.mother_name || null,
+          address,
+          confidence: 1.0, // Manual entry = full confidence
+          source_docs: [],
+          metadata: { manual_entry: true },
+        })
+
+      if (error) {
+        throw new Error(`Failed to create person: ${error.message}`)
+      }
+
+      // Close modal and refresh
+      setShowCreatePersonModal(false)
+      loadData()
+    } catch (err) {
+      console.error('Error creating person:', err)
+      setError(err instanceof Error ? err.message : 'Failed to create person')
+    } finally {
+      setIsCreatingEntity(false)
+    }
+  }
+
+  // Handle property creation
+  const handleCreateProperty = async (propertyData: PropertyFormData) => {
+    if (!caseId) return
+
+    setIsCreatingEntity(true)
+    try {
+      // Build address object if any address fields are filled
+      const hasAddress = propertyData.address_street || propertyData.address_city
+      const address: Address | null = hasAddress ? {
+        street: propertyData.address_street || null,
+        number: propertyData.address_number || null,
+        complement: propertyData.address_complement || null,
+        neighborhood: propertyData.address_neighborhood || null,
+        city: propertyData.address_city || null,
+        state: propertyData.address_state || null,
+        zip: propertyData.address_zip || null,
+        country: propertyData.address_country || null,
+      } : null
+
+      // Create property record
+      const { error } = await supabase
+        .from('properties')
+        .insert({
+          case_id: caseId,
+          registry_number: propertyData.registry_number || null,
+          registry_office: propertyData.registry_office || null,
+          area_sqm: propertyData.area_sqm ? parseFloat(propertyData.area_sqm) : null,
+          description: propertyData.description || null,
+          iptu_number: propertyData.iptu_number || null,
+          address,
+          confidence: 1.0, // Manual entry = full confidence
+          source_docs: [],
+          metadata: { manual_entry: true },
+        })
+
+      if (error) {
+        throw new Error(`Failed to create property: ${error.message}`)
+      }
+
+      // Close modal and refresh
+      setShowCreatePropertyModal(false)
+      loadData()
+    } catch (err) {
+      console.error('Error creating property:', err)
+      setError(err instanceof Error ? err.message : 'Failed to create property')
+    } finally {
+      setIsCreatingEntity(false)
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -231,7 +348,7 @@ export default function EntitiesPage() {
           </p>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Button
             variant="outline"
             onClick={() => loadData()}
@@ -240,6 +357,24 @@ export default function EntitiesPage() {
           >
             <ArrowPathIcon className={cn("w-5 h-5", isLoading && "animate-spin")} />
             Atualizar
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={() => setShowCreatePersonModal(true)}
+            className="gap-2"
+          >
+            <UserIcon className="w-5 h-5" />
+            Criar Pessoa
+          </Button>
+
+          <Button
+            variant="outline"
+            onClick={() => setShowCreatePropertyModal(true)}
+            className="gap-2"
+          >
+            <HomeIcon className="w-5 h-5" />
+            Criar Imóvel
           </Button>
 
           {documents.filter((d) => d.status === 'processed').length > 0 && (
@@ -334,11 +469,42 @@ export default function EntitiesPage() {
 
       {/* Main Content */}
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="text-center">
-            <ArrowPathIcon className="w-10 h-10 text-gray-400 animate-spin mx-auto" />
-            <p className="mt-4 text-gray-500 dark:text-gray-400">Carregando entidades...</p>
-          </div>
+        <div className="space-y-6">
+          {/* Document Filter Skeleton */}
+          <Card className="glass-card">
+            <CardContent className="p-4">
+              <Skeleton className="h-4 w-32 mb-3" />
+              <div className="flex flex-wrap gap-2">
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton key={i} className="h-8 w-32 rounded-full" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Entity Table Skeleton */}
+          <Card className="glass-card">
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Skeleton className="h-10 flex-1" />
+                  <Skeleton className="h-10 w-24" />
+                </div>
+                <Skeleton className="h-4 w-48" />
+                <div className="space-y-3">
+                  {[...Array(5)].map((_, index) => (
+                    <div key={index} className="flex items-center gap-4">
+                      <Skeleton className="h-4 w-4" />
+                      <Skeleton className="h-8 w-24 rounded-full" />
+                      <Skeleton className="h-6 flex-1" />
+                      <Skeleton className="h-6 w-16" />
+                      <Skeleton className="h-4 flex-1" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       ) : documents.length === 0 ? (
         <Card className="glass-card p-8 text-center">
@@ -438,6 +604,22 @@ export default function EntitiesPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Create Person Modal */}
+      <CreatePersonModal
+        isOpen={showCreatePersonModal}
+        onClose={() => setShowCreatePersonModal(false)}
+        onCreate={handleCreatePerson}
+        isCreating={isCreatingEntity}
+      />
+
+      {/* Create Property Modal */}
+      <CreatePropertyModal
+        isOpen={showCreatePropertyModal}
+        onClose={() => setShowCreatePropertyModal(false)}
+        onCreate={handleCreateProperty}
+        isCreating={isCreatingEntity}
+      />
     </div>
   )
 }
