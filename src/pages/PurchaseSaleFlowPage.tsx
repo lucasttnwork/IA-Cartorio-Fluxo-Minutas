@@ -10,8 +10,8 @@
  * 5. Draft Generation - Generate and review the final draft
  */
 
-import { useEffect, useCallback, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useCallback, useState, useRef } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   XMarkIcon,
@@ -59,22 +59,22 @@ const ACT_TYPE_OPTIONS: { value: ActType; label: string; description: string }[]
   {
     value: 'purchase_sale',
     label: 'Compra e Venda',
-    description: 'Transacao de compra e venda de imovel',
+    description: 'Transação de compra e venda de imóvel',
   },
   {
     value: 'donation',
     label: 'Doacao',
-    description: 'Doacao de imovel entre partes',
+    description: 'Doação de imóvel entre partes',
   },
   {
     value: 'exchange',
     label: 'Permuta',
-    description: 'Troca de imoveis entre partes',
+    description: 'Troca de imóveis entre partes',
   },
   {
     value: 'lease',
     label: 'Locacao',
-    description: 'Contrato de aluguel de imovel',
+    description: 'Contrato de aluguel de imóvel',
   },
 ]
 
@@ -112,7 +112,7 @@ function CaseCreationStep({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Case Title */}
       <div className="space-y-2">
-        <Label htmlFor="case-title">Titulo do Caso *</Label>
+        <Label htmlFor="case-title">Título do Caso *</Label>
         <Input
           id="case-title"
           type="text"
@@ -125,7 +125,7 @@ function CaseCreationStep({
           required
         />
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Escolha um titulo descritivo para identificar este caso
+          Escolha um título descritivo para identificar este caso
         </p>
       </div>
 
@@ -192,12 +192,14 @@ function CaseCreationStep({
 interface DocumentUploadStepProps {
   documents: import('@/types').Document[]
   onUploadComplete?: (results: import('@/components/upload/DocumentDropzone').UploadResult[]) => void
+  onRefreshDocuments?: () => void
   caseId?: string
 }
 
 function DocumentUploadStep({
   documents,
   onUploadComplete,
+  onRefreshDocuments,
   caseId,
 }: DocumentUploadStepProps) {
   if (!caseId) {
@@ -210,12 +212,23 @@ function DocumentUploadStep({
     )
   }
 
+  // Handle upload complete with refresh
+  const handleUploadComplete = useCallback((results: import('@/components/upload/DocumentDropzone').UploadResult[]) => {
+    // Call the parent's onUploadComplete
+    onUploadComplete?.(results)
+
+    // Trigger a refresh of documents after a short delay to allow DB to sync
+    setTimeout(() => {
+      onRefreshDocuments?.()
+    }, 500)
+  }, [onUploadComplete, onRefreshDocuments])
+
   return (
     <div className="space-y-6">
       {/* Document Upload Component */}
       <DocumentDropzone
         caseId={caseId}
-        onUploadComplete={onUploadComplete}
+        onUploadComplete={handleUploadComplete}
       />
 
       {/* Uploaded Documents List */}
@@ -288,7 +301,7 @@ function DocumentUploadStep({
         </h4>
         <ul className="text-sm text-blue-700 dark:text-blue-300 list-disc list-inside space-y-1">
           <li>RG e CPF dos vendedores e compradores</li>
-          <li>Certidao de casamento (se aplicavel)</li>
+          <li>Certidão de casamento (se aplicavel)</li>
           <li>Matricula atualizada do imovel</li>
           <li>IPTU do imovel</li>
           <li>Procuracao (se houver representante)</li>
@@ -350,14 +363,14 @@ function EntityExtractionStep({
             </svg>
           </div>
           <p className="text-gray-600 dark:text-gray-300 font-medium">
-            Pronto para iniciar a extracao
+            Pronto para iniciar a extração
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
             A IA vai analisar os documentos e extrair pessoas, imoveis e
             relacionamentos
           </p>
           <Button onClick={onStartExtraction} className="mt-6">
-            Iniciar Extracao
+            Iniciar Extração
           </Button>
         </div>
       ) : (
@@ -403,11 +416,11 @@ function EntityExtractionStep({
                         {person.full_name}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {person.cpf || 'CPF nao informado'}
+                        {person.cpf || 'CPF não informado'}
                       </p>
                     </div>
                     <span className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
-                      {Math.round(person.confidence * 100)}% confianca
+                      {Math.round(person.confidence * 100)}% confiança
                     </span>
                   </div>
                 ))}
@@ -431,16 +444,16 @@ function EntityExtractionStep({
                       <p className="font-medium text-gray-900 dark:text-white">
                         {property.registry_number
                           ? `Matricula ${property.registry_number}`
-                          : 'Matricula nao identificada'}
+                          : 'Matrícula não identificada'}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
                         {property.address?.formatted_address ||
                           property.address?.street ||
-                          'Endereco nao informado'}
+                          'Endereço não informado'}
                       </p>
                     </div>
                     <span className="text-xs bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">
-                      {Math.round(property.confidence * 100)}% confianca
+                      {Math.round(property.confidence * 100)}% confiança
                     </span>
                   </div>
                 ))}
@@ -529,7 +542,7 @@ function CanvasReviewStep({
             </svg>
           </div>
           <p className="text-gray-600 dark:text-gray-300 font-medium">
-            Visualizacao do Canvas
+            Visualização do Canvas
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
             Revise e confirme os relacionamentos entre entidades
@@ -644,7 +657,7 @@ function DraftGenerationStep({
             Pronto para gerar a minuta
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            A minuta sera gerada com base nas entidades e relacionamentos
+            A minuta será gerada com base nas entidades e relacionamentos
             confirmados
           </p>
           <Button onClick={onGenerateDraft} className="mt-6">
@@ -661,7 +674,7 @@ function DraftGenerationStep({
                 Minuta gerada com sucesso!
               </p>
               <p className="text-sm text-green-600 dark:text-green-400">
-                Versao {draft.version} - {draft.status}
+                Versão {draft.version} - {draft.status}
               </p>
             </div>
             <Button
@@ -727,9 +740,9 @@ function DraftGenerationStep({
           {/* Draft Preview */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Pre-visualizacao</CardTitle>
+              <CardTitle className="text-base">Pré-visualização</CardTitle>
               <CardDescription>
-                Secoes da minuta gerada
+                Seções da minuta gerada
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -784,10 +797,10 @@ function FlowCompletion({ caseId, onNewFlow }: FlowCompletionProps) {
       </motion.div>
 
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-        Fluxo Concluido!
+        Fluxo Concluído!
       </h2>
       <p className="text-gray-600 dark:text-gray-300 max-w-md mx-auto mb-8">
-        O caso foi processado com sucesso. Voce pode visualizar a minuta gerada
+        O caso foi processado com sucesso. Você pode visualizar a minuta gerada
         ou iniciar um novo fluxo.
       </p>
 
@@ -823,16 +836,44 @@ function FlowCompletion({ caseId, onNewFlow }: FlowCompletionProps) {
 
 export default function PurchaseSaleFlowPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const flow = usePurchaseSaleFlow()
   const steps = useFlowStore((state) => state.steps)
   const [showCancelDialog, setShowCancelDialog] = useState(false)
+  const hasInitialized = useRef(false)
 
-  // Start flow if not active
+  // Extract caseId from URL query params
+  const caseIdFromUrl = searchParams.get('caseId')
+
+  // Initialize flow based on URL intent: new case vs resume case
+  // - No caseId in URL → Always start fresh (new case)
+  // - caseId in URL → Resume existing case
   useEffect(() => {
-    if (!flow.isActive) {
-      flow.startFlow('purchase_sale')
+    if (!hasInitialized.current) {
+      hasInitialized.current = true
+
+      if (caseIdFromUrl) {
+        // Resuming an existing case
+        console.log('[Flow] Resuming existing case:', caseIdFromUrl)
+
+        // Check if case is already loaded
+        if (flow.caseData?.id === caseIdFromUrl && flow.isActive) {
+          // Case already loaded, nothing to do
+          return
+        }
+
+        // If not loaded, start the flow (flowStore will restore from localStorage)
+        if (!flow.isActive) {
+          flow.startFlow('purchase_sale')
+        }
+      } else {
+        // Creating a new case - always reset and start fresh
+        console.log('[Flow] Starting new case')
+        flow.resetFlow()
+        flow.startFlow('purchase_sale')
+      }
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [caseIdFromUrl, flow.isActive, flow.caseData?.id])
 
   // Handle step navigation
   const handleStepClick = useCallback(
@@ -952,6 +993,7 @@ export default function PurchaseSaleFlowPage() {
                 flow.markStepCompleted('document_upload')
               }
             }}
+            onRefreshDocuments={flow.refreshDocuments}
             caseId={flow.caseData?.id}
           />
         )
@@ -1074,8 +1116,8 @@ export default function PurchaseSaleFlowPage() {
           <DialogHeader>
             <DialogTitle>Cancelar Fluxo?</DialogTitle>
             <DialogDescription>
-              Tem certeza que deseja cancelar este fluxo? Todo o progresso sera
-              perdido e voce precisara comecar novamente.
+              Tem certeza que deseja cancelar este fluxo? Todo o progresso será
+              perdido e você precisará começar novamente.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-3">

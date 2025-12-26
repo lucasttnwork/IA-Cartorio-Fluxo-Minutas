@@ -14,7 +14,7 @@ import {
   DocumentDuplicateIcon
 } from '@heroicons/react/24/outline'
 import { usePaginatedCases, useDeleteCase, useDuplicateCase, type SortField, type SortOrder } from '../hooks/useCases'
-import CreateCaseModal from '../components/case/CreateCaseModal'
+import { useFlowStore } from '../stores/flowStore'
 import DeleteConfirmationModal from '../components/common/DeleteConfirmationModal'
 import { Pagination } from '../components/common/Pagination'
 import SortControls, { type SortOption } from '../components/common/SortControls'
@@ -40,19 +40,19 @@ const statusBadgeVariant: Record<CaseStatus, 'default' | 'secondary' | 'destruct
 
 // Status display labels
 const statusLabels: Record<CaseStatus, string> = {
-  draft: 'Draft',
-  processing: 'Processing',
-  review: 'Review',
-  approved: 'Approved',
-  archived: 'Archived',
+  draft: 'Rascunho',
+  processing: 'Processando',
+  review: 'Revisão',
+  approved: 'Aprovado',
+  archived: 'Arquivado',
 }
 
 // Act type display labels
 const actTypeLabels: Record<string, string> = {
-  purchase_sale: 'Purchase & Sale',
-  donation: 'Donation',
-  exchange: 'Exchange',
-  lease: 'Lease',
+  purchase_sale: 'Compra e Venda',
+  donation: 'Doação',
+  exchange: 'Troca',
+  lease: 'Aluguel',
 }
 
 // Loading skeleton component
@@ -83,6 +83,13 @@ export default function DashboardPage() {
     order: 'desc'
   })
 
+  const handleNewCase = () => {
+    // Reset any previous flow state to ensure a fresh start
+    useFlowStore.getState().resetFlow()
+    // Navigate to start a new flow
+    navigate('/purchase-sale-flow')
+  }
+
   // Debounce search query to avoid too many API calls
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -94,7 +101,7 @@ export default function DashboardPage() {
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [searchQuery, debouncedSearchQuery])
+  }, [searchQuery])
 
   const { data: paginatedData, isLoading, isError, error, refetch } = usePaginatedCases({
     page: currentPage,
@@ -106,7 +113,6 @@ export default function DashboardPage() {
   })
   const { mutate: deleteCase, isPending: isDeleting } = useDeleteCase()
   const { mutate: duplicateCase, isPending: isDuplicating } = useDuplicateCase()
-  const [showCreateModal, setShowCreateModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [caseToDelete, setCaseToDelete] = useState<Case | null>(null)
   const [openMenuId, setOpenMenuId] = useState<string | null>(null)
@@ -142,8 +148,8 @@ export default function DashboardPage() {
           setCaseToDelete(null)
         },
         onError: (error) => {
-          console.error('Failed to delete case:', error)
-          alert('Failed to delete case. Please try again.')
+          console.error('Falha ao deletar caso:', error)
+          alert('Falha ao deletar caso. Por favor, tente novamente.')
         }
       })
     }
@@ -160,8 +166,8 @@ export default function DashboardPage() {
         navigate(`/case/${newCase.id}`)
       },
       onError: (error) => {
-        console.error('Failed to duplicate case:', error)
-        alert('Failed to duplicate case. Please try again.')
+        console.error('Falha ao duplicar caso:', error)
+        alert('Falha ao duplicar caso. Por favor, tente novamente.')
       }
     })
   }
@@ -195,24 +201,20 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-            Cases
+            Casos
           </h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Manage your document cases and drafts
+            Gerencie seus casos de documentos e minutas
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
           <Button
-            onClick={() => navigate('/flow/purchase-sale')}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+            onClick={handleNewCase}
+            className="bg-gradient-to-r from-sky-400 to-blue-400 hover:from-sky-500 hover:to-blue-500 text-white"
           >
-            <DocumentTextIcon className="w-5 h-5 mr-2" />
-            Start Purchase/Sale Flow
-            <ArrowRightIcon className="w-4 h-4 ml-2" />
-          </Button>
-          <Button onClick={() => setShowCreateModal(true)} variant="outline">
             <PlusIcon className="w-5 h-5 mr-2" />
-            New Case
+            Novo Caso
+            <ArrowRightIcon className="w-4 h-4 ml-2" />
           </Button>
         </div>
       </div>
@@ -225,7 +227,7 @@ export default function DashboardPage() {
           </div>
           <Input
             type="text"
-            placeholder="Search cases by title..."
+            placeholder="Buscar casos por título..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 pr-10"
@@ -234,7 +236,7 @@ export default function DashboardPage() {
             <button
               onClick={clearSearch}
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-              aria-label="Clear search"
+              aria-label="Limpar busca"
             >
               <XMarkIcon className="h-5 w-5" />
             </button>
@@ -245,12 +247,12 @@ export default function DashboardPage() {
           onChange={(e) => handleStatusFilterChange(e.target.value as CaseStatus | 'all')}
           className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
         >
-          <option value="all">All Status</option>
-          <option value="draft">Draft</option>
-          <option value="processing">Processing</option>
-          <option value="review">Review</option>
-          <option value="approved">Approved</option>
-          <option value="archived">Archived</option>
+          <option value="all">Todos os Status</option>
+          <option value="draft">Rascunho</option>
+          <option value="processing">Processando</option>
+          <option value="review">Revisão</option>
+          <option value="approved">Aprovado</option>
+          <option value="archived">Arquivado</option>
         </select>
         <SortControls currentSort={sortOption} onSortChange={handleSortChange} />
       </div>
@@ -276,15 +278,15 @@ export default function DashboardPage() {
                   <ExclamationCircleIcon className="h-8 w-8 text-red-500 dark:text-red-400" />
                 </div>
                 <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-                  Failed to load cases
+                  Erro ao carregar casos
                 </h3>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-                  {error instanceof Error ? error.message : 'An unexpected error occurred'}
+                  {error instanceof Error ? error.message : 'Um erro inesperado ocorreu'}
                 </p>
                 <div className="mt-6">
                   <Button onClick={() => refetch()} variant="outline">
                     <ArrowPathIcon className="w-5 h-5 mr-2" />
-                    Try Again
+                    Tentar Novamente
                   </Button>
                 </div>
               </div>
@@ -305,34 +307,28 @@ export default function DashboardPage() {
                   className="w-40 h-40 mb-2"
                 />
                 <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-                  {debouncedSearchQuery ? 'No cases found' : 'No cases yet'}
+                  {debouncedSearchQuery ? 'Nenhum caso encontrado' : 'Nenhum caso ainda'}
                 </h3>
                 <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
                   {debouncedSearchQuery
-                    ? `No cases match "${debouncedSearchQuery}". Try a different search term.`
-                    : 'Get started by creating a new case to manage your notary documents and drafts.'}
+                    ? `Nenhum caso corresponde a "${debouncedSearchQuery}". Tente um termo de busca diferente.`
+                    : 'Comece criando um novo caso para gerenciar seus documentos notariais e minutas.'}
                 </p>
                 <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
                   {debouncedSearchQuery ? (
                     <Button onClick={clearSearch} variant="outline">
                       <XMarkIcon className="w-5 h-5 mr-2" />
-                      Clear Search
+                      Limpar Busca
                     </Button>
                   ) : (
-                    <>
-                      <Button
-                        onClick={() => navigate('/flow/purchase-sale')}
-                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                      >
-                        <DocumentTextIcon className="w-5 h-5 mr-2" />
-                        Start Purchase/Sale Flow
-                        <ArrowRightIcon className="w-4 h-4 ml-2" />
-                      </Button>
-                      <Button onClick={() => setShowCreateModal(true)} variant="outline">
-                        <PlusIcon className="w-5 h-5 mr-2" />
-                        Create Case Manually
-                      </Button>
-                    </>
+                    <Button
+                      onClick={handleNewCase}
+                      className="bg-gradient-to-r from-sky-400 to-blue-400 hover:from-sky-500 hover:to-blue-500 text-white"
+                    >
+                      <PlusIcon className="w-5 h-5 mr-2" />
+                      Novo Caso
+                      <ArrowRightIcon className="w-4 h-4 ml-2" />
+                    </Button>
                   )}
                 </div>
               </div>
@@ -343,18 +339,25 @@ export default function DashboardPage() {
         <>
           {/* Cases Grid */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {cases.map((caseItem: Case, index: number) => (
-              <motion.div
-                key={caseItem.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="relative"
-              >
-                <Link to={`/case/${caseItem.id}`}>
-                  <Card className="glass-card hover:shadow-lg transition-shadow cursor-pointer">
+            {cases.map((caseItem: Case, index: number) => {
+              // Determine if the workflow is complete based on case status
+              const isWorkflowComplete = ['review', 'approved', 'archived'].includes(caseItem.status)
+              const actionUrl = isWorkflowComplete
+                ? `/case/${caseItem.id}/draft`
+                : `/purchase-sale-flow?caseId=${caseItem.id}`
+              const actionLabel = isWorkflowComplete ? 'Ver minuta' : 'Continuar fluxo'
+
+              return (
+                <motion.div
+                  key={caseItem.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="relative"
+                >
+                  <Card className="glass-card hover:shadow-lg transition-shadow">
                     <CardContent className="p-4">
-                      <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start justify-between gap-2 mb-3">
                         <h3 className="font-medium text-gray-900 dark:text-white truncate flex-1">
                           {caseItem.title}
                         </h3>
@@ -368,7 +371,7 @@ export default function DashboardPage() {
                               variant="ghost"
                               size="sm"
                               className="h-auto p-1"
-                              aria-label="More options"
+                              aria-label="Mais opções"
                             >
                               <EllipsisVerticalIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                             </Button>
@@ -386,7 +389,7 @@ export default function DashboardPage() {
                                     disabled={isDuplicating}
                                   >
                                     <DocumentDuplicateIcon className="w-4 h-4 mr-2" />
-                                    Duplicate Case
+                                    Duplicar Caso
                                   </Button>
                                   <Button
                                     onClick={(e) => handleDeleteClick(caseItem, e)}
@@ -394,7 +397,7 @@ export default function DashboardPage() {
                                     className="w-full justify-start text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
                                   >
                                     <TrashIcon className="w-4 h-4 mr-2" />
-                                    Delete Case
+                                    Deletar Caso
                                   </Button>
                                 </Card>
                               </>
@@ -405,14 +408,22 @@ export default function DashboardPage() {
                       <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                         {actTypeLabels[caseItem.act_type] || caseItem.act_type.replace('_', ' ')}
                       </p>
-                      <p className="mt-3 text-xs text-gray-400 dark:text-gray-500">
+                      <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">
                         Created {formatDate(caseItem.created_at, 'medium')}
                       </p>
+                      <Button
+                        onClick={() => navigate(actionUrl)}
+                        variant="outline"
+                        className="w-full mt-4"
+                      >
+                        {actionLabel}
+                        <ArrowRightIcon className="w-4 h-4 ml-2" />
+                      </Button>
                     </CardContent>
                   </Card>
-                </Link>
-              </motion.div>
-            ))}
+                </motion.div>
+              )
+            })}
           </div>
 
           {/* Pagination Controls */}
@@ -432,12 +443,6 @@ export default function DashboardPage() {
         </>
       )}
 
-      {/* Create Case Modal */}
-      <CreateCaseModal
-        isOpen={showCreateModal}
-        onClose={() => setShowCreateModal(false)}
-      />
-
       {/* Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={showDeleteModal}
@@ -446,9 +451,9 @@ export default function DashboardPage() {
           setCaseToDelete(null)
         }}
         onConfirm={handleConfirmDelete}
-        title="Delete Case"
-        message={`Are you sure you want to delete "${caseToDelete?.title}"? This action cannot be undone and will remove all associated documents and data.`}
-        confirmLabel="Delete Case"
+        title="Deletar Caso"
+        message={`Tem certeza de que deseja deletar "${caseToDelete?.title}"? Esta ação não pode ser desfeita e removerá todos os documentos e dados associados.`}
+        confirmLabel="Deletar Caso"
         isDeleting={isDeleting}
       />
     </div>
