@@ -59,7 +59,7 @@ export default function EntitiesPage() {
         .order('created_at', { ascending: false })
 
       if (docsError) {
-        throw new Error(`Failed to fetch documents: ${docsError.message}`)
+        throw new Error(`Falha ao buscar documentos: ${docsError.message}`)
       }
 
       setDocuments(docsData as Document[])
@@ -78,7 +78,7 @@ export default function EntitiesPage() {
         .in('document_id', docIds)
 
       if (extractionsError) {
-        console.error('Error fetching extractions:', extractionsError)
+        console.error('Erro ao buscar extrações:', extractionsError)
       }
 
       // Collect all entities from extractions
@@ -108,13 +108,17 @@ export default function EntitiesPage() {
         setEntities(allEntities)
       }
     } catch (err) {
-      console.error('Error loading data:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load data')
+      console.error('Erro ao carregar dados:', err)
+      setError(err instanceof Error ? err.message : 'Falha ao carregar dados')
     } finally {
       setIsLoading(false)
     }
   }, [caseId, selectedDocumentId])
 
+  // Effect that re-executes loadData whenever its dependencies change.
+  // loadData depends on both caseId and selectedDocumentId - when either changes,
+  // loadData is recreated, which triggers this effect. This is intentional:
+  // it ensures entities are refetched and filtered by the newly selected document.
   useEffect(() => {
     loadData()
   }, [loadData])
@@ -139,7 +143,7 @@ export default function EntitiesPage() {
         })
 
       if (error) {
-        throw new Error(`Failed to create extraction job: ${error.message}`)
+        throw new Error(`Falha ao criar job de extração: ${error.message}`)
       }
 
       // Refresh data after a short delay
@@ -148,8 +152,8 @@ export default function EntitiesPage() {
         setIsExtracting(false)
       }, 2000)
     } catch (err) {
-      console.error('Error triggering extraction:', err)
-      setError(err instanceof Error ? err.message : 'Failed to trigger extraction')
+      console.error('Erro ao disparar extração:', err)
+      setError(err instanceof Error ? err.message : 'Falha ao disparar extração')
       setIsExtracting(false)
     }
   }
@@ -185,8 +189,8 @@ export default function EntitiesPage() {
         setIsExtracting(false)
       }, 3000)
     } catch (err) {
-      console.error('Error triggering extractions:', err)
-      setError(err instanceof Error ? err.message : 'Failed to trigger extractions')
+      console.error('Erro ao disparar extrações:', err)
+      setError(err instanceof Error ? err.message : 'Falha ao disparar extrações')
       setIsExtracting(false)
     }
   }
@@ -270,15 +274,15 @@ export default function EntitiesPage() {
         })
 
       if (error) {
-        throw new Error(`Failed to create person: ${error.message}`)
+        throw new Error(`Falha ao criar pessoa: ${error.message}`)
       }
 
       // Close modal and refresh
       setShowCreatePersonModal(false)
       loadData()
     } catch (err) {
-      console.error('Error creating person:', err)
-      setError(err instanceof Error ? err.message : 'Failed to create person')
+      console.error('Erro ao criar pessoa:', err)
+      setError(err instanceof Error ? err.message : 'Falha ao criar pessoa')
     } finally {
       setIsCreatingEntity(false)
     }
@@ -320,15 +324,15 @@ export default function EntitiesPage() {
         })
 
       if (error) {
-        throw new Error(`Failed to create property: ${error.message}`)
+        throw new Error(`Falha ao criar imóvel: ${error.message}`)
       }
 
       // Close modal and refresh
       setShowCreatePropertyModal(false)
       loadData()
     } catch (err) {
-      console.error('Error creating property:', err)
-      setError(err instanceof Error ? err.message : 'Failed to create property')
+      console.error('Erro ao criar imóvel:', err)
+      setError(err instanceof Error ? err.message : 'Falha ao criar imóvel')
     } finally {
       setIsCreatingEntity(false)
     }

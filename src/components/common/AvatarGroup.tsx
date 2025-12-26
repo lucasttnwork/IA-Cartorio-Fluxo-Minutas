@@ -51,7 +51,7 @@ export default function AvatarGroup({
             'font-medium text-gray-600 dark:text-gray-300',
             'ring-2 ring-white dark:ring-gray-800'
           )}
-          title={`+${remainingCount} more`}
+          title={`+${remainingCount} mais`}
         >
           +{remainingCount}
         </div>

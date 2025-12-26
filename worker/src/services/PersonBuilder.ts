@@ -702,8 +702,15 @@ export class PersonBuilder {
   }
 }
 
-// Export singleton instance
-export const personBuilder = new PersonBuilder()
+// Lazy singleton instance (only created when accessed)
+let _personBuilderInstance: PersonBuilder | null = null
+
+export function getPersonBuilder(): PersonBuilder {
+  if (!_personBuilderInstance) {
+    _personBuilderInstance = new PersonBuilder()
+  }
+  return _personBuilderInstance
+}
 
 // Export factory function for custom configurations
 export function createPersonBuilder(

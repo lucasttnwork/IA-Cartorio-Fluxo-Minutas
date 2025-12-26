@@ -64,7 +64,7 @@ export default function SuggestionsPanel({
       <Button
         onClick={() => setIsOpen(true)}
         size="icon"
-        className="fixed right-4 top-24 bg-purple-500 hover:bg-purple-600 text-white rounded-full shadow-lg z-50 h-12 w-12"
+        className="fixed right-4 top-32 bg-purple-500 hover:bg-purple-600 text-white rounded-full shadow-lg z-40 h-12 w-12"
         title="Mostrar Sugestões"
       >
         <SparklesIcon className="w-6 h-6" />
@@ -78,7 +78,7 @@ export default function SuggestionsPanel({
   }
 
   return (
-    <Card className="fixed right-4 top-24 bottom-4 w-96 glass-elevated rounded-lg shadow-2xl z-50 flex flex-col overflow-hidden">
+    <Card className="fixed right-4 top-32 bottom-4 w-80 xl:w-96 glass-elevated rounded-lg shadow-2xl z-40 flex flex-col overflow-hidden border border-gray-200/50 dark:border-gray-700/50">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-500 to-indigo-600 p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -301,8 +301,8 @@ function EntitySuggestionCard({
           <div className="flex items-center gap-2 mb-1">
             <h4 className="text-sm font-medium text-gray-900 dark:text-white truncate">
               {suggestion.type === 'person'
-                ? (suggestion.entity as any).full_name
-                : (suggestion.entity as any).address
+                ? ((suggestion.entity as any).full_name || (suggestion.entity as any).name || 'Pessoa sem nome')
+                : ((suggestion.entity as any).address || (suggestion.entity as any).description || 'Propriedade sem endereço')
               }
             </h4>
             <ConfidenceBadge confidence={suggestion.confidence} />

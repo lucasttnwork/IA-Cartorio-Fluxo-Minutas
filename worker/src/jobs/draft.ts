@@ -16,8 +16,8 @@ function getGeminiClient(): { client: GoogleGenerativeAI; model: GenerativeModel
 
   if (!geminiClient) {
     geminiClient = new GoogleGenerativeAI(GEMINI_API_KEY)
-    // Use Gemini Pro for higher quality draft generation
-    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-1.5-pro' })
+    // Use Gemini 3 Pro Preview para tarefas complexas de geração de documentos
+    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-3-pro-preview' })
   }
 
   return { client: geminiClient, model: geminiModel! }

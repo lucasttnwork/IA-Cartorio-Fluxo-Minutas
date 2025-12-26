@@ -47,7 +47,7 @@ import { Skeleton } from '../ui/skeleton'
 // Entity type configuration with icons and colors
 const entityTypeConfig: Record<EntityType, { label: string; icon: typeof UserIcon; color: string; bgColor: string }> = {
   PERSON: { label: 'Pessoa', icon: UserIcon, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/30' },
-  ORGANIZATION: { label: 'Organizacao', icon: BuildingOfficeIcon, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-100 dark:bg-purple-900/30' },
+  ORGANIZATION: { label: 'Organização', icon: BuildingOfficeIcon, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-100 dark:bg-purple-900/30' },
   LOCATION: { label: 'Local', icon: MapPinIcon, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-100 dark:bg-green-900/30' },
   DATE: { label: 'Data', icon: CalendarIcon, color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/30' },
   MONEY: { label: 'Valor', icon: CurrencyDollarIcon, color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30' },
@@ -56,10 +56,10 @@ const entityTypeConfig: Record<EntityType, { label: string; icon: typeof UserIco
   CNPJ: { label: 'CNPJ', icon: BuildingOfficeIcon, color: 'text-violet-600 dark:text-violet-400', bgColor: 'bg-violet-100 dark:bg-violet-900/30' },
   EMAIL: { label: 'Email', icon: EnvelopeIcon, color: 'text-cyan-600 dark:text-cyan-400', bgColor: 'bg-cyan-100 dark:bg-cyan-900/30' },
   PHONE: { label: 'Telefone', icon: PhoneIcon, color: 'text-teal-600 dark:text-teal-400', bgColor: 'bg-teal-100 dark:bg-teal-900/30' },
-  ADDRESS: { label: 'Endereco', icon: HomeIcon, color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30' },
-  PROPERTY_REGISTRY: { label: 'Matricula', icon: DocumentDuplicateIcon, color: 'text-rose-600 dark:text-rose-400', bgColor: 'bg-rose-100 dark:bg-rose-900/30' },
-  RELATIONSHIP: { label: 'Relacao', icon: LinkIcon, color: 'text-pink-600 dark:text-pink-400', bgColor: 'bg-pink-100 dark:bg-pink-900/30' },
-  DOCUMENT_NUMBER: { label: 'Numero Doc', icon: DocumentTextIcon, color: 'text-slate-600 dark:text-slate-400', bgColor: 'bg-slate-100 dark:bg-slate-900/30' },
+  ADDRESS: { label: 'Endereço', icon: HomeIcon, color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30' },
+  PROPERTY_REGISTRY: { label: 'Matrícula', icon: DocumentDuplicateIcon, color: 'text-rose-600 dark:text-rose-400', bgColor: 'bg-rose-100 dark:bg-rose-900/30' },
+  RELATIONSHIP: { label: 'Relação', icon: LinkIcon, color: 'text-pink-600 dark:text-pink-400', bgColor: 'bg-pink-100 dark:bg-pink-900/30' },
+  DOCUMENT_NUMBER: { label: 'Número Doc', icon: DocumentTextIcon, color: 'text-slate-600 dark:text-slate-400', bgColor: 'bg-slate-100 dark:bg-slate-900/30' },
   OTHER: { label: 'Outro', icon: QuestionMarkCircleIcon, color: 'text-gray-600 dark:text-gray-400', bgColor: 'bg-gray-100 dark:bg-gray-900/30' },
 }
 
@@ -95,7 +95,7 @@ const confidenceLevelConfig: Record<ConfidenceLevel, {
   },
   medium: {
     label: 'Medium',
-    labelPt: 'Media',
+    labelPt: 'Média',
     color: 'text-yellow-600 dark:text-yellow-400',
     bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',
     borderColor: 'border-yellow-200 dark:border-yellow-800',
@@ -293,10 +293,10 @@ export default function EntityTable({
       <div className="glass-subtle text-center py-12 rounded-lg">
         <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
         <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-          Nenhuma entidade extraida
+          Nenhuma entidade extraída
         </h3>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Faca upload de documentos e aguarde o processamento para ver entidades extraidas.
+          Faça upload de documentos e aguarde o processamento para ver entidades extraídas.
         </p>
       </div>
     )
@@ -418,7 +418,7 @@ export default function EntityTable({
               {/* Confidence Level Filters */}
               <div>
                 <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                  Nivel de Confianca
+                  Nível de Confiança
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {(Object.keys(confidenceLevelConfig) as ConfidenceLevel[]).map((level) => {
@@ -501,7 +501,7 @@ export default function EntityTable({
                 className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={() => handleSort('confidence')}
               >
-                Confianca <SortIcon field="confidence" />
+                Confiança <SortIcon field="confidence" />
               </TableHead>
               <TableHead>Contexto</TableHead>
             </TableRow>

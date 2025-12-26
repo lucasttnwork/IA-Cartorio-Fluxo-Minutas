@@ -103,7 +103,7 @@ export function CacheMetrics({ draftId, className }: CacheMetricsProps) {
       <div className="grid grid-cols-2 gap-2 text-xs">
         {/* Cache Hits */}
         <div className="glass-card p-2 rounded">
-          <div className="text-gray-500 dark:text-gray-400 mb-0.5">Hits</div>
+          <div className="text-gray-500 dark:text-gray-400 mb-0.5">Acertos</div>
           <div className="text-lg font-bold text-green-600 dark:text-green-400">
             {metrics.hits}
           </div>
@@ -111,7 +111,7 @@ export function CacheMetrics({ draftId, className }: CacheMetricsProps) {
 
         {/* Cache Misses */}
         <div className="glass-card p-2 rounded">
-          <div className="text-gray-500 dark:text-gray-400 mb-0.5">Misses</div>
+          <div className="text-gray-500 dark:text-gray-400 mb-0.5">Erros</div>
           <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
             {metrics.misses}
           </div>

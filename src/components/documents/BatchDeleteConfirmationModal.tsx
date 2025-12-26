@@ -59,7 +59,7 @@ export default function BatchDeleteConfirmationModal({
                 Excluir {count} {count === 1 ? 'documento' : 'documentos'}?
               </DialogTitle>
               <DialogDescription className="text-sm text-gray-500 dark:text-gray-400">
-                Esta acao ira remover permanentemente {count === 1 ? 'o documento selecionado' : 'os documentos selecionados'} e todos os dados associados, incluindo extracoes, evidencias e referencias em entidades.
+                Esta ação irá remover permanentemente {count === 1 ? 'o documento selecionado' : 'os documentos selecionados'} e todos os dados associados, incluindo extrações, evidências e referências em entidades.
               </DialogDescription>
             </DialogHeader>
           </div>
@@ -68,7 +68,7 @@ export default function BatchDeleteConfirmationModal({
         {/* Document list */}
         <div className="mt-4">
           <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">
-            Documentos a serem excluidos:
+            Documentos a serem excluídos:
           </p>
           <ScrollArea className="h-[150px] rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
             <div className="p-2 space-y-1">

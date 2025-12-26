@@ -29,7 +29,7 @@ export default function ForgotPasswordPage() {
         setEmailSent(true)
       }
     } catch (err) {
-      setError('An unexpected error occurred')
+      setError('Um erro inesperado ocorreu')
     } finally {
       setLoading(false)
     }
@@ -48,7 +48,7 @@ export default function ForgotPasswordPage() {
               Minuta Canvas
             </h1>
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              Document Processing & Draft Generation
+              Processamento de Documentos e Geração de Minutas
             </p>
           </div>
 
@@ -59,13 +59,13 @@ export default function ForgotPasswordPage() {
                   <CheckCircle2 className="h-16 w-16 text-green-500" />
                 </div>
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
-                  Check your email
+                  Verifique seu e-mail
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400">
-                  We've sent a password reset link to <strong>{email}</strong>
+                  Enviamos um link de redefinição de senha para <strong>{email}</strong>
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500">
-                  Click the link in the email to reset your password. If you don't see it, check your spam folder.
+                  Clique no link no e-mail para redefinir sua senha. Se não o vir, verifique sua pasta de spam.
                 </p>
                 <div className="pt-4">
                   <Link
@@ -73,7 +73,7 @@ export default function ForgotPasswordPage() {
                     className="inline-flex items-center text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" />
-                    Back to login
+                    Voltar para Login
                   </Link>
                 </div>
               </div>
@@ -96,15 +96,15 @@ export default function ForgotPasswordPage() {
             Minuta Canvas
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Document Processing & Draft Generation
+            Processamento de Documentos e Geração de Minutas
           </p>
         </div>
 
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="text-center">Reset your password</CardTitle>
+            <CardTitle className="text-center">Redefinir Senha</CardTitle>
             <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-2">
-              Enter your email address and we'll send you a link to reset your password.
+              Digite seu e-mail e enviaremos um link para redefinir sua senha.
             </p>
           </CardHeader>
           <CardContent>
@@ -117,7 +117,7 @@ export default function ForgotPasswordPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="email">
-                  Email
+                  E-mail
                 </Label>
                 <Input
                   id="email"
@@ -157,10 +157,10 @@ export default function ForgotPasswordPage() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                    Sending reset link...
+                    Enviando link de redefinição...
                   </span>
                 ) : (
-                  'Send reset link'
+                  'Enviar Link de Redefinição'
                 )}
               </Button>
 

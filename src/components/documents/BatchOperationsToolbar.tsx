@@ -89,7 +89,7 @@ export default function BatchOperationsToolbar({
             className
           )}
           role="toolbar"
-          aria-label="Operacoes em lote"
+          aria-label="Operações em lote"
         >
           {/* Selection info */}
           <div className="flex items-center gap-3 pr-3 border-r border-gray-200 dark:border-gray-700">
@@ -178,8 +178,8 @@ export default function BatchOperationsToolbar({
               onClick={onClearSelection}
               disabled={isProcessing}
               className="h-8 w-8 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              title="Limpar selecao"
-              aria-label="Limpar selecao"
+              title="Limpar seleção"
+              aria-label="Limpar seleção"
             >
               <XMarkIcon className="w-4 h-4" />
             </Button>

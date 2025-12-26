@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../hooks/useAuth'
 import PageTransition from '../components/common/PageTransition'
@@ -35,7 +35,7 @@ export default function LoginPage() {
         navigate(from, { replace: true })
       }
     } catch (err) {
-      setError('An unexpected error occurred')
+      setError('Ocorreu um erro inesperado')
     } finally {
       setLoading(false)
     }
@@ -54,13 +54,13 @@ export default function LoginPage() {
             Minuta Canvas
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Document Processing & Draft Generation
+            Processamento de Documentos e Geração de Minutas
           </p>
         </div>
 
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="text-center">Sign in to your account</CardTitle>
+        <Card className="glass-login">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-center text-xl">Faça login em sua conta</CardTitle>
           </CardHeader>
           <CardContent>
             <form className="space-y-6" onSubmit={handleSubmit}>
@@ -72,7 +72,7 @@ export default function LoginPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="email">
-                  Email
+                  E-mail
                 </Label>
                 <Input
                   id="email"
@@ -88,7 +88,7 @@ export default function LoginPage() {
 
               <div className="space-y-2">
                 <Label htmlFor="password">
-                  Password
+                  Senha
                 </Label>
                 <Input
                   id="password"
@@ -107,13 +107,13 @@ export default function LoginPage() {
                   <Checkbox
                     id="remember-me"
                     name="remember-me"
-                    aria-label="Remember me"
+                    aria-label="Lembrar de mim"
                   />
                   <Label
                     htmlFor="remember-me"
                     className="text-sm cursor-pointer"
                   >
-                    Remember me
+                    Lembrar de mim
                   </Label>
                 </div>
 
@@ -121,14 +121,14 @@ export default function LoginPage() {
                   href="/forgot-password"
                   className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                 >
-                  Forgot password?
+                  Esqueceu a senha?
                 </a>
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full"
+                className="w-full h-11 btn-primary-gradient rounded-lg text-base"
               >
                 {loading ? (
                   <span className="flex items-center justify-center">
@@ -151,12 +151,24 @@ export default function LoginPage() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                    Signing in...
+                    Entrando...
                   </span>
                 ) : (
-                  'Sign in'
+                  'Entrar'
                 )}
               </Button>
+
+              <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <p className="text-center text-sm text-gray-600 dark:text-gray-400">
+                  Não tem conta?{' '}
+                  <Link
+                    to="/signup"
+                    className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  >
+                    Criar uma conta
+                  </Link>
+                </p>
+              </div>
             </form>
           </CardContent>
         </Card>

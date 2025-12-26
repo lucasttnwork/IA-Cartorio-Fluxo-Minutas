@@ -177,7 +177,7 @@ export function useCreateCase() {
   return useMutation({
     mutationFn: async (input: CreateCaseInput): Promise<Case> => {
       if (!appUser?.organization_id || !user?.id) {
-        throw new Error('User not authenticated')
+        throw new Error('Usuário não autenticado')
       }
 
       // Build canonical_data with deal details if provided
@@ -304,7 +304,7 @@ export function useDuplicateCase() {
   return useMutation({
     mutationFn: async (caseId: string): Promise<Case> => {
       if (!appUser?.organization_id || !user?.id) {
-        throw new Error('User not authenticated')
+        throw new Error('Usuário não autenticado')
       }
 
       // Fetch the original case

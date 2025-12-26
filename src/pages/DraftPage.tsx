@@ -55,14 +55,21 @@ export default function DraftPage() {
     debounceMs: 2000,
   })
 
-  // Update error state if auto-save fails
+  // Effect 1: Propagate auto-save errors to the main error state
+  // Responsibility: Monitor the auto-save hook for errors and display them to the user
+  // Dependencies: autoSaveError - triggered when auto-save operation fails
   useEffect(() => {
     if (autoSaveError) {
       setError(autoSaveError)
     }
   }, [autoSaveError])
 
-  // Check if draft exists
+  // Effect 2: Initialize draft on page load - check if draft exists and load it
+  // Responsibility: Query the database for an existing draft when the case ID changes.
+  //   If found: Load draftId, content, and hide template selector
+  //   If not found: Show template selector for user to create a new draft
+  // Dependencies: caseId - triggers initial load and when case changes
+  // Note: Sets hasDraft flag which is used by Effect 3 to load versions
   useEffect(() => {
     if (!caseId) return
 
@@ -79,7 +86,7 @@ export default function DraftPage() {
           .limit(1)
 
         if (error) {
-          console.error('Error checking for drafts:', error)
+          console.error('Erro ao verificar minutas:', error)
           setShowTemplateSelector(true)
           return
         }
@@ -104,7 +111,13 @@ export default function DraftPage() {
     checkDraft()
   }, [caseId])
 
-  // Load all draft versions when draft is loaded
+  // Effect 3: Load all draft versions for version history and comparison features
+  // Responsibility: Fetch complete version history from draftOperationsService when a draft is loaded.
+  //   Populates draftVersions list and identifies the current active version.
+  //   Used by version history panel, comparison feature, and UI version display.
+  // Dependencies: caseId, draftId, hasDraft
+  //   - Waits for Effect 2 to set hasDraft=true before executing
+  //   - Re-fetches when draftId changes (e.g., switching versions or creating new version)
   useEffect(() => {
     if (!caseId || !hasDraft) return
 
@@ -121,17 +134,24 @@ export default function DraftPage() {
             setCurrentVersion(current)
           }
         } else {
-          console.error('Failed to load versions:', result.error)
+          console.error('Falha ao carregar versões:', result.error)
         }
       } catch (err) {
-        console.error('Error loading versions:', err)
+        console.error('Erro ao carregar versões:', err)
       }
     }
 
     loadVersions()
   }, [caseId, draftId, hasDraft])
 
-  // Initialize chat session
+  // Effect 4: Initialize chat session and load message history
+  // Responsibility: Create or retrieve chat session for the current draft, load existing messages,
+  //   and warm the LLM cache with the draft content for better performance.
+  // Dependencies: caseId, draftId, content
+  //   - Requires both caseId and draftId (won't run until Effect 2 sets draftId)
+  //   - Re-initializes when draft content changes significantly
+  //   - Depends on content being available for cache warming
+  // Note: This Effect depends on Effect 2 (draftId) and Effect 3 is independent
   useEffect(() => {
     if (!caseId || !draftId) return
 
@@ -143,7 +163,7 @@ export default function DraftPage() {
         )
 
         if (error) {
-          console.error('Error initializing chat session:', error)
+          console.error('Erro ao inicializar sessão de chat:', error)
           setError('Não foi possível inicializar a sessão de chat')
           return
         }
@@ -156,7 +176,7 @@ export default function DraftPage() {
             await chatService.getMessages({ sessionId: data.id })
 
           if (messagesError) {
-            console.error('Error loading messages:', messagesError)
+            console.error('Erro ao carregar mensagens:', messagesError)
           } else if (existingMessages) {
             setMessages(existingMessages)
           }
@@ -175,7 +195,12 @@ export default function DraftPage() {
     initChatSession()
   }, [caseId, draftId, content])
 
-  // Subscribe to new messages
+  // Effect 5: Subscribe to real-time chat message updates
+  // Responsibility: Establish a real-time subscription to the chat service that automatically
+  //   adds new messages to the messages state as they arrive from other users or the AI.
+  // Dependencies: chatSession - Only runs after Effect 4 creates the session
+  // Note: Returns cleanup function that unsubscribes when session changes or component unmounts
+  //   This prevents memory leaks and orphaned subscriptions
   useEffect(() => {
     if (!chatSession) return
 
@@ -194,13 +219,13 @@ export default function DraftPage() {
   const handleContentChange = (html: string) => {
     setContent(html)
     // Here you can save the content to the backend
-    console.log('Content updated:', html)
+    console.log('Conteúdo atualizado:', html)
   }
 
   const handleInlineEdit = async (fieldPath: string, newValue: string) => {
     if (!caseId) return
 
-    console.log('Inline edit:', fieldPath, newValue)
+    console.log('Edição inline:', fieldPath, newValue)
 
     try {
       // Create an update_field operation
@@ -241,11 +266,11 @@ export default function DraftPage() {
           ])
         }
       } else {
-        console.error('Failed to apply inline edit:', result.error)
+        console.error('Falha ao aplicar edição inline:', result.error)
         setError(`Erro ao aplicar edição: ${result.error}`)
       }
     } catch (err) {
-      console.error('Error applying inline edit:', err)
+      console.error('Erro ao aplicar edição inline:', err)
       setError('Erro ao salvar edição inline')
     }
   }
@@ -309,7 +334,7 @@ export default function DraftPage() {
           },
         ])
       } else {
-        console.error('Failed to apply operation:', result.error)
+        console.error('Falha ao aplicar operação:', result.error)
 
         // Show error notification
         setMessages((prev) => [
@@ -325,7 +350,7 @@ export default function DraftPage() {
         ])
       }
     } catch (err) {
-      console.error('Error approving operation:', err)
+      console.error('Erro ao aprovar operação:', err)
       setError('Erro ao aprovar operação')
     }
   }
@@ -360,7 +385,7 @@ export default function DraftPage() {
         },
       ])
     } catch (err) {
-      console.error('Error rejecting operation:', err)
+      console.error('Erro ao rejeitar operação:', err)
       setError('Erro ao rejeitar operação')
     }
   }
@@ -408,7 +433,7 @@ export default function DraftPage() {
         },
       ])
     } catch (err) {
-      console.error('Error undoing operation:', err)
+      console.error('Erro ao desfazer operação:', err)
       setError('Erro ao desfazer operação')
     }
   }
@@ -447,11 +472,11 @@ export default function DraftPage() {
           },
         ])
       } else {
-        console.error('Failed to create draft from template:', result.error)
+        console.error('Falha ao criar minuta do template:', result.error)
         setError(`Erro ao criar minuta: ${result.error}`)
       }
     } catch (err) {
-      console.error('Error creating draft from template:', err)
+      console.error('Erro ao criar minuta do template:', err)
       setError('Erro ao criar minuta do modelo')
     } finally {
       setIsLoading(false)
@@ -477,7 +502,7 @@ export default function DraftPage() {
         })
 
       if (sendError) {
-        throw new Error('Failed to send message')
+        throw new Error('Falha ao enviar mensagem')
       }
 
       if (userMessage) {
@@ -489,7 +514,7 @@ export default function DraftPage() {
         await chatService.processMessage(chatSession.id, messageContent)
 
       if (processError) {
-        throw new Error('Failed to process message')
+        throw new Error('Falha ao processar mensagem')
       }
 
       if (assistantMessage) {
@@ -499,7 +524,7 @@ export default function DraftPage() {
         // No automatic application
       }
     } catch (err) {
-      console.error('Error handling message:', err)
+      console.error('Erro ao processar mensagem:', err)
       setError('Erro ao processar mensagem. Tente novamente.')
     } finally {
       setIsLoading(false)
@@ -534,7 +559,7 @@ export default function DraftPage() {
         setError(`Erro ao carregar versão: ${result.error}`)
       }
     } catch (err) {
-      console.error('Error loading version:', err)
+      console.error('Erro ao carregar versão:', err)
       setError('Erro ao carregar versão')
     }
   }
@@ -575,7 +600,7 @@ export default function DraftPage() {
         setError(`Erro ao criar nova versão: ${result.error}`)
       }
     } catch (err) {
-      console.error('Error creating new version:', err)
+      console.error('Erro ao criar nova versão:', err)
       setError('Erro ao criar nova versão')
     } finally {
       setIsLoading(false)
@@ -610,7 +635,7 @@ export default function DraftPage() {
         },
       ])
     } catch (err) {
-      console.error('Error comparing versions:', err)
+      console.error('Erro ao comparar versões:', err)
       setError('Erro ao comparar versões')
     }
   }
@@ -659,7 +684,7 @@ export default function DraftPage() {
         ])
       }
     } catch (err) {
-      console.error('Error exporting HTML:', err)
+      console.error('Erro ao exportar HTML:', err)
       setError('Erro ao exportar minuta como HTML')
     }
   }
@@ -703,7 +728,7 @@ export default function DraftPage() {
         ])
       }
     } catch (err) {
-      console.error('Error exporting PDF:', err)
+      console.error('Erro ao exportar PDF:', err)
       setError('Erro ao exportar minuta como PDF')
     }
   }
@@ -747,7 +772,7 @@ export default function DraftPage() {
         ])
       }
     } catch (err) {
-      console.error('Error printing:', err)
+      console.error('Erro ao imprimir:', err)
       setError('Erro ao imprimir minuta')
     }
   }

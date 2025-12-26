@@ -18,7 +18,8 @@ interface AuthContextType {
   signUp: (
     email: string,
     password: string,
-    fullName: string
+    fullName: string,
+    organizationCode: string
   ) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
   resetPassword: (email: string) => Promise<{ error: Error | null }>
@@ -74,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) throw error
       setAppUser(data as AppUser)
     } catch (error) {
-      console.error('Error fetching app user:', error)
+      console.error('Erro ao buscar usuário do app:', error)
     } finally {
       setLoading(false)
     }
@@ -92,9 +93,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  async function signUp(email: string, password: string, fullName: string) {
+  async function signUp(
+    email: string,
+    password: string,
+    fullName: string,
+    organizationCode: string
+  ) {
     try {
-      const { error } = await supabase.auth.signUp({
+      // Validate organization code
+      const { data: validationData, error: validationError } = await supabase.rpc(
+        'validate_organization_code',
+        { code: organizationCode }
+      )
+
+      if (validationError || !validationData) {
+        return {
+          error: new Error('Código de organização inválido ou expirado'),
+        }
+      }
+
+      const organizationId = validationData
+
+      // Create user in Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -103,7 +124,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           },
         },
       })
-      return { error }
+
+      if (authError || !authData.user?.id) {
+        return { error: authError }
+      }
+
+      // Use the organization code
+      const { error: useCodeError } = await supabase.rpc(
+        'use_organization_code',
+        { code: organizationCode }
+      )
+
+      if (useCodeError) {
+        console.error('Erro ao incrementar uso do código de organização:', useCodeError)
+      }
+
+      // Create user record in users table
+      const { error: userError } = await supabase.from('users').insert({
+        id: authData.user.id,
+        organization_id: organizationId,
+        full_name: fullName,
+        role: 'clerk',
+      })
+
+      if (userError) {
+        return { error: userError }
+      }
+
+      return { error: null }
     } catch (error) {
       return { error: error as Error }
     }
@@ -138,7 +186,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function updateProfile(fullName: string) {
     try {
       if (!user?.id) {
-        return { error: new Error('User not authenticated') }
+        return { error: new Error('Usuário não autenticado') }
       }
 
       // Update the users table

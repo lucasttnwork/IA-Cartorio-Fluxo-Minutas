@@ -1,0 +1,139 @@
+Arquivo,Linha,String em Inglês,Tradução Proposta,Contexto,Tipo,Prioridade
+DashboardPage.tsx,42,Draft,Rascunho,Status Badge,Label,HIGH
+DashboardPage.tsx,43,Processing,Processando,Status Badge,Label,HIGH
+DashboardPage.tsx,44,Review,Revisão,Status Badge,Label,HIGH
+DashboardPage.tsx,45,Approved,Aprovado,Status Badge,Label,HIGH
+DashboardPage.tsx,46,Archived,Arquivado,Status Badge,Label,HIGH
+DashboardPage.tsx,52,Purchase & Sale,Compra e Venda,Act Type Label,Label,HIGH
+DashboardPage.tsx,53,Donation,Doação,Act Type Label,Label,HIGH
+DashboardPage.tsx,54,Exchange,Permuta,Act Type Label,Label,HIGH
+DashboardPage.tsx,55,Lease,Locação,Act Type Label,Label,HIGH
+DashboardPage.tsx,198,Cases,Casos,Page Title,Heading,HIGH
+DashboardPage.tsx,201,Manage your document cases and drafts,Gerencie seus casos de documentos e minutas,Subtitle,Description,HIGH
+DashboardPage.tsx,210,Start Purchase/Sale Flow,Iniciar Fluxo de Compra e Venda,Primary Button,Button,HIGH
+DashboardPage.tsx,215,New Case,Novo Caso,Secondary Button,Button,HIGH
+DashboardPage.tsx,228,Search cases by title...,Buscar casos por título...,Search Input,Placeholder,HIGH
+DashboardPage.tsx,237,Clear search,Limpar busca,Clear Button,Aria Label,MEDIUM
+DashboardPage.tsx,248,All Status,Todos os Status,Filter Option,Select Option,MEDIUM
+DashboardPage.tsx,279,Failed to load cases,Falha ao carregar casos,Error Title,Heading,MEDIUM
+DashboardPage.tsx,282,An unexpected error occurred,Um erro inesperado ocorreu,Error Message,Error Message,MEDIUM
+DashboardPage.tsx,287,Try Again,Tentar Novamente,Retry Button,Button,MEDIUM
+DashboardPage.tsx,308,No cases found,Nenhum caso encontrado,Empty State Title (Search),Heading,HIGH
+DashboardPage.tsx,309,No cases yet,Nenhum caso ainda,Empty State Title (Initial),Heading,HIGH
+DashboardPage.tsx,312,No cases match "{query}". Try a different search term.,Nenhum caso corresponde a "{query}". Tente um termo de busca diferente.,Empty State Description,Description,HIGH
+DashboardPage.tsx,313,Get started by creating a new case to manage your notary documents and drafts.,Comece criando um novo caso para gerenciar seus documentos e minutas notariais.,Empty State Description,Description,HIGH
+DashboardPage.tsx,319,Clear Search,Limpar Busca,Empty State Button,Button,MEDIUM
+DashboardPage.tsx,328,Start Purchase/Sale Flow,Iniciar Fluxo de Compra e Venda,Empty State Button,Button,HIGH
+DashboardPage.tsx,333,Create Case Manually,Criar Caso Manualmente,Empty State Button,Button,HIGH
+DashboardPage.tsx,371,More options,Mais opções,Menu Button Aria Label,Aria Label,LOW
+DashboardPage.tsx,389,Duplicate Case,Duplicar Caso,Menu Item,Menu Item,HIGH
+DashboardPage.tsx,397,Delete Case,Deletar Caso,Menu Item,Menu Item,HIGH
+DashboardPage.tsx,409,Created,Criado,Date Label,Label,MEDIUM
+LoginPage.tsx,54,Minuta Canvas,Minuta Canvas,Application Title,Title,KEEP
+LoginPage.tsx,57,Document Processing & Draft Generation,Processamento de Documentos e Geração de Minutas,Subtitle,Subtitle,HIGH
+LoginPage.tsx,63,Sign in to your account,Faça login na sua conta,Card Title,Card Title,HIGH
+LoginPage.tsx,75,Email,Email,Field Label,Label,HIGH
+LoginPage.tsx,85,email@example.com,email@example.com,Field Placeholder,Placeholder,KEEP
+LoginPage.tsx,91,Password,Senha,Field Label,Label,HIGH
+LoginPage.tsx,101,********,••••••••,Field Placeholder,Placeholder,KEEP
+LoginPage.tsx,116,Remember me,Lembrar de mim,Checkbox Label,Label,MEDIUM
+LoginPage.tsx,124,Forgot password?,Esqueceu a senha?,Link Text,Link,HIGH
+LoginPage.tsx,154,Signing in...,Entrando...,Loading Button Text,Button Text,MEDIUM
+LoginPage.tsx,157,Sign in,Entrar,Button Text,Button Text,HIGH
+LoginPage.tsx,38,An unexpected error occurred,Um erro inesperado ocorreu,Error Message,Error Message,MEDIUM
+CaseOverviewPage.tsx,38,Purchase & Sale,Compra e Venda,Act Type Label,Label,HIGH
+CaseOverviewPage.tsx,39,Donation,Doação,Act Type Label,Label,HIGH
+CaseOverviewPage.tsx,40,Exchange,Permuta,Act Type Label,Label,HIGH
+CaseOverviewPage.tsx,41,Lease,Locação,Act Type Label,Label,HIGH
+CaseOverviewPage.tsx,83,Failed to update status. Please try again.,Falha ao atualizar status. Por favor, tente novamente.,Error Alert,Alert,MEDIUM
+CaseOverviewPage.tsx,98,Failed to duplicate case. Please try again.,Falha ao duplicar caso. Por favor, tente novamente.,Error Alert,Alert,MEDIUM
+CaseOverviewPage.tsx,137,Case Overview,Visão Geral do Caso,Page Title,Heading,HIGH
+CaseOverviewPage.tsx,145,Failed to load case,Falha ao carregar caso,Error Title,Heading,MEDIUM
+CaseOverviewPage.tsx,148,An unexpected error occurred,Um erro inesperado ocorreu,Error Message,Error Message,MEDIUM
+CaseOverviewPage.tsx,157,Try Again,Tentar Novamente,Retry Button,Button,MEDIUM
+CaseOverviewPage.tsx,174,This case is archived,Este caso está arquivado,Archive Alert Title,Alert Title,MEDIUM
+CaseOverviewPage.tsx,176,Archived cases are read-only. You can unarchive this case to make changes.,Casos arquivados são somente leitura. Você pode desarquivar este caso para fazer alterações.,Archive Alert Description,Alert Description,MEDIUM
+CaseOverviewPage.tsx,212,Duplicate / Duplicating...,Duplicar / Duplicando...,Button / Button State,Button,MEDIUM
+CaseOverviewPage.tsx,222,Unarchive,Desarquivar,Button,Button,MEDIUM
+CaseOverviewPage.tsx,232,Archive,Arquivar,Button,Button,MEDIUM
+CaseOverviewPage.tsx,246,Case Information,Informações do Caso,Section Title,Card Title,HIGH
+CaseOverviewPage.tsx,252,Copy link to Case Information section,Copiar link para seção Informações do Caso,Aria Label,Aria Label,LOW
+CaseOverviewPage.tsx,253,Copied!,Copiado!,Tooltip,Tooltip Text,MEDIUM
+CaseOverviewPage.tsx,267,Case ID,ID do Caso,Field Label,Label,MEDIUM
+CaseOverviewPage.tsx,275,Act Type,Tipo de Ato,Field Label,Label,MEDIUM
+CaseOverviewPage.tsx,283,Created,Criado,Field Label,Label,MEDIUM
+CaseOverviewPage.tsx,291,Last Updated,Última Atualização,Field Label,Label,MEDIUM
+CaseOverviewPage.tsx,299,Assigned To,Atribuído a,Field Label,Label,MEDIUM
+CaseOverviewPage.tsx,322,Documents,Documentos,Section Title,Card Title,HIGH
+CaseOverviewPage.tsx,324,Document management will be implemented here.,O gerenciamento de documentos será implementado aqui.,Card Description,Card Description,MEDIUM
+CaseOverviewPage.tsx,332,Copy link to Documents section,Copiar link para seção Documentos,Aria Label,Aria Label,LOW
+CaseOverviewPage.tsx,350,Archive Case / Unarchive Case,Arquivar Caso / Desarquivar Caso,Dialog Title,Dialog Title,MEDIUM
+CaseOverviewPage.tsx,364,Cancel,Cancelar,Button,Button,HIGH
+PurchaseSaleFlowPage.tsx,115,Titulo do Caso *,Título do Caso *,Field Label,Label,PT-MISTO
+PurchaseSaleFlowPage.tsx,128,Escolha um titulo descritivo para identificar este caso,Escolha um título descritivo para identificar este caso,Help Text,Description,PT-MISTO
+PurchaseSaleFlowPage.tsx,169,Caso criado com sucesso!,Caso criado com sucesso!,Success Message,Success,PT-OK
+PurchaseSaleFlowPage.tsx,185,Criando Caso... / Criar Caso,Criando Caso... / Criar Caso,Button Text,Button,PT-OK
+PurchaseSaleFlowPage.tsx,225,Documentos Carregados,Documentos Carregados,Section Title,Label,PT-OK
+PurchaseSaleFlowPage.tsx,287,Documentos recomendados para Compra e Venda:,Documentos recomendados para Compra e Venda:,Info Box Title,Label,PT-OK
+PurchaseSaleFlowPage.tsx,329,Extraindo entidades dos documentos...,Extraindo entidades dos documentos...,Status Message,Status,PT-OK
+PurchaseSaleFlowPage.tsx,353,Pronto para iniciar a extracao,Pronto para iniciar a extração,Message,Message,PT-TYPO
+PurchaseSaleFlowPage.tsx,360,Iniciar Extracao,Iniciar Extração,Button,Button,PT-TYPO
+PurchaseSaleFlowPage.tsx,393,Pessoas,Pessoas,Section Title,Heading,PT-OK
+PurchaseSaleFlowPage.tsx,422,Imoveis,Imóveis,Section Title,Heading,PT-TYPO
+PurchaseSaleFlowPage.tsx,487,Pessoas,Pessoas,Summary Label,Label,PT-OK
+PurchaseSaleFlowPage.tsx,497,Imoveis,Imóveis,Summary Label,Label,PT-TYPO
+PurchaseSaleFlowPage.tsx,507,Relacionamentos,Relacionamentos,Summary Label,Label,PT-OK
+PurchaseSaleFlowPage.tsx,542,Abrir Canvas Completo,Abrir Canvas Completo,Button,Button,PT-OK
+PurchaseSaleFlowPage.tsx,620,Gerando minuta do documento...,Gerando minuta do documento...,Status Message,Status,PT-OK
+PurchaseSaleFlowPage.tsx,644,Pronto para gerar a minuta,Pronto para gerar a minuta,Message,Message,PT-OK
+PurchaseSaleFlowPage.tsx,651,Gerar Minuta,Gerar Minuta,Button,Button,PT-OK
+PurchaseSaleFlowPage.tsx,661,Minuta gerada com sucesso!,Minuta gerada com sucesso!,Success Title,Success,PT-OK
+PurchaseSaleFlowPage.tsx,787,Fluxo Concluido!,Fluxo Concluído!,Completion Title,Heading,PT-TYPO
+PurchaseSaleFlowPage.tsx,801,Voltar ao Dashboard,Voltar ao Dashboard,Button,Button,PT-OK
+PurchaseSaleFlowPage.tsx,808,Ver Minuta,Ver Minuta,Button,Button,PT-OK
+PurchaseSaleFlowPage.tsx,1002,Fluxo de Compra e Venda,Fluxo de Compra e Venda,Page Title,Title,PT-OK
+PurchaseSaleFlowPage.tsx,1015,Cancelar,Cancelar,Button,Button,PT-OK
+PurchaseSaleFlowPage.tsx,1075,Cancelar Fluxo?,Cancelar Fluxo?,Dialog Title,Dialog Title,PT-OK
+PurchaseSaleFlowPage.tsx,1092,Cancelar Fluxo,Cancelar Fluxo,Button,Button,PT-OK
+EntitiesPage.tsx,344,Entidades Extraidas,Entidades Extraídas,Page Title,Title,PT-TYPO
+EntitiesPage.tsx,347,Visualize e gerencie as entidades extraidas dos documentos usando IA.,Visualize e gerencie as entidades extraídas dos documentos usando IA.,Subtitle,Description,PT-TYPO
+EntitiesPage.tsx,359,Atualizar,Atualizar,Button,Button,PT-OK
+EntitiesPage.tsx,368,Criar Pessoa,Criar Pessoa,Button,Button,PT-OK
+EntitiesPage.tsx,377,Criar Imóvel,Criar Imóvel,Button,Button,PT-OK
+EntitiesPage.tsx,394,Extrair Entidades,Extrair Entidades,Button,Button,PT-OK
+EntitiesPage.tsx,430,Filtrar por Documento,Filtrar por Documento,Section Title,Heading,PT-OK
+EntitiesPage.tsx,513,Nenhum documento encontrado,Nenhum documento encontrado,Empty State Title,Heading,PT-OK
+EntitiesPage.tsx,516,Faca upload de documentos primeiro para extrair entidades.,Faça upload de documentos primeiro para extrair entidades.,Empty State Description,Description,PT-TYPO
+EntitiesPage.tsx,520,Ir para Upload,Ir para Upload,Link,Link,PT-OK
+EntitiesPage.tsx,543,Documentos Disponiveis,Documentos Disponíveis,Card Title,Card Title,PT-TYPO
+EntitiesPage.tsx,545,Clique em um documento para extrair entidades individualmente.,Clique em um documento para extrair entidades individualmente.,Card Description,Card Description,PT-OK
+ForgotPasswordPage.tsx,54,Minuta Canvas,Minuta Canvas,Application Title,Title,KEEP
+ForgotPasswordPage.tsx,57,Document Processing & Draft Generation,Processamento de Documentos e Geração de Minutas,Subtitle,Subtitle,HIGH
+ForgotPasswordPage.tsx,62,Check your email,Verifique seu email,Success Title,Heading,HIGH
+ForgotPasswordPage.tsx,65,We've sent a password reset link to,Enviamos um link de redefinição de senha para,Message,Message,HIGH
+ForgotPasswordPage.tsx,68,Click the link in the email to reset your password. If you don't see it, check your spam folder.,Clique no link no email para redefinir sua senha. Se você não o vir, verifique sua pasta de spam.,Help Text,Help Text,HIGH
+ForgotPasswordPage.tsx,76,Back to login,Voltar para login,Link,Link,MEDIUM
+ForgotPasswordPage.tsx,105,Reset your password,Redefinir sua senha,Card Title,Card Title,HIGH
+ForgotPasswordPage.tsx,107,Enter your email address and we'll send you a link to reset your password.,Digite seu endereço de email e enviaremos um link para redefinir sua senha.,Help Text,Help Text,HIGH
+ForgotPasswordPage.tsx,120,Email,Email,Field Label,Label,HIGH
+ForgotPasswordPage.tsx,130,email@example.com,email@example.com,Placeholder,Placeholder,KEEP
+ForgotPasswordPage.tsx,160,Sending reset link...,Enviando link de redefinição...,Button Text,Button Text,MEDIUM
+ForgotPasswordPage.tsx,163,Send reset link,Enviar link de redefinição,Button Text,Button Text,HIGH
+ResetPasswordPage.tsx,27,Invalid or expired reset link. Please request a new password reset.,Link inválido ou expirado. Por favor, solicite uma nova redefinição de senha.,Error Message,Error Message,MEDIUM
+ResetPasswordPage.tsx,38,Passwords do not match,As senhas não correspondem,Validation Error,Error Message,MEDIUM
+ResetPasswordPage.tsx,44,Password must be at least 6 characters long,A senha deve ter pelo menos 6 caracteres,Validation Error,Error Message,MEDIUM
+ResetPasswordPage.tsx,81,Minuta Canvas,Minuta Canvas,Application Title,Title,KEEP
+ResetPasswordPage.tsx,84,Document Processing & Draft Generation,Processamento de Documentos e Geração de Minutas,Subtitle,Subtitle,HIGH
+ResetPasswordPage.tsx,95,Password reset successful,Senha redefinida com sucesso,Success Title,Heading,HIGH
+ResetPasswordPage.tsx,98,Your password has been successfully reset.,Sua senha foi redefinida com sucesso.,Success Message,Message,MEDIUM
+ResetPasswordPage.tsx,101,Redirecting to login page...,Redirecionando para página de login...,Status Message,Message,MEDIUM
+ResetPasswordPage.tsx,129,Set new password,Definir nova senha,Card Title,Card Title,HIGH
+ResetPasswordPage.tsx,131,Enter your new password below.,Digite sua nova senha abaixo.,Help Text,Help Text,MEDIUM
+ResetPasswordPage.tsx,152,New Password,Nova Senha,Field Label,Label,HIGH
+ResetPasswordPage.tsx,163,********,••••••••,Placeholder,Placeholder,KEEP
+ResetPasswordPage.tsx,166,Must be at least 6 characters long,Deve ter pelo menos 6 caracteres,Help Text,Help Text,MEDIUM
+ResetPasswordPage.tsx,172,Confirm New Password,Confirme a Nova Senha,Field Label,Label,HIGH
+ResetPasswordPage.tsx,184,********,••••••••,Placeholder,Placeholder,KEEP
+ResetPasswordPage.tsx,213,Resetting password...,Redefinindo senha...,Button Text,Button Text,MEDIUM
+ResetPasswordPage.tsx,216,Reset password,Redefinir senha,Button Text,Button Text,HIGH
+DraftPage.tsx,100,Erro ao verificar minuta existente,Erro ao verificar minuta existente,Error Message,Error Message,PT-OK

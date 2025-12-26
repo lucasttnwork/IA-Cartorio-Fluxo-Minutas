@@ -15,12 +15,12 @@ interface BreadcrumbProps {
 
 const routeLabels: Record<string, string> = {
   dashboard: 'Dashboard',
-  case: 'Case',
+  case: 'Caso',
   upload: 'Upload',
-  entities: 'Entities',
+  entities: 'Entidades',
   canvas: 'Canvas',
-  draft: 'Draft',
-  history: 'History',
+  draft: 'Minuta',
+  history: 'Histórico',
 }
 
 export default function Breadcrumb({ caseName }: BreadcrumbProps) {
@@ -71,7 +71,7 @@ export default function Breadcrumb({ caseName }: BreadcrumbProps) {
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center">
+    <nav aria-label="Navegação estrutural" className="flex items-center">
       <ol className="flex items-center gap-1">
         {breadcrumbs.map((item, index) => {
           const isLast = index === breadcrumbs.length - 1

@@ -243,8 +243,8 @@ export function useEvidenceChain(
 
         setChain(evidenceChain)
       } catch (err) {
-        console.error('Error fetching evidence chain:', err)
-        setError(err instanceof Error ? err.message : 'Failed to fetch evidence chain')
+        console.error('Erro ao buscar cadeia de evidências:', err)
+        setError(err instanceof Error ? err.message : 'Falha ao buscar cadeia de evidências')
       } finally {
         setIsLoading(false)
       }

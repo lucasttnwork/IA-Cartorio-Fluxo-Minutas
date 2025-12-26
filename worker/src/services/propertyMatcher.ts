@@ -1044,8 +1044,15 @@ export class PropertyMatcher {
   }
 }
 
-// Export singleton instance
-export const propertyMatcher = new PropertyMatcher()
+// Lazy singleton instance (only created when accessed)
+let _propertyMatcherInstance: PropertyMatcher | null = null
+
+export function getPropertyMatcher(): PropertyMatcher {
+  if (!_propertyMatcherInstance) {
+    _propertyMatcherInstance = new PropertyMatcher()
+  }
+  return _propertyMatcherInstance
+}
 
 // Export factory function for custom configurations
 export function createPropertyMatcher(

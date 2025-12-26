@@ -21,9 +21,9 @@ export function ReducedMotionToggle() {
       variant="ghost"
       size="icon"
       className="relative rounded-full"
-      title={isReducedMotion ? 'Enable animations' : 'Reduce motion'}
+      title={isReducedMotion ? 'Ativar animações' : 'Reduzir movimento'}
       data-testid="reduced-motion-toggle"
-      aria-label={isReducedMotion ? 'Enable animations' : 'Reduce motion'}
+      aria-label={isReducedMotion ? 'Ativar animações' : 'Reduzir movimento'}
     >
       {isReducedMotion ? (
         <BoltSlashIcon className="w-5 h-5 text-gray-600 dark:text-gray-400" />

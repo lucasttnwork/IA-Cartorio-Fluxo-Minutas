@@ -1,0 +1,171 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║           TESTE E2E - SISTEMA DE CRIAÇÃO DE MINUTAS - SUMÁRIO               ║
+║                      Data: 25 de Dezembro de 2025                           ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ RESULTADO GERAL: ❌ FALHA CRÍTICA                                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TESTES EXECUTADOS:
+─────────────────
+
+✅ Login/Autenticação
+   └─ Status: FUNCIONA
+   └─ Usuário: Test User (Administrador)
+   └─ Sessão: Ativa
+
+✅ Dashboard
+   └─ Status: FUNCIONA
+   └─ Casos Listados: 7
+   └─ Paginação: Funciona
+   └─ Filtros: Funcionam
+
+❌ Criar Novo Caso (Novo Minuta)
+   └─ Status: ERRO CRÍTICO
+   └─ Erro: Maximum update depth exceeded
+   └─ Causa: Loop infinito em PurchaseSaleFlowPage
+   └─ Impacto: Sistema não consegue criar minutas
+
+❌ Continuar Caso Existente
+   └─ Status: ERRO CRÍTICO
+   └─ Erro: Same as above (Maximum update depth exceeded)
+   └─ Impacto: Não consegue editar minutas existentes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROBLEMAS IDENTIFICADOS:
+────────────────────────
+
+🔴 PROBLEMA #1 - LOOP INFINITO (CRÍTICO)
+   ├─ Arquivo: src/pages/PurchaseSaleFlowPage.tsx
+   ├─ Linhas: 831-835
+   ├─ Causa: useEffect sem dependências chama navigate()
+   ├─ Impacto: Impede fluxo completo de minutas
+   └─ Severidade: BLOQUEANTE
+
+🟡 PROBLEMA #2 - ESLINT RULE IGNORADA
+   ├─ Arquivo: src/pages/PurchaseSaleFlowPage.tsx
+   ├─ Linha: 835
+   ├─ Regra: eslint-disable-line react-hooks/exhaustive-deps
+   ├─ Causa: Alerta de dependências foi desativado
+   └─ Risco: Permite código problemático passar sem aviso
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CONSOLE ERRORS:
+───────────────
+
+┌─ React Error #1 ─────────────────────────────────────────────────────────┐
+│ Error: Maximum update depth exceeded. This can happen when a component    │
+│ repeatedly calls setState instead of passing an updated state to setState.│
+│                                                                            │
+│ The above error occurred in the <PurchaseSaleFlowPage> component:       │
+│                                                                            │
+│ Location: http://localhost:5173/purchase-sale-flow                       │
+│ Stack: PurchaseSaleFlowPage → usePurchaseSaleFlow → flowStore           │
+└────────────────────────────────────────────────────────────────────────────┘
+
+┌─ WebSocket Warning ──────────────────────────────────────────────────────┐
+│ WebSocket connection to                                                    │
+│ 'wss://kllcbgoqtxedlfbkxpfo.supabase.co/realtime/v1/websocket?apik...'  │
+│                                                                            │
+│ Status: Aviso (não causa bloqueio)                                        │
+└────────────────────────────────────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TESTES AUTOMATIZADOS (npm run test:regression):
+─────────────────────────────────────────────
+
+Total de Testes: 130
+├─ Chromium: 130 testes
+├─ Firefox: (não executados - teste parou no erro)
+└─ WebKit: (não executados - teste parou no erro)
+
+Status: ❌ TODOS BLOQUEADOS
+
+Testes Bloqueados:
+├─ T001-T008: Case Management tests
+├─ T009-T016: Document Upload tests
+├─ T017+: Entity Extraction, Canvas, Draft tests
+└─ Total Afetado: 130/130 testes (100%)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+FLUXO DE NAVEGAÇÃO TESTADO:
+──────────────────────────
+
+1. Dashboard
+   ↓
+2. Clique em "Novo Caso"
+   ↓
+3. 🔴 ERROR: Maximum update depth exceeded
+   ├─ Página fica em branco
+   ├─ Console mostra erro crítico
+   └─ Usuário não consegue prosseguir
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ARQUIVOS GERADOS:
+─────────────────
+
+✅ RELATORIO_TESTE_E2E.md
+   └─ Relatório detalhado com análise completa e recomendações
+
+✅ ERRO_CRITICO_IDENTIFICADO.md
+   └─ Documento focado no erro com solução rápida
+
+✅ SUMARIO_TESTE_VISUAL.txt (este arquivo)
+   └─ Resumo visual dos achados
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECOMENDAÇÃO IMEDIATA:
+──────────────────────
+
+🔧 AÇÃO URGENTE: Corrigir o useEffect em PurchaseSaleFlowPage.tsx
+
+   Tempo Estimado: 5-10 minutos de implementação
+
+   Passos:
+   1. Abrir: src/pages/PurchaseSaleFlowPage.tsx
+   2. Adicionar useRef para rastrear inicialização
+   3. Adicionar flow.isActive como dependência do useEffect
+   4. Remover eslint-disable-line
+   5. Executar: npm run typecheck && npm run lint
+   6. Testar no browser: Criar novo caso
+   7. Rodar: npm run test:regression
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AMBIENTE DE TESTE:
+──────────────────
+
+✅ Servidor: Vite dev server (localhost:5173)
+✅ Base de Dados: Supabase conectada
+✅ Autenticação: Funcionando
+✅ Browser: Chromium (Playwright)
+✅ Node: v18+
+✅ npm: Dependências instaladas
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CONCLUSÃO:
+──────────
+
+O sistema tem uma falha crítica que impede qualquer operação de criação ou
+edição de minutas. A causa é um loop infinito de atualização de estado no
+componente PurchaseSaleFlowPage.
+
+O problema é localizável e corrigível em menos de 10 minutos. Recomenda-se
+implementar a solução imediatamente antes de prosseguir com desenvolvimento
+adicional.
+
+Severidade: 🔴 CRÍTICA
+Status: 🔴 BLOQUEANTE
+Impacto: 100% do fluxo de minutas
+
+════════════════════════════════════════════════════════════════════════════════

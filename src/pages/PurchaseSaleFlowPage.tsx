@@ -317,6 +317,7 @@ interface EntityExtractionStepProps {
   people: import('@/types').Person[]
   properties: import('@/types').Property[]
   onStartExtraction: () => Promise<void>
+  onRefreshEntities?: () => Promise<void>
 }
 
 function EntityExtractionStep({
@@ -325,25 +326,140 @@ function EntityExtractionStep({
   people,
   properties,
   onStartExtraction,
+  onRefreshEntities,
 }: EntityExtractionStepProps) {
   const hasEntities = people.length > 0 || properties.length > 0
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  // Log component state for debugging
+  console.log('[EntityExtractionStep] Rendering with state:', {
+    isExtracting,
+    extractionProgress,
+    peopleCount: people.length,
+    propertiesCount: properties.length,
+    hasEntities,
+  })
+
+  const handleRefresh = async () => {
+    if (onRefreshEntities) {
+      setIsRefreshing(true)
+      try {
+        await onRefreshEntities()
+      } finally {
+        setIsRefreshing(false)
+      }
+    }
+  }
 
   return (
     <div className="space-y-6">
       {/* Extraction Status */}
       {isExtracting ? (
         <div className="text-center py-8">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            className="w-12 h-12 border-4 border-blue-200 dark:border-blue-800 border-t-blue-500 dark:border-t-blue-400 rounded-full mx-auto"
-          />
-          <p className="mt-4 text-gray-600 dark:text-gray-300 font-medium">
-            Extraindo entidades dos documentos...
+          {/* Animated spinner with pulse effect */}
+          <div className="relative mx-auto w-16 h-16 mb-6">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+              className="w-16 h-16 border-4 border-blue-200 dark:border-blue-800 border-t-blue-500 dark:border-t-blue-400 rounded-full"
+            />
+            <motion.div
+              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute inset-0 flex items-center justify-center"
+            >
+              <svg className="w-6 h-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </motion.div>
+          </div>
+
+          {/* Progress message based on stage */}
+          <p className="text-gray-700 dark:text-gray-200 font-semibold text-lg mb-2">
+            {extractionProgress < 20
+              ? 'Preparando documentos...'
+              : extractionProgress < 40
+              ? 'Executando OCR nos documentos...'
+              : extractionProgress < 60
+              ? 'Analisando texto com IA...'
+              : extractionProgress < 80
+              ? 'Extraindo entidades...'
+              : extractionProgress < 95
+              ? 'Consolidando informações...'
+              : 'Finalizando extração...'}
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            A IA está processando os documentos para identificar pessoas, imóveis e relacionamentos
+          </p>
+
+          {/* Elegant progress bar */}
+          <div className="max-w-md mx-auto">
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
+              <span>Progresso</span>
+              <span className="font-medium text-blue-600 dark:text-blue-400">{extractionProgress}%</span>
+            </div>
+            <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${extractionProgress}%` }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+                className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"
+              />
+            </div>
+
+            {/* Stage indicators */}
+            <div className="flex justify-between mt-3 text-xs">
+              <div className={`flex flex-col items-center ${extractionProgress >= 20 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`}>
+                <div className={`w-2 h-2 rounded-full mb-1 ${extractionProgress >= 20 ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                <span>OCR</span>
+              </div>
+              <div className={`flex flex-col items-center ${extractionProgress >= 50 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`}>
+                <div className={`w-2 h-2 rounded-full mb-1 ${extractionProgress >= 50 ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                <span>Análise IA</span>
+              </div>
+              <div className={`flex flex-col items-center ${extractionProgress >= 80 ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'}`}>
+                <div className={`w-2 h-2 rounded-full mb-1 ${extractionProgress >= 80 ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                <span>Entidades</span>
+              </div>
+              <div className={`flex flex-col items-center ${extractionProgress >= 100 ? 'text-green-600 dark:text-green-400' : 'text-gray-400'}`}>
+                <div className={`w-2 h-2 rounded-full mb-1 ${extractionProgress >= 100 ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`} />
+                <span>Concluído</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : extractionProgress === 100 && !hasEntities ? (
+        <div className="text-center py-8">
+          <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg
+              className="w-6 h-6 text-yellow-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+          <p className="text-gray-600 dark:text-gray-300 font-medium">
+            Extração concluída mas nenhuma entidade encontrada
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            Progresso: {extractionProgress}%
+            Verifique se os documentos contêm informações de pessoas ou imóveis.
+            Você pode tentar atualizar ou iniciar a extração novamente.
           </p>
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <Button onClick={handleRefresh} variant="outline" disabled={isRefreshing}>
+              {isRefreshing ? 'Atualizando...' : 'Atualizar'}
+            </Button>
+            <Button onClick={onStartExtraction}>
+              Tentar Novamente
+            </Button>
+          </div>
         </div>
       ) : !hasEntities ? (
         <div className="text-center py-8">
@@ -483,7 +599,7 @@ function CanvasReviewStep({
 
   const handleOpenCanvas = () => {
     if (caseId) {
-      navigate(`/cases/${caseId}/canvas`)
+      navigate(`/case/${caseId}/canvas`)
     }
   }
 
@@ -616,7 +732,7 @@ function DraftGenerationStep({
 
   const handleOpenDraft = () => {
     if (caseId) {
-      navigate(`/cases/${caseId}/draft`)
+      navigate(`/case/${caseId}/draft`)
     }
   }
 
@@ -815,7 +931,7 @@ function FlowCompletion({ caseId, onNewFlow }: FlowCompletionProps) {
         </Button>
         {caseId && (
           <Button
-            onClick={() => navigate(`/cases/${caseId}/draft`)}
+            onClick={() => navigate(`/case/${caseId}/draft`)}
             className="gap-2"
           >
             Ver Minuta
@@ -839,7 +955,9 @@ export default function PurchaseSaleFlowPage() {
   const [searchParams] = useSearchParams()
   const flow = usePurchaseSaleFlow()
   const steps = useFlowStore((state) => state.steps)
+  const isLoading = useFlowStore((state) => state.isLoading)
   const [showCancelDialog, setShowCancelDialog] = useState(false)
+  const [isInitialLoading, setIsInitialLoading] = useState(false)
   const hasInitialized = useRef(false)
 
   // Extract caseId from URL query params
@@ -847,7 +965,7 @@ export default function PurchaseSaleFlowPage() {
 
   // Initialize flow based on URL intent: new case vs resume case
   // - No caseId in URL → Always start fresh (new case)
-  // - caseId in URL → Resume existing case
+  // - caseId in URL → Resume existing case by loading from database
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true
@@ -856,16 +974,19 @@ export default function PurchaseSaleFlowPage() {
         // Resuming an existing case
         console.log('[Flow] Resuming existing case:', caseIdFromUrl)
 
-        // Check if case is already loaded
+        // Check if case is already loaded with the same ID
         if (flow.caseData?.id === caseIdFromUrl && flow.isActive) {
           // Case already loaded, nothing to do
+          console.log('[Flow] Case already loaded, skipping resume')
           return
         }
 
-        // If not loaded, start the flow (flowStore will restore from localStorage)
-        if (!flow.isActive) {
-          flow.startFlow('purchase_sale')
-        }
+        // Load the case data from database and determine correct step
+        console.log('[Flow] Loading case from database...')
+        setIsInitialLoading(true)
+        useFlowStore.getState().resumeFlowForCase(caseIdFromUrl).finally(() => {
+          setIsInitialLoading(false)
+        })
       } else {
         // Creating a new case - always reset and start fresh
         console.log('[Flow] Starting new case')
@@ -874,6 +995,24 @@ export default function PurchaseSaleFlowPage() {
       }
     }
   }, [caseIdFromUrl, flow.isActive, flow.caseData?.id])
+
+  // Auto-trigger draft generation when reaching step 5
+  useEffect(() => {
+    // Conditions for automatic draft generation:
+    // 1. Currently on draft_generation step
+    // 2. No draft exists yet
+    // 3. Not currently generating
+    // 4. Has a valid case
+    if (
+      flow.currentStep === 'draft_generation' &&
+      !flow.hasDraft &&
+      !flow.isDraftGenerating &&
+      flow.caseData?.id
+    ) {
+      console.log('[PurchaseSaleFlow] Auto-triggering draft generation')
+      flow.generateDraft()
+    }
+  }, [flow.currentStep, flow.hasDraft, flow.isDraftGenerating, flow.caseData?.id, flow.generateDraft])
 
   // Handle step navigation
   const handleStepClick = useCallback(
@@ -1005,6 +1144,7 @@ export default function PurchaseSaleFlowPage() {
             people={flow.people}
             properties={flow.properties}
             onStartExtraction={flow.startExtraction}
+            onRefreshEntities={flow.refreshEntities}
           />
         )
       case 'canvas_review':
@@ -1062,7 +1202,22 @@ export default function PurchaseSaleFlowPage() {
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {isFlowCompleted ? (
+        {/* Loading State when resuming a case */}
+        {(isInitialLoading || (caseIdFromUrl && isLoading && !flow.isActive)) ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+              className="w-12 h-12 border-4 border-blue-200 dark:border-blue-800 border-t-blue-500 dark:border-t-blue-400 rounded-full"
+            />
+            <p className="mt-4 text-gray-600 dark:text-gray-300 font-medium">
+              Carregando caso...
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+              Recuperando documentos e progresso anterior
+            </p>
+          </div>
+        ) : isFlowCompleted ? (
           <FlowCompletion
             caseId={flow.caseData?.id}
             onNewFlow={handleNewFlow}

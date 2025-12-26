@@ -46,6 +46,25 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, loading = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+
+    // When asChild is true, Slot requires exactly one child element
+    // So we cannot render loading indicators alongside children
+    if (asChild) {
+      return (
+        <Comp
+          className={cn(buttonVariants({ variant, size, className }))}
+          ref={ref}
+          disabled={loading || props.disabled}
+          aria-busy={loading}
+          aria-live={loading ? "polite" : undefined}
+          {...props}
+        >
+          {children}
+        </Comp>
+      )
+    }
+
+    // For regular buttons, we can show loading indicators
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}

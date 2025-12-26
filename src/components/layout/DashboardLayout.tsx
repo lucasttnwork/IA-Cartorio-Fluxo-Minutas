@@ -23,16 +23,16 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, caseRequired: false },
-  { name: 'Settings', href: '/settings', icon: Cog6ToothIcon, caseRequired: false },
+  { name: 'Configurações', href: '/settings', icon: Cog6ToothIcon, caseRequired: false },
 ]
 
 const caseNavigation = [
-  { name: 'Overview', href: '', icon: HomeIcon },
+  { name: 'Visão Geral', href: '', icon: HomeIcon },
   { name: 'Upload', href: '/upload', icon: DocumentArrowUpIcon },
-  { name: 'Entities', href: '/entities', icon: UserGroupIcon },
+  { name: 'Entidades', href: '/entities', icon: UserGroupIcon },
   { name: 'Canvas', href: '/canvas', icon: Square3Stack3DIcon },
-  { name: 'Draft', href: '/draft', icon: DocumentTextIcon },
-  { name: 'History', href: '/history', icon: ClockIcon },
+  { name: 'Minuta', href: '/draft', icon: DocumentTextIcon },
+  { name: 'Histórico', href: '/history', icon: ClockIcon },
 ]
 
 export default function DashboardLayout() {
@@ -112,13 +112,7 @@ export default function DashboardLayout() {
                   aria-current={({ isActive }) => (isActive ? 'page' : undefined)}
                 >
                   <item.icon
-                    className={({ isActive }: { isActive: boolean }) =>
-                      `w-5 h-5 flex-shrink-0 transition-transform duration-200 ${
-                        isActive
-                          ? 'scale-110'
-                          : 'group-hover:scale-110'
-                      }`
-                    }
+                    className="w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
                     aria-hidden="true"
                   />
                   <span className="truncate">{item.name}</span>
@@ -164,13 +158,7 @@ export default function DashboardLayout() {
                 aria-current={({ isActive }) => (isActive ? 'page' : undefined)}
               >
                 <item.icon
-                  className={({ isActive }: { isActive: boolean }) =>
-                    `w-5 h-5 flex-shrink-0 transition-transform duration-200 ${
-                      isActive
-                        ? 'scale-110'
-                        : 'group-hover:scale-110'
-                    }`
-                  }
+                  className="w-5 h-5 flex-shrink-0 transition-transform duration-200 group-hover:scale-110"
                   aria-hidden="true"
                 />
                 <span className="truncate">{item.name}</span>

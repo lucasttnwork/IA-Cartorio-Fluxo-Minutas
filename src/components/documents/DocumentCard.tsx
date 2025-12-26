@@ -85,7 +85,7 @@ const statusConfig: Record<DocumentStatus, {
     icon: CheckCircleIcon,
   },
   needs_review: {
-    label: 'Revisao Necessaria',
+    label: 'Revisão Necessária',
     className: 'text-amber-700 dark:text-amber-300',
     bgClass: 'bg-amber-100 dark:bg-amber-900/30',
     icon: ExclamationCircleIcon,
@@ -108,11 +108,11 @@ const statusConfig: Record<DocumentStatus, {
 const documentTypeLabels: Record<DocumentType, string> = {
   cnh: 'CNH',
   rg: 'RG',
-  marriage_cert: 'Certidao de Casamento',
+  marriage_cert: 'Certidão de Casamento',
   deed: 'Escritura',
-  proxy: 'Procuracao',
+  proxy: 'Procuração',
   iptu: 'IPTU',
-  birth_cert: 'Certidao de Nascimento',
+  birth_cert: 'Certidão de Nascimento',
   other: 'Outro',
 }
 
@@ -364,7 +364,7 @@ export default function DocumentCard({
                     <svg className="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    {document.page_count} pagina{document.page_count !== 1 ? 's' : ''}
+                    {document.page_count} página{document.page_count !== 1 ? 's' : ''}
                   </span>
                 </>
               )}
@@ -379,7 +379,7 @@ export default function DocumentCard({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex-shrink-0 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <div className="flex-shrink-0 flex items-center gap-1 transition-opacity duration-200">
             {onView && (
               <Button
                 variant="ghost"

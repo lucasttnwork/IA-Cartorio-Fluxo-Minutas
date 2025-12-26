@@ -33,8 +33,8 @@ export function useCaseDocuments(caseId: string | undefined) {
         setDocuments((data || []) as Document[])
         setError(null)
       } catch (err) {
-        console.error('Error fetching documents:', err)
-        setError(err instanceof Error ? err : new Error('Failed to fetch documents'))
+        console.error('Erro ao buscar documentos:', err)
+        setError(err instanceof Error ? err : new Error('Falha ao buscar documentos'))
       } finally {
         setIsLoading(false)
       }

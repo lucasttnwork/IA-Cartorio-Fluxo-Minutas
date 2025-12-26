@@ -107,7 +107,10 @@ export default function UploadPage() {
   // Load existing documents from database on mount
   useEffect(() => {
     async function loadDocuments() {
-      if (!caseId) return
+      if (!caseId) {
+        setIsLoading(false)
+        return
+      }
 
       setIsLoading(true)
       try {
@@ -119,10 +122,7 @@ export default function UploadPage() {
 
         if (error) {
           console.error('Error loading documents:', error)
-          return
-        }
-
-        if (data) {
+        } else if (data) {
           setUploadedDocs(data as Document[])
         }
       } catch (error) {
@@ -140,7 +140,7 @@ export default function UploadPage() {
     caseId: caseId || '',
     enabled: !!caseId,
     onDocumentInsert: (document) => {
-      console.log('[UploadPage] Document inserted:', document.original_name)
+      console.log('[UploadPage] Documento inserido:', document.original_name)
       setUploadedDocs((prev) => {
         // Avoid duplicates
         if (prev.some((d) => d.id === document.id)) {
@@ -151,7 +151,7 @@ export default function UploadPage() {
       addDocument(document)
     },
     onDocumentUpdate: (update) => {
-      console.log('[UploadPage] Document updated:', update.documentId, update.newStatus)
+      console.log('[UploadPage] Documento atualizado:', update.documentId, update.newStatus)
       setUploadedDocs((prev) =>
         prev.map((doc) =>
           doc.id === update.documentId
@@ -162,19 +162,19 @@ export default function UploadPage() {
       updateDocument(update.documentId, update.document as Partial<Document>)
     },
     onDocumentDelete: (documentId) => {
-      console.log('[UploadPage] Document deleted:', documentId)
+      console.log('[UploadPage] Documento excluído:', documentId)
       setUploadedDocs((prev) => prev.filter((d) => d.id !== documentId))
       removeDocument(documentId)
     },
     onStatusChange: (update) => {
-      console.log('[UploadPage] Status changed:', update.documentId, update.previousStatus, '->', update.newStatus)
+      console.log('[UploadPage] Status alterado:', update.documentId, update.previousStatus, '->', update.newStatus)
     },
   })
 
   // Handle upload completion - document is already in the database, just refresh if needed
   const handleUploadComplete = useCallback((results: UploadResult[]) => {
     const successfulUploads = results.filter((r) => r.success)
-    console.log(`[UploadPage] Upload complete: ${successfulUploads.length}/${results.length} files successful`)
+    console.log(`[UploadPage] Upload concluído: ${successfulUploads.length}/${results.length} arquivos com sucesso`)
 
     // The real-time subscription will add new documents to the list
     // But we can also manually fetch the document for immediate feedback
@@ -198,7 +198,7 @@ export default function UploadPage() {
             addDocument(data as Document)
           }
         } catch (error) {
-          console.error('Error fetching uploaded document:', error)
+          console.error('Erro ao buscar documento enviado:', error)
         }
       }
     })
@@ -217,11 +217,11 @@ export default function UploadPage() {
       const result = await deleteDocument(docId, doc.storage_path)
 
       if (!result.success) {
-        console.error('Error deleting document:', result.error)
+        console.error('Erro ao remover documento:', result.error)
         return
       }
 
-      console.log('[UploadPage] Document deleted with associated data:', {
+      console.log('[UploadPage] Documento excluído com dados associados:', {
         documentId: docId,
         cleanedPeopleCount: result.cleanedPeopleCount,
         cleanedPropertiesCount: result.cleanedPropertiesCount,
@@ -231,7 +231,7 @@ export default function UploadPage() {
       setUploadedDocs((prev) => prev.filter((d) => d.id !== docId))
       removeDocument(docId)
     } catch (error) {
-      console.error('Error removing document:', error)
+      console.error('Erro ao remover documento:', error)
     }
   }, [uploadedDocs, removeDocument])
 
@@ -249,7 +249,7 @@ export default function UploadPage() {
       const result = await reprocessDocument(docId)
 
       if (!result.success) {
-        console.error('Error reprocessing document:', result.error)
+        console.error('Erro ao reprocessar documento:', result.error)
         // Remove from reprocessing set on error
         setReprocessingDocIds((prev) => {
           const next = new Set(prev)
@@ -274,7 +274,7 @@ export default function UploadPage() {
         })
       }, 1000)
     } catch (error) {
-      console.error('Error reprocessing document:', error)
+      console.error('Erro ao reprocessar documento:', error)
       // Remove from reprocessing set on error
       setReprocessingDocIds((prev) => {
         const next = new Set(prev)
@@ -323,7 +323,7 @@ export default function UploadPage() {
         }
       })
 
-      console.log('[UploadPage] Batch delete complete:', {
+      console.log('[UploadPage] Exclusão em lote concluída:', {
         successCount: result.successCount,
         failureCount: result.failureCount,
       })
@@ -343,7 +343,7 @@ export default function UploadPage() {
         }
       }, 1500)
     } catch (error) {
-      console.error('Error during batch delete:', error)
+      console.error('Erro durante exclusão em lote:', error)
       setBatchDeleteResults({
         failureCount: selectedDocuments.length,
       })
@@ -363,7 +363,7 @@ export default function UploadPage() {
   // Handle batch export (placeholder for future implementation)
   const handleBatchExport = useCallback(() => {
     // TODO: Implement batch export functionality
-    console.log('[UploadPage] Batch export requested for:', Array.from(selectedIds))
+    console.log('[UploadPage] Exportação em lote solicitada para:', Array.from(selectedIds))
     alert(`Exportar ${selectedCount} documentos (funcionalidade em desenvolvimento)`)
   }, [selectedIds, selectedCount])
 
@@ -381,7 +381,7 @@ export default function UploadPage() {
       try {
         await reprocessDocument(doc.id)
       } catch (error) {
-        console.error(`Error reprocessing document ${doc.id}:`, error)
+        console.error(`Erro ao reprocessar documento ${doc.id}:`, error)
       }
     }
 

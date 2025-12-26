@@ -21,9 +21,9 @@ export function HighContrastToggle() {
       variant="ghost"
       size="icon"
       className="relative rounded-full"
-      title={isHighContrast ? 'Disable high contrast mode' : 'Enable high contrast mode'}
+      title={isHighContrast ? 'Desativar modo alto contraste' : 'Ativar modo alto contraste'}
       data-testid="high-contrast-toggle"
-      aria-label={isHighContrast ? 'Disable high contrast mode' : 'Enable high contrast mode'}
+      aria-label={isHighContrast ? 'Desativar modo alto contraste' : 'Ativar modo alto contraste'}
       aria-pressed={isHighContrast}
     >
       <AdjustmentsHorizontalIcon

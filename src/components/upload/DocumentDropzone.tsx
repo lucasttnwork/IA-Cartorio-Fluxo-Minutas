@@ -19,7 +19,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
 import type { UploadProgress, Document } from '../../types'
-import { supabase, createProcessingJob } from '../../lib/supabase'
+import { supabase } from '../../lib/supabase'
 import { validateFileContent, FileValidationError } from '../../utils/fileValidation'
 import {
   UPLOAD_SIZE_THRESHOLDS,
@@ -351,17 +351,10 @@ export default function DocumentDropzone({
           throw new Error(docError?.message || 'Failed to create document record')
         }
 
-        // Create OCR processing job
-        const { error: jobError } = await createProcessingJob(
-          caseId,
-          docData.id,
-          'ocr'
-        )
-
-        if (jobError) {
-          console.warn('Failed to create OCR job:', jobError)
-          // Don't throw - document was uploaded successfully, just OCR job failed
-        }
+        // NOTE: OCR job is NOT created here anymore.
+        // OCR will only be triggered when the user clicks "Iniciar Extração"
+        // This ensures the full pipeline (OCR -> Gemini -> Entity Extraction)
+        // only starts when the user explicitly requests it.
 
         // Mark as complete
         setUploadProgress((prev) => {
@@ -409,15 +402,34 @@ export default function DocumentDropzone({
     setIsUploading(false)
     onUploadComplete?.(results)
 
-    // Clear completed files from queue after a delay
+    // Clear successfully uploaded files from the queue after a short delay
+    // to show the completion status briefly before clearing
     setTimeout(() => {
+      // Get the list of successfully uploaded file names
+      const successfulFileNames = new Set(
+        results.filter(r => r.success).map(r => r.file_name)
+      )
+
       setUploadQueue((prev) => {
+        // Revoke preview URLs for successfully uploaded files
         prev.forEach((f) => {
-          if (f.preview) URL.revokeObjectURL(f.preview)
+          if (successfulFileNames.has(f.name) && f.preview) {
+            URL.revokeObjectURL(f.preview)
+          }
         })
-        return []
+        // Keep only files that failed to upload
+        return prev.filter((f) => !successfulFileNames.has(f.name))
       })
-    }, 2000)
+
+      // Also clear progress for successfully uploaded files
+      setUploadProgress((prev) => {
+        const newMap = new Map(prev)
+        successfulFileNames.forEach((fileName) => {
+          newMap.delete(fileName)
+        })
+        return newMap
+      })
+    }, 1500)
   }, [uploadQueue, isUploading, caseId, onUploadStart, onUploadProgress, onUploadComplete, uploadProgress, handleUploadProgress])
 
   // Clear all files
@@ -645,7 +657,7 @@ export default function DocumentDropzone({
             {/* File List */}
             <ScrollArea className="max-h-64">
               <div className="space-y-2 pr-4">
-                {uploadQueue.map((file) => {
+                {uploadQueue.map((file, index) => {
                   const progress = uploadProgress.get(file.name)
                   const sizeCategory = getFileSizeCategory(file.size)
                   const isLargeFile = sizeCategory === 'large' || sizeCategory === 'very_large'

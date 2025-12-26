@@ -13,9 +13,9 @@ export default function ProtectedRoute() {
       <div className="flex items-center justify-center min-h-screen" role="status" aria-live="polite">
         <div
           className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-700 dark:border-blue-400"
-          aria-label="Loading authentication status"
+          aria-label="Carregando status de autenticação"
         ></div>
-        <span className="sr-only">Loading...</span>
+        <span className="sr-only">Carregando...</span>
       </div>
     )
   }

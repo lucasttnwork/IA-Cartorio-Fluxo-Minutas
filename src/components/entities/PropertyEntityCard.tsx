@@ -138,7 +138,7 @@ const getConfidenceInfo = (confidence: number): { badgeClass: string; label: str
   if (confidence >= 0.6) {
     return {
       badgeClass: 'confidence-badge-medium',
-      label: 'Media',
+      label: 'Média',
     }
   }
   return {
@@ -319,7 +319,7 @@ export default function PropertyEntityCard({
           {/* Registry Info */}
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-white truncate">
-              {property.registry_number || 'Matricula nao informada'}
+              {property.registry_number || 'Matrícula não informada'}
             </h3>
             {property.registry_office && (
               <p className="text-xs text-green-100 truncate">

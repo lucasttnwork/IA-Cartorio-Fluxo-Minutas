@@ -1,12 +1,46 @@
+import 'dotenv/config'
 import { SupabaseClient } from '@supabase/supabase-js'
 import { DocumentProcessorServiceClient } from '@google-cloud/documentai'
-import type { ProcessingJob, OcrResult, OcrBlock, BoundingBox } from '../types'
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai'
+import type { ProcessingJob, OcrResult, OcrBlock, BoundingBox, ExtractionResult } from '../types'
 
-// Document AI configuration from environment variables
-// Support both naming conventions for flexibility
-const GOOGLE_PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID || process.env.GOOGLE_PROJECT_ID
-const DOCUMENT_AI_PROCESSOR_ID = process.env.GOOGLE_CLOUD_PROCESSOR_ID || process.env.DOCUMENT_AI_PROCESSOR_ID
-const DOCUMENT_AI_LOCATION = process.env.GOOGLE_CLOUD_LOCATION || process.env.DOCUMENT_AI_LOCATION || 'us'
+// Gemini configuration for parallel extraction
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY
+
+let geminiClient: GoogleGenerativeAI | null = null
+let geminiModel: GenerativeModel | null = null
+
+function getGeminiClient(): { client: GoogleGenerativeAI; model: GenerativeModel } | null {
+  if (!GEMINI_API_KEY) {
+    return null
+  }
+
+  if (!geminiClient) {
+    geminiClient = new GoogleGenerativeAI(GEMINI_API_KEY)
+    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-3-flash-preview' })
+  }
+
+  return { client: geminiClient, model: geminiModel! }
+}
+
+// Document types for classification
+const DOCUMENT_TYPES = ['cnh', 'rg', 'marriage_cert', 'deed', 'proxy', 'iptu', 'birth_cert', 'other']
+
+// Document AI configuration - read lazily to ensure dotenv is loaded
+function getDocumentAIConfig() {
+  const config = {
+    projectId: process.env.GOOGLE_CLOUD_PROJECT_ID || process.env.GOOGLE_PROJECT_ID,
+    processorId: process.env.GOOGLE_CLOUD_PROCESSOR_ID || process.env.DOCUMENT_AI_PROCESSOR_ID,
+    location: process.env.GOOGLE_CLOUD_LOCATION || process.env.DOCUMENT_AI_LOCATION || 'us'
+  }
+  console.log('[OCR] Document AI Config:', JSON.stringify(config))
+  return config
+}
+
+// Keep these for backwards compatibility but they will be lazily evaluated
+const GOOGLE_PROJECT_ID = null // Deprecated - use getDocumentAIConfig()
+const DOCUMENT_AI_PROCESSOR_ID = null // Deprecated - use getDocumentAIConfig()
+const DOCUMENT_AI_LOCATION = 'us' // Default fallback
 
 // Initialize Document AI client
 let documentAiClient: DocumentProcessorServiceClient | null = null
@@ -22,10 +56,11 @@ function getDocumentAiClient(): DocumentProcessorServiceClient {
  * Get the full processor name for Document AI
  */
 function getProcessorName(): string {
-  if (!GOOGLE_PROJECT_ID || !DOCUMENT_AI_PROCESSOR_ID) {
-    throw new Error('Missing Document AI configuration. Set GOOGLE_PROJECT_ID and DOCUMENT_AI_PROCESSOR_ID environment variables.')
+  const config = getDocumentAIConfig()
+  if (!config.projectId || !config.processorId) {
+    throw new Error('Missing Document AI configuration. Set GOOGLE_CLOUD_PROJECT_ID and GOOGLE_CLOUD_PROCESSOR_ID environment variables.')
   }
-  return `projects/${GOOGLE_PROJECT_ID}/locations/${DOCUMENT_AI_LOCATION}/processors/${DOCUMENT_AI_PROCESSOR_ID}`
+  return `projects/${config.projectId}/locations/${config.location}/processors/${config.processorId}`
 }
 
 /**
@@ -86,6 +121,107 @@ async function downloadDocument(
   }
 
   return { content, mimeType }
+}
+
+/**
+ * Run Gemini extraction in parallel with OCR
+ * This sends the image directly to Gemini for multimodal analysis
+ */
+async function runGeminiExtractionParallel(
+  documentBuffer: Buffer,
+  mimeType: string
+): Promise<ExtractionResult | null> {
+  const gemini = getGeminiClient()
+  if (!gemini) {
+    console.log('[OCR+Gemini] Gemini not configured, skipping parallel extraction')
+    return null
+  }
+
+  const prompt = `You are a Brazilian document classification and data extraction expert.
+Analyze this document image and extract all relevant information.
+
+Classify the document as one of: cnh (driver's license), rg (ID card), marriage_cert, deed (escritura), proxy (procuração), iptu (property tax), birth_cert, or other.
+
+Extract all relevant data including:
+- For people: name, CPF, RG, birth date, nationality, marital status, profession, address
+- For properties: registration number, address, area, description
+- For certificates: issuing authority, date, registration number
+
+Respond ONLY in valid JSON format (no markdown code blocks):
+{
+  "document_type": "string (one of: ${DOCUMENT_TYPES.join(', ')})",
+  "confidence": number (0-1),
+  "extracted_data": {
+    // Key-value pairs of all extracted information in Portuguese
+  },
+  "people": [
+    {
+      "name": "string",
+      "cpf": "string or null",
+      "rg": "string or null",
+      "birth_date": "string or null",
+      "nationality": "string or null",
+      "marital_status": "string or null",
+      "profession": "string or null",
+      "address": "string or null"
+    }
+  ],
+  "properties": [
+    {
+      "registration_number": "string or null",
+      "address": "string or null",
+      "area": "string or null",
+      "description": "string or null"
+    }
+  ],
+  "notes": ["array of observations about the document"]
+}`
+
+  try {
+    console.log('[OCR+Gemini] Starting parallel Gemini extraction...')
+    const startTime = Date.now()
+
+    const parts: Array<{ text: string } | { inlineData: { data: string; mimeType: string } }> = [
+      {
+        inlineData: {
+          data: documentBuffer.toString('base64'),
+          mimeType: mimeType,
+        },
+      },
+      { text: prompt }
+    ]
+
+    const result = await gemini.model.generateContent(parts)
+    const response = await result.response
+    const responseText = response.text()
+
+    // Clean the response - remove markdown code blocks if present
+    let cleanedResponse = responseText.trim()
+    const codeBlockPattern = /^```(?:json)?\s*/
+    const codeBlockEndPattern = /\s*```$/
+    if (codeBlockPattern.test(cleanedResponse)) {
+      cleanedResponse = cleanedResponse.replace(codeBlockPattern, '').replace(codeBlockEndPattern, '')
+    }
+
+    const parsed = JSON.parse(cleanedResponse)
+    const elapsed = Date.now() - startTime
+
+    console.log(`[OCR+Gemini] Gemini extraction completed in ${elapsed}ms - type: ${parsed.document_type}, confidence: ${parsed.confidence}`)
+
+    return {
+      document_type: parsed.document_type || 'other',
+      extracted_data: {
+        ...parsed.extracted_data,
+        people: parsed.people || [],
+        properties: parsed.properties || [],
+      },
+      confidence: Math.min(Math.max(parsed.confidence || 0.5, 0), 1),
+      notes: parsed.notes || [],
+    }
+  } catch (error) {
+    console.error('[OCR+Gemini] Gemini extraction failed:', error)
+    return null
+  }
 }
 
 /**
@@ -287,13 +423,15 @@ function processDocumentAiResponse(
 }
 
 /**
- * Run OCR job using Google Document AI
+ * Run OCR job using Google Document AI + Gemini in PARALLEL
+ * This significantly speeds up processing by running OCR and LLM extraction simultaneously
  */
 export async function runOcrJob(
   supabase: SupabaseClient,
   job: ProcessingJob
 ): Promise<Record<string, unknown>> {
-  console.log(`Running OCR job for document ${job.document_id}`)
+  console.log(`[OCR+Gemini] Running PARALLEL OCR job for document ${job.document_id}`)
+  const jobStartTime = Date.now()
 
   if (!job.document_id) {
     throw new Error('No document_id provided for OCR job')
@@ -317,84 +455,157 @@ export async function runOcrJob(
     .eq('id', job.document_id)
 
   try {
-    // 2. Download document from Supabase Storage
-    console.log(`Downloading document from storage: ${document.storage_path}`)
+    // 2. Download document from Supabase Storage (once, for both OCR and Gemini)
+    console.log(`[OCR+Gemini] Downloading document from storage: ${document.storage_path}`)
     const { content, mimeType } = await downloadDocument(supabase, document.storage_path)
-    console.log(`Downloaded document: ${content.length} bytes, MIME type: ${mimeType}`)
+    console.log(`[OCR+Gemini] Downloaded document: ${content.length} bytes, MIME type: ${mimeType}`)
 
-    // 3. Send to Google Document AI for OCR
-    console.log('Sending document to Google Document AI...')
-    const client = getDocumentAiClient()
-    const processorName = getProcessorName()
+    // 3. Run OCR and Gemini extraction IN PARALLEL for maximum speed
+    console.log('[OCR+Gemini] Starting PARALLEL processing: Document AI + Gemini...')
+    const parallelStartTime = Date.now()
 
-    const [result] = await client.processDocument({
-      name: processorName,
-      rawDocument: {
-        content: content.toString('base64'),
-        mimeType: mimeType,
-      },
-    })
+    // Prepare Document AI OCR promise
+    const ocrPromise = (async () => {
+      try {
+        const client = getDocumentAiClient()
+        const processorName = getProcessorName()
+        const [result] = await client.processDocument({
+          name: processorName,
+          rawDocument: {
+            content: content.toString('base64'),
+            mimeType: mimeType,
+          },
+        })
+        return result
+      } catch (error) {
+        console.error('[OCR+Gemini] Document AI OCR failed:', error)
+        return null
+      }
+    })()
 
-    if (!result.document) {
-      throw new Error('Document AI returned empty document')
+    // Prepare Gemini extraction promise (runs in parallel)
+    const geminiPromise = runGeminiExtractionParallel(content, mimeType)
+
+    // Wait for both to complete in parallel
+    const [ocrDocumentResult, geminiResult] = await Promise.all([ocrPromise, geminiPromise])
+
+    const parallelElapsed = Date.now() - parallelStartTime
+    console.log(`[OCR+Gemini] Parallel processing completed in ${parallelElapsed}ms`)
+
+    // 4. Process OCR results
+    let ocrResult: OcrResult | null = null
+    let pageCount = 1
+
+    if (ocrDocumentResult?.document) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ocrResult = processDocumentAiResponse(ocrDocumentResult.document as any)
+      pageCount = ocrDocumentResult.document.pages?.length || 1
+      console.log(`[OCR+Gemini] OCR: ${ocrResult.blocks.length} blocks, confidence: ${ocrResult.confidence.toFixed(2)}`)
+    } else {
+      console.warn('[OCR+Gemini] Document AI OCR returned no results')
     }
 
-    console.log('Document AI processing complete')
+    // 5. Determine document type and extracted data (prefer Gemini if available)
+    let docType = 'other'
+    let docTypeConfidence = 0.5
+    let extractedData: Record<string, unknown> = {}
 
-    // 4. Parse response and extract OCR results
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const ocrResult = processDocumentAiResponse(result.document as any)
-    console.log(`Extracted ${ocrResult.blocks.length} blocks with ${ocrResult.confidence.toFixed(2)} average confidence`)
+    if (geminiResult) {
+      docType = geminiResult.document_type
+      docTypeConfidence = geminiResult.confidence
+      extractedData = geminiResult.extracted_data
+      console.log(`[OCR+Gemini] Gemini: type=${docType}, confidence=${docTypeConfidence}`)
+    }
 
-    // 5. Check if extraction record exists or create one
+    // 6. Save extraction results
     const { data: existingExtraction } = await supabase
       .from('extractions')
       .select('id')
       .eq('document_id', job.document_id)
       .single()
 
+    const extractionRecord = {
+      ocr_result: ocrResult ? (ocrResult as unknown as Record<string, unknown>) : null,
+      llm_result: geminiResult ? (geminiResult as unknown as Record<string, unknown>) : null,
+    }
+
     if (existingExtraction) {
-      // Update existing extraction
       await supabase
         .from('extractions')
-        .update({
-          ocr_result: ocrResult as unknown as Record<string, unknown>,
-        })
+        .update(extractionRecord)
         .eq('id', existingExtraction.id)
     } else {
-      // Create new extraction record
       await supabase
         .from('extractions')
         .insert({
           document_id: job.document_id,
-          ocr_result: ocrResult as unknown as Record<string, unknown>,
+          ...extractionRecord,
           pending_fields: [],
         })
     }
 
-    // 6. Update document status and page count
-    const pageCount = result.document.pages?.length || 1
+    // 7. Update document status, type, and page count
     await supabase
       .from('documents')
       .update({
         status: 'processed',
+        doc_type: docType,
+        doc_type_confidence: docTypeConfidence,
         page_count: pageCount,
         updated_at: new Date().toISOString(),
       })
       .eq('id', job.document_id)
 
-    console.log(`OCR job completed for document ${job.document_id}`)
+    const totalElapsed = Date.now() - jobStartTime
+    console.log(`[OCR+Gemini] Job completed for document ${job.document_id} in ${totalElapsed}ms`)
+
+    // 8. Determine next job based on what was extracted
+    // If Gemini extracted people/properties, skip directly to entity_extraction
+    // Otherwise, fall back to traditional extraction job
+    const hasPeopleOrProperties =
+      (extractedData.people && Array.isArray(extractedData.people) && extractedData.people.length > 0) ||
+      (extractedData.properties && Array.isArray(extractedData.properties) && extractedData.properties.length > 0)
+
+    const nextJobType = hasPeopleOrProperties ? 'entity_extraction' : 'extraction'
+    console.log(`[OCR+Gemini] Creating next job: ${nextJobType} (has entities: ${hasPeopleOrProperties})`)
+
+    try {
+      const { error: jobError } = await supabase
+        .from('processing_jobs')
+        .insert({
+          case_id: job.case_id,
+          document_id: job.document_id,
+          job_type: nextJobType,
+          status: 'pending',
+          attempts: 0,
+          max_attempts: 3,
+        })
+
+      if (jobError) {
+        console.warn(`[OCR+Gemini] Failed to create ${nextJobType} job for document ${job.document_id}:`, jobError)
+      } else {
+        console.log(`[OCR+Gemini] Created ${nextJobType} job for document ${job.document_id}`)
+      }
+    } catch (triggerError) {
+      console.error(`[OCR+Gemini] Error creating next job:`, triggerError)
+    }
 
     return {
       status: 'completed',
-      text: ocrResult.text.substring(0, 500) + (ocrResult.text.length > 500 ? '...' : ''),
-      blocks_count: ocrResult.blocks.length,
-      confidence: ocrResult.confidence,
-      language: ocrResult.language,
+      processing_mode: 'parallel',
+      text: ocrResult?.text ? ocrResult.text.substring(0, 500) + (ocrResult.text.length > 500 ? '...' : '') : '',
+      blocks_count: ocrResult?.blocks?.length || 0,
+      ocr_confidence: ocrResult?.confidence || 0,
+      gemini_confidence: geminiResult?.confidence || 0,
+      document_type: docType,
+      language: ocrResult?.language || 'pt',
       page_count: pageCount,
+      total_time_ms: totalElapsed,
+      parallel_time_ms: parallelElapsed,
+      has_extracted_entities: hasPeopleOrProperties,
     }
   } catch (error) {
-    console.error(`OCR job failed for document ${job.document_id}:`, error)
+    console.error(`[OCR+Gemini] Job failed for document ${job.document_id}:`, error)
 
     // Update document status to failed
     await supabase

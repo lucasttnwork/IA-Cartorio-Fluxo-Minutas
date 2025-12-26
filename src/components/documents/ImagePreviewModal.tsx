@@ -248,46 +248,36 @@ export default function ImagePreviewModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-[90vh] p-0 gap-0 bg-gray-900 border-gray-700">
-        {/* Header */}
-        <DialogHeader className="px-4 py-3 border-b border-gray-700 flex flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-900/30 flex items-center justify-center">
-              <PhotoIcon className="w-5 h-5 text-blue-400" />
-            </div>
-            <div className="min-w-0">
-              <DialogTitle className="text-white truncate">
-                {document.original_name}
-              </DialogTitle>
-              <div className="flex items-center gap-2 mt-0.5">
-                <Badge variant="outline" className="text-xs bg-gray-800 text-gray-300 border-gray-600">
-                  {getImageTypeLabel(document.mime_type)}
-                </Badge>
-                <span className="text-xs text-gray-400">
-                  {formatFileSize(document.file_size)}
-                </span>
-                {imageDimensions.width > 0 && (
-                  <>
-                    <span className="text-gray-600">|</span>
-                    <span className="text-xs text-gray-400">
-                      {imageDimensions.width} x {imageDimensions.height} px
-                    </span>
-                  </>
-                )}
-              </div>
+      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-[95vh] p-0 gap-0 bg-gray-900 border-gray-700 flex flex-col [&>button]:hidden">
+        {/* Header - Navbar minimalista */}
+        <DialogHeader className="h-12 px-4 border-b border-gray-700/50 flex flex-row items-center justify-between gap-3 bg-gray-900/95 backdrop-blur-sm shrink-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
+            <DialogTitle className="text-sm text-white truncate font-medium">
+              {document.original_name}
+            </DialogTitle>
+            <div className="hidden md:flex items-center gap-2 text-xs text-gray-400 shrink-0">
+              <span>{getImageTypeLabel(document.mime_type)}</span>
+              <span className="text-gray-600">•</span>
+              <span>{formatFileSize(document.file_size)}</span>
+              {imageDimensions.width > 0 && (
+                <>
+                  <span className="text-gray-600">•</span>
+                  <span>{imageDimensions.width}x{imageDimensions.height}</span>
+                </>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 shrink-0">
             {/* Download Button */}
             <Button
               variant="ghost"
               size="icon"
               onClick={handleDownload}
-              className="h-9 w-9 text-gray-400 hover:text-white hover:bg-gray-800"
+              className="h-8 w-8 text-gray-400 hover:text-white hover:bg-gray-800"
               title="Baixar imagem"
             >
-              <ArrowDownTrayIcon className="w-5 h-5" />
+              <ArrowDownTrayIcon className="w-4 h-4" />
             </Button>
 
             {/* Close Button */}
@@ -295,10 +285,10 @@ export default function ImagePreviewModal({
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-9 w-9 text-gray-400 hover:text-white hover:bg-gray-800"
+              className="h-8 w-8 text-gray-400 hover:text-white hover:bg-gray-800"
               title="Fechar (Esc)"
             >
-              <XMarkIcon className="w-5 h-5" />
+              <XMarkIcon className="w-4 h-4" />
             </Button>
           </div>
         </DialogHeader>
@@ -349,7 +339,7 @@ export default function ImagePreviewModal({
                     <XMarkIcon className="w-6 h-6 text-red-400" />
                   </div>
                   <p className="text-sm text-gray-400">
-                    Nao foi possivel carregar a imagem
+                    Não foi possível carregar a imagem
                   </p>
                   <Button
                     variant="outline"

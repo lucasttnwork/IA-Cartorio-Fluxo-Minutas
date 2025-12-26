@@ -128,11 +128,11 @@ const getPreviewIcon = (previewType: PreviewType) => {
 const documentTypeLabels: Record<DocType, string> = {
   cnh: 'CNH',
   rg: 'RG',
-  marriage_cert: 'Certidao de Casamento',
+  marriage_cert: 'Certidão de Casamento',
   deed: 'Escritura',
-  proxy: 'Procuracao',
+  proxy: 'Procuração',
   iptu: 'IPTU',
-  birth_cert: 'Certidao de Nascimento',
+  birth_cert: 'Certidão de Nascimento',
   other: 'Outro',
 }
 
@@ -348,73 +348,43 @@ export default function DocumentPreviewModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-[90vh] p-0 gap-0 bg-gray-900 border-gray-700">
-        {/* Header */}
-        <DialogHeader className="px-4 py-3 border-b border-gray-700 flex flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className={cn(
-              "flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center",
-              previewType === 'image' && "bg-blue-900/30",
-              previewType === 'pdf' && "bg-red-900/30",
-              previewType === 'unsupported' && "bg-gray-800"
-            )}>
-              <PreviewIcon className={cn(
-                "w-5 h-5",
-                previewType === 'image' && "text-blue-400",
-                previewType === 'pdf' && "text-red-400",
-                previewType === 'unsupported' && "text-gray-400"
-              )} />
-            </div>
-            <div className="min-w-0">
-              <DialogTitle className="text-white truncate">
-                {document.original_name}
-              </DialogTitle>
-              <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                <Badge variant="outline" className="text-xs bg-gray-800 text-gray-300 border-gray-600">
-                  {getFileTypeLabel(document.mime_type)}
-                </Badge>
-                <span className="text-xs text-gray-400">
-                  {formatFileSize(document.file_size)}
-                </span>
-                {document.page_count && document.page_count > 0 && (
-                  <>
-                    <span className="text-gray-600">|</span>
-                    <span className="text-xs text-gray-400">
-                      {document.page_count} pagina{document.page_count !== 1 ? 's' : ''}
-                    </span>
-                  </>
-                )}
-                {previewType === 'image' && imageDimensions.width > 0 && (
-                  <>
-                    <span className="text-gray-600">|</span>
-                    <span className="text-xs text-gray-400">
-                      {imageDimensions.width} x {imageDimensions.height} px
-                    </span>
-                  </>
-                )}
-                {document.doc_type && (
-                  <>
-                    <span className="text-gray-600">|</span>
-                    <Badge variant="outline" className="text-xs bg-gray-800 text-gray-300 border-gray-600">
-                      {documentTypeLabels[document.doc_type]}
-                    </Badge>
-                  </>
-                )}
-              </div>
+      <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-[95vh] p-0 gap-0 bg-gray-900 border-gray-700 flex flex-col [&>button]:hidden">
+        {/* Header - Navbar minimalista */}
+        <DialogHeader className="h-12 px-4 border-b border-gray-700/50 flex flex-row items-center justify-between gap-3 bg-gray-900/95 backdrop-blur-sm shrink-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1 overflow-hidden">
+            <DialogTitle className="text-sm text-white truncate font-medium">
+              {document.original_name}
+            </DialogTitle>
+            <div className="hidden md:flex items-center gap-2 text-xs text-gray-400 shrink-0">
+              <span>{getFileTypeLabel(document.mime_type)}</span>
+              <span className="text-gray-600">•</span>
+              <span>{formatFileSize(document.file_size)}</span>
+              {document.page_count && document.page_count > 0 && (
+                <>
+                  <span className="text-gray-600">•</span>
+                  <span>{document.page_count} pág.</span>
+                </>
+              )}
+              {previewType === 'image' && imageDimensions.width > 0 && (
+                <>
+                  <span className="text-gray-600">•</span>
+                  <span>{imageDimensions.width}x{imageDimensions.height}</span>
+                </>
+              )}
             </div>
           </div>
 
-          <div className="flex items-center gap-1 flex-shrink-0">
+          <div className="flex items-center gap-1 shrink-0">
             {/* Download Button */}
             <Button
               variant="ghost"
               size="icon"
               onClick={handleDownload}
               disabled={!documentUrl}
-              className="h-9 w-9 text-gray-400 hover:text-white hover:bg-gray-800 disabled:opacity-50"
+              className="h-8 w-8 text-gray-400 hover:text-white hover:bg-gray-800 disabled:opacity-50"
               title="Baixar documento"
             >
-              <ArrowDownTrayIcon className="w-5 h-5" />
+              <ArrowDownTrayIcon className="w-4 h-4" />
             </Button>
 
             {/* Close Button */}
@@ -422,10 +392,10 @@ export default function DocumentPreviewModal({
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-9 w-9 text-gray-400 hover:text-white hover:bg-gray-800"
+              className="h-8 w-8 text-gray-400 hover:text-white hover:bg-gray-800"
               title="Fechar (Esc)"
             >
-              <XMarkIcon className="w-5 h-5" />
+              <XMarkIcon className="w-4 h-4" />
             </Button>
           </div>
         </DialogHeader>
@@ -479,7 +449,7 @@ export default function DocumentPreviewModal({
                     <ExclamationTriangleIcon className="w-6 h-6 text-red-400" />
                   </div>
                   <p className="text-sm text-gray-400">
-                    {error || 'Nao foi possivel carregar o documento'}
+                    {error || 'Não foi possível carregar o documento'}
                   </p>
                   {(onRetry || previewType === 'image') && (
                     <Button
@@ -541,11 +511,11 @@ export default function DocumentPreviewModal({
                 </div>
                 <div>
                   <h3 className="text-lg font-medium text-white mb-1">
-                    Pre-visualizacao nao disponivel
+                    Pré-visualização não disponível
                   </h3>
                   <p className="text-sm text-gray-400 max-w-md">
-                    Este tipo de arquivo ({getFileTypeLabel(document.mime_type)}) nao suporta pre-visualizacao direta.
-                    Voce pode baixar o arquivo para visualiza-lo em seu computador.
+                    Este tipo de arquivo ({getFileTypeLabel(document.mime_type)}) não suporta pré-visualização direta.
+                    Você pode baixar o arquivo para visualizá-lo em seu computador.
                   </p>
                 </div>
                 <Button

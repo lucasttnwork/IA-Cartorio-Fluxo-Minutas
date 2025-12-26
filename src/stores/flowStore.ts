@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import type { ActType, Document, Person, Property, GraphEdge, Draft } from '../types'
+import type { ActType, Document, Person, Property, GraphEdge, Draft, Case } from '../types'
+import { supabase } from '../lib/supabase'
 
 // -----------------------------------------------------------------------------
 // Flow Step Types
@@ -84,6 +85,7 @@ export interface FlowState {
 interface FlowActions {
   // Flow lifecycle
   startFlow: (actType?: ActType) => void
+  resumeFlowForCase: (caseId: string) => Promise<void>
   completeFlow: () => void
   cancelFlow: () => void
   resetFlow: () => void
@@ -259,6 +261,187 @@ export const useFlowStore = create<FlowState & FlowActions>()(
             },
             globalError: null,
           })
+        },
+
+        resumeFlowForCase: async (caseId: string) => {
+          const now = new Date().toISOString()
+          set({ isLoading: true, globalError: null })
+
+          try {
+            // 1. Fetch case data from database
+            const { data: caseDataResult, error: caseError } = await supabase
+              .from('cases')
+              .select('*')
+              .eq('id', caseId)
+              .single()
+
+            if (caseError || !caseDataResult) {
+              throw new Error(caseError?.message || 'Caso não encontrado')
+            }
+
+            const caseDataFromDb = caseDataResult as Case
+
+            // 2. Fetch documents for the case
+            const { data: documents, error: docsError } = await supabase
+              .from('documents')
+              .select('*')
+              .eq('case_id', caseId)
+              .order('created_at', { ascending: false })
+
+            if (docsError) {
+              console.error('Error fetching documents:', docsError)
+            }
+
+            // 3. Fetch people for the case
+            const { data: people, error: peopleError } = await supabase
+              .from('people')
+              .select('*')
+              .eq('case_id', caseId)
+
+            if (peopleError) {
+              console.error('Error fetching people:', peopleError)
+            }
+
+            // 4. Fetch properties for the case
+            const { data: properties, error: propsError } = await supabase
+              .from('properties')
+              .select('*')
+              .eq('case_id', caseId)
+
+            if (propsError) {
+              console.error('Error fetching properties:', propsError)
+            }
+
+            // 5. Fetch graph edges for the case
+            const { data: edges, error: edgesError } = await supabase
+              .from('graph_edges')
+              .select('*')
+              .eq('case_id', caseId)
+
+            if (edgesError) {
+              console.error('Error fetching edges:', edgesError)
+            }
+
+            // 6. Fetch draft for the case (if exists)
+            const { data: draft, error: draftError } = await supabase
+              .from('drafts')
+              .select('*')
+              .eq('case_id', caseId)
+              .order('version', { ascending: false })
+              .limit(1)
+              .maybeSingle()
+
+            if (draftError) {
+              console.error('Error fetching draft:', draftError)
+            }
+
+            // 7. Determine the correct step based on what data exists
+            // We aim to resume at the furthest logical point while being conservative
+            const hasDocuments = documents && documents.length > 0
+            const hasEntities = (people && people.length > 0) || (properties && properties.length > 0)
+            const hasDraft = draft !== null
+
+            // Check if there are pending processing jobs (extraction in progress)
+            const { data: pendingJobs } = await supabase
+              .from('processing_jobs')
+              .select('id, job_type, status')
+              .eq('case_id', caseId)
+              .in('status', ['pending', 'processing'])
+
+            const hasActiveJobs = pendingJobs && pendingJobs.length > 0
+
+            let currentStep: FlowStep = 'case_creation'
+            const stepsStatuses: Record<FlowStep, 'pending' | 'completed' | 'in_progress'> = {
+              case_creation: 'completed', // Case already exists
+              document_upload: 'pending',
+              entity_extraction: 'pending',
+              canvas_review: 'pending',
+              draft_generation: 'pending',
+            }
+
+            if (hasDocuments) {
+              stepsStatuses.document_upload = 'completed'
+              currentStep = 'entity_extraction'
+
+              if (hasEntities) {
+                stepsStatuses.entity_extraction = 'completed'
+                currentStep = 'canvas_review'
+
+                // Only mark canvas_review as completed if user has draft (meaning they proceeded past it)
+                if (hasDraft) {
+                  stepsStatuses.canvas_review = 'completed'
+                  currentStep = 'draft_generation'
+                  stepsStatuses.draft_generation = 'completed'
+                }
+              } else if (hasActiveJobs) {
+                // Extraction is in progress, stay at entity_extraction
+                currentStep = 'entity_extraction'
+              }
+            } else {
+              // No documents yet, go to document_upload
+              currentStep = 'document_upload'
+            }
+
+            // Mark current step as in_progress
+            stepsStatuses[currentStep] = 'in_progress'
+
+            // 8. Build the steps array with proper statuses
+            const steps = FLOW_STEPS.map((step) => ({
+              ...step,
+              status: stepsStatuses[step.id] as 'pending' | 'completed' | 'in_progress',
+              completedAt: stepsStatuses[step.id] === 'completed' ? now : undefined,
+              error: undefined,
+            }))
+
+            // 9. Set the flow state
+            set({
+              flowId: generateFlowId(),
+              isActive: true,
+              startedAt: now,
+              completedAt: hasDraft && stepsStatuses.draft_generation === 'completed' ? now : null,
+              currentStep,
+              steps,
+              caseData: {
+                id: caseDataFromDb.id,
+                title: caseDataFromDb.title,
+                actType: caseDataFromDb.act_type,
+              },
+              documentData: {
+                documents: (documents || []) as Document[],
+                uploadProgress: {},
+              },
+              extractionData: {
+                people: (people || []) as Person[],
+                properties: (properties || []) as Property[],
+                edges: (edges || []) as GraphEdge[],
+                isProcessing: false,
+                processingProgress: 0,
+              },
+              draftData: {
+                draft: draft as Draft | null,
+                isGenerating: false,
+              },
+              globalError: null,
+              isLoading: false,
+            })
+
+            console.log('[resumeFlowForCase] Flow resumed successfully:', {
+              caseId,
+              currentStep,
+              documentsCount: documents?.length || 0,
+              peopleCount: people?.length || 0,
+              propertiesCount: properties?.length || 0,
+              edgesCount: edges?.length || 0,
+              hasDraft,
+            })
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Erro ao carregar caso'
+            console.error('[resumeFlowForCase] Error:', errorMessage)
+            set({
+              isLoading: false,
+              globalError: errorMessage,
+            })
+          }
         },
 
         completeFlow: () => {

@@ -33,7 +33,7 @@ export function SectionLinks({
     return (
       <nav
         className={cn('flex flex-wrap gap-2', className)}
-        aria-label="Section navigation"
+        aria-label="Navegação de seções"
       >
         {sections.map((section) => (
           <Button
@@ -56,7 +56,7 @@ export function SectionLinks({
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className={cn('gap-2', className)}>
           <LinkIcon className="w-4 h-4" />
-          Go to Section
+          Ir para Seção
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">

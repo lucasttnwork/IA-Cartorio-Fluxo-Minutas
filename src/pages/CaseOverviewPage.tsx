@@ -36,16 +36,16 @@ import type { CaseStatus } from '../types'
 
 // Act type display labels
 const actTypeLabels: Record<string, string> = {
-  purchase_sale: 'Purchase & Sale',
-  donation: 'Donation',
-  exchange: 'Exchange',
-  lease: 'Lease',
+  purchase_sale: 'Compra e Venda',
+  donation: 'Doação',
+  exchange: 'Permuta',
+  lease: 'Aluguel',
 }
 
 // Define available sections for deep linking
 const CASE_SECTIONS = [
-  { id: 'case-info', label: 'Case Information' },
-  { id: 'documents', label: 'Documents' },
+  { id: 'case-info', label: 'Informações do Caso' },
+  { id: 'documents', label: 'Documentos' },
 ] as const
 
 export default function CaseOverviewPage() {
@@ -79,8 +79,8 @@ export default function CaseOverviewPage() {
           setShowArchiveConfirm(false)
         },
         onError: (_error) => {
-          console.error('Failed to update case status:', _error)
-          alert('Failed to update status. Please try again.')
+          console.error('Falha ao atualizar o status do caso:', _error)
+          alert('Falha ao atualizar o status. Tente novamente.')
         },
       }
     )
@@ -94,8 +94,8 @@ export default function CaseOverviewPage() {
         navigate(`/case/${newCase.id}`)
       },
       onError: (_error) => {
-        console.error('Failed to duplicate case:', _error)
-        alert('Failed to duplicate case. Please try again.')
+        console.error('Falha ao duplicar caso:', _error)
+        alert('Falha ao duplicar o caso. Tente novamente.')
       },
     })
   }
@@ -108,7 +108,7 @@ export default function CaseOverviewPage() {
       setCopiedSection(sectionId)
       setTimeout(() => setCopiedSection(null), 2000)
     } catch (err) {
-      console.error('Failed to copy link:', err)
+      console.error('Falha ao copiar link:', err)
     }
   }
 
@@ -134,7 +134,7 @@ export default function CaseOverviewPage() {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-          Case Overview
+          Visão Geral do Caso
         </h1>
         <Card className="glass-card">
           <CardContent className="pt-12 pb-12 text-center">
@@ -142,10 +142,10 @@ export default function CaseOverviewPage() {
               <ExclamationCircleIcon className="h-8 w-8 text-red-500 dark:text-red-400" />
             </div>
             <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-              Failed to load case
+              Falha ao carregar caso
             </h3>
             <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-              {error instanceof Error ? error.message : 'An unexpected error occurred'}
+              {error instanceof Error ? error.message : 'Ocorreu um erro inesperado'}
             </p>
             <div className="mt-6">
               <Button
@@ -154,7 +154,7 @@ export default function CaseOverviewPage() {
                 className="inline-flex items-center gap-2"
               >
                 <ArrowPathIcon className="w-5 h-5" />
-                Try Again
+                Tentar Novamente
               </Button>
             </div>
           </CardContent>
@@ -171,9 +171,9 @@ export default function CaseOverviewPage() {
             <Alert className="border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-900/20">
               <ArchiveBoxIcon className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
               <AlertDescription className="text-yellow-700 dark:text-yellow-200">
-                <h4 className="font-medium">This case is archived</h4>
+                <h4 className="font-medium">Este caso está arquivado</h4>
                 <p className="mt-1">
-                  Archived cases are read-only. You can unarchive this case to make changes.
+                  Casos arquivados são somente leitura. Você pode desarquivar este caso para fazer alterações.
                 </p>
               </AlertDescription>
             </Alert>
@@ -209,7 +209,7 @@ export default function CaseOverviewPage() {
                 className="inline-flex items-center gap-2"
               >
                 <DocumentDuplicateIcon className="w-5 h-5" />
-                {isDuplicating ? 'Duplicating...' : 'Duplicate'}
+                {isDuplicating ? 'Duplicando...' : 'Duplicar'}
               </Button>
               {isArchived ? (
                 <Button
@@ -219,7 +219,7 @@ export default function CaseOverviewPage() {
                   className="inline-flex items-center gap-2"
                 >
                   <ArchiveBoxXMarkIcon className="w-5 h-5" />
-                  Unarchive
+                  Desarquivar
                 </Button>
               ) : (
                 <Button
@@ -229,7 +229,7 @@ export default function CaseOverviewPage() {
                   className="inline-flex items-center gap-2"
                 >
                   <ArchiveBoxIcon className="w-5 h-5" />
-                  Archive
+                  Arquivar
                 </Button>
               )}
             </div>
@@ -243,19 +243,19 @@ export default function CaseOverviewPage() {
             className="glass-card scroll-mt-24"
           >
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Case Information</CardTitle>
+              <CardTitle>Informações do Caso</CardTitle>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => handleCopyLink('case-info')}
                 className="h-8 w-8 p-0 group relative"
-                aria-label="Copy link to Case Information section"
-                title={copiedSection === 'case-info' ? 'Copied!' : 'Copy link to section'}
+                aria-label="Copiar link para seção Informações do Caso"
+                title={copiedSection === 'case-info' ? 'Copiado!' : 'Copiar link da seção'}
               >
                 <LinkIcon className="w-4 h-4" />
                 {copiedSection === 'case-info' && (
                   <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded whitespace-nowrap">
-                    Copied!
+                    Copiado!
                   </span>
                 )}
               </Button>
@@ -264,7 +264,7 @@ export default function CaseOverviewPage() {
               <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Case ID
+                    ID do Caso
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 dark:text-white font-mono">
                     {caseData.id}
@@ -272,7 +272,7 @@ export default function CaseOverviewPage() {
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Act Type
+                    Tipo de Ato
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                     {actTypeLabels[caseData.act_type] || caseData.act_type}
@@ -280,7 +280,7 @@ export default function CaseOverviewPage() {
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Created
+                    Criado
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                     {formatDate(caseData.created_at, 'full')}
@@ -288,7 +288,7 @@ export default function CaseOverviewPage() {
                 </div>
                 <div>
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Last Updated
+                    Última Atualização
                   </dt>
                   <dd className="mt-1 text-sm text-gray-900 dark:text-white">
                     {formatDate(caseData.updated_at, 'full')}
@@ -296,7 +296,7 @@ export default function CaseOverviewPage() {
                 </div>
                 <div className="sm:col-span-2">
                   <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
-                    Assigned To
+                    Atribuído a
                   </dt>
                   <dd>
                     <AssignUserSelect
@@ -319,9 +319,9 @@ export default function CaseOverviewPage() {
           >
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle>Documents</CardTitle>
+                <CardTitle>Documentos</CardTitle>
                 <CardDescription>
-                  Document management will be implemented here.
+                  O gerenciamento de documentos será implementado aqui.
                 </CardDescription>
               </div>
               <Button
@@ -329,13 +329,13 @@ export default function CaseOverviewPage() {
                 size="sm"
                 onClick={() => handleCopyLink('documents')}
                 className="h-8 w-8 p-0 group relative"
-                aria-label="Copy link to Documents section"
-                title={copiedSection === 'documents' ? 'Copied!' : 'Copy link to section'}
+                aria-label="Copiar link para seção Documentos"
+                title={copiedSection === 'documents' ? 'Copiado!' : 'Copiar link da seção'}
               >
                 <LinkIcon className="w-4 h-4" />
                 {copiedSection === 'documents' && (
                   <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-xs rounded whitespace-nowrap">
-                    Copied!
+                    Copiado!
                   </span>
                 )}
               </Button>
@@ -347,13 +347,13 @@ export default function CaseOverviewPage() {
             <DialogContent className="glass-dialog">
               <DialogHeader>
                 <DialogTitle>
-                  {isArchived ? 'Unarchive Case' : 'Archive Case'}
+                  {isArchived ? 'Desarquivar Caso' : 'Arquivar Caso'}
                 </DialogTitle>
               </DialogHeader>
               <DialogDescription>
                 {isArchived
-                  ? `Are you sure you want to unarchive "${caseData?.title}"? This will restore the case to draft status.`
-                  : `Are you sure you want to archive "${caseData?.title}"? Archived cases are read-only but can be restored later.`}
+                  ? `Tem certeza de que deseja desarquivar "${caseData?.title}"? Isso restaurará o caso para o status de rascunho.`
+                  : `Tem certeza de que deseja arquivar "${caseData?.title}"? Casos arquivados são somente leitura, mas podem ser restaurados posteriormente.`}
               </DialogDescription>
               <DialogFooter className="gap-3">
                 <Button
@@ -361,13 +361,13 @@ export default function CaseOverviewPage() {
                   onClick={() => setShowArchiveConfirm(false)}
                   disabled={isUpdating}
                 >
-                  Cancel
+                  Cancelar
                 </Button>
                 <Button
                   onClick={handleArchiveToggle}
                   disabled={isUpdating}
                 >
-                  {isUpdating ? 'Processing...' : isArchived ? 'Unarchive' : 'Archive'}
+                  {isUpdating ? 'Processando...' : isArchived ? 'Desarquivar' : 'Arquivar'}
                 </Button>
               </DialogFooter>
             </DialogContent>

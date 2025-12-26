@@ -1,0 +1,5 @@
+# Ignorar arquivo MCP com credenciais sensíveis
+mcp.json
+
+# Manter apenas o template
+!mcp.json.template

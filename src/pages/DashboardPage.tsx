@@ -11,7 +11,8 @@ import {
   XMarkIcon,
   ArrowRightIcon,
   DocumentTextIcon,
-  DocumentDuplicateIcon
+  DocumentDuplicateIcon,
+  EyeIcon
 } from '@heroicons/react/24/outline'
 import { usePaginatedCases, useDeleteCase, useDuplicateCase, type SortField, type SortOrder } from '../hooks/useCases'
 import { useFlowStore } from '../stores/flowStore'
@@ -58,14 +59,23 @@ const actTypeLabels: Record<string, string> = {
 // Loading skeleton component
 function CaseCardSkeleton() {
   return (
-    <Card className="glass-card">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-2">
+    <Card className="glass-card h-full flex flex-col">
+      <CardContent className="p-4 sm:p-5 flex flex-col flex-1">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-2 mb-3">
           <Skeleton className="h-5 w-2/3" />
           <Skeleton className="h-5 w-16" />
         </div>
-        <Skeleton className="mt-2 h-4 w-1/3" />
-        <Skeleton className="mt-3 h-3 w-1/2" />
+        {/* Content */}
+        <div className="flex-1">
+          <Skeleton className="h-4 w-1/3" />
+          <Skeleton className="mt-2 h-3 w-1/2" />
+        </div>
+        {/* Buttons */}
+        <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/50">
+          <Skeleton className="h-8 flex-1 basis-[calc(50%-0.25rem)] min-w-[120px]" />
+          <Skeleton className="h-8 flex-1 basis-[calc(50%-0.25rem)] min-w-[140px]" />
+        </div>
       </CardContent>
     </Card>
   )
@@ -260,8 +270,8 @@ export default function DashboardPage() {
       {/* Content Section */}
       {isLoading ? (
         /* Loading State - Skeleton cards */
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[...Array(6)].map((_, index) => (
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          {[...Array(pageSize)].map((_, index) => (
             <CaseCardSkeleton key={index} />
           ))}
         </div>
@@ -337,8 +347,8 @@ export default function DashboardPage() {
         </motion.div>
       ) : (
         <>
-          {/* Cases Grid */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Cases Grid - Responsive: 1 col mobile, 2 cols sm, 3 cols lg, 4 cols 2xl */}
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
             {cases.map((caseItem: Case, index: number) => {
               // Determine if the workflow is complete based on case status
               const isWorkflowComplete = ['review', 'approved', 'archived'].includes(caseItem.status)
@@ -353,16 +363,17 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="relative"
+                  className="relative h-full"
                 >
-                  <Card className="glass-card hover:shadow-lg transition-shadow">
-                    <CardContent className="p-4">
+                  <Card className="glass-card hover:shadow-lg transition-shadow h-full flex flex-col">
+                    <CardContent className="p-4 sm:p-5 flex flex-col flex-1">
+                      {/* Header with title, badge and menu */}
                       <div className="flex items-start justify-between gap-2 mb-3">
-                        <h3 className="font-medium text-gray-900 dark:text-white truncate flex-1">
+                        <h3 className="font-medium text-gray-900 dark:text-white line-clamp-2 flex-1 min-w-0">
                           {caseItem.title}
                         </h3>
-                        <div className="flex items-center gap-2">
-                          <Badge variant={statusBadgeVariant[caseItem.status]}>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                          <Badge variant={statusBadgeVariant[caseItem.status]} className="whitespace-nowrap">
                             {statusLabels[caseItem.status]}
                           </Badge>
                           <div className="relative">
@@ -405,20 +416,38 @@ export default function DashboardPage() {
                           </div>
                         </div>
                       </div>
-                      <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                        {actTypeLabels[caseItem.act_type] || caseItem.act_type.replace('_', ' ')}
-                      </p>
-                      <p className="mt-2 text-xs text-gray-400 dark:text-gray-500">
-                        Created {formatDate(caseItem.created_at, 'medium')}
-                      </p>
-                      <Button
-                        onClick={() => navigate(actionUrl)}
-                        variant="outline"
-                        className="w-full mt-4"
-                      >
-                        {actionLabel}
-                        <ArrowRightIcon className="w-4 h-4 ml-2" />
-                      </Button>
+
+                      {/* Card content grows to fill space */}
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {actTypeLabels[caseItem.act_type] || caseItem.act_type.replace('_', ' ')}
+                        </p>
+                        <p className="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+                          Criado {formatDate(caseItem.created_at, 'medium')}
+                        </p>
+                      </div>
+
+                      {/* Action buttons - wrap to vertical when space is tight */}
+                      <div className="flex flex-wrap gap-2 mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/50">
+                        <Button
+                          onClick={() => navigate(`/case/${caseItem.id}`)}
+                          variant="outline"
+                          className="flex-1 basis-[calc(50%-0.25rem)] min-w-[120px]"
+                          size="sm"
+                        >
+                          <EyeIcon className="w-4 h-4 mr-1.5 flex-shrink-0" />
+                          Ver mais
+                        </Button>
+                        <Button
+                          onClick={() => navigate(actionUrl)}
+                          variant="default"
+                          className="flex-1 basis-[calc(50%-0.25rem)] min-w-[140px] bg-gradient-to-r from-sky-400 to-blue-400 hover:from-sky-500 hover:to-blue-500 text-white"
+                          size="sm"
+                        >
+                          {actionLabel}
+                          <ArrowRightIcon className="w-4 h-4 ml-1.5 flex-shrink-0" />
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 </motion.div>

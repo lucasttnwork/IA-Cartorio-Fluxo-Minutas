@@ -51,10 +51,10 @@ export function SessionTimeoutWarning({
         <DialogHeader>
           <div className="flex items-center gap-2 text-yellow-600 dark:text-yellow-500">
             <AlertCircle className="h-5 w-5" />
-            <DialogTitle>Session Timeout Warning</DialogTitle>
+            <DialogTitle>Aviso de Expiração de Sessão</DialogTitle>
           </div>
           <DialogDescription id="session-timeout-description">
-            Your session will expire soon due to inactivity.
+            Sua sessão expirará em breve devido à inatividade.
           </DialogDescription>
         </DialogHeader>
 
@@ -64,8 +64,8 @@ export function SessionTimeoutWarning({
             <span>{formatTimeRemaining(countdown)}</span>
           </div>
           <p className="text-sm text-gray-600 dark:text-gray-400 text-center max-w-sm">
-            You will be automatically logged out when the timer reaches zero.
-            Click "Stay Logged In" to continue your session.
+            Você será desconectado automaticamente quando o tempo chegar a zero.
+            Clique em "Continuar Conectado" para manter sua sessão.
           </p>
         </div>
 
@@ -75,13 +75,13 @@ export function SessionTimeoutWarning({
             onClick={onLogout}
             className="w-full sm:w-auto"
           >
-            Log Out Now
+            Sair Agora
           </Button>
           <Button
             onClick={onExtend}
             className="w-full sm:w-auto"
           >
-            Stay Logged In
+            Continuar Conectado
           </Button>
         </DialogFooter>
       </DialogContent>

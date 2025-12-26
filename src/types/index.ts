@@ -13,6 +13,19 @@ export interface Organization {
   created_at: string
 }
 
+export interface OrganizationCode {
+  id: string
+  organization_id: string
+  code: string
+  description: string | null
+  is_active: boolean
+  max_uses: number | null
+  current_uses: number
+  expires_at: string | null
+  created_at: string
+  created_by: string | null
+}
+
 export interface User {
   id: string
   organization_id: string

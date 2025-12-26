@@ -57,7 +57,7 @@ const maritalStatusLabels: Record<MaritalStatus, string> = {
   divorced: 'Divorciado(a)',
   widowed: 'Viuvo(a)',
   separated: 'Separado(a)',
-  stable_union: 'Uniao Estavel',
+  stable_union: 'União Estável',
 }
 
 // Helper to format address
@@ -86,7 +86,7 @@ const getConfidenceInfo = (confidence: number): { badgeClass: string; label: str
   if (confidence >= 0.6) {
     return {
       badgeClass: 'confidence-badge-medium',
-      label: 'Media',
+      label: 'Média',
     }
   }
   return {
@@ -221,7 +221,7 @@ export default function PersonEntityCard({
         {/* Name and Basic Info */}
         <div className="flex-1 min-w-0">
           <h3 className="text-base font-semibold text-gray-900 dark:text-white truncate">
-            {person.full_name || 'Nome nao informado'}
+            {person.full_name || 'Nome não informado'}
           </h3>
           <div className="flex items-center gap-2 mt-1">
             {person.cpf && (
@@ -285,7 +285,7 @@ export default function PersonEntityCard({
               {/* Identity Section */}
               <div className="mb-3">
                 <h4 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
-                  Identificacao
+                  Identificação
                 </h4>
                 <div className="space-y-0.5">
                   <FieldRow
@@ -324,7 +324,7 @@ export default function PersonEntityCard({
               {/* Personal Info Section */}
               <div className="mb-3">
                 <h4 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
-                  Informacoes Pessoais
+                  Informações Pessoais
                 </h4>
                 <div className="space-y-0.5">
                   <FieldRow
@@ -350,7 +350,7 @@ export default function PersonEntityCard({
                 <div className="space-y-0.5">
                   <FieldRow
                     icon={HomeIcon}
-                    label="Endereco"
+                    label="Endereço"
                     value={formatAddress(person.address)}
                     onClick={() => handleFieldClick('address')}
                   />
@@ -372,7 +372,7 @@ export default function PersonEntityCard({
               {/* Family Section */}
               <div>
                 <h4 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
-                  Filiacao
+                  Filiação
                 </h4>
                 <div className="space-y-0.5">
                   <FieldRow
@@ -383,7 +383,7 @@ export default function PersonEntityCard({
                   />
                   <FieldRow
                     icon={UserGroupIcon}
-                    label="Nome da Mae"
+                    label="Nome da Mãe"
                     value={person.mother_name}
                     onClick={() => handleFieldClick('mother_name')}
                   />

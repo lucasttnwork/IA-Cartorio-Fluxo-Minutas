@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page { size: 85mm 54mm; margin: 0; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+        .cnh-card {
+            width: 85mm;
+            height: 54mm;
+            position: relative;
+            border: 2px solid #2e7d32;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .header {
+            background: #1b5e20;
+            color: white;
+            padding: 3mm;
+            font-size: 9pt;
+            font-weight: bold;
+        }
+        .brasao {
+            position: absolute;
+            top: 3mm;
+            right: 3mm;
+            width: 12mm;
+            height: 12mm;
+            background: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8pt;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+        .photo {
+            position: absolute;
+            left: 3mm;
+            top: 12mm;
+            width: 20mm;
+            height: 25mm;
+            background: #ddd;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8pt;
+            color: #666;
+        }
+        .data {
+            position: absolute;
+            left: 25mm;
+            top: 12mm;
+            right: 3mm;
+            font-size: 7pt;
+        }
+        .field {
+            margin-bottom: 1.5mm;
+        }
+        .label {
+            color: #1b5e20;
+            font-weight: bold;
+            font-size: 6pt;
+            text-transform: uppercase;
+        }
+        .value {
+            color: #000;
+            font-size: 8pt;
+            font-weight: bold;
+        }
+        .signature {
+            position: absolute;
+            bottom: 3mm;
+            left: 3mm;
+            right: 3mm;
+            border-top: 1px solid #333;
+            padding-top: 1mm;
+            text-align: center;
+            font-size: 6pt;
+        }
+        .barcode {
+            position: absolute;
+            bottom: 8mm;
+            left: 25mm;
+            right: 3mm;
+            height: 8mm;
+            background: repeating-linear-gradient(
+                90deg,
+                #000 0px,
+                #000 1px,
+                #fff 1px,
+                #fff 3px
+            );
+        }
+    </style>
+</head>
+<body>
+    <div class="cnh-card">
+        <div class="header">
+            CARTEIRA NACIONAL DE HABILITAÇÃO
+        </div>
+
+        <div class="brasao">
+            BR
+        </div>
+
+        <div class="photo">
+            FOTO<br>3x4
+        </div>
+
+        <div class="data">
+            <div class="field">
+                <div class="label">Nome</div>
+                <div class="value">CARLOS HENRIQUE OLIVEIRA SANTOS</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Nome do Pai</div>
+                <div class="value">ANTONIO CARLOS SANTOS</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Nome da Mãe</div>
+                <div class="value">HELENA OLIVEIRA SANTOS</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Data de Nascimento</div>
+                <div class="value">15/08/1985</div>
+            </div>
+
+            <div class="field">
+                <div class="label">CPF</div>
+                <div class="value">234.567.890-12</div>
+            </div>
+
+            <div class="field">
+                <div class="label">RG</div>
+                <div class="value">25.678.934-8 SSP/SP</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Nº Registro</div>
+                <div class="value">04567892345</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Data de Emissão</div>
+                <div class="value">10/03/2022</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Validade</div>
+                <div class="value">10/03/2027</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Categoria</div>
+                <div class="value">AB</div>
+            </div>
+
+            <div class="field">
+                <div class="label">Local de Emissão</div>
+                <div class="value">SÃO PAULO/SP</div>
+            </div>
+        </div>
+
+        <div class="barcode"></div>
+
+        <div class="signature">
+            <div style="font-style: italic; margin-bottom: 1mm;">Carlos H. O. Santos</div>
+            ASSINATURA DO CONDUTOR
+        </div>
+    </div>
+
+    <div style="margin-top: 10mm; padding: 5mm; background: white; border: 1px solid #ccc;">
+        <strong>VERSO DA CNH - ENDEREÇO</strong><br><br>
+        <strong>Endereço:</strong> Rua das Paineiras, nº 1.456, Apartamento 82<br>
+        <strong>Bairro:</strong> Morumbi<br>
+        <strong>Cidade:</strong> São Paulo<br>
+        <strong>Estado:</strong> SP<br>
+        <strong>CEP:</strong> 05653-020<br><br>
+        <strong>Observações:</strong> Nenhuma restrição. Autorizado a exercer atividade remunerada.
+    </div>
+</body>
+</html>

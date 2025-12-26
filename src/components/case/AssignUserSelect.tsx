@@ -71,7 +71,7 @@ export function AssignUserSelect({
                 <span className="truncate">{assignedUser.full_name}</span>
               </div>
             ) : (
-              <span className="text-gray-500 dark:text-gray-400">Unassigned</span>
+              <span className="text-gray-500 dark:text-gray-400">Não atribuído</span>
             )}
           </SelectValue>
         </SelectTrigger>
@@ -81,7 +81,7 @@ export function AssignUserSelect({
               <div className="w-6 h-6 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
                 <UserIcon className="w-3 h-3 text-gray-400" />
               </div>
-              <span>Unassigned</span>
+              <span>Não atribuído</span>
             </div>
           </SelectItem>
           {users?.map((user) => (
@@ -103,7 +103,7 @@ export function AssignUserSelect({
       </Select>
       {!canAssign && (
         <span className="text-xs text-gray-500 dark:text-gray-400">
-          (View only)
+          (Apenas visualização)
         </span>
       )}
     </div>

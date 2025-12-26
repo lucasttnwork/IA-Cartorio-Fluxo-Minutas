@@ -59,16 +59,16 @@ export function useCanvasData(caseId: string | undefined) {
       ])
 
       if (peopleResult.error) {
-        throw new Error(`Failed to fetch people: ${peopleResult.error.message}`)
+        throw new Error(`Falha ao buscar pessoas: ${peopleResult.error.message}`)
       }
       if (propertiesResult.error) {
-        throw new Error(`Failed to fetch properties: ${propertiesResult.error.message}`)
+        throw new Error(`Falha ao buscar imóveis: ${propertiesResult.error.message}`)
       }
       if (edgesResult.error) {
-        throw new Error(`Failed to fetch edges: ${edgesResult.error.message}`)
+        throw new Error(`Falha ao buscar arestas: ${edgesResult.error.message}`)
       }
       if (documentsResult.error) {
-        throw new Error(`Failed to fetch documents: ${documentsResult.error.message}`)
+        throw new Error(`Falha ao buscar documentos: ${documentsResult.error.message}`)
       }
 
       setData({
@@ -78,19 +78,24 @@ export function useCanvasData(caseId: string | undefined) {
         documents: (documentsResult.data as Document[]) || [],
       })
     } catch (err) {
-      console.error('Error loading canvas data:', err)
-      setError(err instanceof Error ? err.message : 'Failed to load canvas data')
+      console.error('Erro ao carregar dados do canvas:', err)
+      setError(err instanceof Error ? err.message : 'Falha ao carregar dados do canvas')
     } finally {
       setIsLoading(false)
     }
   }, [caseId])
 
   // Load data on mount and when caseId changes
+  // Note: loadData is wrapped in useCallback with caseId as dependency,
+  // so this effect only re-runs when caseId changes (not on every render)
   useEffect(() => {
     loadData()
   }, [loadData])
 
   // Subscribe to real-time updates
+  // This effect depends on loadData to ensure it reloads when data fetching logic changes.
+  // The cleanup function properly unsubscribes from the Supabase channel when the effect
+  // re-runs or when the component unmounts, preventing memory leaks and stale subscriptions.
   useEffect(() => {
     if (!caseId) return
 

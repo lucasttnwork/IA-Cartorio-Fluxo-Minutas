@@ -24,7 +24,7 @@ export default function ResetPasswordPage() {
       if (session) {
         setValidSession(true)
       } else {
-        setError('Invalid or expired reset link. Please request a new password reset.')
+        setError('Link de redefinição inválido ou expirado. Por favor, solicite uma nova redefinição de senha.')
       }
     })
   }, [])
@@ -35,13 +35,13 @@ export default function ResetPasswordPage() {
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('As senhas não conferem')
       return
     }
 
     // Validate password strength
     if (password.length < 6) {
-      setError('Password must be at least 6 characters long')
+      setError('A senha deve ter pelo menos 6 caracteres')
       return
     }
 
@@ -62,7 +62,7 @@ export default function ResetPasswordPage() {
         }, 3000)
       }
     } catch (err) {
-      setError('An unexpected error occurred')
+      setError('Um erro inesperado ocorreu')
     } finally {
       setLoading(false)
     }
@@ -92,13 +92,13 @@ export default function ResetPasswordPage() {
                   <CheckCircle2 className="h-16 w-16 text-green-500" />
                 </div>
                 <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">
-                  Password reset successful
+                  Senha redefinida com sucesso
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Your password has been successfully reset.
+                  Sua senha foi redefinida com sucesso.
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-500">
-                  Redirecting to login page...
+                  Redirecionando para a página de login...
                 </p>
               </div>
             </CardContent>
@@ -120,15 +120,15 @@ export default function ResetPasswordPage() {
             Minuta Canvas
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-            Document Processing & Draft Generation
+            Processamento de Documentos e Geração de Minutas
           </p>
         </div>
 
         <Card className="glass-card">
           <CardHeader>
-            <CardTitle className="text-center">Set new password</CardTitle>
+            <CardTitle className="text-center">Definir nova senha</CardTitle>
             <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-2">
-              Enter your new password below.
+              Digite sua nova senha abaixo.
             </p>
           </CardHeader>
           <CardContent>
@@ -142,14 +142,14 @@ export default function ResetPasswordPage() {
               {!validSession && (
                 <Alert variant="destructive">
                   <AlertDescription>
-                    Invalid or expired reset link. Please request a new password reset.
+                    Link de redefinição inválido ou expirado. Por favor, solicite uma nova redefinição de senha.
                   </AlertDescription>
                 </Alert>
               )}
 
               <div className="space-y-2">
                 <Label htmlFor="password">
-                  New Password
+                  Nova Senha
                 </Label>
                 <Input
                   id="password"
@@ -163,13 +163,13 @@ export default function ResetPasswordPage() {
                   placeholder="********"
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-500">
-                  Must be at least 6 characters long
+                  Deve ter pelo menos 6 caracteres
                 </p>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirm-password">
-                  Confirm New Password
+                  Confirmar Nova Senha
                 </Label>
                 <Input
                   id="confirm-password"
@@ -210,10 +210,10 @@ export default function ResetPasswordPage() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                       />
                     </svg>
-                    Resetting password...
+                    Redefinindo senha...
                   </span>
                 ) : (
-                  'Reset password'
+                  'Redefinir Senha'
                 )}
               </Button>
             </form>

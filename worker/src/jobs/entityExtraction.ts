@@ -18,7 +18,7 @@ function getGeminiClient(): { client: GoogleGenerativeAI; model: GenerativeModel
 
   if (!geminiClient) {
     geminiClient = new GoogleGenerativeAI(GEMINI_API_KEY)
-    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-3-flash-preview' })
   }
 
   return { client: geminiClient, model: geminiModel! }
@@ -366,7 +366,7 @@ export async function runEntityExtractionJob(
     entities: filteredEntities,
     document_id: job.document_id,
     processing_time_ms: Date.now() - startTime,
-    model_used: 'gemini-1.5-flash',
+    model_used: 'gemini-3-flash-preview',
   }
 
   // Update extraction record with entities
@@ -412,6 +412,54 @@ export async function runEntityExtractionJob(
   const entitySummary: Record<string, number> = {}
   for (const entity of filteredEntities) {
     entitySummary[entity.type] = (entitySummary[entity.type] || 0) + 1
+  }
+
+  // Auto-trigger entity_resolution job for the case (only if not already pending/processing)
+  try {
+    // Check if there's already a pending/processing entity_resolution job for this case
+    const { data: existingJob } = await supabase
+      .from('processing_jobs')
+      .select('id')
+      .eq('case_id', job.case_id)
+      .eq('job_type', 'entity_resolution')
+      .in('status', ['pending', 'processing'])
+      .single()
+
+    if (!existingJob) {
+      // Check if all documents for this case have completed entity_extraction
+      const { data: pendingDocs } = await supabase
+        .from('processing_jobs')
+        .select('id')
+        .eq('case_id', job.case_id)
+        .eq('job_type', 'entity_extraction')
+        .in('status', ['pending', 'processing'])
+
+      // Only create entity_resolution job if no more entity_extraction jobs are pending
+      if (!pendingDocs || pendingDocs.length === 0) {
+        const { error: jobError } = await supabase
+          .from('processing_jobs')
+          .insert({
+            case_id: job.case_id,
+            document_id: null, // entity_resolution is case-level, not document-level
+            job_type: 'entity_resolution',
+            status: 'pending',
+            attempts: 0,
+            max_attempts: 3,
+          })
+
+        if (jobError) {
+          console.warn(`[EntityExtraction] Failed to create entity_resolution job for case ${job.case_id}:`, jobError)
+        } else {
+          console.log(`[EntityExtraction] Created entity_resolution job for case ${job.case_id}`)
+        }
+      } else {
+        console.log(`[EntityExtraction] Waiting for ${pendingDocs.length} more entity_extraction jobs to complete before entity_resolution`)
+      }
+    } else {
+      console.log(`[EntityExtraction] entity_resolution job already exists for case ${job.case_id}`)
+    }
+  } catch (triggerError) {
+    console.error(`[EntityExtraction] Error creating entity_resolution job:`, triggerError)
   }
 
   return {

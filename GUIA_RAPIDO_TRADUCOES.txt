@@ -1,0 +1,350 @@
+================================================================================
+               GUIA RÁPIDO: STRINGS EM INGLÊS PARA TRADUÇÃO
+                            Minuta Canvas UI
+================================================================================
+
+ARQUIVO: STRINGS_EM_INGLES_UI.md
+         Análise completa com tabelas, prioridades e recomendações
+
+ARQUIVO: STRINGS_EM_INGLES_EXPORT.csv
+         Formato tabular para ferramentas de tradução
+
+ARQUIVO: RESUMO_TRADUCOES_NECESSARIAS.txt
+         Sumário executivo com roteiro de implementação
+
+ARQUIVO: CORRECOES_ACENTUACAO_PT.md
+         7 correções de acentuação em português (fazer antes de i18n)
+
+ARQUIVO: locales_template.json
+         Estrutura JSON para implementação de i18n
+
+ARQUIVO: GUIA_RAPIDO_TRADUCOES.txt
+         Este arquivo - referência rápida
+
+================================================================================
+                         ESTATÍSTICAS RÁPIDAS
+================================================================================
+
+Total de Strings em Inglês: 89+ strings
+
+Por Prioridade:
+  HIGH (crítico): 35 strings
+  MEDIUM (importante): 35 strings
+  LOW (acessibilidade): 10+ strings
+
+Por Página:
+  DashboardPage.tsx .................. 31 strings
+  LoginPage.tsx ....................... 12 strings
+  CaseOverviewPage.tsx ................ 26 strings
+  PurchaseSaleFlowPage.tsx ............ 35 strings
+  EntitiesPage.tsx .................... 28 strings
+  ForgotPasswordPage.tsx .............. 12 strings
+  ResetPasswordPage.tsx ............... 14 strings
+  DraftPage.tsx ....................... 1 string
+  CanvasPage.tsx ...................... (análise parcial)
+
+Erros de Acentuação em Português: 7 erros
+  - "extracao" → "extração"
+  - "Imovel" → "Imóvel"
+  - "Endereco" → "Endereço"
+  - "nao" → "não"
+  - "Concluido" → "Concluído"
+  - "Disponiveis" → "Disponíveis"
+  - "Faca" → "Faça"
+
+================================================================================
+                    TOP 20 STRINGS DE PRIORIDADE ALTA
+================================================================================
+
+1. "Cases" → "Casos"
+2. "Manage your document cases and drafts" → "Gerencie seus casos e minutas"
+3. "Search cases by title..." → "Buscar casos por título..."
+4. "New Case" → "Novo Caso"
+5. "Start Purchase/Sale Flow" → "Iniciar Fluxo de Compra e Venda"
+6. "No cases found" → "Nenhum caso encontrado"
+7. "No cases yet" → "Nenhum caso ainda"
+8. "Failed to load cases" → "Falha ao carregar casos"
+9. "Try Again" → "Tentar Novamente"
+10. "Document Processing & Draft Generation" → "Processamento de Documentos..."
+11. "Sign in to your account" → "Faça login na sua conta"
+12. "Email" → "Email"
+13. "Password" → "Senha"
+14. "Remember me" → "Lembrar de mim"
+15. "Forgot password?" → "Esqueceu a senha?"
+16. "Sign in" → "Entrar"
+17. "Case Overview" → "Visão Geral do Caso"
+18. "Case Information" → "Informações do Caso"
+19. "Documents" → "Documentos"
+20. "Archive" / "Unarchive" → "Arquivar" / "Desarquivar"
+
+================================================================================
+                      TIPOS DE ATOS LEGAIS (DEVE TRADUZIR)
+================================================================================
+
+Purchase & Sale → Compra e Venda
+Donation → Doação
+Exchange → Permuta
+Lease → Locação
+
+Já Traduzidos:
+✓ Compra e Venda (já em português em alguns lugares)
+✓ Doação
+✓ Permuta
+✓ Locação
+
+INCONSISTÊNCIA IDENTIFICADA: Alguns arquivos usam português, outros inglês.
+Recomendação: Padronizar TUDO para português durante implementação de i18n.
+
+================================================================================
+                      CAMPOS DE FORMULÁRIO (LABELS)
+================================================================================
+
+English                         Portuguese
+─────────────────────────────────────────────────────────
+Email                          Email (manter ou não?)
+Password                        Senha
+New Password                    Nova Senha
+Confirm Password                Confirmar Senha
+Case Title / Case ID           Título do Caso / ID do Caso
+Act Type                        Tipo de Ato
+Created                         Criado
+Last Updated                    Última Atualização
+Assigned To                     Atribuído a
+Case Information                Informações do Caso
+Documents                       Documentos
+
+================================================================================
+                      STATUS E BADGES (LABELS)
+================================================================================
+
+English                    Portuguese
+────────────────────────────────────────────────
+Draft                      Rascunho
+Processing                 Processando
+Review                      Revisão
+Approved                    Aprovado
+Archived                    Arquivado
+Confirmed                   Confirmado
+Pending                     Pendente
+Processed                   Processado
+Failed                      Falhou
+Uploaded                    Carregado
+
+================================================================================
+                      AÇÕES/BOTÕES PRINCIPAIS
+================================================================================
+
+English                         Portuguese
+─────────────────────────────────────────────────────────
+Create Case                     Criar Caso
+New Case                        Novo Caso
+Delete Case                     Deletar Caso
+Duplicate Case                  Duplicar Caso
+Archive Case                    Arquivar Caso
+Unarchive Case                  Desarquivar Caso
+Extract Entities                Extrair Entidades
+Generate Draft                  Gerar Minuta
+Sign in                         Entrar
+Sign out                        Sair
+Save                            Salvar
+Cancel                          Cancelar
+Confirm                         Confirmar
+Reset                           Redefinir
+Refresh                         Atualizar
+Try Again                        Tentar Novamente
+Back                            Voltar
+Next                            Próximo
+Previous                        Anterior
+Create Person                   Criar Pessoa
+Create Property                 Criar Imóvel
+
+================================================================================
+                      MENSAGENS DE ESTADO
+================================================================================
+
+English                                         Portuguese
+─────────────────────────────────────────────────────────────────────────
+Loading...                                      Carregando...
+Processing...                                   Processando...
+Saving...                                       Salvando...
+Deleting...                                     Deletando...
+Signing in...                                   Entrando...
+Sending...                                      Enviando...
+Redirecting...                                  Redirecionando...
+
+Extracting documents...                         Extraindo documentos...
+Extracting entities...                          Extraindo entidades...
+Generating draft...                             Gerando minuta...
+
+Case created successfully!                      Caso criado com sucesso!
+Draft generated successfully!                   Minuta gerada com sucesso!
+Password reset successful!                      Senha redefinida com sucesso!
+
+================================================================================
+                      MENSAGENS DE ERRO
+================================================================================
+
+English                                    Portuguese
+──────────────────────────────────────────────────────────────────────
+An unexpected error occurred                Um erro inesperado ocorreu
+Failed to load cases                        Falha ao carregar casos
+Failed to load case                         Falha ao carregar caso
+Failed to delete case                       Falha ao deletar caso
+Failed to duplicate case                    Falha ao duplicar caso
+Failed to update status                     Falha ao atualizar status
+Invalid credentials                         Credenciais inválidas
+Invalid or expired reset link                Link inválido ou expirado
+Passwords do not match                      As senhas não correspondem
+Password too short                          Senha muito curta
+No documents found                          Nenhum documento encontrado
+No cases found                              Nenhum caso encontrado
+
+================================================================================
+                      CRONOGRAMA ESTIMADO
+================================================================================
+
+SEMANA 1:
+  Seg: Setup i18n (4-6 horas)
+  Ter: Traduzir HIGH priority (8 horas)
+  Qua: Traduzir MEDIUM priority (10 horas)
+  Qui: Testes funcionais (6 horas)
+  Sex: Revisão e ajustes (4 horas)
+
+SEMANA 2:
+  Seg-Ter: Traduzir LOW priority + CanvasPage (8 horas)
+  Qua: Implementar language switcher (6 horas)
+  Qui: Testes de acessibilidade (8 horas)
+  Sex: Revisão com especialista (4 horas)
+
+Total Estimado: 39-52 horas (1-2 semanas)
+
+================================================================================
+                    PRÓXIMAS AÇÕES IMEDIATAS
+================================================================================
+
+HOJE:
+  [ ] Revisar este documento e STRINGS_EM_INGLES_UI.md
+  [ ] Decidir sobre framework i18n (recomendado: i18next)
+  [ ] Corrigir 7 erros de acentuação (CORRECOES_ACENTUACAO_PT.md)
+
+SEMANA 1:
+  [ ] Instalar i18next e react-i18next
+  [ ] Configurar provider e contexto i18n
+  [ ] Traduzir DashboardPage e LoginPage (HIGH priority)
+  [ ] Testar e fazer commit
+
+SEMANA 2:
+  [ ] Traduzir CaseOverviewPage e EntitiesPage
+  [ ] Traduzir PurchaseSaleFlowPage
+  [ ] Implementar language switcher na UI
+  [ ] Testes finais e revisão
+
+================================================================================
+                      DICAS DE IMPLEMENTAÇÃO
+================================================================================
+
+1. USE i18next
+   - Biblioteca mais popular e bem documentada
+   - Suporta lazy loading de traduções
+   - Ferramenta web de gerenciamento (i18next.com)
+
+2. ESTRUTURE POR CONTEXTO
+   - auth.json para autenticação
+   - dashboard.json para dashboard
+   - cases.json para operações de casos
+   - entities.json para entidades
+   - flow.json para fluxo de compra/venda
+   - errors.json para mensagens de erro
+
+3. USE KEYS DESCRITIVAS
+   ✓ BOAS:   t('dashboard.page.title')
+   ✗ RUINS:  t('title1'), t('btn_ok')
+
+4. MANTENHA CONSISTÊNCIA
+   - Use mesmos termos em toda a aplicação
+   - Crie glossário de termos notariais
+   - Revise com especialista em direito
+
+5. INTERNACIONALIZAÇÃO FUTURA
+   - Estruture para suportar múltiplos idiomas
+   - Não codifique strings em português
+   - Use sempre `t()` hooks em componentes
+
+================================================================================
+                      TERMOS A MANTER EM INGLÊS
+================================================================================
+
+(Se decidir manter alguns termos)
+
+✓ "Minuta Canvas" - Nome da aplicação (pode traduzir, mas considerar impacto)
+✓ CPF - Cadastro de Pessoas Físicas (termo técnico brasileiro)
+✓ RG - Registro Geral (termo técnico)
+✓ IPTU - Imposto Predial e Territorial Urbano (acrônimo brasileiro)
+✓ Email - Email (amplamente usado em português também)
+
+RECOMENDAÇÃO: Manter tudo em português para melhor UX do usuário brasileiro.
+
+================================================================================
+                      CHECKLIST PRÉ-TRADUÇÃO
+================================================================================
+
+ANTES DE COMEÇAR:
+  [ ] Ler completo STRINGS_EM_INGLES_UI.md
+  [ ] Revisar CORRECOES_ACENTUACAO_PT.md
+  [ ] Corrigir 7 erros de acentuação
+  [ ] Fazer commit com correções de acentuação
+  [ ] Instalar i18next e dependências
+  [ ] Configurar estrutura de arquivos
+  [ ] Definir glossário de termos com especialista
+
+DURANTE TRADUÇÃO:
+  [ ] Traduzir arquivo por arquivo
+  [ ] Testar cada página após traduzir
+  [ ] Verificar comprimento de strings
+  [ ] Testar modo escuro
+  [ ] Testar responsividade mobile
+  [ ] Verificar acentuação
+
+APÓS TRADUÇÃO:
+  [ ] Testes funcionais completos
+  [ ] Testes de acessibilidade
+  [ ] Revisão com especialista notarial
+  [ ] Feedback dos usuários finais
+  [ ] Correções baseado em feedback
+
+================================================================================
+                      CONTATO E REFERÊNCIAS
+================================================================================
+
+Documentação i18next:
+  https://www.i18next.com/
+
+React i18next:
+  https://react.i18next.com/
+
+Ferramentas de Tradução:
+  - Locize (serviço web para gerenciar traduções)
+  - i18n Translation Manager (VSCode extension)
+  - Crowdin (para colaboração de tradução)
+
+Glossário Notarial:
+  Recomenda-se consultar:
+  - Conselho Nacional de Justiça (CNJ)
+  - Associação dos Tabeliães e Notários do Brasil
+  - Documentação de cartórios similares
+
+================================================================================
+
+Gerado por: Claude Code AI
+Data: 2025-12-25
+Versão: 1.0
+Última atualização: 2025-12-25
+
+Para mais detalhes, consulte os documentos relacionados:
+  - STRINGS_EM_INGLES_UI.md (análise completa)
+  - RESUMO_TRADUCOES_NECESSARIAS.txt (roteiro de implementação)
+  - CORRECOES_ACENTUACAO_PT.md (7 correções de acentuação)
+  - locales_template.json (estrutura i18n)
+  - STRINGS_EM_INGLES_EXPORT.csv (formato tabular)
+
+================================================================================

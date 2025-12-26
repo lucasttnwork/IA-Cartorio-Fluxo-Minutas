@@ -2,8 +2,8 @@ import { useParams } from 'react-router-dom'
 import { useMemo, useCallback, useState, useEffect } from 'react'
 import {
   ReactFlow,
+  ReactFlowProvider,
   Background,
-  Controls,
   MiniMap,
   Panel,
   Node,
@@ -77,17 +77,23 @@ function calculateNodePositions(
   const personPositions = new Map<string, { x: number; y: number }>()
   const propertyPositions = new Map<string, { x: number; y: number }>()
 
-  // Simple grid layout: people on the left, properties on the right
-  const horizontalSpacing = 400
-  const verticalSpacing = 250
-  const leftColumnX = 100
-  const rightColumnX = 600
+  // Improved grid layout: people on the left, properties on the right
+  // Larger spacing to prevent overlap
+  const horizontalSpacing = 450
+  const verticalSpacing = 320  // Increased for taller cards
+  const leftColumnX = 150
+  const rightColumnX = 700
 
-  // Position people in the left column
+  // Calculate columns needed for people (max 4 per column for better visibility)
+  const maxPeoplePerColumn = 4
+
+  // Position people with multi-column support
   people.forEach((person, index) => {
+    const column = Math.floor(index / maxPeoplePerColumn)
+    const row = index % maxPeoplePerColumn
     personPositions.set(person.id, {
-      x: leftColumnX,
-      y: 100 + index * verticalSpacing,
+      x: leftColumnX + column * horizontalSpacing,
+      y: 80 + row * verticalSpacing,
     })
   })
 
@@ -95,7 +101,7 @@ function calculateNodePositions(
   properties.forEach((property, index) => {
     propertyPositions.set(property.id, {
       x: rightColumnX + (index % 2) * horizontalSpacing,
-      y: 100 + Math.floor(index / 2) * verticalSpacing,
+      y: 80 + Math.floor(index / 2) * verticalSpacing,
     })
   })
 
@@ -124,7 +130,7 @@ interface ConnectionDialogState {
   targetType: 'person' | 'property' | null
 }
 
-export default function CanvasPage() {
+function CanvasPageContent() {
   const { caseId } = useParams()
   const { data, isLoading, error, reload } = useCanvasData(caseId)
   const { fitView, zoomIn, zoomOut } = useReactFlow()
@@ -256,7 +262,7 @@ export default function CanvasPage() {
   }, [data.edges])
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [_edges, _setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   // Track selected nodes whenever nodes change
   useEffect(() => {
@@ -285,7 +291,7 @@ export default function CanvasPage() {
 
       setSuggestions(canvasSuggestions)
     } catch (err) {
-      console.error('Error loading suggestions:', err)
+      console.error('Erro ao carregar sugestões:', err)
     } finally {
       setIsLoadingSuggestions(false)
     }
@@ -312,7 +318,7 @@ export default function CanvasPage() {
         const { error } = await (supabase as any).from(tableName).insert(entity)
 
         if (error) {
-          console.error('Error adding entity:', error)
+          console.error('Erro ao adicionar entidade:', error)
           alert(`Erro ao adicionar ${suggestion.type === 'person' ? 'pessoa' : 'propriedade'}: ` + error.message)
           return
         }
@@ -321,7 +327,7 @@ export default function CanvasPage() {
         reload()
         loadSuggestions()
       } catch (err) {
-        console.error('Error applying entity suggestion:', err)
+        console.error('Erro ao aplicar sugestão de entidade:', err)
         alert('Erro ao aplicar sugestão')
       }
     },
@@ -335,7 +341,7 @@ export default function CanvasPage() {
 
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error } = await (supabase as any).from('graph_edges').insert({
+        const { error } = await (supabase as any).from('graphedges').insert({
           case_id: caseId,
           source_type: suggestion.sourceType,
           source_id: suggestion.sourceId,
@@ -351,7 +357,7 @@ export default function CanvasPage() {
         })
 
         if (error) {
-          console.error('Error adding relationship:', error)
+          console.error('Erro ao adicionar relacionamento:', error)
           alert('Erro ao adicionar relacionamento: ' + error.message)
           return
         }
@@ -360,7 +366,7 @@ export default function CanvasPage() {
         reload()
         loadSuggestions()
       } catch (err) {
-        console.error('Error applying relationship suggestion:', err)
+        console.error('Erro ao aplicar sugestão de relacionamento:', err)
         alert('Erro ao aplicar sugestão')
       }
     },
@@ -435,10 +441,10 @@ export default function CanvasPage() {
           metadata.proxy_attached_at = new Date().toISOString()
         }
 
-        // Insert into graph_edges table
+        // Insert into graphedges table
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { error: insertError } = await (supabase as any)
-          .from('graph_edges')
+          .from('graphedges')
           .insert({
             case_id: caseId,
             source_type: sourceType,
@@ -454,7 +460,7 @@ export default function CanvasPage() {
           .single()
 
         if (insertError) {
-          console.error('Error creating edge:', insertError)
+          console.error('Erro ao criar aresta:', insertError)
           alert('Erro ao criar conexão: ' + insertError.message)
           return
         }
@@ -474,7 +480,7 @@ export default function CanvasPage() {
         // Reload canvas data to show new edge
         reload()
       } catch (err) {
-        console.error('Error creating edge:', err)
+        console.error('Erro ao criar aresta:', err)
         alert('Erro ao criar conexão')
       } finally {
         setIsCreatingEdge(false)
@@ -504,7 +510,7 @@ export default function CanvasPage() {
         setFailedDraftJobs(draftJobs)
       }
     } catch (err) {
-      console.error('Error loading failed jobs:', err)
+      console.error('Erro ao carregar jobs falhos:', err)
     }
   }, [caseId])
 
@@ -524,8 +530,8 @@ export default function CanvasPage() {
       const { data: job, error } = await createProcessingJob(caseId, null, 'draft')
 
       if (error || !job) {
-        console.error('Error creating draft job:', error)
-        alert('Erro ao criar job de geração de minuta: ' + (error?.message || 'Unknown error'))
+        console.error('Erro ao criar job de minuta:', error)
+        alert('Erro ao criar job de geração de minuta: ' + (error?.message || 'Erro desconhecido'))
         return
       }
 
@@ -535,7 +541,7 @@ export default function CanvasPage() {
       // Reload failed jobs to clear any previous failures
       loadFailedJobs()
     } catch (err) {
-      console.error('Error generating draft:', err)
+      console.error('Erro ao gerar minuta:', err)
       alert('Erro ao gerar minuta')
     } finally {
       setIsGeneratingDraft(false)
@@ -552,7 +558,7 @@ export default function CanvasPage() {
       const { data: retriedJob, error } = await retryProcessingJob(jobId)
 
       if (error) {
-        console.error('Error retrying draft job:', error)
+        console.error('Erro ao retentar job de minuta:', error)
         alert('Erro ao tentar novamente: ' + error.message)
         return
       }
@@ -563,7 +569,7 @@ export default function CanvasPage() {
       // Reload failed jobs
       loadFailedJobs()
     } catch (err) {
-      console.error('Error retrying draft:', err)
+      console.error('Erro ao retentar minuta:', err)
       alert('Erro ao tentar novamente')
     } finally {
       setIsRetrying(false)
@@ -635,10 +641,10 @@ export default function CanvasPage() {
     })
 
     // Only update if edges actually changed
-    if (JSON.stringify(newEdges) !== JSON.stringify(_edges)) {
+    if (JSON.stringify(newEdges) !== JSON.stringify(edges)) {
       setEdges(newEdges)
     }
-  }, [data.edges, _edges, onEdgesChange])
+  }, [data.edges, edges, onEdgesChange])
 
   // Handle node context menu (right-click on node)
   const handleNodeContextMenu = useCallback(
@@ -713,7 +719,7 @@ export default function CanvasPage() {
         const { error } = await supabase.from(tableName).delete().eq('id', entityId)
 
         if (error) {
-          console.error(`Error deleting ${nodeType}:`, error)
+          console.error(`Erro ao excluir ${nodeType}:`, error)
           alert(`Erro ao deletar ${nodeType === 'person' ? 'pessoa' : 'propriedade'}: ` + error.message)
           return
         }
@@ -721,7 +727,7 @@ export default function CanvasPage() {
         // Reload canvas data
         reload()
       } catch (err) {
-        console.error(`Error deleting ${nodeType}:`, err)
+        console.error(`Erro ao excluir ${nodeType}:`, err)
         alert(`Erro ao deletar ${nodeType === 'person' ? 'pessoa' : 'propriedade'}`)
       }
     },
@@ -752,7 +758,7 @@ export default function CanvasPage() {
           .in('id', personIds)
 
         if (personError) {
-          console.error('Error deleting people:', personError)
+          console.error('Erro ao excluir pessoas:', personError)
           alert('Erro ao deletar pessoas: ' + personError.message)
           return
         }
@@ -770,7 +776,7 @@ export default function CanvasPage() {
           .in('id', propertyIds)
 
         if (propertyError) {
-          console.error('Error deleting properties:', propertyError)
+          console.error('Erro ao excluir imóveis:', propertyError)
           alert('Erro ao deletar propriedades: ' + propertyError.message)
           return
         }
@@ -779,7 +785,7 @@ export default function CanvasPage() {
       // Reload canvas data
       reload()
     } catch (err) {
-      console.error('Error deleting selected nodes:', err)
+      console.error('Erro ao excluir nós selecionados:', err)
       alert('Erro ao deletar itens selecionados')
     }
   }, [caseId, selectedNodes, reload])
@@ -831,10 +837,10 @@ export default function CanvasPage() {
 
       try {
         // Delete from database
-        const { error } = await supabase.from('graph_edges').delete().eq('id', edgeId)
+        const { error } = await supabase.from('graphedges').delete().eq('id', edgeId)
 
         if (error) {
-          console.error('Error deleting edge:', error)
+          console.error('Erro ao excluir aresta:', error)
           alert('Erro ao deletar conexão: ' + error.message)
           return
         }
@@ -842,7 +848,7 @@ export default function CanvasPage() {
         // Reload canvas data
         reload()
       } catch (err) {
-        console.error('Error deleting edge:', err)
+        console.error('Erro ao excluir aresta:', err)
         alert('Erro ao deletar conexão')
       }
     },
@@ -971,18 +977,43 @@ export default function CanvasPage() {
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <SparklesIcon className="w-7 h-7 text-purple-500" />
-            Canvas de Entidades
-          </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Visualização interativa de pessoas, propriedades e relacionamentos.
-          </p>
+      <div className="mb-4 space-y-3">
+        {/* Title Row */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-shrink-0">
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <SparklesIcon className="w-7 h-7 text-purple-500" />
+              Canvas de Entidades
+            </h1>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Visualização interativa de pessoas, propriedades e relacionamentos.
+            </p>
+          </div>
+
+          {/* Primary Actions - always visible */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button
+              onClick={handleGenerateDraft}
+              disabled={isGeneratingDraft}
+              className="gap-2"
+            >
+              <DocumentTextIcon className={cn("w-5 h-5", isGeneratingDraft && "animate-pulse")} />
+              <span className="hidden sm:inline">{isGeneratingDraft ? 'Gerando...' : 'Gerar Minuta'}</span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={reload}
+              disabled={isLoading}
+              className="gap-2"
+            >
+              <ArrowPathIcon className={cn("w-5 h-5", isLoading && "animate-spin")} />
+              <span className="hidden sm:inline">Atualizar</span>
+            </Button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Toolbar Row */}
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Zoom Controls */}
           <div className="flex items-center gap-0.5 glass-subtle rounded-lg overflow-hidden p-1">
             <Button
@@ -990,51 +1021,56 @@ export default function CanvasPage() {
               size="sm"
               onClick={() => zoomOut({ duration: 200 })}
               title="Diminuir zoom (ou use Ctrl + scroll)"
-              className="h-9 w-9 p-0"
+              className="h-8 w-8 p-0"
             >
-              <MagnifyingGlassMinusIcon className="w-5 h-5" />
+              <MagnifyingGlassMinusIcon className="w-4 h-4" />
             </Button>
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+            <div className="w-px h-5 bg-gray-300 dark:bg-gray-600"></div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => zoomIn({ duration: 200 })}
               title="Aumentar zoom (ou use Ctrl + scroll)"
-              className="h-9 w-9 p-0"
+              className="h-8 w-8 p-0"
             >
-              <MagnifyingGlassPlusIcon className="w-5 h-5" />
+              <MagnifyingGlassPlusIcon className="w-4 h-4" />
             </Button>
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+            <div className="w-px h-5 bg-gray-300 dark:bg-gray-600"></div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => fitView({ padding: 0.2, duration: 300 })}
               title="Ajustar visualização"
-              className="h-9 w-9 p-0"
+              className="h-8 w-8 p-0"
             >
-              <ArrowsPointingOutIcon className="w-5 h-5" />
+              <ArrowsPointingOutIcon className="w-4 h-4" />
             </Button>
           </div>
+
+          <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 hidden sm:block"></div>
+
           <Button
             variant={showMinimap ? "default" : "outline"}
+            size="sm"
             onClick={() => setShowMinimap(!showMinimap)}
             className={cn(
-              "gap-2",
+              "gap-1.5",
               showMinimap && "bg-purple-500 hover:bg-purple-600"
             )}
           >
-            <MapIcon className="w-5 h-5" />
-            {showMinimap ? 'Ocultar Minimapa' : 'Mostrar Minimapa'}
+            <MapIcon className="w-4 h-4" />
+            <span className="hidden lg:inline">{showMinimap ? 'Ocultar' : 'Mostrar'} Minimapa</span>
           </Button>
           <Button
             variant={selectionMode === SelectionMode.Full ? "default" : "outline"}
+            size="sm"
             onClick={() =>
               setSelectionMode(
                 selectionMode === SelectionMode.Partial ? SelectionMode.Full : SelectionMode.Partial
               )
             }
             className={cn(
-              "gap-2",
+              "gap-1.5",
               selectionMode === SelectionMode.Full && "bg-indigo-500 hover:bg-indigo-600"
             )}
             title={
@@ -1043,36 +1079,20 @@ export default function CanvasPage() {
                 : 'Clique para ativar seleção em caixa'
             }
           >
-            <RectangleGroupIcon className="w-5 h-5" />
-            {selectionMode === SelectionMode.Full ? 'Seleção em Caixa Ativa' : 'Ativar Seleção em Caixa'}
+            <RectangleGroupIcon className="w-4 h-4" />
+            <span className="hidden lg:inline">{selectionMode === SelectionMode.Full ? 'Seleção Ativa' : 'Seleção em Caixa'}</span>
           </Button>
           <Button
             variant={connectionMode ? "default" : "outline"}
+            size="sm"
             onClick={() => setConnectionMode(!connectionMode)}
             className={cn(
-              "gap-2",
+              "gap-1.5",
               connectionMode && "bg-blue-500 hover:bg-blue-600"
             )}
           >
-            <LinkIcon className="w-5 h-5" />
-            {connectionMode ? 'Modo Conexão Ativo' : 'Ativar Modo Conexão'}
-          </Button>
-          <Button
-            onClick={handleGenerateDraft}
-            disabled={isGeneratingDraft}
-            className="gap-2"
-          >
-            <DocumentTextIcon className={cn("w-5 h-5", isGeneratingDraft && "animate-pulse")} />
-            {isGeneratingDraft ? 'Gerando...' : 'Gerar Minuta'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={reload}
-            disabled={isLoading}
-            className="gap-2"
-          >
-            <ArrowPathIcon className={cn("w-5 h-5", isLoading && "animate-spin")} />
-            Atualizar
+            <LinkIcon className="w-4 h-4" />
+            <span className="hidden lg:inline">{connectionMode ? 'Conexão Ativa' : 'Modo Conexão'}</span>
           </Button>
         </div>
       </div>
@@ -1178,8 +1198,8 @@ export default function CanvasPage() {
         </motion.div>
       )}
 
-      {/* Canvas */}
-      <Card className="flex-1 glass-card overflow-hidden p-0 border-0 relative">
+      {/* Canvas - with right margin for suggestions panel */}
+      <Card className="flex-1 glass-card overflow-hidden p-0 border-0 relative mr-0 xl:mr-[26rem] transition-all duration-300">
         {isLoading ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center">
@@ -1210,7 +1230,7 @@ export default function CanvasPage() {
 
             <ReactFlow
             nodes={nodes}
-            edges={_edges}
+            edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
@@ -1249,7 +1269,6 @@ export default function CanvasPage() {
             autoPanOnConnect={true}
           >
             <Background />
-            <Controls />
             {showMinimap && (
               <MiniMap
                 nodeColor={(node) => {
@@ -1257,39 +1276,35 @@ export default function CanvasPage() {
                   if (node.type === 'property') return '#10b981'
                   return '#6b7280'
                 }}
-                maskColor="rgba(0, 0, 0, 0.1)"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                }}
+                maskColor="rgba(100, 100, 100, 0.15)"
+                className="!bg-white/90 dark:!bg-gray-800/90 !border-2 !border-gray-200 dark:!border-gray-700 !rounded-lg !shadow-lg"
                 pannable
                 zoomable
               />
             )}
-            <Panel position="top-right" className="glass-card p-3 rounded-lg shadow-lg">
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-gray-700 dark:text-gray-300">
+            <Panel position="top-left" className="glass-card p-3 rounded-lg shadow-lg ml-2 mt-2">
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                  <span className="text-gray-700 dark:text-gray-300 font-medium">
                     {data.people.length} Pessoa(s)
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-gray-700 dark:text-gray-300">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                  <span className="text-gray-700 dark:text-gray-300 font-medium">
                     {data.properties.length} Propriedade(s)
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-0.5 bg-green-500"></div>
+                <div className="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4 h-0.5 bg-green-500 rounded"></div>
                   <span className="text-gray-700 dark:text-gray-300">
                     {data.edges.filter((e) => e.confirmed).length} Confirmado(s)
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-0.5 bg-yellow-500 animate-pulse"></div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4 h-0.5 bg-yellow-500 rounded animate-pulse"></div>
                   <span className="text-gray-700 dark:text-gray-300">
                     {data.edges.filter((e) => !e.confirmed).length} Pendente(s)
                   </span>
@@ -1608,5 +1623,14 @@ export default function CanvasPage() {
         onRefresh={loadSuggestions}
       />
     </div>
+  )
+}
+
+// Wrapper component with ReactFlowProvider context
+export default function CanvasPage() {
+  return (
+    <ReactFlowProvider>
+      <CanvasPageContent />
+    </ReactFlowProvider>
   )
 }

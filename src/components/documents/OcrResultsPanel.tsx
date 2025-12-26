@@ -74,15 +74,15 @@ const MEDIUM_CONFIDENCE_THRESHOLD = 0.85
 
 // Language labels in Portuguese
 const languageLabels: Record<string, string> = {
-  pt: 'Portugues',
-  'pt-BR': 'Portugues (Brasil)',
-  'pt-PT': 'Portugues (Portugal)',
-  en: 'Ingles',
-  'en-US': 'Ingles (EUA)',
-  'en-GB': 'Ingles (Reino Unido)',
+  pt: 'Português',
+  'pt-BR': 'Português (Brasil)',
+  'pt-PT': 'Português (Portugal)',
+  en: 'Inglês',
+  'en-US': 'Inglês (EUA)',
+  'en-GB': 'Inglês (Reino Unido)',
   es: 'Espanhol',
-  fr: 'Frances',
-  de: 'Alemao',
+  fr: 'Francês',
+  de: 'Alemão',
   it: 'Italiano',
   unknown: 'Desconhecido',
 }
@@ -119,7 +119,7 @@ function getConfidenceLevel(confidence: number): {
   }
   if (confidence >= LOW_CONFIDENCE_THRESHOLD) {
     return {
-      label: 'Media',
+      label: 'Média',
       color: 'text-yellow-700 dark:text-yellow-400',
       bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',
       borderColor: 'border-yellow-200 dark:border-yellow-800',
@@ -140,7 +140,7 @@ function getConfidenceLevel(confidence: number): {
  */
 function getBlockTypeLabel(type: string): string {
   const labels: Record<string, string> = {
-    paragraph: 'Paragrafo',
+    paragraph: 'Parágrafo',
     line: 'Linha',
     word: 'Palavra',
   }
@@ -289,7 +289,7 @@ function BlockItem({
             {getBlockTypeLabel(block.type)}
           </Badge>
           <span className="text-xs text-gray-500 dark:text-gray-400">
-            Pagina {block.page}
+            Página {block.page}
           </span>
         </div>
         <Badge
@@ -307,7 +307,7 @@ function BlockItem({
       {block.bounding_box && (
         <div className="mt-2 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-500">
           <span>
-            Posicao: ({Math.round(block.bounding_box.x)}, {Math.round(block.bounding_box.y)})
+            Posição: ({Math.round(block.bounding_box.x)}, {Math.round(block.bounding_box.y)})
           </span>
           <span>|</span>
           <span>
@@ -463,7 +463,7 @@ export default function OcrResultsPanel({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <EmptyState message="Nenhum resultado de OCR disponivel. O documento ainda nao foi processado ou ocorreu um erro." />
+          <EmptyState message="Nenhum resultado de OCR disponível. O documento ainda não foi processado ou ocorreu um erro." />
         </CardContent>
       </Card>
     )
@@ -509,10 +509,10 @@ export default function OcrResultsPanel({
             <ExclamationTriangleIcon className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
-                Atencao: Qualidade de OCR baixa detectada
+                Atenção: Qualidade de OCR baixa detectada
               </p>
               <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">
-                {lowConfidenceBlocks.length} bloco(s) com confianca abaixo de{' '}
+                {lowConfidenceBlocks.length} bloco(s) com confiança abaixo de{' '}
                 {Math.round(LOW_CONFIDENCE_THRESHOLD * 100)}%. Revise os resultados manualmente.
               </p>
             </div>
@@ -527,7 +527,7 @@ export default function OcrResultsPanel({
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <StatCard
                 icon={DocumentDuplicateIcon}
-                label="Paginas"
+                label="Páginas"
                 value={pageCount}
                 variant="default"
               />
@@ -551,7 +551,7 @@ export default function OcrResultsPanel({
                     ? ExclamationTriangleIcon
                     : ExclamationTriangleIcon
                 }
-                label="Confianca"
+                label="Confiança"
                 value={`${Math.round(averageConfidence * 100)}%`}
                 subValue={confidenceLevel.label}
                 variant={
@@ -567,7 +567,7 @@ export default function OcrResultsPanel({
             {/* Confidence Bar */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600 dark:text-gray-400">Confianca Geral</span>
+                <span className="text-gray-600 dark:text-gray-400">Confiança Geral</span>
                 <span className={cn('font-medium', confidenceLevel.color)}>
                   {Math.round(averageConfidence * 100)}%
                 </span>
@@ -586,7 +586,7 @@ export default function OcrResultsPanel({
                 <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gray-50 dark:hover:bg-gray-800/50">
                   <div className="flex items-center gap-2">
                     <DocumentTextIcon className="w-4 h-4 text-gray-500" />
-                    <span className="font-medium">Texto Extraido</span>
+                    <span className="font-medium">Texto Extraído</span>
                     <Badge variant="secondary" className="ml-2">
                       {wordCount} palavras
                     </Badge>
@@ -624,7 +624,7 @@ export default function OcrResultsPanel({
                       )}
                     >
                       <pre className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap font-mono leading-relaxed">
-                        {result.text || 'Nenhum texto extraido.'}
+                        {result.text || 'Nenhum texto extraído.'}
                       </pre>
                     </div>
                   </div>
@@ -642,7 +642,7 @@ export default function OcrResultsPanel({
                     </Badge>
                     {lowConfidenceBlocks.length > 0 && (
                       <Badge variant="destructive" className="ml-1">
-                        {lowConfidenceBlocks.length} baixa confianca
+                        {lowConfidenceBlocks.length} baixa confiança
                       </Badge>
                     )}
                   </div>
@@ -680,7 +680,7 @@ export default function OcrResultsPanel({
                       ) : (
                         <EyeIcon className="w-4 h-4" />
                       )}
-                      Apenas baixa confianca
+                      Apenas baixa confiança
                       {showLowConfidenceOnly && (
                         <Badge variant="secondary" className="ml-1">
                           {lowConfidenceBlocks.length}
@@ -695,7 +695,7 @@ export default function OcrResultsPanel({
                       {Array.from(blocksByPage.entries()).map(([page, blocks]) => (
                         <div key={page}>
                           <div className="flex items-center gap-2 mb-2">
-                            <Badge variant="outline">Pagina {page}</Badge>
+                            <Badge variant="outline">Página {page}</Badge>
                             <span className="text-xs text-gray-500 dark:text-gray-400">
                               {blocks.length} bloco(s)
                             </span>
@@ -725,8 +725,8 @@ export default function OcrResultsPanel({
                         {searchQuery
                           ? 'Nenhum bloco encontrado com os filtros aplicados.'
                           : showLowConfidenceOnly
-                          ? 'Nenhum bloco com baixa confianca encontrado.'
-                          : 'Nenhum bloco de texto disponivel.'}
+                          ? 'Nenhum bloco com baixa confiança encontrado.'
+                          : 'Nenhum bloco de texto disponível.'}
                       </p>
                     </div>
                   )}
@@ -739,7 +739,7 @@ export default function OcrResultsPanel({
               <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-xs text-gray-600 dark:text-gray-400">
                 <InformationCircleIcon className="w-4 h-4" />
                 <span>
-                  Confianca original do documento: {Math.round(result.confidence * 100)}%
+                  Confiança original do documento: {Math.round(result.confidence * 100)}%
                 </span>
               </div>
             )}

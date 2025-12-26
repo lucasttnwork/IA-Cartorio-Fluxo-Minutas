@@ -24,23 +24,23 @@ import { cn } from '../../lib/utils'
 const actTypeOptions: { value: ActType; label: string; description: string }[] = [
   {
     value: 'purchase_sale',
-    label: 'Purchase & Sale',
-    description: 'Transfer of property ownership through sale'
+    label: 'Compra e Venda',
+    description: 'Transferência de propriedade por meio de venda'
   },
   {
     value: 'donation',
-    label: 'Donation',
-    description: 'Gratuitous transfer of property'
+    label: 'Doação',
+    description: 'Transferência gratuita de propriedade'
   },
   {
     value: 'exchange',
-    label: 'Exchange',
-    description: 'Swap of properties between parties'
+    label: 'Permuta',
+    description: 'Troca de imóveis entre as partes'
   },
   {
     value: 'lease',
-    label: 'Lease',
-    description: 'Rental agreement for property usage'
+    label: 'Locação',
+    description: 'Contrato de aluguel para uso do imóvel'
   },
 ]
 
@@ -122,17 +122,17 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
 
     if (step === 0) {
       if (!formData.title.trim()) {
-        newErrors.title = 'Please enter a case title'
+        newErrors.title = 'Por favor, insira um título para o caso'
       }
     }
 
     if (step === 1 && formData.act_type === 'purchase_sale') {
       if (!formData.price.trim()) {
-        newErrors.price = 'Please enter the sale price'
+        newErrors.price = 'Por favor, informe o preço de venda'
       } else {
         const parsedPrice = parseCurrency(formData.price)
         if (parsedPrice === null || parsedPrice <= 0) {
-          newErrors.price = 'Please enter a valid price'
+          newErrors.price = 'Por favor, informe um preço válido'
         }
       }
     }
@@ -176,7 +176,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
       handleClose()
     } catch (err) {
       console.error('Error creating case:', err)
-      setErrors({ title: 'Failed to create case. Please try again.' })
+      setErrors({ title: 'Falha ao criar caso. Por favor, tente novamente.' })
     }
   }
 
@@ -215,10 +215,10 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 <DocumentTextIcon className="w-6 h-6 text-blue-500" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Basic Information
+                Informações Básicas
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Start by providing the case title and type
+                Comece informando o título e tipo do caso
               </p>
             </div>
 
@@ -228,7 +228,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 htmlFor="case-title"
                 className="text-gray-700 dark:text-gray-300"
               >
-                Case Title <span className="text-red-500">*</span>
+                Título do Caso <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="case-title"
@@ -236,7 +236,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 value={formData.title}
                 onChange={(e) => updateFormData('title', e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="e.g., Property Sale - 123 Main Street"
+                placeholder="Ex: Venda de Imóvel - Rua Principal, 123"
                 className={cn(
                   "dark:bg-gray-800 dark:border-gray-600 dark:text-white",
                   errors.title && "border-red-500 focus-visible:ring-red-500"
@@ -256,7 +256,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             {/* Act Type Selection */}
             <div className="space-y-2">
               <Label className="text-gray-700 dark:text-gray-300">
-                Act Type <span className="text-red-500">*</span>
+                Tipo de Ato <span className="text-red-500">*</span>
               </Label>
               <div className="grid grid-cols-2 gap-3">
                 {actTypeOptions.map((option) => (
@@ -287,13 +287,13 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 htmlFor="case-description"
                 className="text-gray-700 dark:text-gray-300"
               >
-                Description <span className="text-gray-400">(optional)</span>
+                Descrição <span className="text-gray-400">(opcional)</span>
               </Label>
               <Textarea
                 id="case-description"
                 value={formData.description}
                 onChange={(e) => updateFormData('description', e.target.value)}
-                placeholder="Brief description of this case..."
+                placeholder="Breve descrição deste caso..."
                 rows={3}
                 className="dark:bg-gray-800 dark:border-gray-600 dark:text-white resize-none"
               />
@@ -315,14 +315,14 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 <CurrencyDollarIcon className="w-6 h-6 text-green-500" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Deal Details
+                Detalhes do Negócio
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {formData.act_type === 'purchase_sale'
-                  ? 'Enter the sale price and payment terms'
+                  ? 'Informe o preço de venda e condições de pagamento'
                   : formData.act_type === 'lease'
-                  ? 'Enter the rental terms'
-                  : 'Enter any financial details'}
+                  ? 'Informe os termos da locação'
+                  : 'Informe os detalhes financeiros'}
               </p>
             </div>
 
@@ -332,7 +332,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 htmlFor="case-price"
                 className="text-gray-700 dark:text-gray-300"
               >
-                {formData.act_type === 'lease' ? 'Monthly Rent' : 'Price'}{' '}
+                {formData.act_type === 'lease' ? 'Aluguel Mensal' : 'Preço'}{' '}
                 {formData.act_type === 'purchase_sale' && <span className="text-red-500">*</span>}
               </Label>
               <div className="relative">
@@ -366,7 +366,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             {formData.act_type === 'purchase_sale' && (
               <div className="space-y-2">
                 <Label className="text-gray-700 dark:text-gray-300">
-                  Payment Method
+                  Forma de Pagamento
                 </Label>
                 <div className="flex gap-3">
                   <button
@@ -379,10 +379,10 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                     }`}
                   >
                     <div className="font-medium text-gray-900 dark:text-white text-sm">
-                      Full Payment
+                      Pagamento à Vista
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                      Single payment
+                      Pagamento único
                     </div>
                   </button>
                   <button
@@ -395,10 +395,10 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                     }`}
                   >
                     <div className="font-medium text-gray-900 dark:text-white text-sm">
-                      Installments
+                      Parcelado
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                      Multiple payments
+                      Múltiplos pagamentos
                     </div>
                   </button>
                 </div>
@@ -417,7 +417,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                   htmlFor="installments-count"
                   className="text-gray-700 dark:text-gray-300"
                 >
-                  Number of Installments
+                  Número de Parcelas
                 </Label>
                 <Input
                   id="installments-count"
@@ -427,7 +427,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                   value={formData.installments_count}
                   onChange={(e) => updateFormData('installments_count', e.target.value)}
                   onKeyDown={handleKeyDown}
-                  placeholder="e.g., 12"
+                  placeholder="Ex: 12"
                   className="dark:bg-gray-800 dark:border-gray-600 dark:text-white"
                 />
               </motion.div>
@@ -449,34 +449,34 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 <UserGroupIcon className="w-6 h-6 text-purple-500" />
               </div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Additional Notes
+                Observações
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                Add any relevant notes or observations
+                Adicione notas ou observações relevantes
               </p>
             </div>
 
             {/* Summary */}
             <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-4 space-y-2">
               <h4 className="font-medium text-gray-900 dark:text-white text-sm">
-                Case Summary
+                Resumo do Caso
               </h4>
               <div className="text-sm space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-gray-500 dark:text-gray-400">Title:</span>
+                  <span className="text-gray-500 dark:text-gray-400">Título:</span>
                   <span className="text-gray-900 dark:text-white font-medium">
                     {formData.title || '-'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500 dark:text-gray-400">Type:</span>
+                  <span className="text-gray-500 dark:text-gray-400">Tipo:</span>
                   <span className="text-gray-900 dark:text-white">
                     {actTypeOptions.find(o => o.value === formData.act_type)?.label}
                   </span>
                 </div>
                 {formData.price && (
                   <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">Price:</span>
+                    <span className="text-gray-500 dark:text-gray-400">Preço:</span>
                     <span className="text-gray-900 dark:text-white">
                       {formatCurrency(parseCurrency(formData.price) || 0)}
                     </span>
@@ -484,11 +484,11 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 )}
                 {formData.payment_method && (
                   <div className="flex justify-between">
-                    <span className="text-gray-500 dark:text-gray-400">Payment:</span>
+                    <span className="text-gray-500 dark:text-gray-400">Pagamento:</span>
                     <span className="text-gray-900 dark:text-white">
                       {formData.payment_method === 'full'
-                        ? 'Full Payment'
-                        : `${formData.installments_count || '?'}x Installments`}
+                        ? 'Pagamento à Vista'
+                        : `${formData.installments_count || '?'}x Parcelas`}
                     </span>
                   </div>
                 )}
@@ -501,13 +501,13 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                 htmlFor="case-notes"
                 className="text-gray-700 dark:text-gray-300"
               >
-                Notes <span className="text-gray-400">(optional)</span>
+                Notas <span className="text-gray-400">(opcional)</span>
               </Label>
               <Textarea
                 id="case-notes"
                 value={formData.notes}
                 onChange={(e) => updateFormData('notes', e.target.value)}
-                placeholder="Any additional information or special conditions..."
+                placeholder="Informações adicionais ou condições especiais..."
                 rows={4}
                 className="dark:bg-gray-800 dark:border-gray-600 dark:text-white resize-none"
               />
@@ -544,7 +544,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
             {/* Modal Header */}
             <div className="flex items-center justify-between mb-2">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Create New Case
+                Criar Novo Caso
               </h2>
               <button
                 onClick={handleClose}
@@ -572,7 +572,7 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                     disabled={createCaseMutation.isPending}
                   >
                     <ArrowLeftIcon className="w-4 h-4 mr-2" />
-                    Back
+                    Voltar
                   </Button>
                 )}
               </div>
@@ -582,14 +582,14 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                   onClick={handleClose}
                   disabled={createCaseMutation.isPending}
                 >
-                  Cancel
+                  Cancelar
                 </Button>
                 {currentStep < totalSteps - 1 ? (
                   <Button
                     variant="default"
                     onClick={handleNext}
                   >
-                    Next
+                    Próximo
                     <ArrowRightIcon className="w-4 h-4 ml-2" />
                   </Button>
                 ) : (
@@ -601,12 +601,12 @@ export default function CreateCaseModal({ isOpen, onClose }: CreateCaseModalProp
                     {createCaseMutation.isPending ? (
                       <>
                         <ArrowPathIcon className="w-5 h-5 mr-2 animate-spin" />
-                        Creating...
+                        Criando...
                       </>
                     ) : (
                       <>
                         <CheckIcon className="w-5 h-5 mr-2" />
-                        Create Case
+                        Criar Caso
                       </>
                     )}
                   </Button>

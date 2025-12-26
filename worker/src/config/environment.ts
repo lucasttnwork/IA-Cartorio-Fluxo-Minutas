@@ -69,7 +69,11 @@ function validateEnvironmentVariables(): EnvValidationError[] {
       message: 'Supabase service role key is required for worker operations. Get it from your Supabase project settings.',
       required: true,
     })
-  } else if (process.env.SUPABASE_SERVICE_ROLE_KEY.length < 100) {
+  } else if (
+    process.env.SUPABASE_SERVICE_ROLE_KEY.length < 30 &&
+    !process.env.SUPABASE_SERVICE_ROLE_KEY.startsWith('sb_secret_')
+  ) {
+    // Accept both legacy JWT format (100+ chars) and new sb_secret_ format (30+ chars)
     errors.push({
       variable: 'SUPABASE_SERVICE_ROLE_KEY',
       message: 'Supabase service role key appears to be invalid (too short).',
@@ -106,8 +110,8 @@ function validateEnvironmentVariables(): EnvValidationError[] {
   if (!process.env.GOOGLE_CLOUD_PROCESSOR_ID) {
     errors.push({
       variable: 'GOOGLE_CLOUD_PROCESSOR_ID',
-      message: 'Google Cloud Processor ID is recommended for Document AI OCR processing.',
-      required: false,
+      message: 'Google Cloud Processor ID is REQUIRED for Document AI OCR processing. Create a processor at https://console.cloud.google.com/ai/document-ai',
+      required: true,
     })
   }
 
@@ -158,6 +162,9 @@ export interface WorkerEnvironmentConfig {
     retryMaxDelay: number
     maxConcurrentJobs: number
     jobTimeout: number
+    zombieJobThresholdMs: number
+    enableAutoRecovery: boolean
+    activePollIntervalMs: number
   }
 
   // Application Configuration
@@ -242,7 +249,7 @@ function createWorkerEnvironmentConfig(): WorkerEnvironmentConfig {
     },
     googleAI: {
       apiKey: googleAIApiKey,
-      model: getOptionalEnvVar('GOOGLE_AI_MODEL', 'gemini-1.5-flash'),
+      model: getOptionalEnvVar('GOOGLE_AI_MODEL', 'gemini-3-flash-preview'),
     },
     documentAI: {
       projectId: getOptionalEnvVarNullable('GOOGLE_CLOUD_PROJECT_ID'),
@@ -254,8 +261,11 @@ function createWorkerEnvironmentConfig(): WorkerEnvironmentConfig {
       pollInterval: getEnvInt('POLL_INTERVAL', 5000),
       retryBaseDelay: getEnvInt('RETRY_BASE_DELAY', 10000),
       retryMaxDelay: getEnvInt('RETRY_MAX_DELAY', 300000),
-      maxConcurrentJobs: getEnvInt('MAX_CONCURRENT_JOBS', 1),
+      maxConcurrentJobs: getEnvInt('MAX_CONCURRENT_JOBS', 5), // Process 5 jobs in parallel for better performance
       jobTimeout: getEnvInt('JOB_TIMEOUT', 300000), // 5 minutes default
+      zombieJobThresholdMs: getEnvInt('ZOMBIE_JOB_THRESHOLD_MS', 120000), // 2 minutes
+      enableAutoRecovery: getEnvBool('ENABLE_AUTO_RECOVERY', true),
+      activePollIntervalMs: getEnvInt('ACTIVE_POLL_INTERVAL_MS', 5000), // 5 seconds
     },
     app: {
       name: getOptionalEnvVar('APP_NAME', 'Minuta Canvas Worker'),
@@ -368,6 +378,9 @@ export function logWorkerEnvironmentInfo(): void {
       retryMaxDelay: `${workerConfig.worker.retryMaxDelay}ms`,
       maxConcurrentJobs: workerConfig.worker.maxConcurrentJobs,
       jobTimeout: `${workerConfig.worker.jobTimeout}ms`,
+      zombieJobThresholdMs: `${workerConfig.worker.zombieJobThresholdMs}ms`,
+      enableAutoRecovery: workerConfig.worker.enableAutoRecovery,
+      activePollIntervalMs: `${workerConfig.worker.activePollIntervalMs}ms`,
     },
     features: workerConfig.features,
   })
