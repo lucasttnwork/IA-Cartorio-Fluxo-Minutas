@@ -67,6 +67,8 @@ export interface EntityMatcherConfig {
   autoMergeOnCpfMatch: boolean
   /** Whether to auto-merge on RG match */
   autoMergeOnRgMatch: boolean
+  /** Whether to auto-merge when names are exactly the same (100% similarity) */
+  autoMergeOnExactNameMatch: boolean
 }
 
 const DEFAULT_CONFIG: EntityMatcherConfig = {
@@ -76,6 +78,7 @@ const DEFAULT_CONFIG: EntityMatcherConfig = {
   maxAssociationDistance: 10,
   autoMergeOnCpfMatch: true,
   autoMergeOnRgMatch: false,
+  autoMergeOnExactNameMatch: true,
 }
 
 /**
@@ -514,8 +517,15 @@ export class EntityMatcher {
 
     // If no strong match, check for similar names only
     if (!shouldAutoMerge && !shouldSuggestMerge && nameSimilarity >= 0.9) {
-      shouldSuggestMerge = true
-      reason = 'similar_name'
+      // Auto-merge when names are exactly the same (100% similarity)
+      if (nameSimilarity === 1 && this.config.autoMergeOnExactNameMatch) {
+        shouldAutoMerge = true
+        reason = 'same_name'
+        confidence = Math.max(confidence, 0.95)
+      } else {
+        shouldSuggestMerge = true
+        reason = 'similar_name'
+      }
     }
 
     // Calculate overall similarity score

@@ -59,6 +59,14 @@ const DEED_DOCUMENT_KEYWORDS = [
   'formal de partilha',
   'carta de arrematação',
   'carta de adjudicação',
+  'matrícula',
+  'matricula',
+  'certidão de matrícula',
+  'certidao de matricula',
+  'registro de imóvel',
+  'registro de imovel',
+  'certidão de inteiro teor',
+  'certidao de inteiro teor',
 ]
 
 /**

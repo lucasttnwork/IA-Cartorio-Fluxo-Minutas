@@ -4,8 +4,16 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  darkMode: ['class', "class"],
+  darkMode: 'class',
   theme: {
+  	screens: {
+  		'xs': '475px',
+  		'sm': '640px',
+  		'md': '768px',
+  		'lg': '1024px',
+  		'xl': '1280px',
+  		'2xl': '1536px',
+  	},
   	extend: {
   		colors: {
   			primary: {
@@ -72,6 +80,23 @@ export default {
   				'Fira Code',
   				'monospace'
   			]
+  		},
+  		fontSize: {
+  			// Typography hierarchy with line heights
+  			'display-lg': ['3.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em', fontWeight: '700' }], // 56px
+  			'display-md': ['3rem', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '700' }], // 48px
+  			'display-sm': ['2.5rem', { lineHeight: '1.2', letterSpacing: '-0.01em', fontWeight: '700' }], // 40px
+  			'h1': ['2.25rem', { lineHeight: '1.25', letterSpacing: '-0.01em', fontWeight: '700' }], // 36px
+  			'h2': ['1.875rem', { lineHeight: '1.3', letterSpacing: '-0.005em', fontWeight: '600' }], // 30px
+  			'h3': ['1.5rem', { lineHeight: '1.35', fontWeight: '600' }], // 24px
+  			'h4': ['1.25rem', { lineHeight: '1.4', fontWeight: '600' }], // 20px
+  			'h5': ['1.125rem', { lineHeight: '1.45', fontWeight: '600' }], // 18px
+  			'h6': ['1rem', { lineHeight: '1.5', fontWeight: '600' }], // 16px
+  			'body-lg': ['1.125rem', { lineHeight: '1.75', fontWeight: '400' }], // 18px
+  			'body': ['1rem', { lineHeight: '1.625', fontWeight: '400' }], // 16px
+  			'body-sm': ['0.875rem', { lineHeight: '1.5', fontWeight: '400' }], // 14px
+  			'caption': ['0.75rem', { lineHeight: '1.5', fontWeight: '400' }], // 12px
+  			'overline': ['0.75rem', { lineHeight: '1.5', letterSpacing: '0.08em', fontWeight: '600', textTransform: 'uppercase' }], // 12px
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

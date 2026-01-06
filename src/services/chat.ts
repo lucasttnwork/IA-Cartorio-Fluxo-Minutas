@@ -11,6 +11,7 @@
 import { supabase } from '../lib/supabase'
 import type { ChatSession, ChatMessage, ChatOperation } from '../types'
 import { parsePaymentTerms, formatPaymentSchedule, containsPaymentTerms } from '../utils/paymentTermsParser'
+import { chatCache } from './chatCache'
 
 // -----------------------------------------------------------------------------
 // Types
@@ -107,6 +108,31 @@ export async function getOrCreateChatSession(
   return createChatSession({ caseId, draftId })
 }
 
+/**
+ * Warm cache for a chat session
+ */
+export async function warmChatCache(
+  draftId: string,
+  draftContent: any,
+  draftHtml: string
+): Promise<void> {
+  try {
+    // Get recent messages for this session
+    const { data: session } = await getChatSession(draftId)
+    if (!session) return
+
+    const { data: messages } = await getMessages({
+      sessionId: session.id,
+      limit: 50,
+    })
+
+    // Warm the cache
+    chatCache.warmCache(draftId, draftContent, draftHtml, messages || [])
+  } catch (error) {
+    console.error('Failed to warm chat cache:', error)
+  }
+}
+
 // -----------------------------------------------------------------------------
 // Message Operations
 // -----------------------------------------------------------------------------
@@ -132,6 +158,22 @@ export async function sendMessage(
   if (error) {
     console.error('Error sending message:', error)
     return { data: null, error }
+  }
+
+  // Update cache with new message (get draftId from session)
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: session } = await (supabase as any)
+      .from('chat_sessions')
+      .select('draft_id')
+      .eq('id', params.sessionId)
+      .single()
+
+    if (session?.draft_id && data) {
+      chatCache.updateCacheWithMessage(session.draft_id, data)
+    }
+  } catch (cacheError) {
+    console.error('Failed to update cache with message:', cacheError)
   }
 
   return { data, error: null }
@@ -628,6 +670,7 @@ export const chatService = {
   createChatSession,
   getChatSession,
   getOrCreateChatSession,
+  warmChatCache,
   sendMessage,
   getMessages,
   subscribeToChatMessages,

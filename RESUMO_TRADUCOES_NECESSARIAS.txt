@@ -1,0 +1,332 @@
+===============================================================================
+                    RESUMO: STRINGS EM INGLÊS PARA TRADUÇÃO
+                          Minuta Canvas - Interface UI
+                              Data: 2025-12-25
+===============================================================================
+
+ESTATÍSTICAS GERAIS
+═════════════════════════════════════════════════════════════════════════════
+• Total de arquivos analisados: 9 arquivos de páginas
+• Total de strings em inglês identificadas: 89+ strings
+• Porcentagem de cobertura: Pages principais + secundárias
+
+BREAKDOWN POR ARQUIVO:
+  DashboardPage.tsx ................... 31 strings (HIGH/MEDIUM priority)
+  LoginPage.tsx ....................... 12 strings (HIGH priority)
+  CaseOverviewPage.tsx ................ 26 strings (HIGH/MEDIUM priority)
+  PurchaseSaleFlowPage.tsx ............ 35 strings (MIX português/inglês)
+  EntitiesPage.tsx .................... 28 strings (MIX português/inglês)
+  ForgotPasswordPage.tsx .............. 12 strings (HIGH priority)
+  ResetPasswordPage.tsx ............... 14 strings (HIGH priority)
+  DraftPage.tsx ....................... 1 string (MEDIUM priority)
+  CanvasPage.tsx ...................... (Large file, partially analyzed)
+
+═════════════════════════════════════════════════════════════════════════════
+
+PRIORIDADES DE TRADUÇÃO
+═════════════════════════════════════════════════════════════════════════════
+
+🔴 PRIORIDADE CRÍTICA (HIGH) - 35 strings
+   Afetam diretamente a experiência do usuário principal
+
+   Dashboard Page:
+   • "Cases" → "Casos"
+   • "Manage your document cases and drafts" → "Gerencie seus casos e minutas"
+   • "Search cases by title..." → "Buscar casos por título..."
+   • "New Case" → "Novo Caso"
+   • "Start Purchase/Sale Flow" → "Iniciar Fluxo de Compra e Venda"
+   • "No cases found" → "Nenhum caso encontrado"
+   • "No cases yet" → "Nenhum caso ainda"
+   • "Failed to load cases" → "Falha ao carregar casos"
+   • "Try Again" → "Tentar Novamente"
+
+   Login Page:
+   • "Document Processing & Draft Generation" → "Processamento de Documentos..."
+   • "Sign in to your account" → "Faça login na sua conta"
+   • "Email" → "Email"
+   • "Password" → "Senha"
+   • "Forgot password?" → "Esqueceu a senha?"
+   • "Sign in" → "Entrar"
+
+   Case Overview:
+   • "Case Overview" → "Visão Geral do Caso"
+   • "Case Information" → "Informações do Caso"
+   • "Documents" → "Documentos"
+   • "Archive" → "Arquivar"
+   • "Unarchive" → "Desarquivar"
+   • "Duplicate" → "Duplicar"
+
+   Entities Page:
+   • "Extracted Entities" → "Entidades Extraídas"
+   • "Create Person" → "Criar Pessoa"
+   • "Create Property" → "Criar Imóvel"
+   • "Extract Entities" → "Extrair Entidades"
+   • "No documents found" → "Nenhum documento encontrado"
+
+   Password Recovery:
+   • "Reset your password" → "Redefinir sua senha"
+   • "Check your email" → "Verifique seu email"
+   • "Send reset link" → "Enviar link de redefinição"
+   • "Password reset successful" → "Senha redefinida com sucesso"
+
+🟡 PRIORIDADE MÉDIA (MEDIUM) - 35 strings
+   Afetam fluxos secundários e mensagens de estado/erro
+
+   • Labels de campo: "Act Type", "Case ID", "Created", "Last Updated"
+   • Status badges: "Processing", "Review", "Approved", "Archived"
+   • Mensagens de erro genéricas: "An unexpected error occurred"
+   • Mensagens de carregamento: "Loading...", "Processing..."
+   • Botões secundários e tooltips
+
+🟢 PRIORIDADE BAIXA (LOW) - 10 strings
+   Afetam interações avançadas
+
+   • Aria labels para acessibilidade
+   • Contexto menus
+   • Tooltips de dicas
+
+═════════════════════════════════════════════════════════════════════════════
+
+PADRÕES DE TRADUÇÃO IDENTIFICADOS
+═════════════════════════════════════════════════════════════════════════════
+
+1. TERMOS NOTARIAIS BRASILEIROS
+   ✓ Act Types: "Compra e Venda" (Purchase & Sale), "Doação" (Donation),
+               "Permuta" (Exchange), "Locação" (Lease)
+   ✓ Documents: "Certidão", "Matrícula", "IPTU", "RG", "CPF"
+   ✓ Actions: "Minuta" (Draft), "Escritura" (Deed)
+
+2. AÇÕES/OPERAÇÕES
+   ✓ "Create" → "Criar"
+   ✓ "Delete" → "Deletar" ou "Remover"
+   ✓ "Edit" → "Editar"
+   ✓ "Archive" → "Arquivar"
+   ✓ "Duplicate" → "Duplicar"
+   ✓ "Extract" → "Extrair"
+
+3. STATUS/ESTADOS
+   ✓ "Draft" → "Rascunho"
+   ✓ "Processing" → "Processando"
+   ✓ "Review" → "Revisão"
+   ✓ "Approved" → "Aprovado"
+   ✓ "Archived" → "Arquivado"
+
+4. MENSAGENS DE ERRO/SUCESSO
+   ✓ "Failed to..." → "Falha ao..."
+   ✓ "Successfully..." → "Sucesso: ..."
+   ✓ "An unexpected error occurred" → "Um erro inesperado ocorreu"
+
+═════════════════════════════════════════════════════════════════════════════
+
+PROBLEMAS IDENTIFICADOS NA CÓDIGO ATUAL
+═════════════════════════════════════════════════════════════════════════════
+
+1. MISTURA DE IDIOMAS
+   ❌ PurchaseSaleFlowPage.tsx contém português e inglês misturados
+   ❌ EntitiesPage.tsx contém português e inglês misturados
+   ❌ Status labels em inglês vs descrições em português
+
+2. ERROS DE DIGITAÇÃO EM PORTUGUÊS
+   ⚠️  "Extracao" deveria ser "Extração" (linha 360, 353)
+   ⚠️  "Imovel" deveria ser "Imóvel" (múltiplas linhas)
+   ⚠️  "Endereco" deveria ser "Endereço" (linha 439)
+   ⚠️  "Concluido" deveria ser "Concluído" (linha 787)
+   ⚠️  "Disponiveis" deveria ser "Disponíveis" (linha 543)
+   ⚠️  "Faca" deveria ser "Faça" (linha 516)
+   ⚠️  "extraidas" deveria ser "extraídas" (linha 344, 347)
+
+3. PLACEHOLDERS INTERNACIONAIS
+   ✓ "email@example.com" - Manter como está
+   ✓ "•••••••" para senhas - Manter como está
+
+═════════════════════════════════════════════════════════════════════════════
+
+RECOMENDAÇÕES DE IMPLEMENTAÇÃO
+═════════════════════════════════════════════════════════════════════════════
+
+ETAPA 1: PREPARAÇÃO (Semana 1)
+────────────────────────────────
+□ Criar estrutura de i18n (internacionalização)
+□ Instalar dependência: i18next + react-i18next
+□ Configurar provider no App.tsx
+□ Criar pasta structure: locales/pt-BR/, locales/en/
+
+ETAPA 2: TRADUÇÃO DE PRIORIDADE ALTA (Semana 2-3)
+─────────────────────────────────────────────────
+□ Traduzir DashboardPage.tsx (31 strings)
+□ Traduzir LoginPage.tsx (12 strings)
+□ Traduzir password recovery pages (26 strings)
+□ Testar fluxo de autenticação completo
+
+ETAPA 3: TRADUÇÃO DE PRIORIDADE MÉDIA (Semana 4)
+────────────────────────────────────────────────
+□ Traduzir CaseOverviewPage.tsx (26 strings)
+□ Traduzir EntitiesPage.tsx (28 strings)
+□ Corrigir erros de acentuação em português
+
+ETAPA 4: TRADUÇÃO DE PRIORIDADE BAIXA (Semana 5)
+─────────────────────────────────────────────────
+□ Traduzir PurchaseSaleFlowPage.tsx (35 strings)
+□ Traduzir CanvasPage.tsx (strings restantes)
+□ Traduzir DraftPage.tsx
+□ Implementar switcher de idioma
+
+ETAPA 5: TESTES E VALIDAÇÃO (Semana 6)
+──────────────────────────────────────
+□ Teste de comprimento de strings (truncamento)
+□ Teste de responsividade em português
+□ Teste de acessibilidade (screen readers)
+□ Revisão com especialista em direito notarial
+
+═════════════════════════════════════════════════════════════════════════════
+
+ESTRUTURA DE ARQUIVOS I18N PROPOSTA
+═════════════════════════════════════════════════════════════════════════════
+
+locales/
+├── pt-BR/
+│   ├── common.json
+│   │   └── Labels e textos comuns (Email, Password, etc.)
+│   ├── auth.json
+│   │   └── Login, Reset Password, Forgot Password
+│   ├── dashboard.json
+│   │   └── Cases, Filters, Sorting, Empty states
+│   ├── cases.json
+│   │   └── Case Overview, Case Information, Archive
+│   ├── entities.json
+│   │   └── Entity extraction, create person/property
+│   ├── flow.json
+│   │   └── Purchase/Sale flow steps
+│   ├── canvas.json
+│   │   └── Canvas operations, relationships
+│   ├── errors.json
+│   │   └── Error messages
+│   └── status.json
+│       └── Status badges, processing states
+└── en/ (mesma estrutura para English)
+
+═════════════════════════════════════════════════════════════════════════════
+
+EXEMPLO DE IMPLEMENTAÇÃO
+═════════════════════════════════════════════════════════════════════════════
+
+locales/pt-BR/dashboard.json:
+{
+  "page": {
+    "title": "Casos",
+    "subtitle": "Gerencie seus casos de documentos e minutas",
+    "search": "Buscar casos por título...",
+    "newCase": "Novo Caso",
+    "startFlow": "Iniciar Fluxo de Compra e Venda"
+  },
+  "status": {
+    "draft": "Rascunho",
+    "processing": "Processando",
+    "review": "Revisão",
+    "approved": "Aprovado",
+    "archived": "Arquivado"
+  },
+  "empty": {
+    "noFound": "Nenhum caso encontrado",
+    "noYet": "Nenhum caso ainda"
+  },
+  "errors": {
+    "failedLoad": "Falha ao carregar casos",
+    "tryAgain": "Tentar Novamente"
+  }
+}
+
+Uso no componente:
+import { useTranslation } from 'react-i18next'
+
+function DashboardPage() {
+  const { t } = useTranslation('dashboard')
+
+  return (
+    <div>
+      <h1>{t('page.title')}</h1>
+      <p>{t('page.subtitle')}</p>
+      <Badge>{t('status.draft')}</Badge>
+    </div>
+  )
+}
+
+═════════════════════════════════════════════════════════════════════════════
+
+ARQUIVOS DE SAÍDA GERADOS
+═════════════════════════════════════════════════════════════════════════════
+
+1. STRINGS_EM_INGLES_UI.md
+   → Análise detalhada com tabelas e contexto
+   → Categorização por prioridade
+   → Recomendações de implementação
+   → Padrões de tradução
+
+2. STRINGS_EM_INGLES_EXPORT.csv
+   → Formato tabular para importação em ferramentas de tradução
+   → Colunas: Arquivo, Linha, String, Tradução, Contexto, Tipo, Prioridade
+   → Facilita processamento por scripts ou ferramentas
+
+3. RESUMO_TRADUCOES_NECESSARIAS.txt (este arquivo)
+   → Visão geral executiva
+   → Prioridades e roteiro de implementação
+   → Exemplos de código
+   → Referência rápida
+
+═════════════════════════════════════════════════════════════════════════════
+
+GLOSSÁRIO DE TERMOS-CHAVE
+═════════════════════════════════════════════════════════════════════════════
+
+JURÍDICO/NOTARIAL:
+• Case/Caso = Processo/Operação notarial
+• Draft/Minuta = Documento rascunho antes de ser assinado
+• Deed/Escritura = Documento oficial de transferência
+• Registry/Matrícula = Registro de propriedade imóvel
+• IPTU = Imposto Predial e Territorial Urbano
+• Act/Ato = Tipo de operação legal (Compra/Venda, Doação, etc.)
+• Entity = Entidade (Pessoa Física/Jurídica ou Propriedade)
+
+TÉCNICO:
+• Extract/Extrair = Obter dados de documentos automaticamente
+• Relationship/Relacionamento = Ligação entre entidades
+• Canvas = Visualização em grafo/diagrama
+• OCR = Reconhecimento Óptico de Caracteres
+• AI/IA = Inteligência Artificial
+• Conflict/Conflito = Discrepância entre diferentes fontes
+
+═════════════════════════════════════════════════════════════════════════════
+
+ESTIMATIVA DE ESFORÇO
+═════════════════════════════════════════════════════════════════════════════
+
+Setup i18n Framework .................. 4-6 horas
+Tradução de HIGH priority (35 strings) 6-8 horas
+Tradução de MEDIUM priority (35 strings) 10-12 horas
+Tradução de LOW priority (10 strings) . 2-3 horas
+Correção de acentuação em português ... 2-3 horas
+Implementação de language switcher .... 4-6 horas
+Testes (funcional, acessibilidade) .... 8-10 horas
+Revisão com especialista .............. 3-4 horas
+─────────────────────────────────────────────────
+TOTAL ESTIMADO ........................ 39-52 horas (1 semana em tempo integral)
+
+═════════════════════════════════════════════════════════════════════════════
+
+PRÓXIMAS AÇÕES RECOMENDADAS
+═════════════════════════════════════════════════════════════════════════════
+
+1. Revisar este documento com o time
+2. Aprovar estrutura de i18n e glossário
+3. Instalar dependências i18n
+4. Implementar HIGH priority strings (semana próxima)
+5. Fazer revisão com especialista em direito notarial
+6. Iterar nas traduções com feedback do usuário
+
+═════════════════════════════════════════════════════════════════════════════
+
+Gerado por: Claude Code AI
+Data: 2025-12-25
+Documentação: /STRINGS_EM_INGLES_UI.md
+Arquivo CSV: /STRINGS_EM_INGLES_EXPORT.csv
+Este sumário: /RESUMO_TRADUCOES_NECESSARIAS.txt

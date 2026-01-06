@@ -1,61 +1,33 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  DocumentIcon,
-  TrashIcon,
-  EyeIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  ExclamationCircleIcon,
   ArrowPathIcon,
   FolderOpenIcon,
+  FunnelIcon,
+  Squares2X2Icon,
 } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import DocumentDropzone, { UploadResult } from '../components/upload/DocumentDropzone'
+import { DocumentCard, DocumentPreviewModal, BatchOperationsToolbar, BatchDeleteConfirmationModal } from '../components/documents'
 import { useCaseStore } from '../stores/caseStore'
 import { useDocumentStatusSubscription } from '../hooks/useDocumentStatusSubscription'
+import { useImageThumbnails } from '../hooks/useImagePreview'
+import { useDocumentPreviewModal } from '../hooks/useDocumentPreview'
+import { useBatchSelection } from '../hooks/useBatchSelection'
 import { supabase } from '../lib/supabase'
-import type { Document, DocumentStatus, DocumentType } from '../types'
+import { deleteDocument, deleteDocuments, reprocessDocument } from '../services/documentService'
+import type { Document, DocumentType } from '../types'
 
-// Status badge styling
-const statusConfig: Record<DocumentStatus, { label: string; className: string; icon: typeof CheckCircleIcon }> = {
-  uploaded: {
-    label: 'Uploaded',
-    className: 'badge-info',
-    icon: ClockIcon,
-  },
-  processing: {
-    label: 'Processing',
-    className: 'badge-warning',
-    icon: ArrowPathIcon,
-  },
-  processed: {
-    label: 'Processed',
-    className: 'badge-success',
-    icon: CheckCircleIcon,
-  },
-  needs_review: {
-    label: 'Needs Review',
-    className: 'badge-warning',
-    icon: ExclamationCircleIcon,
-  },
-  approved: {
-    label: 'Approved',
-    className: 'badge-success',
-    icon: CheckCircleIcon,
-  },
-  failed: {
-    label: 'Failed',
-    className: 'badge-error',
-    icon: ExclamationCircleIcon,
-  },
-}
-
-// Document type labels
+// Document type labels for help section
 const documentTypeLabels: Record<DocumentType, string> = {
   cnh: 'CNH',
   rg: 'RG',
@@ -67,55 +39,78 @@ const documentTypeLabels: Record<DocumentType, string> = {
   other: 'Outro',
 }
 
-// Format file size
-const formatFileSize = (bytes: number) => {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
-}
-
-// Format date
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('pt-BR', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
-
-// Format confidence percentage
-const formatConfidence = (confidence: number | null): string => {
-  if (confidence === null || confidence === undefined) return ''
-  return `${Math.round(confidence * 100)}%`
-}
-
-// Get confidence badge color based on confidence level
-const getConfidenceColor = (confidence: number | null): string => {
-  if (confidence === null || confidence === undefined) return 'text-gray-500'
-  if (confidence >= 0.8) return 'text-green-600 dark:text-green-400'
-  if (confidence >= 0.5) return 'text-yellow-600 dark:text-yellow-400'
-  return 'text-red-600 dark:text-red-400'
-}
-
-// Get document type badge styling
-const getDocTypeBadgeClass = (confidence: number | null): string => {
-  if (confidence === null || confidence === undefined) return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'
-  if (confidence >= 0.8) return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-  if (confidence >= 0.5) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-  return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-}
-
 export default function UploadPage() {
   const { caseId } = useParams()
   const { documents, addDocument, updateDocument, removeDocument } = useCaseStore()
   const [uploadedDocs, setUploadedDocs] = useState<Document[]>(documents)
   const [isLoading, setIsLoading] = useState(true)
 
+  // Reprocessing state - track which documents are being reprocessed
+  const [reprocessingDocIds, setReprocessingDocIds] = useState<Set<string>>(new Set())
+
+  // Document type filter state
+  const [selectedDocType, setSelectedDocType] = useState<DocumentType | 'all'>('all')
+
+  // Filter documents by selected type
+  const filteredDocs = useMemo(() => {
+    if (selectedDocType === 'all') {
+      return uploadedDocs
+    }
+    return uploadedDocs.filter((doc) => doc.doc_type === selectedDocType)
+  }, [uploadedDocs, selectedDocType])
+
+  // Selection mode state
+  const [selectionMode, setSelectionMode] = useState(false)
+
+  // Batch selection hook
+  const {
+    selectedIds,
+    selectedCount,
+    hasSelection,
+    isAllSelected,
+    isSelected,
+    toggleSelection,
+    selectAll,
+    deselectAll,
+    clearSelection,
+  } = useBatchSelection({
+    items: filteredDocs,
+    getItemId: (doc) => doc.id,
+  })
+
+  // Batch delete modal state
+  const [isBatchDeleteModalOpen, setIsBatchDeleteModalOpen] = useState(false)
+  const [isBatchDeleting, setIsBatchDeleting] = useState(false)
+  const [batchDeleteResults, setBatchDeleteResults] = useState<{ successCount?: number; failureCount?: number }>({})
+
+  // Get selected documents
+  const selectedDocuments = useMemo(
+    () => filteredDocs.filter((doc) => selectedIds.has(doc.id)),
+    [filteredDocs, selectedIds]
+  )
+
+  // Load image thumbnails for document cards
+  const { thumbnails } = useImageThumbnails(uploadedDocs)
+
+  // Document preview modal state (supports all document types)
+  const {
+    previewDocument,
+    isPreviewOpen,
+    documentUrl: previewDocumentUrl,
+    isLoading: isPreviewLoading,
+    error: previewError,
+    openPreview,
+    closePreview,
+    retryLoad: retryPreviewLoad,
+  } = useDocumentPreviewModal()
+
   // Load existing documents from database on mount
   useEffect(() => {
     async function loadDocuments() {
-      if (!caseId) return
+      if (!caseId) {
+        setIsLoading(false)
+        return
+      }
 
       setIsLoading(true)
       try {
@@ -127,10 +122,7 @@ export default function UploadPage() {
 
         if (error) {
           console.error('Error loading documents:', error)
-          return
-        }
-
-        if (data) {
+        } else if (data) {
           setUploadedDocs(data as Document[])
         }
       } catch (error) {
@@ -148,7 +140,7 @@ export default function UploadPage() {
     caseId: caseId || '',
     enabled: !!caseId,
     onDocumentInsert: (document) => {
-      console.log('[UploadPage] Document inserted:', document.original_name)
+      console.log('[UploadPage] Documento inserido:', document.original_name)
       setUploadedDocs((prev) => {
         // Avoid duplicates
         if (prev.some((d) => d.id === document.id)) {
@@ -159,7 +151,7 @@ export default function UploadPage() {
       addDocument(document)
     },
     onDocumentUpdate: (update) => {
-      console.log('[UploadPage] Document updated:', update.documentId, update.newStatus)
+      console.log('[UploadPage] Documento atualizado:', update.documentId, update.newStatus)
       setUploadedDocs((prev) =>
         prev.map((doc) =>
           doc.id === update.documentId
@@ -170,19 +162,19 @@ export default function UploadPage() {
       updateDocument(update.documentId, update.document as Partial<Document>)
     },
     onDocumentDelete: (documentId) => {
-      console.log('[UploadPage] Document deleted:', documentId)
+      console.log('[UploadPage] Documento excluído:', documentId)
       setUploadedDocs((prev) => prev.filter((d) => d.id !== documentId))
       removeDocument(documentId)
     },
     onStatusChange: (update) => {
-      console.log('[UploadPage] Status changed:', update.documentId, update.previousStatus, '->', update.newStatus)
+      console.log('[UploadPage] Status alterado:', update.documentId, update.previousStatus, '->', update.newStatus)
     },
   })
 
   // Handle upload completion - document is already in the database, just refresh if needed
   const handleUploadComplete = useCallback((results: UploadResult[]) => {
     const successfulUploads = results.filter((r) => r.success)
-    console.log(`[UploadPage] Upload complete: ${successfulUploads.length}/${results.length} files successful`)
+    console.log(`[UploadPage] Upload concluído: ${successfulUploads.length}/${results.length} arquivos com sucesso`)
 
     // The real-time subscription will add new documents to the list
     // But we can also manually fetch the document for immediate feedback
@@ -206,61 +198,208 @@ export default function UploadPage() {
             addDocument(data as Document)
           }
         } catch (error) {
-          console.error('Error fetching uploaded document:', error)
+          console.error('Erro ao buscar documento enviado:', error)
         }
       }
     })
   }, [addDocument])
 
-  // Remove document from database and storage
+  // Remove document from database, storage, and all associated data
+  // Uses the documentService which handles cascade deletion of:
+  // - Storage file
+  // - Extractions, evidence, processing_jobs (via DB cascade)
+  // - References in people.source_docs and properties.source_docs arrays
   const handleRemoveDocument = useCallback(async (docId: string) => {
     const doc = uploadedDocs.find((d) => d.id === docId)
     if (!doc) return
 
     try {
-      // Delete from storage first
-      if (doc.storage_path) {
-        await supabase.storage.from('documents').remove([doc.storage_path])
-      }
+      const result = await deleteDocument(docId, doc.storage_path)
 
-      // Delete from database
-      const { error } = await supabase.from('documents').delete().eq('id', docId)
-
-      if (error) {
-        console.error('Error deleting document:', error)
+      if (!result.success) {
+        console.error('Erro ao remover documento:', result.error)
         return
       }
+
+      console.log('[UploadPage] Documento excluído com dados associados:', {
+        documentId: docId,
+        cleanedPeopleCount: result.cleanedPeopleCount,
+        cleanedPropertiesCount: result.cleanedPropertiesCount,
+      })
 
       // Update local state
       setUploadedDocs((prev) => prev.filter((d) => d.id !== docId))
       removeDocument(docId)
     } catch (error) {
-      console.error('Error removing document:', error)
+      console.error('Erro ao remover documento:', error)
     }
   }, [uploadedDocs, removeDocument])
 
-  // Get document icon based on mime type
-  const getDocumentIcon = (mimeType: string) => {
-    if (mimeType === 'application/pdf') {
-      return (
-        <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-          <DocumentIcon className="w-5 h-5 text-red-500" />
-        </div>
-      )
+  // Handle view document - opens preview modal for all document types
+  const handleViewDocument = useCallback((document: Document) => {
+    openPreview(document)
+  }, [openPreview])
+
+  // Handle reprocessing a document
+  const handleReprocessDocument = useCallback(async (docId: string) => {
+    // Add to reprocessing set
+    setReprocessingDocIds((prev) => new Set(prev).add(docId))
+
+    try {
+      const result = await reprocessDocument(docId)
+
+      if (!result.success) {
+        console.error('Erro ao reprocessar documento:', result.error)
+        // Remove from reprocessing set on error
+        setReprocessingDocIds((prev) => {
+          const next = new Set(prev)
+          next.delete(docId)
+          return next
+        })
+        return
+      }
+
+      console.log('[UploadPage] Document queued for reprocessing:', {
+        documentId: docId,
+        jobId: result.jobId,
+      })
+
+      // The real-time subscription will update the document status
+      // Remove from reprocessing set after a short delay (UI feedback)
+      setTimeout(() => {
+        setReprocessingDocIds((prev) => {
+          const next = new Set(prev)
+          next.delete(docId)
+          return next
+        })
+      }, 1000)
+    } catch (error) {
+      console.error('Erro ao reprocessar documento:', error)
+      // Remove from reprocessing set on error
+      setReprocessingDocIds((prev) => {
+        const next = new Set(prev)
+        next.delete(docId)
+        return next
+      })
     }
-    if (mimeType.startsWith('image/')) {
-      return (
-        <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-          <DocumentIcon className="w-5 h-5 text-blue-500" />
-        </div>
-      )
+  }, [])
+
+  // Toggle selection mode
+  const handleToggleSelectionMode = useCallback(() => {
+    setSelectionMode((prev) => !prev)
+    if (selectionMode) {
+      // Exiting selection mode, clear selection
+      clearSelection()
     }
-    return (
-      <div className="w-10 h-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-        <DocumentIcon className="w-5 h-5 text-gray-500" />
-      </div>
-    )
-  }
+  }, [selectionMode, clearSelection])
+
+  // Handle batch delete - open confirmation modal
+  const handleOpenBatchDeleteModal = useCallback(() => {
+    setBatchDeleteResults({})
+    setIsBatchDeleteModalOpen(true)
+  }, [])
+
+  // Handle batch delete confirmation
+  const handleConfirmBatchDelete = useCallback(async () => {
+    if (selectedDocuments.length === 0) return
+
+    setIsBatchDeleting(true)
+    setBatchDeleteResults({})
+
+    try {
+      const documentIds = selectedDocuments.map((doc) => doc.id)
+      const result = await deleteDocuments(documentIds)
+
+      setBatchDeleteResults({
+        successCount: result.successCount,
+        failureCount: result.failureCount,
+      })
+
+      // Update local state for successfully deleted documents
+      result.results.forEach((deleteResult) => {
+        if (deleteResult.success && deleteResult.deletedDocumentId) {
+          setUploadedDocs((prev) => prev.filter((d) => d.id !== deleteResult.deletedDocumentId))
+          removeDocument(deleteResult.deletedDocumentId)
+        }
+      })
+
+      console.log('[UploadPage] Exclusão em lote concluída:', {
+        successCount: result.successCount,
+        failureCount: result.failureCount,
+      })
+
+      // Clear selection after successful deletion
+      if (result.successCount > 0) {
+        clearSelection()
+      }
+
+      // Close modal after a delay to show results
+      setTimeout(() => {
+        setIsBatchDeleteModalOpen(false)
+        setBatchDeleteResults({})
+        // Exit selection mode if all documents were deleted
+        if (result.failureCount === 0) {
+          setSelectionMode(false)
+        }
+      }, 1500)
+    } catch (error) {
+      console.error('Erro durante exclusão em lote:', error)
+      setBatchDeleteResults({
+        failureCount: selectedDocuments.length,
+      })
+    } finally {
+      setIsBatchDeleting(false)
+    }
+  }, [selectedDocuments, clearSelection, removeDocument])
+
+  // Handle closing batch delete modal
+  const handleCloseBatchDeleteModal = useCallback(() => {
+    if (!isBatchDeleting) {
+      setIsBatchDeleteModalOpen(false)
+      setBatchDeleteResults({})
+    }
+  }, [isBatchDeleting])
+
+  // Handle batch export (placeholder for future implementation)
+  const handleBatchExport = useCallback(() => {
+    // TODO: Implement batch export functionality
+    console.log('[UploadPage] Exportação em lote solicitada para:', Array.from(selectedIds))
+    alert(`Exportar ${selectedCount} documentos (funcionalidade em desenvolvimento)`)
+  }, [selectedIds, selectedCount])
+
+  // Handle batch reprocess
+  const handleBatchReprocess = useCallback(async () => {
+    if (selectedDocuments.length === 0) return
+
+    // Add all to reprocessing set
+    selectedDocuments.forEach((doc) => {
+      setReprocessingDocIds((prev) => new Set(prev).add(doc.id))
+    })
+
+    // Process each document
+    for (const doc of selectedDocuments) {
+      try {
+        await reprocessDocument(doc.id)
+      } catch (error) {
+        console.error(`Erro ao reprocessar documento ${doc.id}:`, error)
+      }
+    }
+
+    // Clear reprocessing state after delay
+    setTimeout(() => {
+      selectedDocuments.forEach((doc) => {
+        setReprocessingDocIds((prev) => {
+          const next = new Set(prev)
+          next.delete(doc.id)
+          return next
+        })
+      })
+    }, 1000)
+
+    // Clear selection
+    clearSelection()
+    setSelectionMode(false)
+  }, [selectedDocuments, clearSelection])
 
   return (
     <div className="space-y-6">
@@ -299,10 +438,57 @@ export default function UploadPage() {
       {/* Uploaded Documents List */}
       <Card className="glass-card">
         <CardHeader>
-          <CardTitle>Documentos Enviados</CardTitle>
-          <CardDescription>
-            {uploadedDocs.length} documento{uploadedDocs.length !== 1 ? 's' : ''} neste caso
-          </CardDescription>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <CardTitle>Documentos Enviados</CardTitle>
+              <CardDescription>
+                {selectedDocType === 'all'
+                  ? `${uploadedDocs.length} documento${uploadedDocs.length !== 1 ? 's' : ''} neste caso`
+                  : `${filteredDocs.length} de ${uploadedDocs.length} documento${uploadedDocs.length !== 1 ? 's' : ''} (filtrado por ${documentTypeLabels[selectedDocType]})`
+                }
+              </CardDescription>
+            </div>
+
+            {/* Actions: Filter and Selection Mode Toggle */}
+            <div className="flex items-center gap-3">
+              {/* Selection Mode Toggle */}
+              {filteredDocs.length > 0 && (
+                <Button
+                  variant={selectionMode ? "default" : "outline"}
+                  size="sm"
+                  onClick={handleToggleSelectionMode}
+                  className="gap-1.5"
+                  aria-pressed={selectionMode}
+                >
+                  <Squares2X2Icon className="h-4 w-4" />
+                  <span className="hidden sm:inline">
+                    {selectionMode ? 'Cancelar' : 'Selecionar'}
+                  </span>
+                </Button>
+              )}
+
+              {/* Document Type Filter */}
+              <div className="flex items-center gap-2">
+                <FunnelIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <Select
+                  value={selectedDocType}
+                  onValueChange={(value) => setSelectedDocType(value as DocumentType | 'all')}
+                >
+                  <SelectTrigger className="w-[180px]" aria-label="Filtrar por tipo de documento">
+                    <SelectValue placeholder="Filtrar por tipo" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos os tipos</SelectItem>
+                    {Object.entries(documentTypeLabels).map(([type, label]) => (
+                      <SelectItem key={type} value={type}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
         </CardHeader>
 
         <AnimatePresence mode="popLayout">
@@ -337,86 +523,47 @@ export default function UploadPage() {
                 Comece arrastando e soltando documentos na area de upload acima, ou clique para selecionar arquivos.
               </p>
             </motion.div>
+          ) : filteredDocs.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="p-12 text-center"
+            >
+              <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
+                <FunnelIcon className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                Nenhum documento encontrado
+              </h3>
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                Nenhum documento do tipo "{documentTypeLabels[selectedDocType as DocumentType]}" foi encontrado.
+                <button
+                  onClick={() => setSelectedDocType('all')}
+                  className="ml-1 text-blue-600 dark:text-blue-400 hover:underline"
+                >
+                  Limpar filtro
+                </button>
+              </p>
+            </motion.div>
           ) : (
-            <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-              {uploadedDocs.map((doc, index) => {
-                const statusInfo = statusConfig[doc.status]
-                const StatusIcon = statusInfo.icon
-
-                return (
-                  <motion.li
-                    key={doc.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -10 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-                  >
-                    <div className="flex items-center gap-4">
-                      {/* Document Icon */}
-                      {getDocumentIcon(doc.mime_type)}
-
-                      {/* Document Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                            {doc.original_name}
-                          </p>
-                          <Badge variant={doc.status === 'processed' ? 'default' : 'secondary'} className="gap-1">
-                            <StatusIcon className={cn("w-3 h-3", doc.status === 'processing' && "animate-spin")} />
-                            {statusInfo.label}
-                          </Badge>
-                          {/* Document Type Badge with Confidence */}
-                          {doc.doc_type && (
-                            <Badge variant="outline" className={cn("gap-1", getDocTypeBadgeClass(doc.doc_type_confidence))}>
-                              {documentTypeLabels[doc.doc_type]}
-                              {doc.doc_type_confidence !== null && (
-                                <span className={cn("font-semibold", getConfidenceColor(doc.doc_type_confidence))}>
-                                  ({formatConfidence(doc.doc_type_confidence)})
-                                </span>
-                              )}
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3 mt-1">
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {formatFileSize(doc.file_size)}
-                          </span>
-                          {doc.page_count && (
-                            <span className="text-xs text-gray-500 dark:text-gray-400">
-                              {doc.page_count} pagina{doc.page_count !== 1 ? 's' : ''}
-                            </span>
-                          )}
-                          <span className="text-xs text-gray-400 dark:text-gray-500">
-                            {formatDate(doc.created_at)}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          title="Ver documento"
-                        >
-                          <EyeIcon className="w-5 h-5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleRemoveDocument(doc.id)}
-                          className="hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                          title="Remover documento"
-                        >
-                          <TrashIcon className="w-5 h-5" />
-                        </Button>
-                      </div>
-                    </div>
-                  </motion.li>
-                )
-              })}
-            </ul>
+            <div className="p-4 space-y-3">
+              {filteredDocs.map((doc, index) => (
+                <DocumentCard
+                  key={doc.id}
+                  document={doc}
+                  animationDelay={index * 0.05}
+                  onView={selectionMode ? undefined : handleViewDocument}
+                  onDelete={selectionMode ? undefined : handleRemoveDocument}
+                  onReprocess={selectionMode ? undefined : handleReprocessDocument}
+                  isReprocessing={reprocessingDocIds.has(doc.id)}
+                  thumbnailUrl={thumbnails.get(doc.id)}
+                  selectionMode={selectionMode}
+                  isSelected={isSelected(doc.id)}
+                  onSelectionToggle={toggleSelection}
+                />
+              ))}
+            </div>
           )}
         </AnimatePresence>
       </Card>
@@ -442,6 +589,46 @@ export default function UploadPage() {
           </p>
         </CardContent>
       </Card>
+
+      {/* Document Preview Modal - supports images, PDFs, and other document types */}
+      <DocumentPreviewModal
+        isOpen={isPreviewOpen}
+        onClose={closePreview}
+        document={previewDocument}
+        documentUrl={previewDocumentUrl}
+        isLoading={isPreviewLoading}
+        error={previewError}
+        onRetry={retryPreviewLoad}
+      />
+
+      {/* Batch Operations Toolbar - floating bar at bottom of screen */}
+      {selectionMode && (
+        <BatchOperationsToolbar
+          selectedCount={selectedCount}
+          isAllSelected={isAllSelected}
+          totalCount={filteredDocs.length}
+          onSelectAll={selectAll}
+          onClearSelection={() => {
+            clearSelection()
+            setSelectionMode(false)
+          }}
+          onBatchDelete={handleOpenBatchDeleteModal}
+          onBatchExport={handleBatchExport}
+          onBatchReprocess={handleBatchReprocess}
+          isDeleting={isBatchDeleting}
+        />
+      )}
+
+      {/* Batch Delete Confirmation Modal */}
+      <BatchDeleteConfirmationModal
+        isOpen={isBatchDeleteModalOpen}
+        onClose={handleCloseBatchDeleteModal}
+        onConfirm={handleConfirmBatchDelete}
+        documents={selectedDocuments}
+        isDeleting={isBatchDeleting}
+        successCount={batchDeleteResults.successCount}
+        failureCount={batchDeleteResults.failureCount}
+      />
     </div>
   )
 }

@@ -1,0 +1,361 @@
+{
+  "pt-BR": {
+    "common": {
+      "email": "Email",
+      "password": "Senha",
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "delete": "Deletar",
+      "edit": "Editar",
+      "close": "Fechar",
+      "confirm": "Confirmar",
+      "loading": "Carregando...",
+      "error": "Erro",
+      "success": "Sucesso",
+      "warning": "Aviso"
+    },
+    "auth": {
+      "appTitle": "Minuta Canvas",
+      "appSubtitle": "Processamento de Documentos e Geração de Minutas",
+      "signIn": {
+        "title": "Faça login na sua conta",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@example.com",
+        "passwordLabel": "Senha",
+        "passwordPlaceholder": "••••••••",
+        "rememberMe": "Lembrar de mim",
+        "forgotPassword": "Esqueceu a senha?",
+        "submit": "Entrar",
+        "submitting": "Entrando...",
+        "unexpectedError": "Um erro inesperado ocorreu"
+      },
+      "forgotPassword": {
+        "title": "Redefinir sua senha",
+        "description": "Digite seu endereço de email e enviaremos um link para redefinir sua senha.",
+        "emailLabel": "Email",
+        "emailPlaceholder": "email@example.com",
+        "submit": "Enviar link de redefinição",
+        "submitting": "Enviando link de redefinição...",
+        "success": {
+          "title": "Verifique seu email",
+          "message": "Enviamos um link de redefinição de senha para {{email}}",
+          "instructions": "Clique no link no email para redefinir sua senha. Se você não o vir, verifique sua pasta de spam.",
+          "backToLogin": "Voltar para login"
+        }
+      },
+      "resetPassword": {
+        "title": "Definir nova senha",
+        "description": "Digite sua nova senha abaixo.",
+        "newPasswordLabel": "Nova Senha",
+        "newPasswordPlaceholder": "••••••••",
+        "newPasswordHint": "Deve ter pelo menos 6 caracteres",
+        "confirmPasswordLabel": "Confirme a Nova Senha",
+        "confirmPasswordPlaceholder": "••••••••",
+        "submit": "Redefinir senha",
+        "submitting": "Redefinindo senha...",
+        "errors": {
+          "invalidLink": "Link inválido ou expirado. Por favor, solicite uma nova redefinição de senha.",
+          "passwordsMismatch": "As senhas não correspondem",
+          "passwordTooShort": "A senha deve ter pelo menos 6 caracteres"
+        },
+        "success": {
+          "title": "Senha redefinida com sucesso",
+          "message": "Sua senha foi redefinida com sucesso.",
+          "redirecting": "Redirecionando para página de login..."
+        }
+      }
+    },
+    "dashboard": {
+      "page": {
+        "title": "Casos",
+        "subtitle": "Gerencie seus casos de documentos e minutas"
+      },
+      "buttons": {
+        "newCase": "Novo Caso",
+        "startFlow": "Iniciar Fluxo de Compra e Venda",
+        "createCaseManually": "Criar Caso Manualmente",
+        "clearSearch": "Limpar Busca",
+        "tryAgain": "Tentar Novamente"
+      },
+      "search": {
+        "placeholder": "Buscar casos por título..."
+      },
+      "filters": {
+        "status": {
+          "label": "Filtrar por Status",
+          "all": "Todos os Status",
+          "draft": "Rascunho",
+          "processing": "Processando",
+          "review": "Revisão",
+          "approved": "Aprovado",
+          "archived": "Arquivado"
+        }
+      },
+      "status": {
+        "draft": "Rascunho",
+        "processing": "Processando",
+        "review": "Revisão",
+        "approved": "Aprovado",
+        "archived": "Arquivado"
+      },
+      "emptyState": {
+        "noFound": "Nenhum caso encontrado",
+        "noFoundDescription": "Nenhum caso corresponde a \"{{query}}\". Tente um termo de busca diferente.",
+        "noYet": "Nenhum caso ainda",
+        "noYetDescription": "Comece criando um novo caso para gerenciar seus documentos e minutas notariais."
+      },
+      "errors": {
+        "failedLoad": "Falha ao carregar casos"
+      },
+      "menu": {
+        "duplicate": "Duplicar Caso",
+        "delete": "Deletar Caso",
+        "moreOptions": "Mais opções"
+      },
+      "dates": {
+        "created": "Criado"
+      }
+    },
+    "cases": {
+      "actTypes": {
+        "purchase_sale": "Compra e Venda",
+        "donation": "Doação",
+        "exchange": "Permuta",
+        "lease": "Locação"
+      },
+      "overview": {
+        "title": "Visão Geral do Caso",
+        "caseInformation": "Informações do Caso",
+        "documents": "Documentos",
+        "buttons": {
+          "archive": "Arquivar",
+          "unarchive": "Desarquivar",
+          "duplicate": "Duplicar",
+          "duplicating": "Duplicando..."
+        },
+        "fields": {
+          "caseId": "ID do Caso",
+          "actType": "Tipo de Ato",
+          "created": "Criado",
+          "lastUpdated": "Última Atualização",
+          "assignedTo": "Atribuído a"
+        },
+        "archived": {
+          "banner": "Este caso está arquivado",
+          "description": "Casos arquivados são somente leitura. Você pode desarquivar este caso para fazer alterações."
+        },
+        "dialogs": {
+          "archive": {
+            "title": "Arquivar Caso?",
+            "description": "Tem certeza que deseja arquivar \"{{caseName}}\"? Casos arquivados serão somente leitura, mas podem ser restaurados depois."
+          },
+          "unarchive": {
+            "title": "Desarquivar Caso?",
+            "description": "Tem certeza que deseja desarquivar \"{{caseName}}\"? Isso restaurará o caso para status rascunho."
+          }
+        },
+        "errors": {
+          "failedLoad": "Falha ao carregar caso",
+          "failedUpdate": "Falha ao atualizar status. Por favor, tente novamente.",
+          "failedDuplicate": "Falha ao duplicar caso. Por favor, tente novamente."
+        }
+      }
+    },
+    "entities": {
+      "page": {
+        "title": "Entidades Extraídas",
+        "subtitle": "Visualize e gerencie as entidades extraídas dos documentos usando IA."
+      },
+      "buttons": {
+        "refresh": "Atualizar",
+        "createPerson": "Criar Pessoa",
+        "createProperty": "Criar Imóvel",
+        "extractEntities": "Extrair Entidades",
+        "extracting": "Extraindo...",
+        "goToUpload": "Ir para Upload"
+      },
+      "sections": {
+        "filterDocuments": "Filtrar por Documento",
+        "availableDocuments": "Documentos Disponíveis",
+        "people": "Pessoas",
+        "properties": "Imóveis"
+      },
+      "status": {
+        "processing": "Processando...",
+        "waiting": "Aguardando extração",
+        "extracted": "Entidades extraídas"
+      },
+      "emptyState": {
+        "noDocuments": "Nenhum documento encontrado",
+        "uploadFirst": "Faça upload de documentos primeiro para extrair entidades."
+      },
+      "cards": {
+        "all": "Todos ({{count}})"
+      }
+    },
+    "flow": {
+      "purchaseSale": {
+        "title": "Fluxo de Compra e Venda",
+        "progress": "{{completed}} de {{total}} etapas concluídas",
+        "buttons": {
+          "cancel": "Cancelar",
+          "next": "Próximo",
+          "previous": "Anterior",
+          "create": "Criar Caso",
+          "createAndContinue": "Criar e Continuar",
+          "startExtraction": "Iniciar Extração",
+          "generateDraft": "Gerar Minuta",
+          "complete": "Concluir"
+        },
+        "steps": {
+          "caseCreation": {
+            "title": "Criar Caso",
+            "titleLabel": "Título do Caso *",
+            "titlePlaceholder": "Ex: Venda do Apartamento 101 - Ed. Central",
+            "titleHint": "Escolha um título descritivo para identificar este caso",
+            "actTypeLabel": "Tipo de Ato *",
+            "actTypePlaceholder": "Selecione o tipo de ato",
+            "actTypeHint": "O tipo de ato define o modelo de minuta a ser gerado",
+            "actTypes": {
+              "purchase_sale": {
+                "label": "Compra e Venda",
+                "description": "Transação de compra e venda de imóvel"
+              },
+              "donation": {
+                "label": "Doação",
+                "description": "Doação de imóvel entre partes"
+              },
+              "exchange": {
+                "label": "Permuta",
+                "description": "Troca de imóveis entre partes"
+              },
+              "lease": {
+                "label": "Locação",
+                "description": "Contrato de aluguel de imóvel"
+              }
+            },
+            "success": {
+              "title": "Caso criado com sucesso!",
+              "id": "ID: {{caseId}}"
+            },
+            "buttons": {
+              "create": "Criar Caso",
+              "creating": "Criando Caso..."
+            }
+          },
+          "documentUpload": {
+            "title": "Carregar Documentos",
+            "noCaseMessage": "Nenhum caso selecionado. Por favor, crie um caso primeiro.",
+            "uploadedDocuments": "Documentos Carregados ({{count}})",
+            "status": {
+              "uploaded": "Carregado",
+              "processing": "Processando",
+              "processed": "Processado",
+              "failed": "Falhou"
+            },
+            "recommended": {
+              "title": "Documentos recomendados para Compra e Venda:",
+              "items": [
+                "RG e CPF dos vendedores e compradores",
+                "Certidão de casamento (se aplicável)",
+                "Matrícula atualizada do imóvel",
+                "IPTU do imóvel",
+                "Procuração (se houver representante)"
+              ]
+            }
+          },
+          "entityExtraction": {
+            "title": "Extrair Entidades",
+            "extracting": "Extraindo entidades dos documentos...",
+            "progress": "Progresso: {{progress}}%",
+            "ready": "Pronto para iniciar a extração",
+            "readyDescription": "A IA vai analisar os documentos e extrair pessoas, imóveis e relacionamentos",
+            "button": "Iniciar Extração",
+            "summary": {
+              "people": "{{count}} Pessoa(s) encontrada(s)",
+              "properties": "{{count}} Imóvel(is) encontrado(s)"
+            },
+            "fields": {
+              "cpfNotFound": "CPF não informado",
+              "matriculaNotFound": "Matrícula não identificada",
+              "addressNotFound": "Endereço não informado",
+              "confidence": "{{percent}}% confiança"
+            }
+          },
+          "canvasReview": {
+            "title": "Revisar Canvas",
+            "summary": {
+              "people": "Pessoas",
+              "properties": "Imóveis",
+              "relationships": "Relacionamentos"
+            },
+            "preview": {
+              "title": "Visualização do Canvas",
+              "description": "Revise e confirme os relacionamentos entre entidades"
+            },
+            "button": "Abrir Canvas Completo",
+            "relationshipStatus": "Status dos Relacionamentos",
+            "confirmed": "Confirmado",
+            "pending": "Pendente",
+            "moreRelationships": "E mais {{count}} relacionamentos..."
+          },
+          "draftGeneration": {
+            "title": "Gerar Minuta",
+            "generating": "Gerando minuta do documento...",
+            "generatingDescription": "Isso pode levar alguns segundos",
+            "ready": "Pronto para gerar a minuta",
+            "readyDescription": "A minuta será gerada com base nas entidades e relacionamentos confirmados",
+            "button": "Gerar Minuta",
+            "success": {
+              "title": "Minuta gerada com sucesso!",
+              "version": "Versão {{version}} - {{status}}",
+              "openButton": "Abrir"
+            },
+            "pendingItems": "Itens Pendentes ({{count}})",
+            "preview": {
+              "title": "Pré-visualização",
+              "description": "Seções da minuta gerada"
+            },
+            "severity": {
+              "error": "Erro",
+              "warning": "Aviso",
+              "info": "Info"
+            }
+          }
+        },
+        "completion": {
+          "title": "Fluxo Concluído!",
+          "message": "O caso foi processado com sucesso. Você pode visualizar a minuta gerada ou iniciar um novo fluxo.",
+          "buttons": {
+            "backToDashboard": "Voltar ao Dashboard",
+            "viewDraft": "Ver Minuta",
+            "newFlow": "Novo Fluxo"
+          }
+        },
+        "cancelDialog": {
+          "title": "Cancelar Fluxo?",
+          "description": "Tem certeza que deseja cancelar este fluxo? Todo o progresso será perdido e você precisará começar novamente.",
+          "buttons": {
+            "continue": "Continuar Editando",
+            "cancel": "Cancelar Fluxo"
+          }
+        }
+      }
+    },
+    "draft": {
+      "page": {
+        "title": "Minuta"
+      },
+      "errors": {
+        "checkingFailed": "Erro ao verificar minuta existente"
+      }
+    },
+    "errors": {
+      "generic": "Um erro inesperado ocorreu",
+      "loadFailed": "Falha ao carregar",
+      "saveFailed": "Falha ao salvar",
+      "deleteFailed": "Falha ao deletar",
+      "updateFailed": "Falha ao atualizar"
+    }
+  }
+}

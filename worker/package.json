@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:apis": "node test-google-apis.cjs"
   },
   "dependencies": {
     "@google-ai/generativelanguage": "^2.2.0",

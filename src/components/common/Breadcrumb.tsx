@@ -15,12 +15,12 @@ interface BreadcrumbProps {
 
 const routeLabels: Record<string, string> = {
   dashboard: 'Dashboard',
-  case: 'Case',
+  case: 'Caso',
   upload: 'Upload',
-  entities: 'Entities',
+  entities: 'Entidades',
   canvas: 'Canvas',
-  draft: 'Draft',
-  history: 'History',
+  draft: 'Minuta',
+  history: 'Histórico',
 }
 
 export default function Breadcrumb({ caseName }: BreadcrumbProps) {
@@ -71,7 +71,7 @@ export default function Breadcrumb({ caseName }: BreadcrumbProps) {
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center">
+    <nav aria-label="Navegação estrutural" className="flex items-center">
       <ol className="flex items-center gap-1">
         {breadcrumbs.map((item, index) => {
           const isLast = index === breadcrumbs.length - 1
@@ -81,7 +81,7 @@ export default function Breadcrumb({ caseName }: BreadcrumbProps) {
             <li key={item.label} className="flex items-center gap-1">
               {index > 0 && (
                 <ChevronRightIcon
-                  className="w-4 h-4 text-gray-400 dark:text-gray-500"
+                  className="size-4 text-gray-400 dark:text-gray-500"
                   aria-hidden="true"
                 />
               )}
@@ -90,7 +90,7 @@ export default function Breadcrumb({ caseName }: BreadcrumbProps) {
                   className="flex items-center gap-1.5 text-sm font-medium text-gray-700 dark:text-gray-300"
                   aria-current="page"
                 >
-                  {Icon && <Icon className="w-4 h-4" />}
+                  {Icon && <Icon className="size-4" />}
                   <span>{item.label}</span>
                 </span>
               ) : (
@@ -103,7 +103,7 @@ export default function Breadcrumb({ caseName }: BreadcrumbProps) {
                     'transition-colors'
                   )}
                 >
-                  {Icon && <Icon className="w-4 h-4" />}
+                  {Icon && <Icon className="size-4" />}
                   <span>{item.label}</span>
                 </Link>
               )}

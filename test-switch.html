@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toggle Switch Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Switch styles matching our component */
+    .switch-root {
+      position: relative;
+      display: inline-flex;
+      height: 1.25rem;
+      width: 2.25rem;
+      flex-shrink: 0;
+      cursor: pointer;
+      align-items: center;
+      border-radius: 9999px;
+      border-width: 2px;
+      border-color: transparent;
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+
+    .switch-root:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: 2px;
+    }
+
+    .switch-root[data-state="checked"] {
+      background-color: #3b82f6;
+    }
+
+    .switch-root[data-state="unchecked"] {
+      background-color: #e5e7eb;
+    }
+
+    .dark .switch-root[data-state="unchecked"] {
+      background-color: #374151;
+    }
+
+    .switch-thumb {
+      pointer-events: none;
+      display: block;
+      height: 1rem;
+      width: 1rem;
+      border-radius: 9999px;
+      background-color: white;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      transition-property: transform;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    .switch-root[data-state="checked"] .switch-thumb {
+      transform: translateX(1rem);
+    }
+
+    .switch-root[data-state="unchecked"] .switch-thumb {
+      transform: translateX(0);
+    }
+
+    .switch-root:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 min-h-screen p-8">
+  <div class="max-w-4xl mx-auto space-y-8">
+    <!-- Header -->
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        Toggle Switch Component Test
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400">
+        Testing toggle switch component with various states
+      </p>
+    </div>
+
+    <!-- Basic Switches -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+        Basic Switches
+      </h2>
+      <div class="space-y-6">
+        <!-- Checked Switch -->
+        <div class="flex items-center justify-between">
+          <label for="switch-checked" class="text-base font-medium text-gray-900 dark:text-white">
+            Checked Switch
+          </label>
+          <button
+            id="switch-checked"
+            role="switch"
+            aria-checked="true"
+            data-state="checked"
+            class="switch-root"
+            onclick="toggleSwitch(this)"
+          >
+            <span class="switch-thumb"></span>
+          </button>
+        </div>
+
+        <!-- Unchecked Switch -->
+        <div class="flex items-center justify-between">
+          <label for="switch-unchecked" class="text-base font-medium text-gray-900 dark:text-white">
+            Unchecked Switch
+          </label>
+          <button
+            id="switch-unchecked"
+            role="switch"
+            aria-checked="false"
+            data-state="unchecked"
+            class="switch-root"
+            onclick="toggleSwitch(this)"
+          >
+            <span class="switch-thumb"></span>
+          </button>
+        </div>
+
+        <!-- Disabled Unchecked -->
+        <div class="flex items-center justify-between opacity-60">
+          <label for="switch-disabled-unchecked" class="text-base font-medium text-gray-900 dark:text-white">
+            Disabled (Unchecked)
+          </label>
+          <button
+            id="switch-disabled-unchecked"
+            role="switch"
+            aria-checked="false"
+            data-state="unchecked"
+            class="switch-root"
+            disabled
+          >
+            <span class="switch-thumb"></span>
+          </button>
+        </div>
+
+        <!-- Disabled Checked -->
+        <div class="flex items-center justify-between opacity-60">
+          <label for="switch-disabled-checked" class="text-base font-medium text-gray-900 dark:text-white">
+            Disabled (Checked)
+          </label>
+          <button
+            id="switch-disabled-checked"
+            role="switch"
+            aria-checked="true"
+            data-state="checked"
+            class="switch-root"
+            disabled
+          >
+            <span class="switch-thumb"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Theme Toggle Example -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+        Theme Toggle (with Icons)
+      </h2>
+      <div class="flex items-center justify-between">
+        <label for="theme-switch" class="text-base font-medium text-gray-900 dark:text-white">
+          Dark Mode
+        </label>
+        <div class="flex items-center gap-2">
+          <!-- Sun Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-yellow-500 dark:text-gray-400">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" />
+          </svg>
+
+          <button
+            id="theme-switch"
+            role="switch"
+            aria-checked="false"
+            data-state="unchecked"
+            class="switch-root"
+            onclick="toggleTheme(this)"
+          >
+            <span class="switch-thumb"></span>
+          </button>
+
+          <!-- Moon Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-gray-400 dark:text-blue-400">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accessibility Info -->
+    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        Accessibility Features
+      </h3>
+      <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+        <li class="flex items-start gap-2">
+          <span class="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+          <span>Keyboard navigation (Tab to focus, Space to toggle)</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+          <span>Focus-visible ring for keyboard users</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+          <span>ARIA attributes (role="switch", aria-checked)</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+          <span>Associated labels for screen readers</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="text-green-600 dark:text-green-400 mt-0.5">✓</span>
+          <span>Proper disabled state styling</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function toggleSwitch(button) {
+      if (button.disabled) return;
+
+      const isChecked = button.getAttribute('aria-checked') === 'true';
+      const newState = !isChecked;
+
+      button.setAttribute('aria-checked', newState.toString());
+      button.setAttribute('data-state', newState ? 'checked' : 'unchecked');
+    }
+
+    function toggleTheme(button) {
+      toggleSwitch(button);
+      document.documentElement.classList.toggle('dark');
+    }
+
+    // Keyboard support
+    document.querySelectorAll('[role="switch"]').forEach(button => {
+      button.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          if (button.id === 'theme-switch') {
+            toggleTheme(button);
+          } else {
+            toggleSwitch(button);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

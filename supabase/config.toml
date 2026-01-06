@@ -1,5 +1,13 @@
+# ============================================================================
 # Supabase Configuration
+# ============================================================================
 # See: https://supabase.com/docs/guides/cli/config
+#
+# This configuration is for LOCAL DEVELOPMENT with Supabase CLI.
+# Production settings are managed in the Supabase Dashboard.
+#
+# Production Supabase Project: https://supabase.com/dashboard
+# ============================================================================
 
 [api]
 enabled = true
@@ -11,7 +19,7 @@ max_rows = 1000
 [db]
 port = 54322
 shadow_port = 54320
-major_version = 15
+major_version = 17
 
 [studio]
 enabled = true
@@ -24,25 +32,67 @@ port = 54324
 
 [storage]
 enabled = true
+# Maximum file size: 50MB (matches STORAGE_CONFIG in supabaseConfig.ts)
 file_size_limit = "50MiB"
 
 [auth]
 enabled = true
+# Local development site URL
 site_url = "http://localhost:5173"
 additional_redirect_urls = ["https://localhost:5173"]
+# JWT token expiration (1 hour)
 jwt_expiry = 3600
 enable_signup = true
 
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
+# Disable email confirmations for local development
 enable_confirmations = false
 
 [auth.external.google]
+# Enable in production if using Google OAuth
 enabled = false
+# client_id = ""
+# secret = ""
 
 [analytics]
 enabled = false
 
 [functions]
 # Edge functions configuration
+# For production, deploy with: supabase functions deploy
+
+# ============================================================================
+# PRODUCTION SETTINGS (Reference Only - Configure in Dashboard)
+# ============================================================================
+#
+# These settings should be configured in the Supabase Dashboard for production:
+#
+# 1. Authentication (Authentication > Providers)
+#    - Site URL: https://your-production-domain.com
+#    - Redirect URLs: Add all valid callback URLs
+#    - Email templates: Customize for your brand
+#
+# 2. Database (Database > Settings)
+#    - Connection pooling: Enable with Transaction mode
+#    - SSL enforcement: Enable
+#    - Backups: Enable Point-in-time Recovery
+#
+# 3. Storage (Storage > Policies)
+#    - Apply RLS policies from 00006_production_security.sql
+#    - Configure bucket policies
+#
+# 4. Edge Functions (Edge Functions > Settings)
+#    - Set environment variables
+#    - Configure secrets
+#
+# 5. API Settings (Settings > API)
+#    - Regenerate keys if needed
+#    - Configure rate limiting
+#
+# 6. Realtime (Database > Replication)
+#    - Enable for tables that need real-time updates
+#    - Configure publications
+#
+# ============================================================================

@@ -3,14 +3,16 @@
   "category": "Accessibility",
   "title": "Keyboard Navigation and Shortcuts",
   "description": "Keyboard accessibility - full form navigation",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
-  "model": "opus",
+  "updatedAt": "2025-12-25T04:36:34.670Z",
+  "model": "sonnet",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-25T04:28:28.668Z"
 }

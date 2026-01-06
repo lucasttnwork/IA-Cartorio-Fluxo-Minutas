@@ -1,0 +1,87 @@
+{
+  "category": "Uncategorized",
+  "description": "Implement Full Supabase Production Integration\n\nConfigure and deploy the application to use production Supabase credentials and services instead of development/local environment.\n\nRequirements:\n- Create production Supabase project if not already exists\n- Set up production database schema matching development environment\n- Configure environment variables with production Supabase credentials (URL, anon key, service role key)\n- Update API client configuration to use production endpoints\n- Set up proper Row Level Security (RLS) policies for production data access\n- Configure authentication providers for production use\n- Migrate or seed necessary initial data to production database\n- Set up database backups and point-in-time recovery\n- Configure connection pooling for production load\n- Update CORS settings and allowed origins for production domains\n- Test all critical API operations against production environment\n- Document production credentials storage and access procedures\n- Ensure proper secrets management (no credentials in code repository)\n\nVerification Steps:\n- Confirm all CRUD operations work correctly\n- Verify authentication flow completes successfully\n- Test real-time subscriptions if applicable\n- Validate file storage operations if using Supabase Storage\n- Check error handling and logging in production context",
+  "title": "Deploy Supabase to production environment",
+  "images": [],
+  "imagePaths": [],
+  "textFilePaths": [],
+  "skipTests": false,
+  "model": "opus",
+  "thinkingLevel": "none",
+  "branchName": "main",
+  "priority": 2,
+  "planningMode": "spec",
+  "requirePlanApproval": false,
+  "titleGenerating": false,
+  "status": "verified",
+  "id": "feature-1766668156485-un5l7sns2",
+  "startedAt": "2025-12-25T14:04:05.879Z",
+  "updatedAt": "2025-12-25T14:13:44.950Z",
+  "planSpec": {
+    "status": "approved",
+    "version": 1,
+    "reviewedByUser": false,
+    "content": "🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/*.{ts,tsx,js,jsx,json,env*}\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/supabase*\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/.env*\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\lib\\\\supabase.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\.env\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\.env.example\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"src/**/*.{ts,tsx}\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/supabase/**/*\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/**/*.{ts,js}\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\supabase\\\\config.toml\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\supabase\\\\migrations\\\\00001_initial_schema.sql\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/src/**/*.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\src\\\\index.ts\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\vite.config.ts\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/package.json\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\package.json\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\worker\\\\package.json\"\n}\n\n🔧 Tool: Grep\nInput: {\n  \"pattern\": \"SUPABASE|supabase\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\",\n  \"glob\": \"*.{ts,tsx,js}\",\n  \"head_limit\": 30\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\hooks\\\\useAuth.tsx\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"**/config/**/*.{ts,js}\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\src\\\\config\\\\sessionConfig.ts\"\n}\n\n🔧 Tool: Grep\nInput: {\n  \"pattern\": \".gitignore\",\n  \"path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \".gitignore\"\n}\n\n🔧 Tool: Read\nInput: {\n  \"file_path\": \"C:\\\\Users\\\\Lucas\\\\OneDrive\\\\Documentos\\\\PROJETOS - CODE\\\\Claude-Code-Projects\\\\IA-Cartório-Fluxo-Minutas\\\\.gitignore\"\n}\n\n🔧 Tool: Glob\nInput: {\n  \"pattern\": \"worker/.env*\"\n}\n\n# Specification: Implement Full Supabase Production Integration\n\n## 1. Problem\nThe application currently uses Supabase credentials that are configured locally in `.env` files, but lacks proper production-grade configuration management, environment validation, CORS settings for production domains, and documentation for secure deployment. The goal is to ensure the application is production-ready with proper secrets management, environment-specific configurations, and enhanced security policies.\n\n## 2. Solution\nCreate a comprehensive production configuration system that includes: environment validation utilities, production-specific Supabase client configuration with proper connection pooling and retry logic, enhanced RLS policies for production security, CORS and allowed origins configuration, and documentation for secure credentials management.\n\n## 3. Acceptance Criteria\n- GIVEN production environment variables are set, WHEN the application starts, THEN it validates all required credentials and fails gracefully with clear error messages if missing\n- GIVEN a production deployment, WHEN configuring Supabase client, THEN it uses proper connection pooling settings and production optimizations\n- GIVEN production RLS policies are applied, WHEN users access data, THEN they can only access data within their organization\n- GIVEN production CORS settings, WHEN requests come from allowed domains, THEN they are accepted; otherwise, they are rejected\n- GIVEN a new developer joining the team, WHEN they read the documentation, THEN they understand how to manage production credentials securely\n\n## 4. Files to Modify\n| File | Purpose | Action |\n|------|---------|--------|\n| src/lib/supabase.ts | Add production optimizations and environment validation | modify |\n| src/config/environment.ts | Centralized environment configuration and validation | create |\n| worker/src/config/environment.ts | Worker environment configuration | create |\n| .env.example | Update with complete production variable documentation | modify |\n| .env.production.example | Template for production environment variables | create |\n| supabase/migrations/00006_production_rls_policies.sql | Enhanced RLS policies for production | create |\n| docs/PRODUCTION_DEPLOYMENT.md | Documentation for production deployment | create |\n| src/lib/supabaseConfig.ts | Production-optimized Supabase configuration | create |\n| worker/src/index.ts | Add environment validation at startup | modify |\n\n## 5. Implementation Tasks\n```tasks\n- [ ] T001: Create centralized environment configuration | File: src/config/environment.ts\n- [ ] T002: Create production Supabase configuration with optimizations | File: src/lib/supabaseConfig.ts\n- [ ] T003: Update main Supabase client with production settings | File: src/lib/supabase.ts\n- [ ] T004: Create worker environment configuration | File: worker/src/config/environment.ts\n- [ ] T005: Update worker with environment validation | File: worker/src/index.ts\n- [ ] T006: Update .env.example with complete documentation | File: .env.example\n- [ ] T007: Create production environment template | File: .env.production.example\n- [ ] T008: Create enhanced production RLS policies migration | File: supabase/migrations/00006_production_rls_policies.sql\n- [ ] T009: Create production deployment documentation | File: docs/PRODUCTION_DEPLOYMENT.md\n```\n\n## 6. Verification\n- Run the development server and verify environment validation works\n- Check that Supabase client initializes correctly with production settings\n- Verify authentication flow works with production configuration\n- Test CRUD operations on cases, documents, and entities\n- Verify real-time subscriptions work correctly\n- Check console for proper error handling and logging",
+    "generatedAt": "2025-12-25T13:19:30.991Z",
+    "tasks": [
+      {
+        "id": "T001",
+        "description": "Create centralized environment configuration",
+        "filePath": "src/config/environment.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T002",
+        "description": "Create production Supabase configuration with optimizations",
+        "filePath": "src/lib/supabaseConfig.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T003",
+        "description": "Update main Supabase client with production settings",
+        "filePath": "src/lib/supabase.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T004",
+        "description": "Create worker environment configuration",
+        "filePath": "worker/src/config/environment.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T005",
+        "description": "Update worker with environment validation",
+        "filePath": "worker/src/index.ts",
+        "status": "pending"
+      },
+      {
+        "id": "T006",
+        "description": "Update .env.example with complete documentation",
+        "filePath": ".env.example",
+        "status": "pending"
+      },
+      {
+        "id": "T007",
+        "description": "Create production environment template",
+        "filePath": ".env.production.example",
+        "status": "pending"
+      },
+      {
+        "id": "T008",
+        "description": "Create enhanced production RLS policies migration",
+        "filePath": "supabase/migrations/00006_production_rls_policies.sql",
+        "status": "pending"
+      },
+      {
+        "id": "T009",
+        "description": "Create production deployment documentation",
+        "filePath": "docs/PRODUCTION_DEPLOYMENT.md",
+        "status": "pending"
+      }
+    ],
+    "tasksTotal": 9,
+    "tasksCompleted": 4,
+    "approvedAt": "2025-12-25T13:19:30.993Z",
+    "currentTaskId": "T005"
+  }
+}

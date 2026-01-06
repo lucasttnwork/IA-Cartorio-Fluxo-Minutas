@@ -3,16 +3,18 @@
   "category": "Document Processing",
   "title": "Large File Upload Handling",
   "description": "Large file upload handling",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "moderate",
   "dependencies": [
     "document-upload"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-24T19:39:35.138Z",
   "model": "opus",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-24T19:30:40.398Z"
 }

@@ -4,6 +4,7 @@ import {
   MagnifyingGlassIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
+import EmptyStateIllustration from '../components/common/EmptyStateIllustration'
 import { Card, CardContent } from '../components/ui/card'
 import { Input } from '../components/ui/input'
 import { Button } from '../components/ui/button'
@@ -175,9 +176,10 @@ export default function TestCaseSearchPage() {
           >
             <Card className="glass-card">
               <CardContent className="py-12 text-center">
-                <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                  <MagnifyingGlassIcon className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-                </div>
+                <EmptyStateIllustration
+                  type="search"
+                  className="w-32 h-32 mb-2"
+                />
                 <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
                   No cases found
                 </h3>

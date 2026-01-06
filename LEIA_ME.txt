@@ -1,0 +1,191 @@
+╔════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                   AUDITORIA DE INTERNACIONALIZAÇÃO (i18n)                                     ║
+║                    Strings em Inglês em src/stores/ e src/hooks/                              ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+📋 RELATÓRIOS GERADOS
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+Este diretório contém 3 arquivos de análise completa:
+
+1. STRINGS_EM_INGLES_RELATORIO.md
+   └─ Relatório detalhado com todas as strings encontradas
+   └─ Contexto completo de cada string
+   └─ Sugestões de tradução
+   └─ Plano de ação em 4 fases
+   └─ Arquivo: ~400 linhas
+
+2. STRINGS_RESUMO_TABULAR.txt
+   └─ Resumo visual em formato tabular
+   └─ Fácil de ler e navegar
+   └─ Sumário executivo no topo
+   └─ Plano de ação rápido
+   └─ Arquivo: ~200 linhas
+
+3. STRINGS_MAPA_POR_ARQUIVO.md
+   └─ Mapa detalhado arquivo por arquivo
+   └─ Código-fonte de cada string encontrada
+   └─ Número de linhas exatas
+   └─ Impacto em cada feature
+   └─ Checklist de implementação
+   └─ Arquivo: ~300 linhas
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+🎯 DESCOBERTAS PRINCIPAIS
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+STRINGS VISÍVEIS PARA O USUÁRIO: 11
+├─ useAuth.tsx:141 (1x)
+├─ useCases.ts:180,307 (2x)
+├─ useCanvasData.ts:62-71,82 (5x)
+├─ useCaseDocuments.ts:37 (1x)
+├─ useDocumentNames.ts:59 (1x)
+└─ useEvidenceChain.ts:247 (1x)
+
+STRINGS COM ERRO DE ACENTUAÇÃO: 2
+├─ useDocumentPreview.ts:99,104
+└─ useImagePreview.ts:90,95
+
+CONSOLE MESSAGES (Desenvolvimento): 22+
+└─ Não aparecem para usuário final
+└─ Prioridade baixa
+
+ARQUIVOS SEM PROBLEMAS: 3
+├─ src/stores/auditStore.ts
+├─ src/stores/caseStore.ts
+└─ src/stores/flowStore.ts
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+⚠️  SEVERIDADE
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+CRÍTICA (11 strings):
+  Aparecem para usuário final em mensagens de erro
+  Devem ser traduzidas IMEDIATAMENTE
+  Afetam experiência do usuário
+
+MÉDIA (4 strings):
+  Português com erro de acentuação (falta ã em "não")
+  Possíveis erros técnicos em inglês
+  Devem ser corrigidas em curto prazo
+
+BAIXA (22+ strings):
+  Apenas em console.log/console.error
+  Desenvolvimento apenas
+  Não visível para usuário final
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+📝 COMO USAR ESTE RELATÓRIO
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+1. LEITURA RÁPIDA (5 minutos):
+   → Leia STRINGS_RESUMO_TABULAR.txt
+   → Veja tabelas e plano de ação
+
+2. IMPLEMENTAÇÃO (30 minutos):
+   → Consulte STRINGS_MAPA_POR_ARQUIVO.md
+   → Use checklist para implementar correções
+   → Veja código exato de cada string
+
+3. DETALHES COMPLETOS (1 hora):
+   → Leia STRINGS_EM_INGLES_RELATORIO.md
+   → Entenda contexto completo
+   → Veja sugestões de tradução
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+🚀 PRÓXIMOS PASSOS
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+IMEDIATO (Hoje):
+□ Ler STRINGS_RESUMO_TABULAR.txt
+□ Definir prioridades com o time
+□ Alocar desenvolvedor
+
+SEMANA 1 (Tradução):
+□ Traduzir 11 strings críticas
+□ Corrigir acentuação (2 strings)
+□ Testar em interface
+
+SEMANA 2 (Consolidação):
+□ Criar arquivo de i18n centralizado
+□ Implementar verificação de linter
+□ Documentar processo
+
+FUTURO (Manutenção):
+□ Revisar novos erros setError()
+□ Manter strings centralizadas
+□ Considerar i18next ou similar
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+📊 ESTATÍSTICAS
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+Total de Arquivos Analisados:    13 (10 hooks + 3 stores)
+Arquivos com Problemas:          10
+Strings Críticas:                 11
+Erros de Acentuação:              2
+Console Messages:                 22+
+Tempo de Correção Estimado:       4-6 horas
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+💡 DICAS
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+1. Use STRINGS_MAPA_POR_ARQUIVO.md para encontrar localizações exatas
+2. Copie sugestões de tradução de STRINGS_RESUMO_TABULAR.txt
+3. Use checklist de STRINGS_MAPA_POR_ARQUIVO.md para rastrear progresso
+4. Teste mensagens de erro em interface antes de fazer commit
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+📧 QUESTÕES FREQUENTES
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+P: Por que console.log em inglês é OK?
+R: Console é desenvolvedor-facing, não usuário-facing. Baixa prioridade.
+
+P: Qual arquivo é mais crítico?
+R: useCanvasData.ts (5 strings) e useAuth.tsx (autenticação)
+
+P: Como implementar i18n?
+R: Use i18next, react-i18next, ou crie arquivo locale simples
+
+P: Preciso traduzir tudo agora?
+R: Pelo menos as 11 strings críticas sim. Console e console pode esperar.
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+🔗 ARQUIVOS RELACIONADOS
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+Este relatório foi gerado analisando:
+- src/stores/auditStore.ts
+- src/stores/caseStore.ts
+- src/stores/flowStore.ts
+- src/hooks/useAuth.tsx
+- src/hooks/useBatchSelection.ts
+- src/hooks/useBulkUpload.ts
+- src/hooks/useCanvasData.ts
+- src/hooks/useCases.ts
+- src/hooks/useCaseDocuments.ts
+- src/hooks/useChatHistory.ts
+- src/hooks/useDocumentNames.ts
+- src/hooks/useDocumentPreview.ts
+- src/hooks/useDocumentProcessingStatus.ts
+- src/hooks/useDraftAutoSave.ts
+- src/hooks/useEvidenceChain.ts
+- + 15+ outros arquivos de hooks
+
+════════════════════════════════════════════════════════════════════════════════════════════════
+
+✅ ÚLTIMA ATUALIZAÇÃO: 2025-12-25
+
+Para mais informações, consulte os arquivos markdown de relatório detalhado.
+
+════════════════════════════════════════════════════════════════════════════════════════════════

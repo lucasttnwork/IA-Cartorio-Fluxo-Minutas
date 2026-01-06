@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import Avatar from './Avatar'
 import type { User } from '../../types'
+import { useNavigate } from 'react-router-dom'
 
 interface UserProfileDropdownProps {
   user: User | null
@@ -24,9 +25,9 @@ interface UserProfileDropdownProps {
 }
 
 const roleLabels: Record<string, string> = {
-  admin: 'Administrator',
+  admin: 'Administrador',
   supervisor: 'Supervisor',
-  clerk: 'Clerk',
+  clerk: 'Escrevente',
 }
 
 const roleIcons: Record<string, React.ReactNode> = {
@@ -40,23 +41,25 @@ export default function UserProfileDropdown({
   onSignOut,
   collapsed = false
 }: UserProfileDropdownProps) {
+  const navigate = useNavigate()
+
   const menuItems = [
     {
-      label: 'View Profile',
+      label: 'Ver Perfil',
       icon: UserCircleIcon,
       onClick: () => {
-        // TODO: Navigate to profile page
+        navigate('/profile')
       },
     },
     {
-      label: 'Settings',
+      label: 'Configurações',
       icon: Cog6ToothIcon,
       onClick: () => {
-        // TODO: Navigate to settings
+        navigate('/settings')
       },
     },
     {
-      label: 'Sign Out',
+      label: 'Sair',
       icon: ArrowRightOnRectangleIcon,
       onClick: onSignOut,
       danger: true,
@@ -74,7 +77,7 @@ export default function UserProfileDropdown({
           )}
         >
           <Avatar
-            name={user?.full_name || 'User'}
+            name={user?.full_name || 'Usuário'}
             size="sm"
             status="online"
           />
@@ -83,12 +86,12 @@ export default function UserProfileDropdown({
             <>
               <div className="flex-1 min-w-0 text-left">
                 <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                  {user?.full_name || 'User'}
+                  {user?.full_name || 'Usuário'}
                 </p>
                 <div className="flex items-center gap-1">
                   {user?.role && roleIcons[user.role]}
                   <p className="text-xs text-gray-500 dark:text-gray-400">
-                    {roleLabels[user?.role || 'clerk'] || 'Clerk'}
+                    {roleLabels[user?.role || 'clerk'] || 'Escrevente'}
                   </p>
                 </div>
               </div>
@@ -107,17 +110,17 @@ export default function UserProfileDropdown({
         <div className="px-4 py-3 bg-gray-50/50 dark:bg-gray-900/30">
           <div className="flex items-center gap-3">
             <Avatar
-              name={user?.full_name || 'User'}
+              name={user?.full_name || 'Usuário'}
               size="md"
             />
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
-                {user?.full_name || 'User'}
+                {user?.full_name || 'Usuário'}
               </p>
               <div className="flex items-center gap-1">
                 {user?.role && roleIcons[user.role]}
                 <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                  {roleLabels[user?.role || 'clerk'] || 'Clerk'}
+                  {roleLabels[user?.role || 'clerk'] || 'Escrevente'}
                 </p>
               </div>
             </div>

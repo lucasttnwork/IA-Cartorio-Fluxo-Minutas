@@ -76,6 +76,7 @@ export function BoundingBoxOverlay({
   hoveredId,
   onBoxClick,
   onBoxHover,
+  onBoxOverride,
   className = '',
 }: BoundingBoxOverlayProps) {
   // Calculate scale factors based on document dimensions
@@ -116,6 +117,14 @@ export function BoundingBoxOverlay({
   const handleBoxMouseLeave = useCallback(() => {
     onBoxHover?.(null)
   }, [onBoxHover])
+
+  // Create override handler for each box
+  const handleBoxOverride = useCallback(
+    (boxId: string, newValue: string) => {
+      onBoxOverride?.(boxId, newValue)
+    },
+    [onBoxOverride]
+  )
 
   // Don't render if dimensions are invalid
   if (
@@ -182,6 +191,7 @@ export function BoundingBoxOverlay({
               onClick={() => handleBoxClick(box.id, originalIndex)}
               onMouseEnter={() => handleBoxMouseEnter(box.id)}
               onMouseLeave={handleBoxMouseLeave}
+              onOverride={(newValue) => handleBoxOverride(box.id, newValue)}
             />
           )
         })}

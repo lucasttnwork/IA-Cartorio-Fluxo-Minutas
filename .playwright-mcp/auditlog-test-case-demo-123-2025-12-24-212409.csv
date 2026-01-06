@@ -1,0 +1,5 @@
+﻿Data/Hora,Usuário,Função,Ação,Categoria,Tipo do Alvo,Alvo,Descrição,Detalhes,Status,Alterações,Evidências,ID do Registro,ID do Alvo,ID do Caso
+24/12/2025 21:22:22,Ana Costa,-,Criação de Imóvel,Imóvel,property,"Rua das Flores, 123","Imóvel ""Rua das Flores, 123"" foi criado",-,Sucesso,,,audit-1766622142117-049jx9o,property-1766622142117,test-case-demo-123
+24/12/2025 21:22:18,Carlos Oliveira,-,Atualização de Pessoa,Pessoa,person,João Silva,"Pessoa ""João Silva"" foi atualizada","Campos alterados: CPF, Telefone",Sucesso,CPF: 123.456.789-00 → 987.654.321-00; Telefone: (11) 99999-1111 → (11) 98888-2222,,audit-1766622138250-3rxcw8g,person-001,test-case-demo-123
+24/12/2025 21:22:13,Maria Santos,-,Criação de Pessoa,Pessoa,person,João Silva,"Pessoa ""João Silva"" foi criada",-,Sucesso,,,audit-1766622133465-yxfrier,person-1766622133465,test-case-demo-123
+24/12/2025 21:22:08,Maria Santos,-,Upload de Documento,Documento,document,Contrato_Compra_Venda.pdf,"Documento ""Contrato_Compra_Venda.pdf"" foi carregado",-,Sucesso,,,audit-1766622128513-g3pa108,doc-1766622128513,test-case-demo-123

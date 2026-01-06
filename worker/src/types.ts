@@ -11,6 +11,8 @@ export interface ProcessingJob {
   created_at: string
   started_at: string | null
   completed_at: string | null
+  last_retry_at: string | null
+  retry_delay_ms: number
 }
 
 export type JobType =
@@ -304,6 +306,7 @@ export type MergeSuggestionStatus = 'pending' | 'accepted' | 'rejected' | 'auto_
  */
 export type MergeSuggestionReason =
   | 'same_cpf'                       // CPF match (high confidence)
+  | 'same_name'                      // Exact name match (100% similarity)
   | 'similar_name'                   // Name similarity above threshold
   | 'same_rg'                        // RG match
   | 'name_and_birth_date'            // Name + birth date match

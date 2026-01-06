@@ -3,7 +3,7 @@
   "category": "UI Design",
   "title": "Edge/Connection Styling on Canvas",
   "description": "Edge/connection styling on canvas",
-  "status": "backlog",
+  "status": "verified",
   "priority": 2,
   "complexity": "simple",
   "dependencies": [
@@ -11,9 +11,11 @@
     "canvas-connections"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
-  "model": "opus",
+  "updatedAt": "2025-12-24T23:41:21.854Z",
+  "model": "sonnet",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-24T23:37:18.403Z"
 }

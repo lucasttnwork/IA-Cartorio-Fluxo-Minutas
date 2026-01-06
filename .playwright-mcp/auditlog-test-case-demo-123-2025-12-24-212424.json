@@ -1,0 +1,83 @@
+[
+  {
+    "id": "audit-1766622142117-049jx9o",
+    "caseId": "test-case-demo-123",
+    "action": "property_create",
+    "category": "property",
+    "status": "success",
+    "targetType": "property",
+    "targetId": "property-1766622142117",
+    "targetLabel": "Rua das Flores, 123",
+    "description": "Imóvel \"Rua das Flores, 123\" foi criado",
+    "userId": "user-789",
+    "userName": "Ana Costa",
+    "timestamp": "2025-12-25T00:22:22.117Z",
+    "createdAt": "2025-12-25T00:22:22.117Z"
+  },
+  {
+    "id": "audit-1766622138250-3rxcw8g",
+    "caseId": "test-case-demo-123",
+    "action": "person_update",
+    "category": "person",
+    "status": "success",
+    "targetType": "person",
+    "targetId": "person-001",
+    "targetLabel": "João Silva",
+    "description": "Pessoa \"João Silva\" foi atualizada",
+    "details": "Campos alterados: CPF, Telefone",
+    "changes": [
+      {
+        "fieldName": "CPF",
+        "fieldPath": "cpf",
+        "previousValue": "123.456.789-00",
+        "newValue": "987.654.321-00",
+        "previousDisplayValue": "123.456.789-00",
+        "newDisplayValue": "987.654.321-00",
+        "source": "user"
+      },
+      {
+        "fieldName": "Telefone",
+        "fieldPath": "phone",
+        "previousValue": "(11) 99999-1111",
+        "newValue": "(11) 98888-2222",
+        "previousDisplayValue": "(11) 99999-1111",
+        "newDisplayValue": "(11) 98888-2222",
+        "source": "user"
+      }
+    ],
+    "userId": "user-456",
+    "userName": "Carlos Oliveira",
+    "timestamp": "2025-12-25T00:22:18.250Z",
+    "createdAt": "2025-12-25T00:22:18.250Z"
+  },
+  {
+    "id": "audit-1766622133465-yxfrier",
+    "caseId": "test-case-demo-123",
+    "action": "person_create",
+    "category": "person",
+    "status": "success",
+    "targetType": "person",
+    "targetId": "person-1766622133465",
+    "targetLabel": "João Silva",
+    "description": "Pessoa \"João Silva\" foi criada",
+    "userId": "user-123",
+    "userName": "Maria Santos",
+    "timestamp": "2025-12-25T00:22:13.465Z",
+    "createdAt": "2025-12-25T00:22:13.465Z"
+  },
+  {
+    "id": "audit-1766622128513-g3pa108",
+    "caseId": "test-case-demo-123",
+    "action": "document_upload",
+    "category": "document",
+    "status": "success",
+    "targetType": "document",
+    "targetId": "doc-1766622128513",
+    "targetLabel": "Contrato_Compra_Venda.pdf",
+    "description": "Documento \"Contrato_Compra_Venda.pdf\" foi carregado",
+    "userId": "user-123",
+    "userName": "Maria Santos",
+    "timestamp": "2025-12-25T00:22:08.513Z",
+    "createdAt": "2025-12-25T00:22:08.513Z"
+  }
+]

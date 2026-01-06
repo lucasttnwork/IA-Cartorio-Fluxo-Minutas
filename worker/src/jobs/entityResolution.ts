@@ -85,6 +85,77 @@ interface MergeCandidate {
 }
 
 /**
+ * Build and save canonical data for the case
+ *
+ * This function collects all people, properties and graph edges
+ * created during entity resolution and saves them to the case's
+ * canonical_data field, which is required for draft generation.
+ */
+async function buildAndSaveCanonicalData(
+  supabase: SupabaseClient,
+  caseId: string
+): Promise<void> {
+  console.log(`[buildAndSaveCanonicalData] Building canonical data for case ${caseId}`)
+
+  // 1. Fetch all people for this case
+  const { data: people, error: peopleError } = await supabase
+    .from('people')
+    .select('*')
+    .eq('case_id', caseId)
+
+  if (peopleError) {
+    console.error('[buildAndSaveCanonicalData] Error fetching people:', peopleError.message)
+  }
+
+  // 2. Fetch all properties for this case
+  const { data: properties, error: propertiesError } = await supabase
+    .from('properties')
+    .select('*')
+    .eq('case_id', caseId)
+
+  if (propertiesError) {
+    console.error('[buildAndSaveCanonicalData] Error fetching properties:', propertiesError.message)
+  }
+
+  // 3. Fetch all graph edges for this case
+  const { data: edges, error: edgesError } = await supabase
+    .from('graph_edges')
+    .select('*')
+    .eq('case_id', caseId)
+
+  if (edgesError) {
+    console.error('[buildAndSaveCanonicalData] Error fetching edges:', edgesError.message)
+  }
+
+  // 4. Build canonical_data object
+  const canonicalData = {
+    people: people || [],
+    properties: properties || [],
+    edges: edges || [],
+    deal: null // Will be populated later via chat operations
+  }
+
+  console.log(`[buildAndSaveCanonicalData] Canonical data built:`, {
+    people_count: canonicalData.people.length,
+    properties_count: canonicalData.properties.length,
+    edges_count: canonicalData.edges.length
+  })
+
+  // 5. Update the case with canonical_data
+  const { error: updateError } = await supabase
+    .from('cases')
+    .update({ canonical_data: canonicalData })
+    .eq('id', caseId)
+
+  if (updateError) {
+    console.error('[buildAndSaveCanonicalData] Error updating case:', updateError.message)
+    throw new Error(`Failed to save canonical data: ${updateError.message}`)
+  }
+
+  console.log(`[buildAndSaveCanonicalData] Canonical data saved successfully for case ${caseId}`)
+}
+
+/**
  * Run the entity resolution job
  *
  * This job:
@@ -296,7 +367,7 @@ export async function runEntityResolutionJob(
           result.deed_documents_processed++
 
           // Extract property candidates from this document
-          const propertyResults = propertyExtractor.extractProperties(group)
+          const propertyResults = await propertyExtractor.extractProperties(group)
 
           for (const propResult of propertyResults) {
             allPropertyCandidates.push(propResult.candidate)
@@ -388,6 +459,9 @@ export async function runEntityResolutionJob(
       graph_edges_created: result.graph_edges_created,
       deed_documents_processed: result.deed_documents_processed,
     })
+
+    // Build and save canonical_data for draft generation
+    await buildAndSaveCanonicalData(supabase, job.case_id)
 
     return result
   } catch (error) {

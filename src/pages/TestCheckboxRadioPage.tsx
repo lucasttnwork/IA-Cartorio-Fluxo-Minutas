@@ -92,7 +92,7 @@ export default function TestCheckboxRadioPage() {
                     />
                     <Label
                       htmlFor="disabled"
-                      className="text-sm text-gray-700 dark:text-gray-300"
+                      className="text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed"
                     >
                       Disabled checkbox
                     </Label>
@@ -106,7 +106,7 @@ export default function TestCheckboxRadioPage() {
                     />
                     <Label
                       htmlFor="disabled-checked"
-                      className="text-sm text-gray-700 dark:text-gray-300"
+                      className="text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed"
                     >
                       Disabled checked
                     </Label>
@@ -318,7 +318,7 @@ export default function TestCheckboxRadioPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="disabled" id="disabled-radio" disabled />
-                      <Label htmlFor="disabled-radio" className="text-sm text-gray-700 dark:text-gray-300">
+                      <Label htmlFor="disabled-radio" className="text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed">
                         Disabled option
                       </Label>
                     </div>
@@ -393,7 +393,7 @@ export default function TestCheckboxRadioPage() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="disabled-payment" id="disabled-payment" disabled />
-                      <Label htmlFor="disabled-payment" className="text-sm text-gray-700 dark:text-gray-300">
+                      <Label htmlFor="disabled-payment" className="text-sm text-gray-400 dark:text-gray-500 cursor-not-allowed">
                         Disabled payment option
                       </Label>
                     </div>

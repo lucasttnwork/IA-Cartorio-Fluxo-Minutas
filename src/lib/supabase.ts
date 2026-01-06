@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '../types/database'
 import type {
   ConflictField,
@@ -8,65 +8,143 @@ import type {
   ResolveConflictResponse,
 } from '../types'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// Import centralized configuration from T001 and T002
+import { config, isDevelopment, logEnvironmentInfo } from '../config/environment'
+import {
+  createSupabaseClientOptions,
+  logSupabaseConfig,
+  STORAGE_CONFIG,
+  validateFileForUpload,
+  generateStoragePath,
+  withRetry,
+  getErrorMessage,
+} from './supabaseConfig'
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
-}
+// Note: Additional exports from supabaseConfig are re-exported at the bottom of this file
 
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-  },
-  realtime: {
-    params: {
-      eventsPerSecond: 10,
-    },
-  },
-})
+// ============================================================================
+// Supabase Client Initialization
+// ============================================================================
 
-// Helper to get signed URLs for document storage
-export async function getSignedUrl(
-  path: string,
-  expiresIn: number = 3600
-): Promise<string | null> {
-  const { data, error } = await supabase.storage
-    .from('documents')
-    .createSignedUrl(path, expiresIn)
+/**
+ * Create and configure the Supabase client with production-optimized settings.
+ * Uses centralized environment configuration for validation and type safety.
+ */
+function initializeSupabaseClient(): SupabaseClient<Database> {
+  const clientOptions = createSupabaseClientOptions()
 
-  if (error) {
-    console.error('Error getting signed URL:', error)
-    return null
+  // Log configuration in development mode
+  if (isDevelopment) {
+    logEnvironmentInfo()
+    logSupabaseConfig()
   }
 
-  return data.signedUrl
+  return createClient<Database>(
+    config.supabase.url,
+    config.supabase.anonKey,
+    clientOptions
+  )
 }
 
-// Helper to upload document
+/**
+ * The main Supabase client instance.
+ * Configured with production optimizations including:
+ * - Automatic token refresh
+ * - Session persistence with custom storage key
+ * - PKCE flow for enhanced security
+ * - Request timeouts
+ * - Environment-specific realtime event limits
+ */
+export const supabase = initializeSupabaseClient()
+
+// ============================================================================
+// Storage Helper Functions (Production-Optimized)
+// ============================================================================
+
+/**
+ * Get a signed URL for document access.
+ * Uses production-optimized expiration times from STORAGE_CONFIG.
+ *
+ * @param path - Path to the document in storage
+ * @param expiresIn - Expiration time in seconds (defaults to environment-specific value)
+ * @returns Signed URL or null if error
+ */
+export async function getSignedUrl(
+  path: string,
+  expiresIn: number = STORAGE_CONFIG.signedUrlExpiration
+): Promise<string | null> {
+  try {
+    const { data, error } = await withRetry(async () => {
+      return supabase.storage
+        .from(STORAGE_CONFIG.documentsBucket)
+        .createSignedUrl(path, expiresIn)
+    })
+
+    if (error) {
+      console.error('Error getting signed URL:', getErrorMessage(error))
+      return null
+    }
+
+    return data.signedUrl
+  } catch (error) {
+    console.error('Error getting signed URL after retries:', getErrorMessage(error))
+    return null
+  }
+}
+
+/**
+ * Upload a document to Supabase storage.
+ * Includes validation, production-optimized cache control, and retry logic.
+ *
+ * @param file - File to upload
+ * @param caseId - Case ID to associate with the document
+ * @returns Upload result with path or error
+ */
 export async function uploadDocument(
   file: File,
   caseId: string
 ): Promise<{ path: string; error: Error | null }> {
-  const fileName = `${caseId}/${Date.now()}-${file.name}`
-
-  const { data, error } = await supabase.storage
-    .from('documents')
-    .upload(fileName, file, {
-      cacheControl: '3600',
-      upsert: false,
-    })
-
-  if (error) {
-    return { path: '', error }
+  // Validate file before upload using production config
+  const validation = validateFileForUpload(file)
+  if (!validation.valid) {
+    return { path: '', error: new Error(validation.error) }
   }
 
-  return { path: data.path, error: null }
+  // Generate unique storage path
+  const fileName = generateStoragePath(caseId, file.name)
+
+  try {
+    const { data, error } = await withRetry(async () => {
+      return supabase.storage
+        .from(STORAGE_CONFIG.documentsBucket)
+        .upload(fileName, file, {
+          cacheControl: STORAGE_CONFIG.defaultCacheControl,
+          upsert: false,
+        })
+    })
+
+    if (error) {
+      return { path: '', error: new Error(getErrorMessage(error)) }
+    }
+
+    return { path: data.path, error: null }
+  } catch (error) {
+    return { path: '', error: new Error(getErrorMessage(error)) }
+  }
 }
 
-// Subscribe to realtime changes for a case
+// ============================================================================
+// Realtime Subscription Functions
+// ============================================================================
+
+/**
+ * Subscribe to realtime changes for a case.
+ * Monitors documents, entities (people/properties), drafts, and processing jobs.
+ *
+ * @param caseId - Case ID to subscribe to
+ * @param callbacks - Callback functions for different entity changes
+ * @returns Unsubscribe function
+ */
 export function subscribeToCase(
   caseId: string,
   callbacks: {
@@ -135,7 +213,13 @@ export function subscribeToCase(
   }
 }
 
-// Subscribe to processing jobs for a specific document
+/**
+ * Subscribe to processing jobs for a specific document.
+ *
+ * @param documentId - Document ID to monitor
+ * @param callbacks - Callback functions for job and document changes
+ * @returns Unsubscribe function
+ */
 export function subscribeToDocumentProcessing(
   documentId: string,
   callbacks: {
@@ -172,7 +256,18 @@ export function subscribeToDocumentProcessing(
   }
 }
 
-// Create a processing job for a document or case
+// ============================================================================
+// Processing Job Functions
+// ============================================================================
+
+/**
+ * Create a processing job for a document or case.
+ *
+ * @param caseId - Case ID
+ * @param documentId - Document ID (null for case-level jobs)
+ * @param jobType - Type of processing job
+ * @returns Created job data or error
+ */
 export async function createProcessingJob(
   caseId: string,
   documentId: string | null,
@@ -200,7 +295,96 @@ export async function createProcessingJob(
   return { data, error: null }
 }
 
-// Update document status
+/**
+ * Retry a failed processing job.
+ * Checks if job has exceeded max attempts before retrying.
+ *
+ * @param jobId - Job ID to retry
+ * @returns Updated job data or error
+ */
+export async function retryProcessingJob(jobId: string) {
+  // First get the current job to check if it can be retried
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data: currentJob, error: fetchError } = await (supabase as any)
+    .from('processing_jobs')
+    .select('*')
+    .eq('id', jobId)
+    .single()
+
+  if (fetchError) {
+    console.error('Error fetching job for retry:', fetchError)
+    return { data: null, error: fetchError }
+  }
+
+  if (!currentJob) {
+    const error = new Error('Job not found')
+    return { data: null, error }
+  }
+
+  // Check if job has exceeded max attempts
+  if (currentJob.attempts >= currentJob.max_attempts) {
+    const error = new Error(`Job has exceeded maximum retry attempts (${currentJob.max_attempts})`)
+    console.error(error.message)
+    return { data: null, error }
+  }
+
+  // Reset job status to pending and increment attempts
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase as any)
+    .from('processing_jobs')
+    .update({
+      status: 'pending',
+      attempts: currentJob.attempts + 1,
+      error_message: null,
+      started_at: null,
+    })
+    .eq('id', jobId)
+    .select()
+    .single()
+
+  if (error) {
+    console.error('Error retrying processing job:', error)
+    return { data: null, error }
+  }
+
+  console.log(`Job ${jobId} reset to pending for retry (attempt ${data.attempts}/${data.max_attempts})`)
+  return { data, error: null }
+}
+
+/**
+ * Get all failed processing jobs for a case.
+ *
+ * @param caseId - Case ID to get failed jobs for
+ * @returns List of failed jobs or error
+ */
+export async function getFailedJobsForCase(caseId: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase as any)
+    .from('processing_jobs')
+    .select('*')
+    .eq('case_id', caseId)
+    .eq('status', 'failed')
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching failed jobs:', error)
+    return { data: null, error }
+  }
+
+  return { data, error: null }
+}
+
+// ============================================================================
+// Document Status Functions
+// ============================================================================
+
+/**
+ * Update the status of a document.
+ *
+ * @param documentId - Document ID to update
+ * @param status - New status value
+ * @returns Updated document data or error
+ */
 export async function updateDocumentStatus(
   documentId: string,
   status: 'uploaded' | 'processing' | 'processed' | 'needs_review' | 'approved' | 'failed'
@@ -225,7 +409,12 @@ export async function updateDocumentStatus(
 // Consensus API Helper Functions
 // ============================================================================
 
-// Get extraction by document ID
+/**
+ * Get extraction data by document ID.
+ *
+ * @param documentId - Document ID to get extraction for
+ * @returns Extraction data or null if not found
+ */
 export async function getExtractionByDocumentId(
   documentId: string
 ): Promise<{ data: Extraction | null; error: Error | null }> {
@@ -244,7 +433,12 @@ export async function getExtractionByDocumentId(
   return { data, error: null }
 }
 
-// Get conflicts for a specific extraction
+/**
+ * Get conflicts for a specific extraction.
+ *
+ * @param extractionId - Extraction ID to get conflicts for
+ * @returns List of conflicts or error
+ */
 export async function getExtractionConflicts(
   extractionId: string
 ): Promise<{ data: ConflictField[] | null; error: Error | null }> {
@@ -264,7 +458,12 @@ export async function getExtractionConflicts(
   return { data: conflicts, error: null }
 }
 
-// Get conflicts summary for an extraction
+/**
+ * Get a summary of conflicts for an extraction.
+ *
+ * @param extractionId - Extraction ID to get summary for
+ * @returns Conflicts summary with counts and details
+ */
 export async function getConflictsSummary(
   extractionId: string
 ): Promise<{ data: ConflictsSummary | null; error: Error | null }> {
@@ -298,7 +497,12 @@ export async function getConflictsSummary(
   return { data: summary, error: null }
 }
 
-// Get all conflicts for a case (across all documents)
+/**
+ * Get all conflicts for a case (across all documents).
+ *
+ * @param caseId - Case ID to get conflicts for
+ * @returns List of conflicts summaries for each document
+ */
 export async function getCaseConflicts(
   caseId: string
 ): Promise<{ data: ConflictsSummary[] | null; error: Error | null }> {
@@ -352,7 +556,12 @@ export async function getCaseConflicts(
   return { data: summaries, error: null }
 }
 
-// Get pending conflicts for a case (only conflicts that need review)
+/**
+ * Get pending conflicts for a case (only conflicts that need review).
+ *
+ * @param caseId - Case ID to get pending conflicts for
+ * @returns List of pending conflicts
+ */
 export async function getCasePendingConflicts(
   caseId: string
 ): Promise<{ data: ConflictField[] | null; error: Error | null }> {
@@ -369,7 +578,14 @@ export async function getCasePendingConflicts(
   return { data: pendingConflicts, error: null }
 }
 
-// Resolve a specific conflict
+/**
+ * Resolve a specific conflict in an extraction.
+ *
+ * @param extractionId - Extraction ID containing the conflict
+ * @param request - Resolution request with field path and resolved value
+ * @param userId - User ID performing the resolution
+ * @returns Resolution result
+ */
 export async function resolveConflict(
   extractionId: string,
   request: ResolveConflictRequest,
@@ -474,7 +690,14 @@ export async function resolveConflict(
   }
 }
 
-// Bulk resolve multiple conflicts
+/**
+ * Bulk resolve multiple conflicts in an extraction.
+ *
+ * @param extractionId - Extraction ID containing the conflicts
+ * @param resolutions - List of resolution requests
+ * @param userId - User ID performing the resolutions
+ * @returns Bulk resolution result with success/failure counts
+ */
 export async function resolveMultipleConflicts(
   extractionId: string,
   resolutions: ResolveConflictRequest[],
@@ -502,7 +725,13 @@ export async function resolveMultipleConflicts(
   }
 }
 
-// Trigger consensus job for a document
+/**
+ * Trigger a consensus job for a document.
+ *
+ * @param caseId - Case ID
+ * @param documentId - Document ID to process
+ * @returns Created job data or error
+ */
 export async function triggerConsensusJob(
   caseId: string,
   documentId: string
@@ -510,7 +739,13 @@ export async function triggerConsensusJob(
   return createProcessingJob(caseId, documentId, 'consensus')
 }
 
-// Subscribe to consensus updates for a case
+/**
+ * Subscribe to consensus updates for a case.
+ *
+ * @param caseId - Case ID to monitor
+ * @param callback - Callback for consensus updates
+ * @returns Unsubscribe function
+ */
 export function subscribeToConsensusUpdates(
   caseId: string,
   callback: (payload: {
@@ -549,7 +784,12 @@ export function subscribeToConsensusUpdates(
   }
 }
 
-// Check if all conflicts are resolved for an extraction
+/**
+ * Check if all conflicts are resolved for an extraction.
+ *
+ * @param extractionId - Extraction ID to check
+ * @returns Resolution status with pending count
+ */
 export async function areAllConflictsResolved(
   extractionId: string
 ): Promise<{ allResolved: boolean; pendingCount: number; error: Error | null }> {
@@ -566,7 +806,12 @@ export async function areAllConflictsResolved(
   }
 }
 
-// Get document with extraction and conflicts
+/**
+ * Get a document with its extraction and conflicts data.
+ *
+ * @param documentId - Document ID to get data for
+ * @returns Document with extraction and conflicts
+ */
 export async function getDocumentWithConflicts(
   documentId: string
 ): Promise<{
@@ -611,5 +856,37 @@ export async function getDocumentWithConflicts(
     error: null,
   }
 }
+
+// ============================================================================
+// Re-exports from supabaseConfig
+// ============================================================================
+
+// Re-export useful utilities from supabaseConfig for convenience
+export {
+  // Configuration constants
+  STORAGE_CONFIG,
+  RETRY_CONFIG,
+  AUTH_CONFIG,
+  REALTIME_CONFIG,
+  CONNECTION_CONFIG,
+
+  // Utility functions
+  withRetry,
+  validateFileForUpload,
+  generateStoragePath,
+  getErrorMessage,
+  calculateRetryDelay,
+  isRetryableStatus,
+
+  // Debug utilities
+  logSupabaseConfig,
+} from './supabaseConfig'
+
+// Re-export environment utilities
+export { config, isDevelopment, isProduction, isTest } from '../config/environment'
+
+// ============================================================================
+// Default Export
+// ============================================================================
 
 export default supabase

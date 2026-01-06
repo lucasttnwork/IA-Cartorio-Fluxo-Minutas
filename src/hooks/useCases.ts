@@ -177,7 +177,7 @@ export function useCreateCase() {
   return useMutation({
     mutationFn: async (input: CreateCaseInput): Promise<Case> => {
       if (!appUser?.organization_id || !user?.id) {
-        throw new Error('User not authenticated')
+        throw new Error('Usuário não autenticado')
       }
 
       // Build canonical_data with deal details if provided
@@ -288,6 +288,64 @@ export function useDeleteCase() {
         console.error('Error deleting case:', error)
         throw error
       }
+    },
+    onSuccess: () => {
+      // Invalidate cases query to refetch the list
+      queryClient.invalidateQueries({ queryKey: casesQueryKey })
+    },
+  })
+}
+
+// Duplicate a case
+export function useDuplicateCase() {
+  const queryClient = useQueryClient()
+  const { appUser, user } = useAuth()
+
+  return useMutation({
+    mutationFn: async (caseId: string): Promise<Case> => {
+      if (!appUser?.organization_id || !user?.id) {
+        throw new Error('Usuário não autenticado')
+      }
+
+      // Fetch the original case
+      const { data: originalCase, error: fetchError } = await supabase
+        .from('cases')
+        .select('*')
+        .eq('id', caseId)
+        .single()
+
+      if (fetchError) {
+        console.error('Error fetching case to duplicate:', fetchError)
+        throw fetchError
+      }
+
+      if (!originalCase) {
+        throw new Error('Case not found')
+      }
+
+      // Create duplicate with new data
+      const duplicateData = {
+        organization_id: appUser.organization_id,
+        title: `Copy of ${originalCase.title}`,
+        act_type: originalCase.act_type,
+        status: 'draft' as CaseStatus,
+        created_by: user.id,
+        assigned_to: null,
+        canonical_data: originalCase.canonical_data,
+      }
+
+      const { data, error } = await supabase
+        .from('cases')
+        .insert(duplicateData as never)
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error duplicating case:', error)
+        throw error
+      }
+
+      return data as Case
     },
     onSuccess: () => {
       // Invalidate cases query to refetch the list

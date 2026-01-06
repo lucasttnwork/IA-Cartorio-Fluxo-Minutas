@@ -2,8 +2,8 @@ import { useParams } from 'react-router-dom'
 import { useMemo, useCallback, useState, useEffect } from 'react'
 import {
   ReactFlow,
+  ReactFlowProvider,
   Background,
-  Controls,
   MiniMap,
   Panel,
   Node,
@@ -35,6 +35,11 @@ import {
   CheckCircleIcon,
   MagnifyingGlassPlusIcon,
   MagnifyingGlassMinusIcon,
+  Bars3BottomLeftIcon,
+  Bars3BottomRightIcon,
+  Bars3Icon,
+  ArrowsUpDownIcon,
+  ArrowsRightLeftIcon,
 } from '@heroicons/react/24/outline'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -42,18 +47,25 @@ import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { cn } from '@/lib/utils'
-import { PersonNode, PropertyNode, ContextMenu, EditPersonModal, EditPropertyModal, SuggestionsPanel } from '../components/canvas'
-import type { PersonNodeData, PropertyNodeData, ContextMenuItem } from '../components/canvas'
+import { PersonNode, PropertyNode, ContextMenu, EditPersonModal, EditPropertyModal, SuggestionsPanel, CustomEdge, PresenceOverlay, AttachProxyDialog } from '../components/canvas'
+import type { PersonNodeData, PropertyNodeData, ContextMenuItem, CustomEdgeData } from '../components/canvas'
 import { useCanvasData } from '../hooks/useCanvasData'
-import { supabase, createProcessingJob } from '../lib/supabase'
+import { useCanvasPresence } from '../hooks/useCanvasPresence'
+import { supabase, createProcessingJob, retryProcessingJob, getFailedJobsForCase } from '../lib/supabase'
 import type { Person, Property, GraphEdge as DBGraphEdge, RelationshipType } from '../types'
 import { validateCanvas, type ValidationWarning } from '../utils/canvasValidation'
 import { analyzeDocumentsForSuggestions, type CanvasSuggestions, type EntitySuggestion, type RelationshipSuggestion } from '../services/canvasSuggestions'
+import { alignNodes, distributeNodes, type AlignmentType, type DistributionType } from '../utils/canvasAlignment'
 
 // Define node types for React Flow
 const nodeTypes: NodeTypes = {
   person: PersonNode,
   property: PropertyNode,
+}
+
+// Define edge types for React Flow
+const edgeTypes = {
+  custom: CustomEdge,
 }
 
 // Simple auto-layout using a grid/force-directed approach
@@ -65,17 +77,23 @@ function calculateNodePositions(
   const personPositions = new Map<string, { x: number; y: number }>()
   const propertyPositions = new Map<string, { x: number; y: number }>()
 
-  // Simple grid layout: people on the left, properties on the right
-  const horizontalSpacing = 400
-  const verticalSpacing = 250
-  const leftColumnX = 100
-  const rightColumnX = 600
+  // Improved grid layout: people on the left, properties on the right
+  // Larger spacing to prevent overlap
+  const horizontalSpacing = 450
+  const verticalSpacing = 320  // Increased for taller cards
+  const leftColumnX = 150
+  const rightColumnX = 700
 
-  // Position people in the left column
+  // Calculate columns needed for people (max 4 per column for better visibility)
+  const maxPeoplePerColumn = 4
+
+  // Position people with multi-column support
   people.forEach((person, index) => {
+    const column = Math.floor(index / maxPeoplePerColumn)
+    const row = index % maxPeoplePerColumn
     personPositions.set(person.id, {
-      x: leftColumnX,
-      y: 100 + index * verticalSpacing,
+      x: leftColumnX + column * horizontalSpacing,
+      y: 80 + row * verticalSpacing,
     })
   })
 
@@ -83,7 +101,7 @@ function calculateNodePositions(
   properties.forEach((property, index) => {
     propertyPositions.set(property.id, {
       x: rightColumnX + (index % 2) * horizontalSpacing,
-      y: 100 + Math.floor(index / 2) * verticalSpacing,
+      y: 80 + Math.floor(index / 2) * verticalSpacing,
     })
   })
 
@@ -112,10 +130,11 @@ interface ConnectionDialogState {
   targetType: 'person' | 'property' | null
 }
 
-export default function CanvasPage() {
+function CanvasPageContent() {
   const { caseId } = useParams()
   const { data, isLoading, error, reload } = useCanvasData(caseId)
   const { fitView, zoomIn, zoomOut } = useReactFlow()
+  const { presenceState, broadcastCursor } = useCanvasPresence({ caseId })
   const [connectionMode, setConnectionMode] = useState(false)
   const [connectionDialog, setConnectionDialog] = useState<ConnectionDialogState>({
     isOpen: false,
@@ -125,6 +144,8 @@ export default function CanvasPage() {
   })
   const [isCreatingEdge, setIsCreatingEdge] = useState(false)
   const [isGeneratingDraft, setIsGeneratingDraft] = useState(false)
+  const [failedDraftJobs, setFailedDraftJobs] = useState<any[]>([])
+  const [isRetrying, setIsRetrying] = useState(false)
   const [contextMenu, setContextMenu] = useState<{
     isOpen: boolean
     position: { x: number; y: number }
@@ -175,6 +196,13 @@ export default function CanvasPage() {
     },
   })
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false)
+  const [proxyDialog, setProxyDialog] = useState<{
+    isOpen: boolean
+    pendingRelationship: RelationshipType | null
+  }>({
+    isOpen: false,
+    pendingRelationship: null,
+  })
 
   // Convert database entities to React Flow nodes
   const initialNodes = useMemo<Node[]>(() => {
@@ -203,7 +231,7 @@ export default function CanvasPage() {
   }, [data])
 
   // Convert database edges to React Flow edges
-  const initialEdges = useMemo<Edge[]>(() => {
+  const initialEdges = useMemo<Edge<CustomEdgeData>[]>(() => {
     return data.edges.map((edge) => {
       const sourceId =
         edge.source_type === 'person' ? `person-${edge.source_id}` : `property-${edge.source_id}`
@@ -214,21 +242,14 @@ export default function CanvasPage() {
         id: edge.id,
         source: sourceId,
         target: targetId,
-        label: getRelationshipLabel(edge.relationship),
-        type: 'smoothstep',
-        animated: !edge.confirmed,
-        style: {
-          stroke: edge.confirmed ? '#10b981' : '#f59e0b',
+        type: 'custom',
+        data: {
+          label: getRelationshipLabel(edge.relationship),
+          confirmed: edge.confirmed,
+          confidence: edge.confidence,
+          animated: !edge.confirmed,
+          strokeColor: edge.confirmed ? '#10b981' : '#f59e0b',
           strokeWidth: 2,
-        },
-        labelStyle: {
-          fill: '#374151',
-          fontWeight: 500,
-          fontSize: 12,
-        },
-        labelBgStyle: {
-          fill: '#ffffff',
-          fillOpacity: 0.9,
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -241,7 +262,7 @@ export default function CanvasPage() {
   }, [data.edges])
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
-  const [_edges, _setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
 
   // Track selected nodes whenever nodes change
   useEffect(() => {
@@ -251,8 +272,8 @@ export default function CanvasPage() {
 
   // Compute validation warnings
   const validationWarnings = useMemo<ValidationWarning[]>(() => {
-    return validateCanvas(data.people, data.properties, data.edges)
-  }, [data.people, data.properties, data.edges])
+    return validateCanvas(data.people, data.properties, data.edges, data.documents)
+  }, [data.people, data.properties, data.edges, data.documents])
 
   // Load suggestions based on document analysis
   const loadSuggestions = useCallback(async () => {
@@ -270,7 +291,7 @@ export default function CanvasPage() {
 
       setSuggestions(canvasSuggestions)
     } catch (err) {
-      console.error('Error loading suggestions:', err)
+      console.error('Erro ao carregar sugestões:', err)
     } finally {
       setIsLoadingSuggestions(false)
     }
@@ -297,7 +318,7 @@ export default function CanvasPage() {
         const { error } = await (supabase as any).from(tableName).insert(entity)
 
         if (error) {
-          console.error('Error adding entity:', error)
+          console.error('Erro ao adicionar entidade:', error)
           alert(`Erro ao adicionar ${suggestion.type === 'person' ? 'pessoa' : 'propriedade'}: ` + error.message)
           return
         }
@@ -306,7 +327,7 @@ export default function CanvasPage() {
         reload()
         loadSuggestions()
       } catch (err) {
-        console.error('Error applying entity suggestion:', err)
+        console.error('Erro ao aplicar sugestão de entidade:', err)
         alert('Erro ao aplicar sugestão')
       }
     },
@@ -320,7 +341,7 @@ export default function CanvasPage() {
 
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error } = await (supabase as any).from('graph_edges').insert({
+        const { error } = await (supabase as any).from('graphedges').insert({
           case_id: caseId,
           source_type: suggestion.sourceType,
           source_id: suggestion.sourceId,
@@ -336,7 +357,7 @@ export default function CanvasPage() {
         })
 
         if (error) {
-          console.error('Error adding relationship:', error)
+          console.error('Erro ao adicionar relacionamento:', error)
           alert('Erro ao adicionar relacionamento: ' + error.message)
           return
         }
@@ -345,7 +366,7 @@ export default function CanvasPage() {
         reload()
         loadSuggestions()
       } catch (err) {
-        console.error('Error applying relationship suggestion:', err)
+        console.error('Erro ao aplicar sugestão de relacionamento:', err)
         alert('Erro ao aplicar sugestão')
       }
     },
@@ -387,8 +408,17 @@ export default function CanvasPage() {
 
   // Create edge in database
   const createGraphEdge = useCallback(
-    async (relationship: RelationshipType) => {
+    async (relationship: RelationshipType, proxyDocumentId?: string) => {
       if (!connectionDialog.connection || !caseId) return
+
+      // If this is a "represents" relationship and no proxy document provided, show proxy dialog
+      if (relationship === 'represents' && proxyDocumentId === undefined) {
+        setProxyDialog({
+          isOpen: true,
+          pendingRelationship: relationship,
+        })
+        return
+      }
 
       setIsCreatingEdge(true)
 
@@ -399,10 +429,22 @@ export default function CanvasPage() {
         const sourceId = connection.source!.split('-')[1]
         const targetId = connection.target!.split('-')[1]
 
-        // Insert into graph_edges table
+        // Build metadata
+        const metadata: Record<string, unknown> = {
+          created_manually: true,
+          created_at: new Date().toISOString(),
+        }
+
+        // Add proxy document if provided
+        if (proxyDocumentId) {
+          metadata.proxy_document_id = proxyDocumentId
+          metadata.proxy_attached_at = new Date().toISOString()
+        }
+
+        // Insert into graphedges table
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { error: insertError } = await (supabase as any)
-          .from('graph_edges')
+          .from('graphedges')
           .insert({
             case_id: caseId,
             source_type: sourceType,
@@ -412,32 +454,33 @@ export default function CanvasPage() {
             relationship,
             confidence: 1.0, // Manual connections have high confidence
             confirmed: false, // Require user confirmation
-            metadata: {
-              created_manually: true,
-              created_at: new Date().toISOString(),
-            },
+            metadata,
           })
           .select()
           .single()
 
         if (insertError) {
-          console.error('Error creating edge:', insertError)
+          console.error('Erro ao criar aresta:', insertError)
           alert('Erro ao criar conexão: ' + insertError.message)
           return
         }
 
-        // Close dialog
+        // Close dialogs
         setConnectionDialog({
           isOpen: false,
           connection: null,
           sourceType: null,
           targetType: null,
         })
+        setProxyDialog({
+          isOpen: false,
+          pendingRelationship: null,
+        })
 
         // Reload canvas data to show new edge
         reload()
       } catch (err) {
-        console.error('Error creating edge:', err)
+        console.error('Erro ao criar aresta:', err)
         alert('Erro ao criar conexão')
       } finally {
         setIsCreatingEdge(false)
@@ -445,6 +488,36 @@ export default function CanvasPage() {
     },
     [connectionDialog, caseId, reload]
   )
+
+  // Handle proxy attachment from dialog
+  const handleAttachProxy = useCallback(
+    (documentId: string) => {
+      if (proxyDialog.pendingRelationship) {
+        createGraphEdge(proxyDialog.pendingRelationship, documentId || undefined)
+      }
+    },
+    [proxyDialog.pendingRelationship, createGraphEdge]
+  )
+
+  // Load failed draft jobs
+  const loadFailedJobs = useCallback(async () => {
+    if (!caseId) return
+
+    try {
+      const { data: jobs, error } = await getFailedJobsForCase(caseId)
+      if (!error && jobs) {
+        const draftJobs = jobs.filter(job => job.job_type === 'draft')
+        setFailedDraftJobs(draftJobs)
+      }
+    } catch (err) {
+      console.error('Erro ao carregar jobs falhos:', err)
+    }
+  }, [caseId])
+
+  // Load failed jobs on mount and when data reloads
+  useEffect(() => {
+    loadFailedJobs()
+  }, [loadFailedJobs])
 
   // Generate draft from graph data
   const handleGenerateDraft = useCallback(async () => {
@@ -457,20 +530,51 @@ export default function CanvasPage() {
       const { data: job, error } = await createProcessingJob(caseId, null, 'draft')
 
       if (error || !job) {
-        console.error('Error creating draft job:', error)
-        alert('Erro ao criar job de geração de minuta: ' + (error?.message || 'Unknown error'))
+        console.error('Erro ao criar job de minuta:', error)
+        alert('Erro ao criar job de geração de minuta: ' + (error?.message || 'Erro desconhecido'))
         return
       }
 
       console.log('Draft generation job created:', job)
       alert('Minuta sendo gerada! Acompanhe o progresso na página do caso.')
+
+      // Reload failed jobs to clear any previous failures
+      loadFailedJobs()
     } catch (err) {
-      console.error('Error generating draft:', err)
+      console.error('Erro ao gerar minuta:', err)
       alert('Erro ao gerar minuta')
     } finally {
       setIsGeneratingDraft(false)
     }
-  }, [caseId])
+  }, [caseId, loadFailedJobs])
+
+  // Retry failed draft job
+  const handleRetryDraft = useCallback(async (jobId: string) => {
+    if (!jobId) return
+
+    setIsRetrying(true)
+
+    try {
+      const { data: retriedJob, error } = await retryProcessingJob(jobId)
+
+      if (error) {
+        console.error('Erro ao retentar job de minuta:', error)
+        alert('Erro ao tentar novamente: ' + error.message)
+        return
+      }
+
+      console.log('Draft job retry initiated:', retriedJob)
+      alert('Tentando gerar a minuta novamente. Acompanhe o progresso.')
+
+      // Reload failed jobs
+      loadFailedJobs()
+    } catch (err) {
+      console.error('Erro ao retentar minuta:', err)
+      alert('Erro ao tentar novamente')
+    } finally {
+      setIsRetrying(false)
+    }
+  }, [loadFailedJobs])
 
   // Update nodes and edges when data changes
   useMemo(() => {
@@ -509,25 +613,23 @@ export default function CanvasPage() {
       const targetId =
         edge.target_type === 'person' ? `person-${edge.target_id}` : `property-${edge.target_id}`
 
+      // Check if this is a represents relationship with proxy document
+      const hasProxy = edge.relationship === 'represents' && !!edge.metadata?.proxy_document_id
+
       return {
         id: edge.id,
         source: sourceId,
         target: targetId,
-        label: getRelationshipLabel(edge.relationship),
-        type: 'smoothstep',
-        animated: !edge.confirmed,
-        style: {
-          stroke: edge.confirmed ? '#10b981' : '#f59e0b',
+        type: 'custom',
+        data: {
+          label: getRelationshipLabel(edge.relationship),
+          confirmed: edge.confirmed,
+          confidence: edge.confidence,
+          animated: !edge.confirmed,
+          strokeColor: edge.confirmed ? '#10b981' : '#f59e0b',
           strokeWidth: 2,
-        },
-        labelStyle: {
-          fill: '#374151',
-          fontWeight: 500,
-          fontSize: 12,
-        },
-        labelBgStyle: {
-          fill: '#ffffff',
-          fillOpacity: 0.9,
+          hasProxy,
+          relationship: edge.relationship,
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
@@ -539,10 +641,10 @@ export default function CanvasPage() {
     })
 
     // Only update if edges actually changed
-    if (JSON.stringify(newEdges) !== JSON.stringify(_edges)) {
+    if (JSON.stringify(newEdges) !== JSON.stringify(edges)) {
       setEdges(newEdges)
     }
-  }, [data.edges, _edges, onEdgesChange])
+  }, [data.edges, edges, onEdgesChange])
 
   // Handle node context menu (right-click on node)
   const handleNodeContextMenu = useCallback(
@@ -617,7 +719,7 @@ export default function CanvasPage() {
         const { error } = await supabase.from(tableName).delete().eq('id', entityId)
 
         if (error) {
-          console.error(`Error deleting ${nodeType}:`, error)
+          console.error(`Erro ao excluir ${nodeType}:`, error)
           alert(`Erro ao deletar ${nodeType === 'person' ? 'pessoa' : 'propriedade'}: ` + error.message)
           return
         }
@@ -625,7 +727,7 @@ export default function CanvasPage() {
         // Reload canvas data
         reload()
       } catch (err) {
-        console.error(`Error deleting ${nodeType}:`, err)
+        console.error(`Erro ao excluir ${nodeType}:`, err)
         alert(`Erro ao deletar ${nodeType === 'person' ? 'pessoa' : 'propriedade'}`)
       }
     },
@@ -656,7 +758,7 @@ export default function CanvasPage() {
           .in('id', personIds)
 
         if (personError) {
-          console.error('Error deleting people:', personError)
+          console.error('Erro ao excluir pessoas:', personError)
           alert('Erro ao deletar pessoas: ' + personError.message)
           return
         }
@@ -674,7 +776,7 @@ export default function CanvasPage() {
           .in('id', propertyIds)
 
         if (propertyError) {
-          console.error('Error deleting properties:', propertyError)
+          console.error('Erro ao excluir imóveis:', propertyError)
           alert('Erro ao deletar propriedades: ' + propertyError.message)
           return
         }
@@ -683,7 +785,7 @@ export default function CanvasPage() {
       // Reload canvas data
       reload()
     } catch (err) {
-      console.error('Error deleting selected nodes:', err)
+      console.error('Erro ao excluir nós selecionados:', err)
       alert('Erro ao deletar itens selecionados')
     }
   }, [caseId, selectedNodes, reload])
@@ -698,6 +800,36 @@ export default function CanvasPage() {
     )
   }, [setNodes])
 
+  // Handle node alignment
+  const handleAlignNodes = useCallback((alignmentType: AlignmentType) => {
+    if (selectedNodes.length < 2) return
+
+    const alignedNodes = alignNodes(selectedNodes, alignmentType)
+
+    // Update node positions
+    setNodes((nds) =>
+      nds.map((node) => {
+        const alignedNode = alignedNodes.find((n) => n.id === node.id)
+        return alignedNode || node
+      })
+    )
+  }, [selectedNodes, setNodes])
+
+  // Handle node distribution
+  const handleDistributeNodes = useCallback((distributionType: DistributionType) => {
+    if (selectedNodes.length < 3) return
+
+    const distributedNodes = distributeNodes(selectedNodes, distributionType)
+
+    // Update node positions
+    setNodes((nds) =>
+      nds.map((node) => {
+        const distributedNode = distributedNodes.find((n) => n.id === node.id)
+        return distributedNode || node
+      })
+    )
+  }, [selectedNodes, setNodes])
+
   // Delete edge handler
   const handleDeleteEdge = useCallback(
     async (edgeId: string) => {
@@ -705,10 +837,10 @@ export default function CanvasPage() {
 
       try {
         // Delete from database
-        const { error } = await supabase.from('graph_edges').delete().eq('id', edgeId)
+        const { error } = await supabase.from('graphedges').delete().eq('id', edgeId)
 
         if (error) {
-          console.error('Error deleting edge:', error)
+          console.error('Erro ao excluir aresta:', error)
           alert('Erro ao deletar conexão: ' + error.message)
           return
         }
@@ -716,7 +848,7 @@ export default function CanvasPage() {
         // Reload canvas data
         reload()
       } catch (err) {
-        console.error('Error deleting edge:', err)
+        console.error('Erro ao excluir aresta:', err)
         alert('Erro ao deletar conexão')
       }
     },
@@ -830,21 +962,58 @@ export default function CanvasPage() {
 
   const totalEntities = data.people.length + data.properties.length
 
+  // Handle mouse move on canvas for presence broadcasting
+  const handleCanvasMouseMove = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      // Broadcast cursor position relative to the canvas container
+      const rect = event.currentTarget.getBoundingClientRect()
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
+      broadcastCursor(x, y)
+    },
+    [broadcastCursor]
+  )
+
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
       {/* Header */}
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <SparklesIcon className="w-7 h-7 text-purple-500" />
-            Canvas de Entidades
-          </h1>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-            Visualização interativa de pessoas, propriedades e relacionamentos.
-          </p>
+      <div className="mb-4 space-y-3">
+        {/* Title Row */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-shrink-0">
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <SparklesIcon className="w-7 h-7 text-purple-500" />
+              Canvas de Entidades
+            </h1>
+            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+              Visualização interativa de pessoas, propriedades e relacionamentos.
+            </p>
+          </div>
+
+          {/* Primary Actions - always visible */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button
+              onClick={handleGenerateDraft}
+              disabled={isGeneratingDraft}
+              className="gap-2"
+            >
+              <DocumentTextIcon className={cn("w-5 h-5", isGeneratingDraft && "animate-pulse")} />
+              <span className="hidden sm:inline">{isGeneratingDraft ? 'Gerando...' : 'Gerar Minuta'}</span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={reload}
+              disabled={isLoading}
+              className="gap-2"
+            >
+              <ArrowPathIcon className={cn("w-5 h-5", isLoading && "animate-spin")} />
+              <span className="hidden sm:inline">Atualizar</span>
+            </Button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Toolbar Row */}
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Zoom Controls */}
           <div className="flex items-center gap-0.5 glass-subtle rounded-lg overflow-hidden p-1">
             <Button
@@ -852,51 +1021,56 @@ export default function CanvasPage() {
               size="sm"
               onClick={() => zoomOut({ duration: 200 })}
               title="Diminuir zoom (ou use Ctrl + scroll)"
-              className="h-9 w-9 p-0"
+              className="h-8 w-8 p-0"
             >
-              <MagnifyingGlassMinusIcon className="w-5 h-5" />
+              <MagnifyingGlassMinusIcon className="w-4 h-4" />
             </Button>
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+            <div className="w-px h-5 bg-gray-300 dark:bg-gray-600"></div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => zoomIn({ duration: 200 })}
               title="Aumentar zoom (ou use Ctrl + scroll)"
-              className="h-9 w-9 p-0"
+              className="h-8 w-8 p-0"
             >
-              <MagnifyingGlassPlusIcon className="w-5 h-5" />
+              <MagnifyingGlassPlusIcon className="w-4 h-4" />
             </Button>
-            <div className="w-px h-6 bg-gray-300 dark:bg-gray-600"></div>
+            <div className="w-px h-5 bg-gray-300 dark:bg-gray-600"></div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => fitView({ padding: 0.2, duration: 300 })}
               title="Ajustar visualização"
-              className="h-9 w-9 p-0"
+              className="h-8 w-8 p-0"
             >
-              <ArrowsPointingOutIcon className="w-5 h-5" />
+              <ArrowsPointingOutIcon className="w-4 h-4" />
             </Button>
           </div>
+
+          <div className="w-px h-6 bg-gray-300 dark:bg-gray-600 hidden sm:block"></div>
+
           <Button
             variant={showMinimap ? "default" : "outline"}
+            size="sm"
             onClick={() => setShowMinimap(!showMinimap)}
             className={cn(
-              "gap-2",
+              "gap-1.5",
               showMinimap && "bg-purple-500 hover:bg-purple-600"
             )}
           >
-            <MapIcon className="w-5 h-5" />
-            {showMinimap ? 'Ocultar Minimapa' : 'Mostrar Minimapa'}
+            <MapIcon className="w-4 h-4" />
+            <span className="hidden lg:inline">{showMinimap ? 'Ocultar' : 'Mostrar'} Minimapa</span>
           </Button>
           <Button
             variant={selectionMode === SelectionMode.Full ? "default" : "outline"}
+            size="sm"
             onClick={() =>
               setSelectionMode(
                 selectionMode === SelectionMode.Partial ? SelectionMode.Full : SelectionMode.Partial
               )
             }
             className={cn(
-              "gap-2",
+              "gap-1.5",
               selectionMode === SelectionMode.Full && "bg-indigo-500 hover:bg-indigo-600"
             )}
             title={
@@ -905,36 +1079,20 @@ export default function CanvasPage() {
                 : 'Clique para ativar seleção em caixa'
             }
           >
-            <RectangleGroupIcon className="w-5 h-5" />
-            {selectionMode === SelectionMode.Full ? 'Seleção em Caixa Ativa' : 'Ativar Seleção em Caixa'}
+            <RectangleGroupIcon className="w-4 h-4" />
+            <span className="hidden lg:inline">{selectionMode === SelectionMode.Full ? 'Seleção Ativa' : 'Seleção em Caixa'}</span>
           </Button>
           <Button
             variant={connectionMode ? "default" : "outline"}
+            size="sm"
             onClick={() => setConnectionMode(!connectionMode)}
             className={cn(
-              "gap-2",
+              "gap-1.5",
               connectionMode && "bg-blue-500 hover:bg-blue-600"
             )}
           >
-            <LinkIcon className="w-5 h-5" />
-            {connectionMode ? 'Modo Conexão Ativo' : 'Ativar Modo Conexão'}
-          </Button>
-          <Button
-            onClick={handleGenerateDraft}
-            disabled={isGeneratingDraft}
-            className="gap-2"
-          >
-            <DocumentTextIcon className={cn("w-5 h-5", isGeneratingDraft && "animate-pulse")} />
-            {isGeneratingDraft ? 'Gerando...' : 'Gerar Minuta'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={reload}
-            disabled={isLoading}
-            className="gap-2"
-          >
-            <ArrowPathIcon className={cn("w-5 h-5", isLoading && "animate-spin")} />
-            Atualizar
+            <LinkIcon className="w-4 h-4" />
+            <span className="hidden lg:inline">{connectionMode ? 'Conexão Ativa' : 'Modo Conexão'}</span>
           </Button>
         </div>
       </div>
@@ -949,6 +1107,48 @@ export default function CanvasPage() {
             <ExclamationTriangleIcon className="h-4 w-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
+        </motion.div>
+      )}
+
+      {/* Failed Draft Jobs Alert */}
+      {failedDraftJobs.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          {failedDraftJobs.map((job) => (
+            <Alert key={job.id} variant="destructive" className="mb-4">
+              <ExclamationTriangleIcon className="h-4 w-4" />
+              <div className="flex-1">
+                <h4 className="text-sm font-semibold mb-1">
+                  Falha na Geração de Minuta
+                </h4>
+                <AlertDescription className="mb-2">
+                  {job.error_message || 'Erro desconhecido ao gerar a minuta. Por favor, tente novamente.'}
+                </AlertDescription>
+                <div className="flex items-center gap-2 mt-3">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleRetryDraft(job.id)}
+                    disabled={isRetrying || job.attempts >= job.max_attempts}
+                    className="gap-2 bg-white hover:bg-gray-50"
+                  >
+                    <ArrowPathIcon className={cn("w-4 h-4", isRetrying && "animate-spin")} />
+                    {isRetrying ? 'Tentando...' : 'Tentar Novamente'}
+                  </Button>
+                  <Badge variant="outline" className="text-xs">
+                    Tentativa {job.attempts}/{job.max_attempts}
+                  </Badge>
+                  {job.attempts >= job.max_attempts && (
+                    <Badge variant="destructive" className="text-xs">
+                      Máximo de tentativas atingido
+                    </Badge>
+                  )}
+                </div>
+              </div>
+            </Alert>
+          ))}
         </motion.div>
       )}
 
@@ -998,8 +1198,8 @@ export default function CanvasPage() {
         </motion.div>
       )}
 
-      {/* Canvas */}
-      <Card className="flex-1 glass-card overflow-hidden p-0 border-0">
+      {/* Canvas - with right margin for suggestions panel */}
+      <Card className="flex-1 glass-card overflow-hidden p-0 border-0 relative mr-0 xl:mr-[26rem] transition-all duration-300">
         {isLoading ? (
           <div className="h-full flex items-center justify-center">
             <div className="text-center">
@@ -1024,9 +1224,13 @@ export default function CanvasPage() {
             </div>
           </div>
         ) : (
-          <ReactFlow
+          <div className="h-full w-full relative" onMouseMove={handleCanvasMouseMove}>
+            {/* Presence Overlay */}
+            <PresenceOverlay presenceState={presenceState} />
+
+            <ReactFlow
             nodes={nodes}
-            edges={_edges}
+            edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
@@ -1034,6 +1238,7 @@ export default function CanvasPage() {
             onPaneContextMenu={handlePaneContextMenu as any}
             onEdgeContextMenu={handleEdgeContextMenu}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             fitView
             minZoom={0.1}
             maxZoom={1.5}
@@ -1064,7 +1269,6 @@ export default function CanvasPage() {
             autoPanOnConnect={true}
           >
             <Background />
-            <Controls />
             {showMinimap && (
               <MiniMap
                 nodeColor={(node) => {
@@ -1072,39 +1276,35 @@ export default function CanvasPage() {
                   if (node.type === 'property') return '#10b981'
                   return '#6b7280'
                 }}
-                maskColor="rgba(0, 0, 0, 0.1)"
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-                }}
+                maskColor="rgba(100, 100, 100, 0.15)"
+                className="!bg-white/90 dark:!bg-gray-800/90 !border-2 !border-gray-200 dark:!border-gray-700 !rounded-lg !shadow-lg"
                 pannable
                 zoomable
               />
             )}
-            <Panel position="top-right" className="glass-card p-3 rounded-lg shadow-lg">
-              <div className="space-y-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-gray-700 dark:text-gray-300">
+            <Panel position="top-left" className="glass-card p-3 rounded-lg shadow-lg ml-2 mt-2">
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+                  <span className="text-gray-700 dark:text-gray-300 font-medium">
                     {data.people.length} Pessoa(s)
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                  <span className="text-gray-700 dark:text-gray-300">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+                  <span className="text-gray-700 dark:text-gray-300 font-medium">
                     {data.properties.length} Propriedade(s)
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-0.5 bg-green-500"></div>
+                <div className="w-px h-4 bg-gray-300 dark:bg-gray-600"></div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4 h-0.5 bg-green-500 rounded"></div>
                   <span className="text-gray-700 dark:text-gray-300">
                     {data.edges.filter((e) => e.confirmed).length} Confirmado(s)
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-0.5 bg-yellow-500 animate-pulse"></div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-4 h-0.5 bg-yellow-500 rounded animate-pulse"></div>
                   <span className="text-gray-700 dark:text-gray-300">
                     {data.edges.filter((e) => !e.confirmed).length} Pendente(s)
                   </span>
@@ -1149,6 +1349,98 @@ export default function CanvasPage() {
                     </div>
                   </div>
 
+                  {/* Alignment Controls - only show when 2+ nodes selected */}
+                  {selectedNodes.length >= 2 && (
+                    <div className="space-y-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                      <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300">Alinhar</h4>
+                      <div className="grid grid-cols-3 gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAlignNodes('left')}
+                          className="h-8 px-2"
+                          title="Alinhar à esquerda"
+                        >
+                          <Bars3BottomLeftIcon className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAlignNodes('center-horizontal')}
+                          className="h-8 px-2"
+                          title="Centralizar horizontalmente"
+                        >
+                          <Bars3Icon className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAlignNodes('right')}
+                          className="h-8 px-2"
+                          title="Alinhar à direita"
+                        >
+                          <Bars3BottomRightIcon className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAlignNodes('top')}
+                          className="h-8 px-2"
+                          title="Alinhar ao topo"
+                        >
+                          <ArrowsUpDownIcon className="w-4 h-4 rotate-180" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAlignNodes('center-vertical')}
+                          className="h-8 px-2"
+                          title="Centralizar verticalmente"
+                        >
+                          <ArrowsUpDownIcon className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAlignNodes('bottom')}
+                          className="h-8 px-2"
+                          title="Alinhar à base"
+                        >
+                          <ArrowsUpDownIcon className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Distribution Controls - only show when 3+ nodes selected */}
+                  {selectedNodes.length >= 3 && (
+                    <div className="space-y-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                      <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300">Distribuir</h4>
+                      <div className="grid grid-cols-2 gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDistributeNodes('horizontal')}
+                          className="h-8 gap-1.5"
+                          title="Distribuir horizontalmente"
+                        >
+                          <ArrowsRightLeftIcon className="w-4 h-4" />
+                          <span className="text-xs">Horiz.</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDistributeNodes('vertical')}
+                          className="h-8 gap-1.5"
+                          title="Distribuir verticalmente"
+                        >
+                          <ArrowsUpDownIcon className="w-4 h-4" />
+                          <span className="text-xs">Vert.</span>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="flex gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
                     <Button
                       variant="destructive"
@@ -1176,6 +1468,7 @@ export default function CanvasPage() {
               </Panel>
             )}
           </ReactFlow>
+          </div>
         )}
       </Card>
 
@@ -1272,6 +1565,14 @@ export default function CanvasPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Proxy Attachment Dialog */}
+      <AttachProxyDialog
+        isOpen={proxyDialog.isOpen}
+        caseId={caseId || ''}
+        onClose={() => setProxyDialog({ isOpen: false, pendingRelationship: null })}
+        onAttach={handleAttachProxy}
+      />
+
       {/* Context Menu */}
       <ContextMenu
         isOpen={contextMenu.isOpen}
@@ -1322,5 +1623,14 @@ export default function CanvasPage() {
         onRefresh={loadSuggestions}
       />
     </div>
+  )
+}
+
+// Wrapper component with ReactFlowProvider context
+export default function CanvasPage() {
+  return (
+    <ReactFlowProvider>
+      <CanvasPageContent />
+    </ReactFlowProvider>
   )
 }

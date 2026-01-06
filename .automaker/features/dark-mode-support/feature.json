@@ -3,16 +3,18 @@
   "category": "UI Theme",
   "title": "Dark Mode Support",
   "description": "Dark mode support",
-  "status": "backlog",
+  "status": "verified",
   "priority": 3,
   "complexity": "moderate",
   "dependencies": [
     "design-system-ui"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-25T13:16:01.195Z",
   "model": "opus",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-25T13:07:27.175Z"
 }

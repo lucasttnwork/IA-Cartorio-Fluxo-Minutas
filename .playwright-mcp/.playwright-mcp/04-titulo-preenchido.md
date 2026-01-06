@@ -1,0 +1,132 @@
+### Page state
+- Page URL: http://localhost:5173/purchase-sale-flow
+- Page Title: Minuta Canvas
+- Page Snapshot:
+```yaml
+- generic [ref=e2]:
+  - generic:
+    - link "Ir para o conteúdo principal" [ref=e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - link "Ir para a navegação" [ref=e4] [cursor=pointer]:
+      - /url: "#sidebar-navigation"
+  - status [ref=e5]
+  - generic [ref=e128]:
+    - complementary "Barra lateral" [ref=e129]:
+      - generic [ref=e130]:
+        - generic [ref=e132]: Minuta Canvas
+        - navigation "Navegação principal" [ref=e133]:
+          - link "Dashboard" [ref=e134] [cursor=pointer]:
+            - /url: /dashboard
+            - img [ref=e135]
+            - generic [ref=e137]: Dashboard
+          - link "Configurações" [ref=e138] [cursor=pointer]:
+            - /url: /settings
+            - img [ref=e139]
+            - generic [ref=e142]: Configurações
+        - 'button "TU Status: online Test User Administrador" [ref=e144] [cursor=pointer]':
+          - generic [ref=e145]:
+            - generic [ref=e146]: TU
+            - 'generic "Status: online" [ref=e147]'
+          - generic [ref=e148]:
+            - paragraph [ref=e149]: Test User
+            - generic [ref=e150]:
+              - img
+              - paragraph [ref=e151]: Administrador
+          - img
+    - generic [ref=e152]:
+      - banner [ref=e153]:
+        - navigation "Navegação do histórico" [ref=e156]:
+          - button "Voltar" [ref=e157] [cursor=pointer]:
+            - img
+          - button "Avançar" [disabled]:
+            - img
+        - generic [ref=e158]:
+          - button "Ativar modo alto contraste" [ref=e159] [cursor=pointer]:
+            - img
+          - generic [ref=e160]:
+            - generic [ref=e161]: Mudar para modo escuro
+            - generic [ref=e162]:
+              - img [ref=e163]
+              - switch "Mudar para modo escuro" [ref=e165] [cursor=pointer]
+              - img [ref=e166]
+      - main [ref=e168]:
+        - generic [ref=e169]:
+          - generic [ref=e172]:
+            - generic [ref=e173]:
+              - heading "Fluxo de Compra e Venda" [level=1] [ref=e174]
+              - paragraph [ref=e175]: 0 de 5 etapas concluidas
+            - button "Cancelar" [ref=e176] [cursor=pointer]:
+              - img
+              - text: Cancelar
+          - main [ref=e177]:
+            - generic [ref=e178]:
+              - generic [ref=e181]:
+                - generic [ref=e182]:
+                  - generic [ref=e183]:
+                    - generic [ref=e184]: Progresso do Fluxo
+                    - generic [ref=e185]: 0%
+                  - progressbar [ref=e186]
+                - navigation "Progress steps" [ref=e188]:
+                  - generic [ref=e189]:
+                    - button "Criar Caso - in_progress" [ref=e191] [cursor=pointer]:
+                      - img [ref=e192]
+                    - generic [ref=e196]:
+                      - paragraph [ref=e197]: Criar Caso
+                      - paragraph [ref=e198]: Defina o tipo de ato e título do caso
+                  - generic [ref=e199]:
+                    - button "Upload de Documentos - pending" [disabled] [ref=e202]:
+                      - img [ref=e203]
+                    - generic [ref=e206]:
+                      - paragraph [ref=e207]: Upload de Documentos
+                      - paragraph [ref=e208]: Carregue os documentos necessários
+                  - generic [ref=e209]:
+                    - button "Extração de Entidades - pending" [disabled] [ref=e212]:
+                      - img [ref=e213]
+                    - generic [ref=e216]:
+                      - paragraph [ref=e217]: Extração de Entidades
+                      - paragraph [ref=e218]: Extraia pessoas, imóveis e relacionamentos
+                  - generic [ref=e219]:
+                    - button "Revisão no Canvas - pending" [disabled] [ref=e222]:
+                      - img [ref=e223]
+                    - generic [ref=e226]:
+                      - paragraph [ref=e227]: Revisão no Canvas
+                      - paragraph [ref=e228]: Revise e confirme as entidades extraídas
+                  - generic [ref=e229]:
+                    - button "Geração da Minuta - pending" [disabled] [ref=e232]:
+                      - img [ref=e233]
+                    - generic [ref=e235]:
+                      - paragraph [ref=e236]: Geração da Minuta
+                      - paragraph [ref=e237]: Gere a minuta do documento final
+              - generic [ref=e239]:
+                - generic [ref=e240]:
+                  - img [ref=e242]
+                  - generic [ref=e244]:
+                    - generic [ref=e245]:
+                      - generic [ref=e246]: Criar Caso
+                      - img [ref=e248]
+                    - generic [ref=e250]: Defina o tipo de ato e título do caso
+                  - generic [ref=e251]: Em Progresso
+                - generic [ref=e253]:
+                  - generic [ref=e254]:
+                    - generic [ref=e255]:
+                      - text: Título do Caso *
+                      - textbox "Título do Caso *" [active] [ref=e256]:
+                        - /placeholder: "Ex: Venda do Apartamento 101 - Ed. Central"
+                        - text: Teste E2E Completo - Fluxo de Minutas
+                      - paragraph [ref=e257]: Escolha um título descritivo para identificar este caso
+                    - generic [ref=e258]:
+                      - text: Tipo de Ato *
+                      - combobox "Tipo de Ato *" [ref=e259] [cursor=pointer]:
+                        - generic:
+                          - generic:
+                            - generic: Compra e Venda
+                            - generic: Transação de compra e venda de imóvel
+                        - img [ref=e260]
+                      - combobox [ref=e262]
+                      - paragraph [ref=e263]: O tipo de ato define o modelo de minuta a ser gerado
+                    - button "Criar Caso" [ref=e266] [cursor=pointer]
+                  - button "Criar e Continuar" [ref=e267] [cursor=pointer]:
+                    - text: Criar e Continuar
+                    - img
+  - region "Notifications alt+T"
+```

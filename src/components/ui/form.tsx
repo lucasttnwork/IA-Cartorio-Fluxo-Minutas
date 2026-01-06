@@ -157,10 +157,31 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
+      className={cn(
+        "form-error-message",
+        error && "animate-form-error-slide-in",
+        className
+      )}
+      role={error ? "alert" : undefined}
       {...props}
     >
-      {body}
+      {error && (
+        <svg
+          className="form-error-icon"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      )}
+      <span>{body}</span>
     </p>
   )
 })

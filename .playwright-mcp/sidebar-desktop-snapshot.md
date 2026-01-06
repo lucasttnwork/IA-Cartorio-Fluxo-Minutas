@@ -1,0 +1,118 @@
+### Page state
+- Page URL: http://localhost:5176/test-responsive-sidebar
+- Page Title: Minuta Canvas
+- Page Snapshot:
+```yaml
+- generic [ref=e2]:
+  - generic:
+    - link "Ir para o conteúdo principal" [ref=e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - link "Ir para a navegação" [ref=e4] [cursor=pointer]:
+      - /url: "#sidebar-navigation"
+  - status [ref=e5]
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - heading "Responsive Sidebar Test" [level=1] [ref=e8]
+      - paragraph [ref=e9]: This page demonstrates the responsive sidebar implementation. Resize your browser window to see the sidebar collapse on mobile (< 1024px) and expand on desktop (≥ 1024px).
+    - generic [ref=e11]:
+      - generic [ref=e13]: Minuta Canvas
+      - navigation [ref=e14]:
+        - link "Dashboard" [ref=e15] [cursor=pointer]:
+          - /url: /dashboard
+          - img [ref=e16]
+          - text: Dashboard
+        - link "Upload" [ref=e18] [cursor=pointer]:
+          - /url: /upload
+          - img [ref=e19]
+          - text: Upload
+        - link "Entities" [ref=e21] [cursor=pointer]:
+          - /url: /entities
+          - img [ref=e22]
+          - text: Entities
+        - link "Canvas" [ref=e24] [cursor=pointer]:
+          - /url: /canvas
+          - img [ref=e25]
+          - text: Canvas
+        - link "Draft" [ref=e27] [cursor=pointer]:
+          - /url: /draft
+          - img [ref=e28]
+          - text: Draft
+        - link "History" [ref=e30] [cursor=pointer]:
+          - /url: /history
+          - img [ref=e31]
+          - text: History
+      - generic [ref=e34]: Desktop Sidebar (visible on screens ≥ 1024px)
+    - generic [ref=e35]:
+      - banner [ref=e36]:
+        - heading "Responsive Sidebar Demo" [level=2] [ref=e38]
+        - generic [ref=e39]: "Current width: -px"
+      - main [ref=e40]:
+        - generic [ref=e41]:
+          - generic [ref=e42]:
+            - heading "Responsive Sidebar Features" [level=3] [ref=e43]
+            - list [ref=e44]:
+              - listitem [ref=e45]:
+                - generic [ref=e47]: ✓
+                - generic [ref=e48]:
+                  - strong [ref=e49]: "Mobile-First Design:"
+                  - paragraph [ref=e50]: Sidebar is hidden by default on mobile devices (screens < 1024px) and can be opened via hamburger menu
+              - listitem [ref=e51]:
+                - generic [ref=e53]: ✓
+                - generic [ref=e54]:
+                  - strong [ref=e55]: "Desktop Layout:"
+                  - paragraph [ref=e56]: Sidebar is permanently visible on desktop screens (≥ 1024px) with fixed positioning
+              - listitem [ref=e57]:
+                - generic [ref=e59]: ✓
+                - generic [ref=e60]:
+                  - strong [ref=e61]: "Smooth Animations:"
+                  - paragraph [ref=e62]: Mobile sidebar slides in/out with spring animation using Framer Motion
+              - listitem [ref=e63]:
+                - generic [ref=e65]: ✓
+                - generic [ref=e66]:
+                  - strong [ref=e67]: "Overlay Backdrop:"
+                  - paragraph [ref=e68]: Dark overlay appears when mobile sidebar is open, dismisses sidebar when clicked
+              - listitem [ref=e69]:
+                - generic [ref=e71]: ✓
+                - generic [ref=e72]:
+                  - strong [ref=e73]: "Accessibility:"
+                  - paragraph [ref=e74]: Proper ARIA labels, keyboard navigation support, and focus management
+              - listitem [ref=e75]:
+                - generic [ref=e77]: ✓
+                - generic [ref=e78]:
+                  - strong [ref=e79]: "Dark Mode Support:"
+                  - paragraph [ref=e80]: Full dark mode styling with proper color tokens for both sidebar states
+          - generic [ref=e81]:
+            - heading "Testing Instructions" [level=3] [ref=e82]
+            - list [ref=e83]:
+              - listitem [ref=e84]:
+                - generic [ref=e85]: "1."
+                - generic [ref=e86]: Resize your browser window to below 1024px width (or use mobile device/emulator)
+              - listitem [ref=e87]:
+                - generic [ref=e88]: "2."
+                - generic [ref=e89]: Verify the hamburger menu button appears in the top-left corner
+              - listitem [ref=e90]:
+                - generic [ref=e91]: "3."
+                - generic [ref=e92]: Click the hamburger menu to open the sidebar
+              - listitem [ref=e93]:
+                - generic [ref=e94]: "4."
+                - generic [ref=e95]: Verify the sidebar slides in from the left with a dark overlay
+              - listitem [ref=e96]:
+                - generic [ref=e97]: "5."
+                - generic [ref=e98]: Click outside the sidebar (on the overlay) or the X button to close it
+              - listitem [ref=e99]:
+                - generic [ref=e100]: "6."
+                - generic [ref=e101]: Resize the window to 1024px or wider
+              - listitem [ref=e102]:
+                - generic [ref=e103]: "7."
+                - generic [ref=e104]: Verify the sidebar is permanently visible and hamburger menu is hidden
+          - generic [ref=e105]:
+            - heading "Breakpoint Information" [level=3] [ref=e106]
+            - generic [ref=e107]:
+              - generic [ref=e110]:
+                - generic [ref=e111]: Mobile View
+                - generic [ref=e112]: "< 1024px (Tailwind: below 'lg')"
+              - generic [ref=e115]:
+                - generic [ref=e116]: Desktop View
+                - generic [ref=e117]: "≥ 1024px (Tailwind: 'lg' and above)"
+  - region "Notifications alt+T"
+```

@@ -16,8 +16,8 @@ function getGeminiClient(): { client: GoogleGenerativeAI; model: GenerativeModel
 
   if (!geminiClient) {
     geminiClient = new GoogleGenerativeAI(GEMINI_API_KEY)
-    // Use Gemini Pro for higher quality draft generation
-    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-1.5-pro' })
+    // Use Gemini 3 Pro Preview para tarefas complexas de geração de documentos
+    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-3-pro-preview' })
   }
 
   return { client: geminiClient, model: geminiModel! }
@@ -556,13 +556,17 @@ export async function runDraftJob(
       .single()
 
     if (caseError || !caseData) {
-      throw new Error(`Failed to fetch case: ${caseError?.message || 'Case not found'}`)
+      const errorMessage = `Failed to fetch case: ${caseError?.message || 'Case not found'}`
+      console.error(errorMessage)
+      throw new Error(errorMessage)
     }
 
     const canonicalData = caseData.canonical_data as CanonicalData | null
 
     if (!canonicalData) {
-      throw new Error('No canonical data found for this case')
+      const errorMessage = 'No canonical data found for this case. Please ensure entities have been extracted from documents.'
+      console.error(errorMessage)
+      throw new Error(errorMessage)
     }
 
     // 2. Validate canonical data
@@ -577,18 +581,41 @@ export async function runDraftJob(
 
     // 3. Generate draft using Gemini Pro
     console.log('Generating draft with Gemini Pro...')
-    const { model } = getGeminiClient()
+    let model: GenerativeModel
+    try {
+      const geminiClient = getGeminiClient()
+      model = geminiClient.model
+    } catch (geminiError) {
+      const errorMessage = `Failed to initialize Gemini client: ${geminiError instanceof Error ? geminiError.message : 'Unknown error'}`
+      console.error(errorMessage)
+      throw new Error(errorMessage)
+    }
+
     const prompt = generateDraftPrompt(canonicalData)
 
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    const responseText = response.text()
+    let responseText: string
+    try {
+      const result = await model.generateContent(prompt)
+      const response = await result.response
+      responseText = response.text()
+
+      if (!responseText || responseText.trim().length === 0) {
+        throw new Error('Gemini returned empty response')
+      }
+    } catch (geminiError) {
+      const errorMessage = `Failed to generate draft with Gemini: ${geminiError instanceof Error ? geminiError.message : 'AI model error'}`
+      console.error(errorMessage)
+      throw new Error(errorMessage)
+    }
 
     // 4. Parse sections from response
     const sections = parseSectionsFromResponse(responseText)
 
     if (sections.length === 0) {
-      throw new Error('Failed to generate draft sections')
+      const errorMessage = 'Failed to parse draft sections from AI response. The response format may be invalid.'
+      console.error(errorMessage)
+      console.error('Response preview:', responseText.substring(0, 500))
+      throw new Error(errorMessage)
     }
 
     console.log(`Generated ${sections.length} sections`)
@@ -603,6 +630,12 @@ export async function runDraftJob(
       .eq('case_id', job.case_id)
       .order('version', { ascending: false })
       .limit(1)
+
+    if (draftsError) {
+      const errorMessage = `Failed to query existing drafts: ${draftsError.message}`
+      console.error(errorMessage)
+      throw new Error(errorMessage)
+    }
 
     const nextVersion = existingDrafts && existingDrafts.length > 0 ? existingDrafts[0].version + 1 : 1
 
@@ -621,7 +654,9 @@ export async function runDraftJob(
       .single()
 
     if (insertError || !newDraft) {
-      throw new Error(`Failed to save draft: ${insertError?.message || 'Unknown error'}`)
+      const errorMessage = `Failed to save draft to database: ${insertError?.message || 'Unknown database error'}`
+      console.error(errorMessage)
+      throw new Error(errorMessage)
     }
 
     console.log(`Draft created successfully: ${newDraft.id}, version ${nextVersion}`)
@@ -635,7 +670,16 @@ export async function runDraftJob(
       is_valid: validation.isValid,
     }
   } catch (error) {
-    console.error('Error in draft generation job:', error)
-    throw error
+    // Enhanced error handling with detailed logging
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred during draft generation'
+    console.error('Error in draft generation job:', errorMessage)
+    console.error('Full error:', error)
+
+    // Re-throw with a user-friendly message while preserving technical details
+    const enhancedError = new Error(errorMessage)
+    if (error instanceof Error && error.stack) {
+      enhancedError.stack = error.stack
+    }
+    throw enhancedError
   }
 }

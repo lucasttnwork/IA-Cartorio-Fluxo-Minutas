@@ -57,7 +57,7 @@ const statusConfigs: Record<DocumentStatus, StatusConfig> = {
     label: 'Processing',
     shortLabel: 'Processing',
     icon: ArrowPathIcon,
-    className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200/50 dark:border-yellow-800/50',
+    className: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 border-yellow-200/50 dark:border-yellow-800/50 animate-pulse-subtle',
     animate: true,
   },
   processed: {
@@ -89,15 +89,15 @@ const statusConfigs: Record<DocumentStatus, StatusConfig> = {
 const sizeClasses = {
   sm: {
     badge: 'px-2 py-0.5 text-xs gap-1',
-    icon: 'w-3 h-3',
+    icon: 'size-3',
   },
   md: {
     badge: 'px-2.5 py-1 text-sm gap-1.5',
-    icon: 'w-4 h-4',
+    icon: 'size-4',
   },
   lg: {
     badge: 'px-3 py-1.5 text-base gap-2',
-    icon: 'w-5 h-5',
+    icon: 'size-5',
   },
 }
 
@@ -178,9 +178,13 @@ export function DocumentStatusBadge({
               sizeConfig.icon,
               config.animate && 'animate-spin'
             )}
+            aria-hidden="true"
           />
           {showLabel && (
-            <span className="truncate">{displayLabel}</span>
+            <span className="truncate" aria-live="polite">{displayLabel}</span>
+          )}
+          {!showLabel && (
+            <span className="sr-only">{config.label}</span>
           )}
 
           {/* Progress indicator for processing status */}

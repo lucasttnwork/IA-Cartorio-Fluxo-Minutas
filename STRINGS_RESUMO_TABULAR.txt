@@ -1,0 +1,182 @@
+╔════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+║                  RESUMO DE STRINGS EM INGLÊS - src/stores/ E src/hooks/                                              ║
+║                         Auditoria de Internacionalização (i18n)                                                        ║
+╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╝
+
+SUMÁRIO EXECUTIVO
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Total de Strings em Inglês Visíveis para Usuário:    11
+Total de Mensagens de Console em Inglês:            22+
+Arquivos Impactados:                                10
+Prioridade Geral:                                   ALTA
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+STRINGS CRÍTICAS (Aparecem para o Usuário)
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+1. AUTENTICAÇÃO (2 strings)
+   ├─ Arquivo: src/hooks/useAuth.tsx
+   │  ├─ Linha 141: 'User not authenticated'
+   │  └─ Severidade: CRÍTICA
+   │
+   └─ Arquivo: src/hooks/useCases.ts
+      ├─ Linhas 180, 307: 'User not authenticated'
+      └─ Severidade: CRÍTICA
+
+
+2. CARREGAMENTO DE DADOS DO CANVAS (5 strings)
+   Arquivo: src/hooks/useCanvasData.ts
+   ├─ Linha 62:  'Failed to fetch people: {error}'
+   ├─ Linha 65:  'Failed to fetch properties: {error}'
+   ├─ Linha 68:  'Failed to fetch edges: {error}'
+   ├─ Linha 71:  'Failed to fetch documents: {error}'
+   ├─ Linha 82:  'Failed to load canvas data'
+   └─ Severidade: CRÍTICA
+
+
+3. DOCUMENTOS (2 strings)
+   ├─ Arquivo: src/hooks/useCaseDocuments.ts
+   │  ├─ Linha 37: 'Failed to fetch documents'
+   │  └─ Severidade: CRÍTICA
+   │
+   └─ Arquivo: src/hooks/useDocumentNames.ts
+      ├─ Linha 59: 'Failed to fetch document names'
+      └─ Severidade: CRÍTICA
+
+
+4. PREVIEW DE DOCUMENTOS (2 strings - Com erros de acentuação)
+   Arquivo: src/hooks/useDocumentPreview.ts
+   ├─ Linha 99:  'Nao foi possivel carregar o documento' (ACENTO FALTANDO)
+   ├─ Linha 104: 'Erro ao carregar documento' (pode vir em inglês)
+   └─ Severidade: MÉDIA
+
+
+5. PREVIEW DE IMAGENS (2 strings - Com erros de acentuação)
+   Arquivo: src/hooks/useImagePreview.ts
+   ├─ Linha 90:  'Nao foi possivel carregar a imagem' (ACENTO FALTANDO)
+   ├─ Linha 95:  'Erro ao carregar imagem' (pode vir em inglês)
+   └─ Severidade: MÉDIA
+
+
+6. CADEIA DE EVIDÊNCIAS (1 string)
+   Arquivo: src/hooks/useEvidenceChain.ts
+   ├─ Linha 247: 'Failed to fetch evidence chain'
+   └─ Severidade: CRÍTICA
+
+
+7. AUTO-SAVE DE RASCUNHO (1 string)
+   Arquivo: src/hooks/useDraftAutoSave.ts
+   ├─ Linha 79: 'Erro ao salvar' (pode vir em inglês)
+   └─ Severidade: MÉDIA
+
+
+8. STATUS DE PROCESSAMENTO (1 string)
+   Arquivo: src/hooks/useDocumentProcessingStatus.ts
+   ├─ Linha 364: 'Unknown error'
+   └─ Severidade: CRÍTICA
+
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+TABELA RESUMIDA
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+ARQUIVO                              LINHA    STRING                                         SEVERIDADE
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+useAuth.tsx                          141      'User not authenticated'                        CRÍTICA
+useCases.ts                          180,307  'User not authenticated'                        CRÍTICA
+useCanvasData.ts                     62       'Failed to fetch people'                        CRÍTICA
+useCanvasData.ts                     65       'Failed to fetch properties'                    CRÍTICA
+useCanvasData.ts                     68       'Failed to fetch edges'                         CRÍTICA
+useCanvasData.ts                     71       'Failed to fetch documents'                     CRÍTICA
+useCanvasData.ts                     82       'Failed to load canvas data'                    CRÍTICA
+useCaseDocuments.ts                  37       'Failed to fetch documents'                     CRÍTICA
+useDocumentNames.ts                  59       'Failed to fetch document names'                CRÍTICA
+useDocumentPreview.ts                99       'Nao foi possivel carregar...' [ACENTO]         MÉDIA
+useDocumentPreview.ts                104      'Erro ao carregar documento'                    MÉDIA
+useImagePreview.ts                   90       'Nao foi possivel carregar...' [ACENTO]         MÉDIA
+useImagePreview.ts                   95       'Erro ao carregar imagem'                       MÉDIA
+useDraftAutoSave.ts                  79       'Erro ao salvar'                                MÉDIA
+useEvidenceChain.ts                  247      'Failed to fetch evidence chain'                CRÍTICA
+useDocumentProcessingStatus.ts       364      'Unknown error'                                 CRÍTICA
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+STRINGS DE CONSOLE (Desenvolvimento apenas - Não visível para usuário)
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Encontradas 22+ mensagens de console.error/console.log em inglês:
+
+✓ useAuth.tsx (1):                      'Error fetching app user'
+✓ useCanvasData.ts (1):                 'Error loading canvas data'
+✓ useCanvasPresence.ts (2):             'User joined/left canvas'
+✓ useCaseDocuments.ts (1):              'Error fetching documents'
+✓ useCases.ts (9):                      'Error fetching/creating/updating/deleting case'
+✓ useChatHistory.ts (5):                'Error loading/saving/clearing chat history'
+✓ useDocumentNames.ts (1):              'Error fetching document names'
+✓ useDocumentPreview.ts (1):            'Error loading document URL'
+✓ useDocumentProcessingStatus.ts (3):   'Error fetching status / Subscribed'
+✓ useDocumentStatusSubscription.ts (2): 'Subscribed/Unsubscribing'
+✓ useDraftAutoSave.ts (1):              'Error saving draft'
+✓ useEvidenceChain.ts (1):              'Error fetching evidence chain'
+✓ useImagePreview.ts (2):               'Error loading image/thumbnail'
+✓ useProcessingJobsSubscription.ts (5): 'Error fetching/refreshing jobs / Loaded'
+✓ useSessionTimeout.ts (1):             'Session expired due to inactivity'
+✓ useUsers.ts (1):                      'Error fetching users'
+
+Severidade: BAIXA (Apenas para debug de desenvolvimento)
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+SUGESTÕES DE TRADUÇÃO
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+INGLÊS                                  →  PORTUGUÊS RECOMENDADO
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+'User not authenticated'                →  'Usuário não autenticado'
+'Failed to fetch X'                     →  'Falha ao carregar X' ou 'Não foi possível carregar X'
+'Unknown error'                         →  'Erro desconhecido'
+'Error loading X'                       →  'Erro ao carregar X'
+'Error saving X'                        →  'Erro ao salvar X'
+'Error fetching X'                      →  'Erro ao buscar X'
+
+CORREÇÕES IMEDIATAS (Acentuação):
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+'Nao foi possivel carregar...'          →  'Não foi possível carregar...'
+'Nao foi possivel carregar a...'        →  'Não foi possível carregar a...'
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+PLANO DE AÇÃO
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+FASE 1 - CRÍTICA (Fazer agora):
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ 1. Traduzir 11 strings críticas (useAuth, useCases, useCanvasData, useDocumentNames, useEvidenceChain)           │
+│ 2. Revisar todas as 4 strings MÉDIA (corrigir acentuação e melhorar mensagens de erro)                          │
+│ 3. Testar todas as mensagens de erro em português na interface de usuário                                       │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+FASE 2 - MELHORIAS (Próximas 2 semanas):
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ 1. Criar arquivo de i18n centralizado para todas as strings de erro                                             │
+│ 2. Implementar sistema de tradução (i18next ou similar)                                                          │
+│ 3. Considerar traduzir console.log para suportar usuários em português                                          │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+FASE 3 - MANUTENÇÃO (Contínuo):
+┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ 1. Revisar novos setError() e toast() para garantir português                                                   │
+│ 2. Adicionar verificação de linter para strings em inglês                                                       │
+│ 3. Manter arquivo de strings centralizado atualizado                                                            │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+RELATÓRIO COMPLETO
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+
+Para mais detalhes, consulte: STRINGS_EM_INGLES_RELATORIO.md
+
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+Data do Relatório: 2025-12-25
+Ferramenta: Análise de Código Claude
+Escopo: src/stores/ e src/hooks/
+═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════

@@ -3,16 +3,18 @@
   "category": "UX",
   "title": "Network Offline Handling",
   "description": "Network offline handling",
-  "status": "backlog",
+  "status": "verified",
   "priority": 3,
   "complexity": "moderate",
   "dependencies": [
     "user-authentication"
   ],
   "createdAt": "2025-12-23T18:16:20.997Z",
-  "updatedAt": "2025-12-23T18:16:20.997Z",
+  "updatedAt": "2025-12-25T14:30:09.485Z",
   "model": "opus",
   "thinkingLevel": "none",
   "hasCustomAIProfile": true,
-  "planningMode": "lite"
+  "planningMode": "lite",
+  "branchName": "main",
+  "startedAt": "2025-12-25T14:13:47.888Z"
 }

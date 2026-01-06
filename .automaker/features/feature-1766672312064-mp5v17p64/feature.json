@@ -1,0 +1,20 @@
+{
+  "category": "Uncategorized",
+  "description": "Cria~ção decase ao clicar no botao \"create case\" no fluxo de inicio para que o fluxo tenha comço meio e fim com todas as devidas paginas conectadas e funcionando com o passo a passo de envio de documentos, processamento pela IA e ocr, criação do canva e criação da minuta. \nO objetivo e conectar as pontas soltas de paginas soltas e o backend para testes reais com documentos verdadeiros (por hora, crie testes com documentos ficticios para garantir que as ordens, chamadas APIs ao google e ao supabase estao funcionado e o backend esta respondendo corretamente)",
+  "title": "Add case creation flow with document processing and AI integration",
+  "images": [],
+  "imagePaths": [],
+  "textFilePaths": [],
+  "skipTests": false,
+  "model": "sonnet",
+  "thinkingLevel": "none",
+  "branchName": "main",
+  "priority": 2,
+  "planningMode": "lite",
+  "requirePlanApproval": false,
+  "titleGenerating": false,
+  "status": "verified",
+  "id": "feature-1766672312064-mp5v17p64",
+  "startedAt": "2025-12-25T14:18:36.981Z",
+  "updatedAt": "2025-12-25T14:31:07.616Z"
+}

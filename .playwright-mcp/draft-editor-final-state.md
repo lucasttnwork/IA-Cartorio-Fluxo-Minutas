@@ -1,0 +1,106 @@
+### New console messages
+- [ERROR] Failed to load resource: the server responded with a status of 404 () @ https://kllcbgoqtxed...
+- [ERROR] Error saving draft: Error: Could not find the table 'public.drafts' in the schema cache
+    ...
+
+### Page state
+- Page URL: http://localhost:5173/test-tiptap-editor
+- Page Title: Minuta Canvas
+- Page Snapshot:
+```yaml
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - heading "Tiptap Editor - Toolbar Formatting Test" [level=1] [ref=e6]
+    - paragraph [ref=e7]: Test all the formatting options available in the rich text editor.
+  - generic [ref=e9]:
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - button "Desfazer (Ctrl+Z)" [ref=e71] [cursor=pointer]:
+          - generic [ref=e72]:
+            - img
+        - button "Refazer (Ctrl+Shift+Z)" [disabled]:
+          - generic:
+            - img
+        - button "Negrito (Ctrl+B)" [ref=e12] [cursor=pointer]:
+          - generic [ref=e13]:
+            - img
+        - button "Itálico (Ctrl+I)" [ref=e14] [cursor=pointer]:
+          - generic [ref=e15]:
+            - img
+        - button "Tachado" [ref=e16] [cursor=pointer]:
+          - generic [ref=e17]:
+            - img
+        - button "Código inline" [ref=e18] [cursor=pointer]:
+          - generic [ref=e19]:
+            - img
+        - button "Destacar" [ref=e20] [cursor=pointer]:
+          - generic [ref=e21]:
+            - img
+        - button "H1" [ref=e22] [cursor=pointer]:
+          - generic [ref=e23]: H1
+        - button "H2" [ref=e24] [cursor=pointer]:
+          - generic [ref=e25]: H2
+        - button "H3" [ref=e26] [cursor=pointer]:
+          - generic [ref=e27]: H3
+        - button "Lista com marcadores" [ref=e28] [cursor=pointer]:
+          - generic [ref=e29]:
+            - img
+        - button "Lista numerada" [ref=e30] [cursor=pointer]:
+          - generic [ref=e31]:
+            - img
+        - button "Bloco de código" [ref=e32] [cursor=pointer]:
+          - generic [ref=e33]:
+            - img
+        - button "Citação" [ref=e34] [cursor=pointer]:
+          - generic [ref=e35]:
+            - img
+        - button "Linha horizontal" [ref=e36] [cursor=pointer]:
+          - generic [ref=e37]:
+            - img
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - img [ref=e76]
+          - generic [ref=e42]: Erro ao salvar
+        - button "Tentar novamente" [ref=e78] [cursor=pointer]
+    - generic [active] [ref=e45]:
+      - paragraph [ref=e75]: Welcome to the Draft Editor
+      - paragraph [ref=e47]: Start typing to test the formatting toolbar...
+  - generic [ref=e48]:
+    - heading "Features to Test" [level=2] [ref=e49]
+    - list [ref=e50]:
+      - listitem [ref=e51]:
+        - text: ✅
+        - strong [ref=e52]: "Text Formatting:"
+        - text: Bold, Italic, Strikethrough, Code, Highlight
+      - listitem [ref=e53]:
+        - text: ✅
+        - strong [ref=e54]: "Headings:"
+        - text: H1, H2, H3
+      - listitem [ref=e55]:
+        - text: ✅
+        - strong [ref=e56]: "Lists:"
+        - text: Bullet lists and numbered lists
+      - listitem [ref=e57]:
+        - text: ✅
+        - strong [ref=e58]: "Code Block:"
+        - text: Multi-line code formatting
+      - listitem [ref=e59]:
+        - text: ✅
+        - strong [ref=e60]: "Blockquote:"
+        - text: Quote formatting
+      - listitem [ref=e61]:
+        - text: ✅
+        - strong [ref=e62]: "Horizontal Rule:"
+        - text: Visual separator
+      - listitem [ref=e63]:
+        - text: ✅
+        - strong [ref=e64]: "Undo/Redo:"
+        - text: History navigation
+      - listitem [ref=e65]:
+        - text: ✅
+        - strong [ref=e66]: "Auto-save:"
+        - text: Changes are automatically saved after 2 seconds of inactivity (see status indicator in toolbar)
+  - generic [ref=e67]:
+    - heading "HTML Output (Live Preview)" [level=2] [ref=e68]
+    - code [ref=e70]: <p>Welcome to the Draft Editor</p><p>Start typing to test the formatting toolbar...</p>
+```

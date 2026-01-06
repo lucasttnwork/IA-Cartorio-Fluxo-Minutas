@@ -215,7 +215,7 @@ export function ProcessingStatusPanel({
               {pendingJobs} pending
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full animate-pulse" />
+              <span className="w-2 h-2 bg-blue-500 dark:bg-blue-400 rounded-full animate-pulse-subtle" />
               {processingJobs} processing
             </span>
             <span className="flex items-center gap-1">

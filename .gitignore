@@ -5,6 +5,10 @@ credentials/
 .env.local
 .env.*.local
 
+# Claude Code MCP configuration with credentials
+.claude-code/mcp.json
+.mcp.json
+
 # IDE
 .vscode/
 .idea/
@@ -25,3 +29,4 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+nul

@@ -79,17 +79,17 @@ export default function BrowserNavigation() {
   }, [navigationState, handleGoBack, handleGoForward])
 
   return (
-    <div className="flex gap-1" role="navigation" aria-label="Browser history navigation">
+    <div className="flex gap-1" role="navigation" aria-label="Navegação do histórico">
       <Button
         type="button"
         variant="outline"
         size="icon"
         onClick={handleGoBack}
         disabled={!navigationState.canGoBack}
-        aria-label="Go back"
-        title="Go back (Alt + Left Arrow)"
+        aria-label="Voltar"
+        title="Voltar (Alt + Seta Esquerda)"
       >
-        <ArrowLeftIcon className="w-5 h-5" />
+        <ArrowLeftIcon className="size-4" />
       </Button>
       <Button
         type="button"
@@ -97,10 +97,10 @@ export default function BrowserNavigation() {
         size="icon"
         onClick={handleGoForward}
         disabled={!navigationState.canGoForward}
-        aria-label="Go forward"
-        title="Go forward (Alt + Right Arrow)"
+        aria-label="Avançar"
+        title="Avançar (Alt + Seta Direita)"
       >
-        <ArrowRightIcon className="w-5 h-5" />
+        <ArrowRightIcon className="size-4" />
       </Button>
     </div>
   )

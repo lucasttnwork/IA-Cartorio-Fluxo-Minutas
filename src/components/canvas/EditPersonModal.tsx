@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from '../ui/select'
 import { cn } from '@/lib/utils'
+import { validateCPF } from '../../utils/cpfValidation'
 
 // -----------------------------------------------------------------------------
 // Constants
@@ -139,6 +140,7 @@ export function EditPersonModal({
 
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [cpfError, setCpfError] = useState<string | null>(null)
 
   // Reset form when person changes
   useEffect(() => {
@@ -167,6 +169,7 @@ export function EditPersonModal({
         },
       })
       setError(null)
+      setCpfError(null)
     }
   }, [person])
 
@@ -268,9 +271,24 @@ export function EditPersonModal({
   const handleFieldChange = useCallback(
     (field: keyof PersonFormData, value: string) => {
       setFormData((prev) => ({ ...prev, [field]: value }))
+      // Clear CPF error when user starts typing
+      if (field === 'cpf') {
+        setCpfError(null)
+      }
     },
     []
   )
+
+  const handleCPFBlur = useCallback(() => {
+    const validation = validateCPF(formData.cpf)
+    if (!validation.isValid) {
+      setCpfError(validation.error || 'CPF inválido')
+    } else if (validation.formattedCPF) {
+      // Auto-format CPF on blur if valid
+      setFormData((prev) => ({ ...prev, cpf: validation.formattedCPF! }))
+      setCpfError(null)
+    }
+  }, [formData.cpf])
 
   const handleAddressChange = useCallback(
     (field: keyof PersonFormData['address'], value: string) => {
@@ -285,6 +303,14 @@ export function EditPersonModal({
   const handleSave = useCallback(async () => {
     setIsSaving(true)
     setError(null)
+
+    // Validate CPF before saving
+    const cpfValidation = validateCPF(formData.cpf)
+    if (!cpfValidation.isValid) {
+      setCpfError(cpfValidation.error || 'CPF inválido')
+      setIsSaving(false)
+      return
+    }
 
     try {
       // Build address object (only include if at least street is provided)
@@ -461,7 +487,18 @@ export function EditPersonModal({
                         type="text"
                         value={formData.cpf}
                         onChange={(e) => handleFieldChange('cpf', e.target.value)}
+                        onBlur={handleCPFBlur}
+                        placeholder="000.000.000-00"
+                        maxLength={14}
+                        className={cn(cpfError && 'border-red-500 focus:ring-red-500')}
+                        aria-invalid={!!cpfError}
+                        aria-describedby={cpfError ? 'cpf-error' : undefined}
                       />
+                      {cpfError && (
+                        <p id="cpf-error" className="text-sm text-red-500">
+                          {cpfError}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="rg">RG</Label>
@@ -680,7 +717,7 @@ export function EditPersonModal({
               <Button
                 type="button"
                 onClick={handleSave}
-                disabled={isSaving || !formData.full_name.trim()}
+                disabled={isSaving || !formData.full_name.trim() || !!cpfError}
               >
                 {isSaving ? (
                   <>

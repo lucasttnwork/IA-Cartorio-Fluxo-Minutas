@@ -62,7 +62,7 @@ function getGeminiClient(): { client: GoogleGenerativeAI; model: GenerativeModel
 
   if (!geminiClient) {
     geminiClient = new GoogleGenerativeAI(GEMINI_API_KEY)
-    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-1.5-flash' })
+    geminiModel = geminiClient.getGenerativeModel({ model: 'gemini-3-flash-preview' })
   }
 
   return { client: geminiClient, model: geminiModel! }
@@ -422,6 +422,28 @@ export async function runExtractionJob(
     .eq('id', job.document_id)
 
   console.log(`Extraction job completed for document ${job.document_id}: type=${finalType}, confidence=${finalConfidence}`)
+
+  // 9. Auto-trigger entity_extraction job for next pipeline stage
+  try {
+    const { error: jobError } = await supabase
+      .from('processing_jobs')
+      .insert({
+        case_id: job.case_id,
+        document_id: job.document_id,
+        job_type: 'entity_extraction',
+        status: 'pending',
+        attempts: 0,
+        max_attempts: 3,
+      })
+
+    if (jobError) {
+      console.warn(`[Extraction] Failed to create entity_extraction job for document ${job.document_id}:`, jobError)
+    } else {
+      console.log(`[Extraction] Created entity_extraction job for document ${job.document_id}`)
+    }
+  } catch (triggerError) {
+    console.error(`[Extraction] Error creating entity_extraction job:`, triggerError)
+  }
 
   return {
     status: 'completed',

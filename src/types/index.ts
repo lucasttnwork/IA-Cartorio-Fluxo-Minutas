@@ -13,6 +13,19 @@ export interface Organization {
   created_at: string
 }
 
+export interface OrganizationCode {
+  id: string
+  organization_id: string
+  code: string
+  description: string | null
+  is_active: boolean
+  max_uses: number | null
+  current_uses: number
+  expires_at: string | null
+  created_at: string
+  created_by: string | null
+}
+
 export interface User {
   id: string
   organization_id: string
@@ -49,9 +62,23 @@ export interface Document {
   status: DocumentStatus
   doc_type: DocumentType | null
   doc_type_confidence: number | null
-  metadata: Record<string, unknown>
+  metadata: DocumentMetadata
   created_at: string
   updated_at: string
+}
+
+export interface DocumentMetadata {
+  // Proxy-specific fields
+  proxy_expiration_date?: string // ISO date string
+  proxy_powers?: string[] // e.g., ['comprar', 'vender', 'assinar']
+  proxy_signatories?: string[] // Names of people who signed
+  proxy_grantor?: string // Name of person granting the power
+  proxy_grantee?: string // Name of person receiving the power
+  proxy_notary_info?: string // Notary office information
+  proxy_type?: 'public' | 'private' // Type of proxy
+
+  // Generic metadata for other document types
+  [key: string]: unknown
 }
 
 export type DocumentStatus =
@@ -299,8 +326,14 @@ export interface GraphEdge {
   relationship: RelationshipType
   confidence: number
   confirmed: boolean
-  metadata: Record<string, unknown>
+  metadata: GraphEdgeMetadata
   created_at: string
+}
+
+export interface GraphEdgeMetadata {
+  proxy_document_id?: string
+  proxy_attached_at?: string
+  [key: string]: unknown
 }
 
 export type RelationshipType =
@@ -345,6 +378,15 @@ export type SectionType =
   | 'conditions'
   | 'clauses'
   | 'closing'
+
+export interface DraftTemplate {
+  id: string
+  name: string
+  description: string
+  actType: ActType
+  icon?: string
+  sections: DraftSection[]
+}
 
 export interface PendingItem {
   id: string
@@ -414,6 +456,8 @@ export interface ProcessingJob {
   created_at: string
   started_at: string | null
   completed_at: string | null
+  last_retry_at: string | null
+  retry_delay_ms: number
 }
 
 export type JobType = 'ocr' | 'extraction' | 'consensus' | 'entity_resolution' | 'entity_extraction' | 'draft'
@@ -637,4 +681,58 @@ export interface MergeSuggestion {
   // Timestamps
   created_at: string
   updated_at: string
+}
+
+// -----------------------------------------------------------------------------
+// Entity Split Types
+// -----------------------------------------------------------------------------
+
+/**
+ * Extended metadata interface for tracking merge history in Person records.
+ * This enables split functionality by preserving original merge data.
+ */
+export interface MergeMetadata {
+  merged_from?: string[]             // Array of person IDs that were merged
+  merged_at?: string                 // ISO timestamp when merge occurred
+  original_data_a?: Partial<Person>  // Original data from first person
+  original_data_b?: Partial<Person>  // Original data from second person
+  merge_reason?: string              // Reason for the merge
+  [key: string]: unknown             // Allow other metadata fields
+}
+
+/**
+ * Represents a candidate for splitting - a merged person that can be separated.
+ */
+export interface SplitCandidate {
+  id: string                         // ID of the merged person record
+  merged_person: Person              // The current merged person record
+  merge_metadata: MergeMetadata      // Metadata about the merge
+  original_person_a?: Partial<Person> // Reconstructed data for first person
+  original_person_b?: Partial<Person> // Reconstructed data for second person
+  merged_at: string                  // When the merge occurred
+  can_split: boolean                 // Whether split is possible (has enough data)
+  split_confidence: number           // Confidence in split accuracy (0-1)
+}
+
+// -----------------------------------------------------------------------------
+// Realtime Presence Types
+// -----------------------------------------------------------------------------
+
+/**
+ * Represents a user's presence state on the canvas
+ */
+export interface CanvasPresence {
+  user_id: string                    // Unique user identifier
+  user_name: string                  // Display name of the user
+  cursor_x: number                   // X position in viewport coordinates
+  cursor_y: number                   // Y position in viewport coordinates
+  color: string                      // Assigned color for this user's cursor
+  last_updated: number               // Timestamp of last update
+}
+
+/**
+ * Presence state for the entire canvas session
+ */
+export interface PresenceState {
+  [user_id: string]: CanvasPresence
 }

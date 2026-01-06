@@ -72,7 +72,7 @@ export function Pagination({
           size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          aria-label="Go to previous page"
+          aria-label="Ir para página anterior"
         >
           Anterior
         </Button>
@@ -81,7 +81,7 @@ export function Pagination({
           size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          aria-label="Go to next page"
+          aria-label="Ir para próxima página"
         >
           Próximo
         </Button>
@@ -130,9 +130,9 @@ export function Pagination({
             size="icon"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            aria-label="Go to previous page"
+            aria-label="Ir para página anterior"
           >
-            <ChevronLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="size-4" />
           </Button>
 
           {/* Page Numbers */}
@@ -158,7 +158,7 @@ export function Pagination({
                 size="sm"
                 onClick={() => onPageChange(pageNumber)}
                 aria-current={isActive ? 'page' : undefined}
-                aria-label={`Go to page ${pageNumber}`}
+                aria-label={`Ir para página ${pageNumber}`}
               >
                 {pageNumber}
               </Button>
@@ -171,9 +171,9 @@ export function Pagination({
             size="icon"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            aria-label="Go to next page"
+            aria-label="Ir para próxima página"
           >
-            <ChevronRightIcon className="h-4 w-4" />
+            <ChevronRightIcon className="size-4" />
           </Button>
         </div>
       </div>

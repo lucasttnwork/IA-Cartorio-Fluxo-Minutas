@@ -1,0 +1,64 @@
+============================================
+RELATÓRIO RESUMIDO DE AUDITORIA
+============================================
+
+Data do Relatório: 24/12/2025 às 21:24:36
+Período Analisado: 24/12/2025 21:22 - 24/12/2025 21:22
+
+--------------------------------------------
+ESTATÍSTICAS GERAIS
+--------------------------------------------
+
+Total de Registros: 4
+Usuários Únicos: 3
+
+--------------------------------------------
+POR CATEGORIA
+--------------------------------------------
+
+Imóvel: 1
+Pessoa: 2
+Documento: 1
+
+--------------------------------------------
+POR STATUS
+--------------------------------------------
+
+Sucesso: 4
+
+--------------------------------------------
+ENTRADAS RECENTES (últimas 10)
+--------------------------------------------
+
+
+1. Criação de Imóvel
+   Alvo: Rua das Flores, 123
+   Usuário: Ana Costa
+   Data: 24/12/2025 às 21:22:22
+   Descrição: Imóvel "Rua das Flores, 123" foi criado
+
+
+2. Atualização de Pessoa
+   Alvo: João Silva
+   Usuário: Carlos Oliveira
+   Data: 24/12/2025 às 21:22:18
+   Descrição: Pessoa "João Silva" foi atualizada
+
+
+3. Criação de Pessoa
+   Alvo: João Silva
+   Usuário: Maria Santos
+   Data: 24/12/2025 às 21:22:13
+   Descrição: Pessoa "João Silva" foi criada
+
+
+4. Upload de Documento
+   Alvo: Contrato_Compra_Venda.pdf
+   Usuário: Maria Santos
+   Data: 24/12/2025 às 21:22:08
+   Descrição: Documento "Contrato_Compra_Venda.pdf" foi carregado
+
+
+============================================
+FIM DO RELATÓRIO
+============================================

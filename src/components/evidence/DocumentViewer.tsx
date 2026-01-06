@@ -104,7 +104,7 @@ function ZoomControls({
   const canZoomOut = scale > minScale
 
   return (
-    <div className="document-viewer-controls absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 glass-popover rounded-lg shadow-2xl p-1 z-10">
+    <div className="document-viewer-controls absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 glass-popover p-1 z-10">
       {/* Zoom Out Button */}
       <Button
         type="button"

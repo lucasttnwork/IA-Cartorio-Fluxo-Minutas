@@ -42,11 +42,12 @@ import {
   TableRow,
 } from '../ui/table'
 import { cn } from '@/lib/utils'
+import { Skeleton } from '../ui/skeleton'
 
 // Entity type configuration with icons and colors
 const entityTypeConfig: Record<EntityType, { label: string; icon: typeof UserIcon; color: string; bgColor: string }> = {
   PERSON: { label: 'Pessoa', icon: UserIcon, color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/30' },
-  ORGANIZATION: { label: 'Organizacao', icon: BuildingOfficeIcon, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-100 dark:bg-purple-900/30' },
+  ORGANIZATION: { label: 'Organização', icon: BuildingOfficeIcon, color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-100 dark:bg-purple-900/30' },
   LOCATION: { label: 'Local', icon: MapPinIcon, color: 'text-green-600 dark:text-green-400', bgColor: 'bg-green-100 dark:bg-green-900/30' },
   DATE: { label: 'Data', icon: CalendarIcon, color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/30' },
   MONEY: { label: 'Valor', icon: CurrencyDollarIcon, color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30' },
@@ -55,10 +56,10 @@ const entityTypeConfig: Record<EntityType, { label: string; icon: typeof UserIco
   CNPJ: { label: 'CNPJ', icon: BuildingOfficeIcon, color: 'text-violet-600 dark:text-violet-400', bgColor: 'bg-violet-100 dark:bg-violet-900/30' },
   EMAIL: { label: 'Email', icon: EnvelopeIcon, color: 'text-cyan-600 dark:text-cyan-400', bgColor: 'bg-cyan-100 dark:bg-cyan-900/30' },
   PHONE: { label: 'Telefone', icon: PhoneIcon, color: 'text-teal-600 dark:text-teal-400', bgColor: 'bg-teal-100 dark:bg-teal-900/30' },
-  ADDRESS: { label: 'Endereco', icon: HomeIcon, color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30' },
-  PROPERTY_REGISTRY: { label: 'Matricula', icon: DocumentDuplicateIcon, color: 'text-rose-600 dark:text-rose-400', bgColor: 'bg-rose-100 dark:bg-rose-900/30' },
-  RELATIONSHIP: { label: 'Relacao', icon: LinkIcon, color: 'text-pink-600 dark:text-pink-400', bgColor: 'bg-pink-100 dark:bg-pink-900/30' },
-  DOCUMENT_NUMBER: { label: 'Numero Doc', icon: DocumentTextIcon, color: 'text-slate-600 dark:text-slate-400', bgColor: 'bg-slate-100 dark:bg-slate-900/30' },
+  ADDRESS: { label: 'Endereço', icon: HomeIcon, color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30' },
+  PROPERTY_REGISTRY: { label: 'Matrícula', icon: DocumentDuplicateIcon, color: 'text-rose-600 dark:text-rose-400', bgColor: 'bg-rose-100 dark:bg-rose-900/30' },
+  RELATIONSHIP: { label: 'Relação', icon: LinkIcon, color: 'text-pink-600 dark:text-pink-400', bgColor: 'bg-pink-100 dark:bg-pink-900/30' },
+  DOCUMENT_NUMBER: { label: 'Número Doc', icon: DocumentTextIcon, color: 'text-slate-600 dark:text-slate-400', bgColor: 'bg-slate-100 dark:bg-slate-900/30' },
   OTHER: { label: 'Outro', icon: QuestionMarkCircleIcon, color: 'text-gray-600 dark:text-gray-400', bgColor: 'bg-gray-100 dark:bg-gray-900/30' },
 }
 
@@ -94,7 +95,7 @@ const confidenceLevelConfig: Record<ConfidenceLevel, {
   },
   medium: {
     label: 'Medium',
-    labelPt: 'Media',
+    labelPt: 'Média',
     color: 'text-yellow-600 dark:text-yellow-400',
     bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',
     borderColor: 'border-yellow-200 dark:border-yellow-800',
@@ -158,6 +159,14 @@ export default function EntityTable({
       result = result.filter(entity => selectedTypes.includes(entity.type))
     }
 
+    // Apply confidence filter
+    if (selectedConfidenceLevels.length > 0) {
+      result = result.filter(entity => {
+        const level = getConfidenceLevel(entity.confidence)
+        return selectedConfidenceLevels.includes(level)
+      })
+    }
+
     // Apply sorting
     result.sort((a, b) => {
       let comparison = 0
@@ -176,7 +185,7 @@ export default function EntityTable({
     })
 
     return result
-  }, [entities, searchQuery, selectedTypes, sortField, sortDirection])
+  }, [entities, searchQuery, selectedTypes, selectedConfidenceLevels, sortField, sortDirection])
 
   // Handle sort click
   const handleSort = (field: SortField) => {
@@ -194,6 +203,15 @@ export default function EntityTable({
       prev.includes(type)
         ? prev.filter(t => t !== type)
         : [...prev, type]
+    )
+  }
+
+  // Toggle confidence level filter
+  const toggleConfidenceFilter = (level: ConfidenceLevel) => {
+    setSelectedConfidenceLevels(prev =>
+      prev.includes(level)
+        ? prev.filter(l => l !== level)
+        : [...prev, level]
     )
   }
 
@@ -250,9 +268,22 @@ export default function EntityTable({
 
   if (isLoading) {
     return (
-      <div className="animate-pulse space-y-4">
-        <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
-        <div className="h-64 bg-gray-200 dark:bg-gray-700 rounded"></div>
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Skeleton className="h-10 flex-1" />
+          <Skeleton className="h-10 w-24" />
+        </div>
+        <div className="glass-card overflow-hidden p-6 space-y-4">
+          {[...Array(5)].map((_, index) => (
+            <div key={index} className="flex items-center gap-4">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-8 w-24 rounded-full" />
+              <Skeleton className="h-6 flex-1" />
+              <Skeleton className="h-6 w-16" />
+              <Skeleton className="h-4 flex-1" />
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
@@ -262,10 +293,10 @@ export default function EntityTable({
       <div className="glass-subtle text-center py-12 rounded-lg">
         <DocumentTextIcon className="mx-auto h-12 w-12 text-gray-400" />
         <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">
-          Nenhuma entidade extraida
+          Nenhuma entidade extraída
         </h3>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-          Faca upload de documentos e aguarde o processamento para ver entidades extraidas.
+          Faça upload de documentos e aguarde o processamento para ver entidades extraídas.
         </p>
       </div>
     )
@@ -325,17 +356,17 @@ export default function EntityTable({
         {/* Filter Toggle */}
         <Button
           onClick={() => setShowFilters(!showFilters)}
-          variant={selectedTypes.length > 0 ? "default" : "outline"}
+          variant={(selectedTypes.length > 0 || selectedConfidenceLevels.length > 0) ? "default" : "outline"}
           className={cn(
             "flex items-center gap-2",
-            selectedTypes.length > 0 && "bg-blue-500 hover:bg-blue-600"
+            (selectedTypes.length > 0 || selectedConfidenceLevels.length > 0) && "bg-blue-500 hover:bg-blue-600"
           )}
         >
           <FunnelIcon className="w-5 h-5" />
           <span>Filtros</span>
-          {selectedTypes.length > 0 && (
+          {(selectedTypes.length > 0 || selectedConfidenceLevels.length > 0) && (
             <span className="ml-1 px-2 py-0.5 text-xs bg-white/20 rounded-full">
-              {selectedTypes.length}
+              {selectedTypes.length + selectedConfidenceLevels.length}
             </span>
           )}
         </Button>
@@ -350,40 +381,87 @@ export default function EntityTable({
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="flex flex-wrap gap-2 p-4 glass-subtle rounded-lg">
-              {availableTypes.map((type) => {
-                const config = entityTypeConfig[type]
-                const isSelected = selectedTypes.includes(type)
-                const Icon = config.icon
+            <div className="p-4 glass-subtle rounded-lg space-y-4">
+              {/* Entity Type Filters */}
+              <div>
+                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                  Tipo de Entidade
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {availableTypes.map((type) => {
+                    const config = entityTypeConfig[type]
+                    const isSelected = selectedTypes.includes(type)
+                    const Icon = config.icon
 
-                return (
+                    return (
+                      <Button
+                        key={type}
+                        onClick={() => toggleTypeFilter(type)}
+                        variant={isSelected ? "default" : "outline"}
+                        size="sm"
+                        className={cn(
+                          "flex items-center gap-1.5",
+                          isSelected && `${config.bgColor} ${config.color} hover:opacity-90`
+                        )}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {config.label}
+                        <span className="ml-1 text-xs opacity-70">
+                          ({entities.filter(e => e.type === type).length})
+                        </span>
+                      </Button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Confidence Level Filters */}
+              <div>
+                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                  Nível de Confiança
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {(Object.keys(confidenceLevelConfig) as ConfidenceLevel[]).map((level) => {
+                    const config = confidenceLevelConfig[level]
+                    const isSelected = selectedConfidenceLevels.includes(level)
+                    const count = entities.filter(e => getConfidenceLevel(e.confidence) === level).length
+
+                    return (
+                      <Button
+                        key={level}
+                        onClick={() => toggleConfidenceFilter(level)}
+                        variant={isSelected ? "default" : "outline"}
+                        size="sm"
+                        className={cn(
+                          "flex items-center gap-1.5",
+                          isSelected && `${config.bgColor} ${config.color} hover:opacity-90`
+                        )}
+                      >
+                        <AdjustmentsHorizontalIcon className="w-4 h-4" />
+                        {config.labelPt}
+                        <span className="ml-1 text-xs opacity-70">
+                          ({count})
+                        </span>
+                      </Button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Clear Filters */}
+              {(selectedTypes.length > 0 || selectedConfidenceLevels.length > 0) && (
+                <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                   <Button
-                    key={type}
-                    onClick={() => toggleTypeFilter(type)}
-                    variant={isSelected ? "default" : "outline"}
+                    onClick={() => {
+                      setSelectedTypes([])
+                      setSelectedConfidenceLevels([])
+                    }}
+                    variant="ghost"
                     size="sm"
-                    className={cn(
-                      "flex items-center gap-1.5",
-                      isSelected && `${config.bgColor} ${config.color} hover:opacity-90`
-                    )}
                   >
-                    <Icon className="w-4 h-4" />
-                    {config.label}
-                    <span className="ml-1 text-xs opacity-70">
-                      ({entities.filter(e => e.type === type).length})
-                    </span>
+                    Limpar todos os filtros
                   </Button>
-                )
-              })}
-
-              {selectedTypes.length > 0 && (
-                <Button
-                  onClick={() => setSelectedTypes([])}
-                  variant="ghost"
-                  size="sm"
-                >
-                  Limpar filtros
-                </Button>
+                </div>
               )}
             </div>
           </motion.div>
@@ -423,7 +501,7 @@ export default function EntityTable({
                 className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
                 onClick={() => handleSort('confidence')}
               >
-                Confianca <SortIcon field="confidence" />
+                Confiança <SortIcon field="confidence" />
               </TableHead>
               <TableHead>Contexto</TableHead>
             </TableRow>

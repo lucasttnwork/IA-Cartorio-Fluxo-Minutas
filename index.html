@@ -10,12 +10,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
-      // Initialize theme before React loads to prevent flash
+      // Initialize theme and high contrast mode before React loads to prevent flash
       (function() {
+        // Initialize dark mode
         const theme = localStorage.getItem('theme-preference') || 'system';
         const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
         if (isDark) {
           document.documentElement.classList.add('dark');
+        }
+
+        // Initialize high contrast mode
+        const highContrast = localStorage.getItem('high-contrast-preference') === 'true';
+        if (highContrast) {
+          document.documentElement.classList.add('high-contrast');
         }
       })();
     </script>

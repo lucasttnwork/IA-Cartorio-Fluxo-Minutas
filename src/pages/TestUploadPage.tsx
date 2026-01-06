@@ -7,7 +7,7 @@
  * NOTE: This page should only be available in development mode.
  */
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   DocumentIcon,
@@ -18,10 +18,18 @@ import {
   ExclamationCircleIcon,
   ArrowPathIcon,
   FolderOpenIcon,
+  FunnelIcon,
 } from '@heroicons/react/24/outline'
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Badge } from '../components/ui/badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select'
 import DocumentDropzone, { UploadResult } from '../components/upload/DocumentDropzone'
 import type { Document, DocumentStatus, DocumentType } from '../types'
 
@@ -88,9 +96,112 @@ const formatDate = (dateString: string) => {
   })
 }
 
+// Mock documents with different types for testing the filter
+const mockDocuments: Document[] = [
+  {
+    id: 'doc_1',
+    case_id: 'test-case-123',
+    storage_path: '/mock/path1.pdf',
+    original_name: 'CNH_John_Doe.pdf',
+    mime_type: 'application/pdf',
+    file_size: 1024000,
+    page_count: 1,
+    status: 'processed',
+    doc_type: 'cnh',
+    doc_type_confidence: 0.95,
+    metadata: {},
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'doc_2',
+    case_id: 'test-case-123',
+    storage_path: '/mock/path2.pdf',
+    original_name: 'RG_Jane_Smith.pdf',
+    mime_type: 'application/pdf',
+    file_size: 2048000,
+    page_count: 2,
+    status: 'processed',
+    doc_type: 'rg',
+    doc_type_confidence: 0.88,
+    metadata: {},
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'doc_3',
+    case_id: 'test-case-123',
+    storage_path: '/mock/path3.pdf',
+    original_name: 'Escritura_Property.pdf',
+    mime_type: 'application/pdf',
+    file_size: 5120000,
+    page_count: 15,
+    status: 'processed',
+    doc_type: 'deed',
+    doc_type_confidence: 0.92,
+    metadata: {},
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'doc_4',
+    case_id: 'test-case-123',
+    storage_path: '/mock/path4.pdf',
+    original_name: 'Certidao_Casamento.pdf',
+    mime_type: 'application/pdf',
+    file_size: 1536000,
+    page_count: 2,
+    status: 'needs_review',
+    doc_type: 'marriage_cert',
+    doc_type_confidence: 0.75,
+    metadata: {},
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'doc_5',
+    case_id: 'test-case-123',
+    storage_path: '/mock/path5.pdf',
+    original_name: 'IPTU_2024.pdf',
+    mime_type: 'application/pdf',
+    file_size: 512000,
+    page_count: 1,
+    status: 'processed',
+    doc_type: 'iptu',
+    doc_type_confidence: 0.98,
+    metadata: {},
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+  {
+    id: 'doc_6',
+    case_id: 'test-case-123',
+    storage_path: '/mock/path6.png',
+    original_name: 'CNH_Maria_Santos.png',
+    mime_type: 'image/png',
+    file_size: 3072000,
+    page_count: 1,
+    status: 'processing',
+    doc_type: 'cnh',
+    doc_type_confidence: 0.82,
+    metadata: {},
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  },
+]
+
 export default function TestUploadPage() {
-  const [uploadedDocs, setUploadedDocs] = useState<Document[]>([])
+  const [uploadedDocs, setUploadedDocs] = useState<Document[]>(mockDocuments)
+  const [selectedDocType, setSelectedDocType] = useState<DocumentType | 'all'>('all')
   const testCaseId = 'test-case-123'
+
+  // Filter documents by selected type
+  const filteredDocs = useMemo(() => {
+    if (selectedDocType === 'all') {
+      return uploadedDocs
+    }
+    return uploadedDocs.filter((doc) => doc.doc_type === selectedDocType)
+  }, [uploadedDocs, selectedDocType])
 
   // Handle upload completion
   const handleUploadComplete = useCallback((results: UploadResult[]) => {
@@ -181,11 +292,37 @@ export default function TestUploadPage() {
         {/* Uploaded Documents List */}
         <Card className="glass-card">
           <CardHeader>
-            <div>
-              <CardTitle>Uploaded Documents</CardTitle>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {uploadedDocs.length} document{uploadedDocs.length !== 1 ? 's' : ''} uploaded
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <CardTitle>Uploaded Documents</CardTitle>
+                <CardDescription>
+                  {selectedDocType === 'all'
+                    ? `${uploadedDocs.length} document${uploadedDocs.length !== 1 ? 's' : ''} uploaded`
+                    : `${filteredDocs.length} of ${uploadedDocs.length} document${uploadedDocs.length !== 1 ? 's' : ''} (filtered by ${documentTypeLabels[selectedDocType]})`
+                  }
+                </CardDescription>
+              </div>
+
+              {/* Document Type Filter */}
+              <div className="flex items-center gap-2">
+                <FunnelIcon className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                <Select
+                  value={selectedDocType}
+                  onValueChange={(value) => setSelectedDocType(value as DocumentType | 'all')}
+                >
+                  <SelectTrigger className="w-[180px]" aria-label="Filter by document type">
+                    <SelectValue placeholder="Filter by type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All types</SelectItem>
+                    {Object.entries(documentTypeLabels).map(([type, label]) => (
+                      <SelectItem key={type} value={type}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardHeader>
           <CardContent className="p-0">
@@ -208,9 +345,32 @@ export default function TestUploadPage() {
                   Start by dragging and dropping documents into the upload area above, or click to browse files.
                 </p>
               </motion.div>
+            ) : filteredDocs.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="p-12 text-center"
+              >
+                <div className="mx-auto w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center mb-4">
+                  <FunnelIcon className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                  No documents found
+                </h3>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
+                  No documents of type "{documentTypeLabels[selectedDocType as DocumentType]}" were found.
+                  <button
+                    onClick={() => setSelectedDocType('all')}
+                    className="ml-1 text-blue-600 dark:text-blue-400 hover:underline"
+                  >
+                    Clear filter
+                  </button>
+                </p>
+              </motion.div>
             ) : (
               <ul className="divide-y divide-gray-200 dark:divide-gray-700">
-                {uploadedDocs.map((doc, index) => {
+                {filteredDocs.map((doc, index) => {
                   const statusInfo = statusConfig[doc.status]
                   const StatusIcon = statusInfo.icon
 
@@ -298,7 +458,7 @@ export default function TestUploadPage() {
               'Drag & drop multiple files',
               'Click to browse files',
               'File type validation (PDF, JPG, PNG, TIFF, WebP)',
-              'File size validation (max 10MB)',
+              'File size validation (max 50MB)',
               'Upload progress indicators',
               'File queue management',
               'Remove files before upload',
@@ -306,6 +466,10 @@ export default function TestUploadPage() {
               'Success/error status display',
               'Uploaded documents list',
               'Animated transitions',
+              'Large file warning dialog',
+              'Upload speed & ETA display',
+              'Chunked upload for large files',
+              'Batch upload statistics',
             ].map((feature, index) => (
               <li key={index} className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">

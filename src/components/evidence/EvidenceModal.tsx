@@ -9,14 +9,16 @@
  * - Supports ESC key to close
  * - Backdrop click closes the modal
  * - Manages bounding box navigation and selection
+ * - Multi-page PDF navigation support
  * - Smooth enter/exit animations
  * - Focus restoration on close
  */
 
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useMemo, useEffect, useRef } from 'react'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+  DocumentIcon,
 } from '@heroicons/react/24/outline'
 import { cn } from '@/lib/utils'
 import {
@@ -82,6 +84,79 @@ function BoxNavigation({
         onClick={onNext}
         aria-label="Próxima evidência"
         title="Próxima evidência (→ ou ↓)"
+      >
+        <ChevronRightIcon className="w-4 h-4" />
+      </Button>
+    </div>
+  )
+}
+
+/**
+ * Page Navigation Controls Component for Multi-page PDFs
+ */
+interface PageNavigationProps {
+  currentPage: number
+  totalPages: number
+  onPreviousPage: () => void
+  onNextPage: () => void
+  onGoToPage: (page: number) => void
+}
+
+function PageNavigation({
+  currentPage,
+  totalPages,
+  onPreviousPage,
+  onNextPage,
+  onGoToPage,
+}: PageNavigationProps) {
+  if (totalPages <= 1) return null
+
+  return (
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-2 glass-card px-3 py-2 z-20">
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={onPreviousPage}
+        disabled={currentPage <= 1}
+        aria-label="Página anterior"
+        title="Página anterior (Page Up)"
+        className="h-8 w-8 p-0"
+      >
+        <ChevronLeftIcon className="w-4 h-4" />
+      </Button>
+
+      <div className="flex items-center gap-2">
+        <DocumentIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 tabular-nums">
+          Página
+        </span>
+        <select
+          value={currentPage}
+          onChange={(e) => onGoToPage(Number(e.target.value))}
+          className="h-7 px-2 text-sm font-medium rounded border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          aria-label="Selecionar página"
+        >
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+            <option key={page} value={page}>
+              {page}
+            </option>
+          ))}
+        </select>
+        <span className="text-sm text-gray-500 dark:text-gray-400">
+          de {totalPages}
+        </span>
+      </div>
+
+      <Button
+        type="button"
+        variant="ghost"
+        size="sm"
+        onClick={onNextPage}
+        disabled={currentPage >= totalPages}
+        aria-label="Próxima página"
+        title="Próxima página (Page Down)"
+        className="h-8 w-8 p-0"
       >
         <ChevronRightIcon className="w-4 h-4" />
       </Button>
@@ -162,6 +237,7 @@ export function EvidenceModal({
   isOpen,
   evidence,
   onClose,
+  onBoxOverride,
   config: configOverrides,
   className = '',
 }: EvidenceModalProps) {
@@ -183,9 +259,19 @@ export function EvidenceModal({
   })
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(evidence?.pageNumber ?? 1)
 
-  // Get total box count
-  const boxCount = evidence?.boundingBoxes.length ?? 0
+  // Get total pages from evidence
+  const totalPages = evidence?.totalPages ?? 1
+
+  // Filter bounding boxes for the current page
+  const currentPageBoxes = useMemo(() => {
+    if (!evidence?.boundingBoxes) return []
+    return evidence.boundingBoxes.filter((box) => box.page === currentPage)
+  }, [evidence?.boundingBoxes, currentPage])
+
+  // Get total box count for current page
+  const boxCount = currentPageBoxes.length
 
   // ============================================================================
   // Event Handlers
@@ -209,6 +295,10 @@ export function EvidenceModal({
     setHoveredBoxId(boxId)
   }, [])
 
+  const handleBoxOverride = useCallback((boxId: string, newValue: string) => {
+    onBoxOverride?.(boxId, newValue)
+  }, [onBoxOverride])
+
   const handlePreviousBox = useCallback(() => {
     setSelectedBoxIndex((prev) => (prev <= 0 ? boxCount - 1 : prev - 1))
   }, [boxCount])
@@ -216,6 +306,25 @@ export function EvidenceModal({
   const handleNextBox = useCallback(() => {
     setSelectedBoxIndex((prev) => (prev + 1) % boxCount)
   }, [boxCount])
+
+  // Page navigation handlers
+  const handlePreviousPage = useCallback(() => {
+    setCurrentPage((prev) => Math.max(1, prev - 1))
+    setSelectedBoxIndex(0)
+    setTransform(DEFAULT_TRANSFORM)
+  }, [])
+
+  const handleNextPage = useCallback(() => {
+    setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+    setSelectedBoxIndex(0)
+    setTransform(DEFAULT_TRANSFORM)
+  }, [totalPages])
+
+  const handleGoToPage = useCallback((page: number) => {
+    setCurrentPage(Math.max(1, Math.min(totalPages, page)))
+    setSelectedBoxIndex(0)
+    setTransform(DEFAULT_TRANSFORM)
+  }, [totalPages])
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (!config.enableKeyboardNavigation) return
@@ -246,8 +355,23 @@ export function EvidenceModal({
         e.preventDefault()
         setSelectedBoxIndex(Math.max(0, boxCount - 1))
         break
+
+      // Page navigation with PageUp/PageDown
+      case 'PageUp':
+        e.preventDefault()
+        if (currentPage > 1) {
+          handlePreviousPage()
+        }
+        break
+
+      case 'PageDown':
+        e.preventDefault()
+        if (currentPage < totalPages) {
+          handleNextPage()
+        }
+        break
     }
-  }, [boxCount, config.enableKeyboardNavigation])
+  }, [boxCount, config.enableKeyboardNavigation, currentPage, totalPages, handlePreviousPage, handleNextPage])
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
@@ -255,21 +379,32 @@ export function EvidenceModal({
     }
   }
 
+  // Track previous evidence ID to reset state when evidence changes
+  const prevEvidenceIdRef = useRef<string | null>(null)
+
   // Reset state when evidence changes
-  if (evidence && evidence.id !== (evidence as any)?.previousId) {
-    setSelectedBoxIndex(0)
-    setTransform(DEFAULT_TRANSFORM)
-    setIsLoading(true)
-    setError(null)
-  }
+  useEffect(() => {
+    if (evidence && evidence.id !== prevEvidenceIdRef.current) {
+      prevEvidenceIdRef.current = evidence.id
+      setSelectedBoxIndex(0)
+      setTransform(DEFAULT_TRANSFORM)
+      setError(null)
+      setCurrentPage(evidence.pageNumber ?? 1)
+      // Note: isLoading is managed by the DocumentViewer's onImageLoad callback
+      // We set it to false here so the DocumentViewer renders and can start loading
+      setIsLoading(false)
+    }
+  }, [evidence])
 
   // ============================================================================
   // Build modal title and subtitle
   // ============================================================================
 
   const modalTitle = evidence?.documentName ?? 'Visualizar Evidência'
-  const modalSubtitle = evidence
-    ? `Página ${evidence.pageNumber} de ${evidence.totalPages}`
+  const modalSubtitle = totalPages > 1
+    ? `Página ${currentPage} de ${totalPages}${boxCount > 0 ? ` • ${boxCount} evidência${boxCount !== 1 ? 's' : ''}` : ''}`
+    : boxCount > 0
+    ? `${boxCount} evidência${boxCount !== 1 ? 's' : ''}`
     : undefined
 
   // ============================================================================
@@ -313,6 +448,17 @@ export function EvidenceModal({
             />
           )}
 
+          {/* Page Navigation for Multi-page PDFs */}
+          {config.showPageNavigation && !isLoading && !error && totalPages > 1 && (
+            <PageNavigation
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPreviousPage={handlePreviousPage}
+              onNextPage={handleNextPage}
+              onGoToPage={handleGoToPage}
+            />
+          )}
+
           {/* Document Viewer with Bounding Boxes */}
           {evidence && !isLoading && !error && (
             <DocumentViewer
@@ -324,15 +470,16 @@ export function EvidenceModal({
               onImageLoad={handleImageLoad}
               className="w-full h-full"
             >
-              {/* Bounding Box Overlay */}
+              {/* Bounding Box Overlay - filtered by current page */}
               {dimensions.renderedWidth > 0 && (
                 <BoundingBoxOverlay
-                  boxes={evidence.boundingBoxes}
+                  boxes={currentPageBoxes}
                   dimensions={dimensions}
                   selectedIndex={selectedBoxIndex}
                   hoveredId={hoveredBoxId}
                   onBoxClick={handleBoxClick}
                   onBoxHover={handleBoxHover}
+                  onBoxOverride={handleBoxOverride}
                 />
               )}
             </DocumentViewer>
@@ -354,7 +501,7 @@ export function EvidenceModal({
           {isLoading
             ? 'Carregando documento...'
             : evidence
-            ? `Exibindo ${evidence.documentName}, página ${evidence.pageNumber} de ${evidence.totalPages}. ${boxCount} evidência${boxCount !== 1 ? 's' : ''} destacada${boxCount !== 1 ? 's' : ''}.`
+            ? `Exibindo ${evidence.documentName}, página ${currentPage} de ${totalPages}. ${boxCount} evidência${boxCount !== 1 ? 's' : ''} nesta página.`
             : ''}
         </div>
       </DialogContent>
